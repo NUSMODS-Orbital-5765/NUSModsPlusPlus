@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import SignInPage from "./SignInPage";
+
 import {
   Avatar,
   Box,
@@ -16,7 +16,6 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 
 function AppBarComponent() {
   const [AnchorMenu, setAnchorMenu] = useState(null);
-  const [toLogin, setToLogin] = useState(false);
 
   const handleOpen = (event) => {
     setAnchorMenu(event.currentTarget);
@@ -26,10 +25,6 @@ function AppBarComponent() {
     setAnchorMenu(null);
   };
 
-  const handleLogout = () => {
-    setToLogin(true);
-    setAnchorMenu(null);
-  };
   return (
     <Box sx={{ marginLeft: "233px" }}>
       <AppBar
@@ -112,7 +107,7 @@ function AppBarComponent() {
               >
                 <MenuItem onClick={handleClose}>Profile</MenuItem>
                 <MenuItem onClick={handleClose}>Settings</MenuItem>
-                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                <MenuItem onClick={handleClose}>Logout</MenuItem>
               </Menu>
             </div>
           </Box>
@@ -126,3 +121,4 @@ function AppBarComponent() {
 export default AppBarComponent;
 
 //TODO: auto-suggestion (use more complex libraries to do this)
+//TODO: how to use react router??? (search)
