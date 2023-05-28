@@ -4,12 +4,21 @@ import HomePage from "./HomePage";
 import PlannerPage from "./PlannerPage";
 import SignUpPage from "./SignUpPage";
 import ProfilePage from "./ProfilePage";
-import { BrowserRouter as Router, Route, Switch } from "react-router";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
+
 function App() {
-  return <SignUpPage />;
+  return (
+    <Router>
+      <Routes>
+        <Route exact path="/login" element={<SignInPage />} />
+        <Route exact path="/register" element={<SignUpPage />} />
+        <Route exact path="/" element={<HomePage />} />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;
