@@ -15,6 +15,7 @@ function App() {
       <Routes>
         <Route exact path="/login" element={<SignInPage />} />
         <Route exact path="/register" element={<SignUpPage />} />
+        <Route exact path="/planner" element={<PlannerPage />} />
         <Route exact path="/" element={<HomePage />} />
       </Routes>
     </Router>
