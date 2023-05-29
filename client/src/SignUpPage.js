@@ -18,15 +18,18 @@ import {
   IconButton,
   Chip,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 
-export const StepOne = () => {
+import axios from "axios";
+
+export const StepOne = ({setUsername, setPassword}) => {
   const [showPassword, setShowPassword] = useState(true);
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
   };
+
 
   return (
     <Box
@@ -47,11 +50,12 @@ export const StepOne = () => {
       <Typography sx={{ fontWeight: 700, marginTop: "40px" }}>
         Account Information
       </Typography>
-      <TextField label="Username" variant="outlined" required></TextField>
+      <TextField onChange={(e) => setUsername(e.target.value)} label="Username" variant="outlined" required></TextField>
       <TextField
         sx={{ marginTop: "20px" }}
         label="Password"
         variant="outlined"
+        onChange={(e) => setPassword(e.target.value)}
         required
         type={showPassword ? "text" : "password"}
         InputProps={{
@@ -190,11 +194,28 @@ export const StepComplete = () => {
 const SignUpPage = () => {
   const [activeStep, setActiveStep] = useState(0);
   const steps = ["Setting Up...", "Almost There...", "One Last Thing..."];
-
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const configuration = {
+    method: "post",
+    url: "http://localhost:3001/register",
+    data: {
+      username,
+      password,
+    },
+  };
+  const sendRequest = () => {axios(configuration)
+   .then((result) => {console.log(result);})
+   .catch((error) => {console.log(error);});
+  }
   const handleNextStep = () => {
     if (activeStep < steps.length) {
       setActiveStep(activeStep + 1);
     }
+    if (activeStep === 2) {
+      sendRequest();
+    }
+    
   };
 
   const handlePrevStep = () => {
@@ -232,10 +253,10 @@ const SignUpPage = () => {
               </Step>
             ))}
           </Stepper>
-          {activeStep === 0 && <StepOne />}
+          {activeStep === 0 && <StepOne setUsername={setUsername} setPassword={setPassword}/>}
           {activeStep === 1 && <StepTwo />}
           {activeStep === 2 && <StepThree />}
-          {activeStep === steps.length && <StepComplete />}
+          {activeStep === steps.length && <StepComplete sendRequest={sendRequest}/>}
         </CardContent>
         <CardActions>
           <Box

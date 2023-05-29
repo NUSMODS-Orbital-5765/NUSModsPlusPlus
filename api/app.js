@@ -9,9 +9,14 @@ const auth = require("./auth");
 
 dotenv.config();
 
+
 const app = express();
 const port = process.env.PORT || 3001;
-
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3001/register"); // update to match the domain you will make the request from
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 app.get('/', async (req,res) => {
     const users = await prisma.user.findMany();
     const names = users.map((user) => user.name);
@@ -19,6 +24,7 @@ app.get('/', async (req,res) => {
 });
 // register endpoint
 app.post("/register", jsonParser, (request, response) => {
+    console.log("Receive POST registration")
   // hash the password
   bcrypt
     .hash(request.body.password, 10)
@@ -35,6 +41,7 @@ app.post("/register", jsonParser, (request, response) => {
       prisma.user.create({data:user,})
         // return success if the new user is added to the database successfully
         .then((result) => {
+            console.log("Created User")
           response.status(201).send({
             message: "User Created Successfully",
             result,
