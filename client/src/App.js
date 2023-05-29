@@ -11,6 +11,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 function App() {
   return (
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
     <Router>
       <Routes>
         <Route exact path="/login" element={<SignInPage />} />
@@ -19,6 +20,7 @@ function App() {
         <Route exact path="/" element={<HomePage />} />
       </Routes>
     </Router>
+    </LocalizationProvider>
   );
 }
 
