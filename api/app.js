@@ -6,17 +6,15 @@ const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 const jwt = require("jsonwebtoken");
 const auth = require("./auth");
+const cors = require("cors");
 
 dotenv.config();
 
 
 const app = express();
+app.use(cors());
 const port = process.env.PORT || 3001;
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3001/register"); // update to match the domain you will make the request from
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+
 app.get('/', async (req,res) => {
     const users = await prisma.user.findMany();
     const names = users.map((user) => user.name);
@@ -30,6 +28,7 @@ app.post("/register", jsonParser, (request, response) => {
     .hash(request.body.password, 10)
     .then((hashedPassword) => {
       // create a new user instance and collect the data
+      console.log("Create User Object")
       const user = {
         name: request.body.name,
         studentID: request.body.studentID,
