@@ -1,20 +1,154 @@
-import React, { useState } from "react";
-
+//COMPLETE
 import {
   Avatar,
   Box,
   AppBar,
   Toolbar,
+  IconButton,
   Typography,
-  InputBase,
   Menu,
   MenuItem,
-  Button,
   Badge,
+  TextField,
+  Divider,
 } from "@mui/material";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
+import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneRounded";
+import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
+import React, { useState } from "react";
+import useScrollTrigger from "@mui/material/useScrollTrigger";
 
-function AppBarComponent() {
+// customise appbar to elevate and blur background on scrolling
+function CustomScroll(props) {
+  const { children, window } = props;
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 0,
+    target: window ? window() : undefined,
+  });
+
+  const styles = {
+    appBar: {
+      backgroundColor: trigger ? "transparent" : "white",
+      backdropFilter: "blur(15px)",
+      transition: "background-color 0.3s, backdrop-filter 0.3s",
+    },
+  };
+
+  return React.cloneElement(children, {
+    elevation: trigger ? 4 : 0,
+    style: styles.appBar,
+  });
+}
+
+// search bar component
+function SearchBar() {
+  return (
+    <Box
+      className="remainingViewport"
+      sx={{
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: "5px",
+      }}
+    >
+      <IconButton sx={{ marginBottom: "-20px", marginRight: "20px" }}>
+        <SearchRoundedIcon />
+      </IconButton>
+      <TextField
+        sx={{
+          width: "400px",
+          marginLeft: "-20px",
+          borderRadius: "5px",
+          "&:hover": {
+            backgroundColor: "#e8f0fe",
+          },
+        }}
+        variant="standard"
+        label="Search this site..."
+      ></TextField>
+    </Box>
+  );
+}
+
+// notifications menu component
+function NotifsMenu() {
+  const [AnchorMenu, setAnchorMenu] = useState(null);
+
+  const handleOpen = (event) => {
+    setAnchorMenu(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorMenu(null);
+  };
+  return (
+    <div>
+      <Badge
+        sx={{ marginLeft: "630px" }}
+        overlap="circular"
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        variant="dot"
+        color="error"
+      >
+        <IconButton sx={{ color: "black" }} onClick={handleOpen}>
+          <NotificationsNoneRoundedIcon />
+        </IconButton>
+      </Badge>
+      <Menu
+        open={Boolean(AnchorMenu)}
+        anchorEl={AnchorMenu}
+        onClose={handleClose}
+      >
+        <Typography
+          sx={{
+            margin: "20px",
+            marginBottom: "10px",
+            fontSize: "12px",
+            fontWeight: "600",
+          }}
+          color="text.secondary"
+        >
+          RECENTS
+        </Typography>
+        <Divider light />
+        <MenuItem onClick={handleClose}>
+          <Box
+            sx={{
+              margin: "20px",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Avatar
+              sx={{ width: 50, height: 50 }}
+              alt="Other User 1"
+              src="profilepic_1.png"
+            />
+            <Typography
+              sx={{ fontSize: "15px", marginLeft: "10px", fontWeight: 600 }}
+            >
+              Dan Lee (Admin) commented on your plan:
+              <Typography color="text.secondary">
+                This is included in the new curriculum page.
+              </Typography>
+            </Typography>
+            <Divider light />
+          </Box>
+        </MenuItem>
+      </Menu>
+    </div>
+  );
+}
+
+// avatar menu component
+function AvatarMenu() {
   const [AnchorMenu, setAnchorMenu] = useState(null);
 
   const handleOpen = (event) => {
@@ -25,100 +159,109 @@ function AppBarComponent() {
     setAnchorMenu(null);
   };
 
+  const avatarMenuItems = Array(
+    { text: "Edit Profile", icon: <PersonRoundedIcon /> },
+    { text: "Logout", icon: <LogoutRoundedIcon /> }
+  );
   return (
-    <Box sx={{ marginLeft: "233px" }}>
-      <AppBar
-        position="sticky"
-        elevation={0}
-        sx={{
-          backgroundColor: "white",
-          boxShadow: "0px 2px 2px rgba(0, 0, 0, 0.2)",
-        }}
+    <div>
+      <IconButton
+        onClick={handleOpen}
+        sx={{ margin: "20px", marginLeft: "10px" }}
       >
-        <Toolbar>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              borderRadius: "10px",
-              backgroundColor: "rgba(138, 138, 138, 0.15)",
-              "&:hover": {
-                backgroundColor: "rgba(138, 138, 138, 0.25)",
-              },
-            }}
-          >
-            <InputBase
-              sx={{
-                paddingLeft: "10px",
-                textAlign: "left",
-                color: "black",
-                fontWeight: "200",
-                width: "50ch",
-              }}
-              placeholder="the smarter way to plan."
-            />
-            <Box sx={{ paddingRight: 1 }}>
-              <SearchRoundedIcon sx={{ color: "black" }} />
-            </Box>
-          </Box>
-          <Box sx={{ paddingLeft: 49, display: "flex", alignItems: "center" }}>
-            <Typography
-              sx={{
-                color: "black",
-                fontSize: "15px",
-                fontWeight: "300",
-              }}
-            >
-              AY22/23 Sem 1
-            </Typography>
-            <div>
-              <Button
-                sx={{
-                  backgroundColor: "transparent",
-                  outline: "none",
-                  boxShadow: "none",
-                  "&:hover": {
-                    backgroundColor: "transparent",
-                    outline: "none",
-                    boxShadow: "none",
-                  },
-                }}
-                aria-controls="dropdown-menu"
-                aria-haspopup="true"
-                onClick={handleOpen}
-                variant="contained"
-                color="primary"
-              >
-                <Badge badgeContent={1} color="error">
-                  <Avatar
-                    sx={{ marginLeft: "20px", backgroundColor: "lightblue" }}
-                  >
-                    H
-                  </Avatar>
-                </Badge>
-              </Button>
-              <Menu
-                id="dropdown-menu"
-                anchorEl={AnchorMenu}
-                keepMounted
-                open={Boolean(AnchorMenu)}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>Settings</MenuItem>
-                <MenuItem onClick={handleClose}>Logout</MenuItem>
-              </Menu>
-            </div>
-          </Box>
-        </Toolbar>
-      </AppBar>
-    </Box>
+        <Badge
+          overlap="circular"
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          variant="dot"
+          color="success"
+        >
+          <Avatar
+            sx={{ width: 50, height: 50 }}
+            alt="Sample Icon"
+            src="sample_icon.png"
+          />
+        </Badge>
+      </IconButton>
+      <Menu
+        open={Boolean(AnchorMenu)}
+        anchorEl={AnchorMenu}
+        onClose={handleClose}
+      >
+        <Typography
+          sx={{
+            margin: "20px",
+            marginBottom: "10px",
+            fontSize: "12px",
+            fontWeight: "600",
+          }}
+          color="text.secondary"
+        >
+          USER
+        </Typography>
+        <Typography
+          sx={{
+            marginRight: "20px",
+            marginLeft: "20px",
+            fontSize: "18px",
+            fontWeight: "600",
+          }}
+        >
+          Hannah Tan
+        </Typography>
+        <Typography
+          sx={{
+            marginRight: "20px",
+            marginLeft: "20px",
+            marginBottom: "10px",
+            fontSize: "18px",
+            fontWeight: "600",
+          }}
+          color="text.secondary"
+        >
+          h_user@gmail.com
+        </Typography>
+        <Divider light />
+        <Typography
+          sx={{
+            margin: "20px",
+            marginBottom: "10px",
+            fontSize: "12px",
+            fontWeight: "600",
+          }}
+          color="text.secondary"
+        >
+          OPTIONS
+        </Typography>
+        <Box>
+          {avatarMenuItems.map((item, index) => (
+            <MenuItem key={index} onClick={handleClose}>
+              {item.icon}
+              <span style={{ marginLeft: "10px", fontWeight: 500 }}>
+                {item.text}
+              </span>
+            </MenuItem>
+          ))}
+        </Box>
+      </Menu>
+    </div>
   );
 }
-//simple appbar with search bar, year and semester number, and profile
+
+// main app bar
+function AppBarComponent(props) {
+  return (
+    <CustomScroll {...props}>
+      <AppBar sx={{ height: 82 }}>
+        <Toolbar sx={{ backgroundColor: "transparent" }}>
+          {SearchBar()}
+          {NotifsMenu()}
+          {AvatarMenu()}
+        </Toolbar>
+      </AppBar>
+    </CustomScroll>
+  );
+}
 
 export default AppBarComponent;
 
-//TODO: auto-suggestion (use more complex libraries to do this)
-//TODO: how to use react router??? (search)
+// TODO: transfer notifications from administrator comments to notifs icon.

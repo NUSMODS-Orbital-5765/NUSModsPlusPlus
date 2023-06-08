@@ -562,8 +562,8 @@ const PlannerPage = () => {
 
   return (
     <div>
-      <AppBarComponent />
       <DrawerComponent />
+      <AppBarComponent />
       <Box
         sx={{
           marginLeft: "250px",

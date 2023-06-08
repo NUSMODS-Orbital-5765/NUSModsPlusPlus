@@ -1,6 +1,6 @@
+//COMPLETE
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
-import React, { useState } from "react";
 import {
   Box,
   Card,
@@ -9,53 +9,47 @@ import {
   Button,
   TextField,
   Typography,
-  Link,
   IconButton,
   InputAdornment,
 } from "@mui/material";
-import HomePage from "./HomePage";
+import React, { useState } from "react";
+import LogoComponent from "./LogoComponent";
+import { Link } from "react-router-dom";
 
 const SignInPage = () => {
+  //settings for toggling password visibility
   const [showPassword, setShowPassword] = useState(true);
-  const [currentPage, setCurrentPage] = useState(false);
 
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleLogin = () => {
-    setCurrentPage(true);
-  };
-
-  if (currentPage) {
-    return <HomePage />;
-  }
-
   return (
     <Box
       sx={{
+        margin: "-8px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        backgroundImage: `url(${process.env.PUBLIC_URL}/signin-background.jpg)`,
+        backgroundImage: `url(${process.env.PUBLIC_URL}/signin_background.png)`,
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
         height: "100vh",
       }}
     >
-      <img src="nusmods.png" style={{ width: "30%" }} />
-      <Typography sx={{ marginTop: "-15px", fontSize: "20px" }}>
-        A new way to plan
-      </Typography>
+      <LogoComponent />
       <Box sx={{ marginTop: "20px", maxWidth: "900px" }}>
-        <Card sx={{ margin: "auto" }}>
-          <CardContent>
+        <Card sx={{ margin: "auto", elevation: 4 }}>
+          <CardContent sx={{ margin: "10px", marginBottom: "-10px" }}>
             <Typography sx={{ fontWeight: "700" }} variant="h3">
               Hello There!
             </Typography>
             <Typography color="text.secondary" sx={{ fontSize: "17px" }}>
-              Don't have an account? <Link>Get Started.</Link>
+              Don't have an account?{" "}
+              <Link component={Link} to="/sign-up">
+                Get Started.
+              </Link>
             </Typography>
             <Box sx={{ alignItems: "center" }}>
               <TextField
@@ -87,7 +81,7 @@ const SignInPage = () => {
               ></TextField>
             </Box>
             <CardActions sx={{ marginBottom: "-5px", marginTop: "5px" }}>
-              <Button onClick={handleLogin} size="large">
+              <Button size="large" component={Link} to="/">
                 Login
               </Button>
             </CardActions>

@@ -1,3 +1,4 @@
+//COMPLETE
 import {
   Box,
   Typography,
@@ -8,7 +9,6 @@ import {
   StepLabel,
   Button,
   CardActions,
-  Link,
   TextField,
   Select,
   MenuItem,
@@ -17,11 +17,65 @@ import {
   InputAdornment,
   IconButton,
   Chip,
+  Autocomplete,
 } from "@mui/material";
 import React, { useState } from "react";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
+import LogoComponent from "./LogoComponent";
+import {
+  facultyList,
+  majorDict,
+  majorList,
+  progsList,
+  interestsDict,
+} from "./Constants";
+import { Link } from "react-router-dom";
 
+// styling for headers
+function DefaultHeader(text) {
+  return (
+    <Typography
+      color="text.primary"
+      sx={{
+        marginTop: "30px",
+        fontWeight: 700,
+        marginBottom: "15px",
+        textTransform: "uppercase",
+      }}
+    >
+      {text}
+    </Typography>
+  );
+}
+
+// styling for text fields
+function DefaultTextField(label) {
+  return (
+    <TextField
+      sx={{ marginBottom: "20px" }}
+      name={label}
+      label={label}
+      variant="outlined"
+      required
+    ></TextField>
+  );
+}
+
+// styling for autocomplete components
+function DefaultAutocomplete(optionsList, label) {
+  return (
+    <Autocomplete
+      sx={{ marginTop: "20px" }}
+      disablePortal
+      name={label}
+      options={optionsList}
+      renderInput={(params) => <TextField {...params} label={label} />}
+    />
+  );
+}
+
+// content for first step of setting up
 export const StepOne = () => {
   const [showPassword, setShowPassword] = useState(true);
   const handleTogglePassword = () => {
@@ -36,20 +90,16 @@ export const StepOne = () => {
         flexDirection: "column",
       }}
     >
-      <Typography sx={{ fontWeight: 700 }}>Personal Information</Typography>
-      <TextField label="Name" variant="outlined" required></TextField>
+      <Box sx={{ marginTop: "-10px" }}>
+        {DefaultHeader("General Information")}
+      </Box>
+      {DefaultTextField("Name")}
+      {DefaultTextField("StudentID")}
+      {DefaultHeader("Account Information")}
+      {DefaultTextField("Username")}
       <TextField
-        sx={{ marginTop: "20px" }}
-        label="StudentID"
-        variant="outlined"
-        required
-      ></TextField>
-      <Typography sx={{ fontWeight: 700, marginTop: "40px" }}>
-        Account Information
-      </Typography>
-      <TextField label="Username" variant="outlined" required></TextField>
-      <TextField
-        sx={{ marginTop: "20px" }}
+        sx={{ marginBottom: "-30px" }}
+        name="Password"
         label="Password"
         variant="outlined"
         required
@@ -57,10 +107,7 @@ export const StepOne = () => {
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <IconButton
-                aria-label="toggle password visibility"
-                onClick={handleTogglePassword}
-              >
+              <IconButton onClick={handleTogglePassword}>
                 {showPassword ? (
                   <VisibilityRoundedIcon />
                 ) : (
@@ -75,7 +122,29 @@ export const StepOne = () => {
   );
 };
 
+// content for second step of setting up
 export const StepTwo = () => {
+  const [selectedFaculty, setSelectedFaculty] = useState("");
+  const [selectedMajor, setSelectedMajor] = useState("");
+
+  // setSelectedMajor("") to add new Select field
+  const handleFacultyChange = (event) => {
+    setSelectedFaculty(event.target.value);
+    setSelectedMajor("");
+  };
+
+  const handleMajorChange = (event) => {
+    setSelectedMajor(event.target.value);
+  };
+
+  //get available majors for the selected faculty
+  const getMajorOptions = () => {
+    if (selectedFaculty) {
+      return majorDict[selectedFaculty];
+    }
+    return [];
+  };
+
   return (
     <Box
       sx={{
@@ -84,59 +153,53 @@ export const StepTwo = () => {
         flexDirection: "column",
       }}
     >
-      <Typography sx={{ fontWeight: 700 }}>Academic Information</Typography>
+      <Box sx={{ marginTop: "-10px" }}>
+        {DefaultHeader("Academic Information")}
+      </Box>
       <FormControl>
-        <InputLabel id="Faculty">Faculty</InputLabel>
-        <Select label="Faculty>" required>
-          <MenuItem value={"School of Computing"}>School of Computing</MenuItem>
-          <MenuItem value={"Science"}>Science</MenuItem>
-          <MenuItem value={"Engineering"}>Engineering</MenuItem>
+        <InputLabel>Faculty</InputLabel>
+        <Select
+          required
+          name="Faculty"
+          label="Faculty"
+          value={selectedFaculty}
+          onChange={handleFacultyChange}
+        >
+          {facultyList.map((faculty) => (
+            <MenuItem key={faculty} value={faculty}>
+              {faculty}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
-      <FormControl sx={{ marginTop: "20px" }}>
-        <InputLabel id="Major">Major</InputLabel>
-        <Select label="Major>" required>
-          <MenuItem value={"Computer Science"}>Computer Science</MenuItem>
-          <MenuItem value={"Business Analytics"}>Business Analytics</MenuItem>
-          <MenuItem value={"Data Science and Economics"}>
-            Data Science and Economics
-          </MenuItem>
-          <MenuItem value={"Computer Engineering"}>
-            Computer Engineering
-          </MenuItem>
-        </Select>
-      </FormControl>
-      <FormControl sx={{ marginTop: "20px" }}>
-        <InputLabel id="Second Major(s) if any">
-          Second Major(s) if any
-        </InputLabel>
-        <Select label="Second Major(s) if any" required>
-          <MenuItem value={"Economics"}>Economics</MenuItem>
-          <MenuItem value={"Mathematics"}>Mathematics</MenuItem>
-          <MenuItem value={"Computer Science"}>Computer Science</MenuItem>
-        </Select>
-      </FormControl>
-      <FormControl sx={{ marginTop: "20px" }}>
-        <InputLabel id="Minor(s) if any">Minor(s) if any</InputLabel>
-        <Select label="Minor(s) if any>">
-          <MenuItem value={"Economics"}>Economics</MenuItem>
-          <MenuItem value={"Mathematics"}>Mathematics</MenuItem>
-          <MenuItem value={"Computer Science"}>Computer Science</MenuItem>
-        </Select>
-      </FormControl>
+
+      {selectedFaculty && (
+        <FormControl sx={{ marginTop: "20px" }}>
+          <InputLabel>Major</InputLabel>
+          <Select
+            required
+            name="Major"
+            label="Major"
+            value={selectedMajor}
+            onChange={handleMajorChange}
+          >
+            {getMajorOptions().map((major, index) => (
+              <MenuItem key={index} value={major}>
+                {major}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      )}
+      {DefaultAutocomplete(majorList, "Second Major (if any)")}
+      {DefaultAutocomplete(majorList, "Minor (if any)")}
+      {DefaultAutocomplete(progsList, "Special Programme (if any)")}
     </Box>
   );
 };
 
+// content for third step of setting up
 export const StepThree = () => {
-  const interests = [
-    "internship",
-    "research",
-    "machine-learning",
-    "oop",
-    "social sciences",
-    "easy to score",
-  ];
   const [myInterests, setMyInterests] = useState([]);
   const handleInterests = (event) => {
     setMyInterests(event.target.value);
@@ -150,43 +213,65 @@ export const StepThree = () => {
         flexDirection: "column",
       }}
     >
-      <Typography sx={{ fontWeight: 700 }}>
-        Customise your user experience.
-      </Typography>
+      <Box sx={{ marginTop: "-10px" }}>{DefaultHeader("User Preferences")}</Box>
       <FormControl>
-        <InputLabel id="my interests">My Interests</InputLabel>
+        <InputLabel id="my-interests">My Interests</InputLabel>
         <Select
           multiple
+          name="interests"
           value={myInterests}
           onChange={handleInterests}
           label="My Interests"
           renderValue={(selected) => (
             <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-              {selected.map((interest) => (
-                <Chip sx={{ margin: "5px" }} key={interest} label={interest} />
-              ))}
+              {selected &&
+                selected.length > 0 &&
+                selected.map((interest, index) => (
+                  <Chip
+                    variant="filled"
+                    color="primary"
+                    sx={{ margin: "5px" }}
+                    key={index}
+                    label={interest}
+                  />
+                ))}
             </Box>
           )}
         >
-          {interests.map((interest) => (
-            <MenuItem key={interest} value={interest}>
-              {interest}
-            </MenuItem>
-          ))}
+          {Object.entries(interestsDict).map(([category, interests]) => {
+            console.log(interests);
+            return [
+              <MenuItem disabled key={category}>
+                <Typography
+                  sx={{
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    textTransform: "uppercase",
+                    marginTop: category === "module related" ? "5px" : "20px",
+                    color: "black",
+                  }}
+                >
+                  {category}
+                </Typography>
+              </MenuItem>,
+              ...interests.map((interest) => (
+                <MenuItem
+                  sx={{ marginLeft: "2px" }}
+                  key={interest}
+                  value={interest}
+                >
+                  {interest}
+                </MenuItem>
+              )),
+            ];
+          })}
         </Select>
       </FormControl>
     </Box>
   );
 };
 
-export const StepComplete = () => {
-  return (
-    <Typography sx={{ fontSize: "30px", margin: "20px" }}>
-      You're all set! <Link>Click Here to Login.</Link>
-    </Typography>
-  );
-};
-
+// main sign up component
 const SignUpPage = () => {
   const [activeStep, setActiveStep] = useState(0);
   const steps = ["Setting Up...", "Almost There...", "One Last Thing..."];
@@ -206,20 +291,20 @@ const SignUpPage = () => {
   return (
     <Box
       sx={{
+        margin: "-8px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        backgroundImage: `url(${process.env.PUBLIC_URL}/signin-background.jpg)`,
+        backgroundImage: `url(${process.env.PUBLIC_URL}/signup_background.png)`,
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
-        height: "110vh",
+        height: "100vh",
       }}
     >
-      <img src="nusmods.png" style={{ width: "30%" }} />
-      <Typography sx={{ marginTop: "-15px", fontSize: "20px" }}>
-        A new way to plan
-      </Typography>
+      <Box sx={{ marginTop: "-80px" }}>
+        <LogoComponent />
+      </Box>
       <Card sx={{ marginTop: "20px", minWidth: "150ch" }}>
         <CardContent>
           <Typography sx={{ fontWeight: "700" }} variant="h3">
@@ -227,7 +312,7 @@ const SignUpPage = () => {
           </Typography>
           <Stepper sx={{ marginTop: "20px" }} activeStep={activeStep}>
             {steps.map((label, index) => (
-              <Step key={label}>
+              <Step key={index}>
                 <StepLabel>{label}</StepLabel>
               </Step>
             ))}
@@ -235,7 +320,6 @@ const SignUpPage = () => {
           {activeStep === 0 && <StepOne />}
           {activeStep === 1 && <StepTwo />}
           {activeStep === 2 && <StepThree />}
-          {activeStep === steps.length && <StepComplete />}
         </CardContent>
         <CardActions>
           <Box
@@ -246,16 +330,22 @@ const SignUpPage = () => {
               marginTop: "auto",
             }}
           >
-            <Button onClick={handlePrevStep} size="large">
-              Back
-            </Button>
             <Button
-              sx={{ marginLeft: "100ch" }}
-              onClick={handleNextStep}
+              sx={{ marginRight: "110ch" }}
+              onClick={handlePrevStep}
               size="large"
             >
-              Next
+              Back
             </Button>
+            {activeStep === 2 ? (
+              <Button size="large" component={Link} to="/sign-in">
+                Submit
+              </Button>
+            ) : (
+              <Button onClick={handleNextStep} size="large">
+                Next
+              </Button>
+            )}
           </Box>
         </CardActions>
       </Card>
@@ -263,3 +353,6 @@ const SignUpPage = () => {
   );
 };
 export default SignUpPage;
+
+//TODO: handleSubmit for submit button onClick
+//TODO: save content for previous page on clicking next

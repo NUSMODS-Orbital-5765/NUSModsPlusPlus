@@ -1,3 +1,4 @@
+//NEEDS CHANGES
 import {
   Stack,
   Tabs,
@@ -16,12 +17,12 @@ import {
   Tooltip,
   IconButton,
 } from "@mui/material";
+import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRightRounded";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useState } from "react";
 import Grid from "@mui/material/Grid";
 import EventsMoreButton from "./EventsMoreButton";
-import { EventProvider } from "./EventContext";
 import {
   pink,
   red,
@@ -160,9 +161,8 @@ const MyModules = () => {
   return (
     <div>
       <Tabs value={activeTab} onChange={handleChange}>
-        <Tab label="Module View" />
-        <Tab label="Timetable View" />
-        <Tab label="Extra View" />
+        <Tab label="Daily View" />
+        <Tab label="Weekly View" />
       </Tabs>
       {activeTab === 0 &&
         moduleChips.map((module, index) => (
@@ -419,7 +419,7 @@ function GridComponent() {
       }}
     >
       <Box sx={{ display: "flex", flexDirection: "row" }}>
-        <Card sx={{ margin: "10px", borderRadius: 3 }}>
+        <Card sx={{ opacity: 0.85, margin: "10px", borderRadius: 3 }}>
           <CardContent>
             <div>
               <Box
