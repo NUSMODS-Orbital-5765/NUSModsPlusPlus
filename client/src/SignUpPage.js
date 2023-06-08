@@ -19,7 +19,7 @@ import {
   Chip,
   Autocomplete,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import LogoComponent from "./LogoComponent";
@@ -50,12 +50,13 @@ function DefaultHeader(text) {
 }
 
 // styling for text fields
-function DefaultTextField(label) {
+function DefaultTextField(label, name, setfn) {
   return (
     <TextField
       sx={{ marginBottom: "20px" }}
-      name={label}
+      name={name}
       label={label}
+      onChange={setfn}
       variant="outlined"
       required
     ></TextField>
@@ -63,20 +64,21 @@ function DefaultTextField(label) {
 }
 
 // styling for autocomplete components
-function DefaultAutocomplete(optionsList, label) {
+function DefaultAutocomplete(optionsList, label, name, setfn) {
   return (
     <Autocomplete
       sx={{ marginTop: "20px" }}
       disablePortal
-      name={label}
+      name={name}
       options={optionsList}
+      onChange={(e,v)=>{setfn(name, v)}}
       renderInput={(params) => <TextField {...params} label={label} />}
     />
   );
 }
 
 // content for first step of setting up
-export const StepOne = () => {
+export const StepOne = ({handleRegisterInfo}) => {
   const [showPassword, setShowPassword] = useState(true);
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
@@ -93,16 +95,17 @@ export const StepOne = () => {
       <Box sx={{ marginTop: "-10px" }}>
         {DefaultHeader("General Information")}
       </Box>
-      {DefaultTextField("Name")}
-      {DefaultTextField("StudentID")}
+      {DefaultTextField("Name","name",handleRegisterInfo)}
+      {DefaultTextField("StudentID","studentId",handleRegisterInfo)}
       {DefaultHeader("Account Information")}
-      {DefaultTextField("Username")}
+      {DefaultTextField("Username","username",handleRegisterInfo)}
       <TextField
         sx={{ marginBottom: "-30px" }}
-        name="Password"
+        name="password"
         label="Password"
         variant="outlined"
         required
+        onChange={handleRegisterInfo}
         type={showPassword ? "text" : "password"}
         InputProps={{
           endAdornment: (
@@ -123,10 +126,10 @@ export const StepOne = () => {
 };
 
 // content for second step of setting up
-export const StepTwo = () => {
+export const StepTwo = ({handleRegisterInfo}) => {
   const [selectedFaculty, setSelectedFaculty] = useState("");
   const [selectedMajor, setSelectedMajor] = useState("");
-
+  const handleAutocomplete = (n, v) => {handleRegisterInfo({target:{name: n, value: v}})}
   // setSelectedMajor("") to add new Select field
   const handleFacultyChange = (event) => {
     setSelectedFaculty(event.target.value);
@@ -135,6 +138,7 @@ export const StepTwo = () => {
 
   const handleMajorChange = (event) => {
     setSelectedMajor(event.target.value);
+
   };
 
   //get available majors for the selected faculty
@@ -160,10 +164,10 @@ export const StepTwo = () => {
         <InputLabel>Faculty</InputLabel>
         <Select
           required
-          name="Faculty"
+          name="faculty"
           label="Faculty"
           value={selectedFaculty}
-          onChange={handleFacultyChange}
+          onChange={(e) => {handleRegisterInfo(e); handleFacultyChange(e)}}
         >
           {facultyList.map((faculty) => (
             <MenuItem key={faculty} value={faculty}>
@@ -178,10 +182,10 @@ export const StepTwo = () => {
           <InputLabel>Major</InputLabel>
           <Select
             required
-            name="Major"
+            name="primaryMajor"
             label="Major"
             value={selectedMajor}
-            onChange={handleMajorChange}
+            onChange={(e) => {handleRegisterInfo(e); handleMajorChange(e);}}
           >
             {getMajorOptions().map((major, index) => (
               <MenuItem key={index} value={major}>
@@ -191,9 +195,9 @@ export const StepTwo = () => {
           </Select>
         </FormControl>
       )}
-      {DefaultAutocomplete(majorList, "Second Major (if any)")}
-      {DefaultAutocomplete(majorList, "Minor (if any)")}
-      {DefaultAutocomplete(progsList, "Special Programme (if any)")}
+      {DefaultAutocomplete(majorList, "Second Major (if any)", "secondaryMajor", handleAutocomplete)}
+      {DefaultAutocomplete(majorList, "Minor (if any)", "minors", handleAutocomplete)}
+      {DefaultAutocomplete(progsList, "Special Programme (if any)","programme",handleAutocomplete)}
     </Box>
   );
 };
@@ -274,6 +278,32 @@ export const StepThree = () => {
 // main sign up component
 const SignUpPage = () => {
   const [activeStep, setActiveStep] = useState(0);
+  //declare for form submission
+  const [registerInfo, setRegisterInfo] = useState({
+    name: "",
+    studentId: "",
+    username: "",
+    password: "",
+    faculty: "",
+    primaryMajor: "",
+    secondaryMajor: "",
+    minors: [],
+    programme: "",
+    interest: [],
+  })
+  const handleRegisterInfo = evt => {
+    const name = evt.target.name;
+    const value =
+    evt.target.type === "checkbox" ? evt.target.checked : evt.target.value;
+    setRegisterInfo({
+      ...registerInfo,
+      [name]: value
+    });
+  }
+  useEffect(()=>{console.log(registerInfo)},[registerInfo]);
+  const submitForm = () => {
+    console.log(registerInfo);
+  }
   const steps = ["Setting Up...", "Almost There...", "One Last Thing..."];
 
   const handleNextStep = () => {
@@ -317,9 +347,9 @@ const SignUpPage = () => {
               </Step>
             ))}
           </Stepper>
-          {activeStep === 0 && <StepOne />}
-          {activeStep === 1 && <StepTwo />}
-          {activeStep === 2 && <StepThree />}
+          {activeStep === 0 && <StepOne handleRegisterInfo={handleRegisterInfo}/>}
+          {activeStep === 1 && <StepTwo handleRegisterInfo={handleRegisterInfo}/>}
+          {activeStep === 2 && <StepThree handleRegisterInfo={handleRegisterInfo}/>}
         </CardContent>
         <CardActions>
           <Box
@@ -338,7 +368,8 @@ const SignUpPage = () => {
               Back
             </Button>
             {activeStep === 2 ? (
-              <Button size="large" component={Link} to="/sign-in">
+              //<Button size="large" component={Link} to="/sign-in">}
+              <Button onClick={submitForm} size="large" component={Link} to="/sign-in">
                 Submit
               </Button>
             ) : (
