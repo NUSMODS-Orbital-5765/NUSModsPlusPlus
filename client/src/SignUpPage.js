@@ -305,7 +305,7 @@ const SignUpPage = () => {
   }
   useEffect(()=>{console.log(registerInfo)},[registerInfo]);
 
-  const registerAPI = "http://localhost:3001/register";
+  const registerAPI = "https://nusmods.onrender.com/register";
   const submitLoginForm = () => {
     axios.post(registerAPI, registerInfo).then((response) => {
       alert("Register Successfully");
