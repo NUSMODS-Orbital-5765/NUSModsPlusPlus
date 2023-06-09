@@ -13,6 +13,7 @@ dotenv.config();
 
 const app = express();
 app.use(cors());
+
 const port = process.env.PORT || 3001;
 
 app.get('/', async (req,res) => {
@@ -77,7 +78,7 @@ app.post("/register", jsonParser, (request, response) => {
 app.post("/login",jsonParser, (request, response) => {
     prisma.user.findUnique({
         where: {
-          email: request.body.email,
+          username: request.body.username,
         },
       })
     .then((user)=>{
@@ -117,7 +118,7 @@ app.post("/login",jsonParser, (request, response) => {
      })
     .catch((e) => {
       response.status(404).send({
-        message: "Email not found",
+        message: "username not found",
         e,
       });
     });
