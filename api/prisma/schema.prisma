@@ -11,13 +11,15 @@ datasource db {
 }
 
 model User {
-  id       Int @id @default(autoincrement())
-  name     String 
-  studentID String @unique
-  email    String @unique
-  password String
-  major String[]
-  minor String[]
-  faculty String?
-  interest String[]
+  id             Int      @id @default(autoincrement())
+  name           String
+  studentId      String   @unique
+  username       String   @unique
+  password       String
+  faculty        String
+  primaryMajor   String
+  secondaryMajor String?
+  minors         String?
+  programme      String
+  interests      String[]
 }

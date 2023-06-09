@@ -31,9 +31,15 @@ app.post("/register", jsonParser, (request, response) => {
       console.log("Create User Object")
       const user = {
         name: request.body.name,
-        studentID: request.body.studentID,
-        email: request.body.email,
-        password: hashedPassword
+        studentId: request.body.studentId,
+        username: request.body.username,
+        password: hashedPassword,
+        faculty: request.body.studentId,
+        primaryMajor: request.body.primaryMajor,
+        secondaryMajor: request.body.secondaryMajor,
+        minors: request.body.minors,
+        programme: request.body.programme,
+        interests: request.body.interests
       };
 
       // save the new user

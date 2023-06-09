@@ -30,8 +30,8 @@ import {
   progsList,
   interestsDict,
 } from "./Constants";
-import { Link } from "react-router-dom";
-
+import { Link,useNavigate } from "react-router-dom";
+import axios from "axios";
 // styling for headers
 function DefaultHeader(text) {
   return (
@@ -129,6 +129,7 @@ export const StepOne = ({handleRegisterInfo}) => {
 export const StepTwo = ({handleRegisterInfo}) => {
   const [selectedFaculty, setSelectedFaculty] = useState("");
   const [selectedMajor, setSelectedMajor] = useState("");
+  //AutoComplete of MUI events has unique property, requiring stimulate an event object
   const handleAutocomplete = (n, v) => {handleRegisterInfo({target:{name: n, value: v}})}
   // setSelectedMajor("") to add new Select field
   const handleFacultyChange = (event) => {
@@ -203,7 +204,7 @@ export const StepTwo = ({handleRegisterInfo}) => {
 };
 
 // content for third step of setting up
-export const StepThree = () => {
+export const StepThree = ({handleRegisterInfo}) => {
   const [myInterests, setMyInterests] = useState([]);
   const handleInterests = (event) => {
     setMyInterests(event.target.value);
@@ -224,7 +225,7 @@ export const StepThree = () => {
           multiple
           name="interests"
           value={myInterests}
-          onChange={handleInterests}
+          onChange={(e)=>{handleInterests(e);handleRegisterInfo(e)}}
           label="My Interests"
           renderValue={(selected) => (
             <Box sx={{ display: "flex", flexWrap: "wrap" }}>
@@ -243,7 +244,7 @@ export const StepThree = () => {
           )}
         >
           {Object.entries(interestsDict).map(([category, interests]) => {
-            console.log(interests);
+            //console.log(interests);
             return [
               <MenuItem disabled key={category}>
                 <Typography
@@ -277,6 +278,8 @@ export const StepThree = () => {
 
 // main sign up component
 const SignUpPage = () => {
+  
+  const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(0);
   //declare for form submission
   const [registerInfo, setRegisterInfo] = useState({
@@ -287,22 +290,33 @@ const SignUpPage = () => {
     faculty: "",
     primaryMajor: "",
     secondaryMajor: "",
-    minors: [],
+    minors: "",
     programme: "",
-    interest: [],
+    interests: [],
   })
+  //handler function that are to be passed as props into child component 
   const handleRegisterInfo = evt => {
     const name = evt.target.name;
-    const value =
-    evt.target.type === "checkbox" ? evt.target.checked : evt.target.value;
+    const value = evt.target.value;
     setRegisterInfo({
       ...registerInfo,
       [name]: value
     });
   }
   useEffect(()=>{console.log(registerInfo)},[registerInfo]);
-  const submitForm = () => {
-    console.log(registerInfo);
+
+  const registerAPI = "http://localhost:3001/register";
+  const submitLoginForm = () => {
+    axios.post(registerAPI, registerInfo).then((response) => {
+      alert("Register Successfully");
+      console.log(response);
+      //useNavigate need to be initalise at top
+      setTimeout(() => {
+          navigate('/sign-in');
+      }, 500);
+}).catch((error) => {
+      console.log(error);
+  });
   }
   const steps = ["Setting Up...", "Almost There...", "One Last Thing..."];
 
@@ -369,7 +383,7 @@ const SignUpPage = () => {
             </Button>
             {activeStep === 2 ? (
               //<Button size="large" component={Link} to="/sign-in">}
-              <Button onClick={submitForm} size="large" component={Link} to="/sign-in">
+              <Button onClick={submitLoginForm} size="large">
                 Submit
               </Button>
             ) : (
