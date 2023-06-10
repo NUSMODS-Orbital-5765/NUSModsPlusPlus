@@ -40,10 +40,22 @@ const SignInPage = () => {
   };
   const loginAPI = "https://nusmods.onrender.com/login";
   const submitLoginForm = () => {
+    const btnPointer = document.querySelector('#login-btn');
+    btnPointer.setAttribute('disabled', true);
+    btnPointer.innerHTML = 'Please wait..';
     axios.post(loginAPI, loginInfo).then((response) => {
+      
+      btnPointer.innerHTML = 'Login';
+      btnPointer.removeAttribute('disabled');
+      const data = response.data;
+      const token = data.token;
+        if (!token) {
+            alert('Unable to login. Please try after some time.');
+            return;
+        }
       alert("Login Successfully");
-      console.log(response);
-      //useNavigate need to be initalise at top
+      localStorage.removeItem('user-token');
+      localStorage.setItem('user-token', token);
       setTimeout(() => {
           navigate('/');
       }, 500);
@@ -113,7 +125,7 @@ const SignInPage = () => {
               ></TextField>
             </Box>
             <CardActions sx={{ marginBottom: "-5px", marginTop: "5px" }}>
-              <Button size="large" onClick={submitLoginForm}>
+              <Button size="large" id="login-btn" onClick={submitLoginForm}>
                 Login
               </Button>
             </CardActions>
