@@ -14,12 +14,10 @@ export const majorDict = {
   "Faculty of Arts and Social Sciences": [
     "Chinese Language",
     "Chinese Studies",
-    "Japanese Studies",
     "Communications and New Media",
     "Economics",
     "English Language and Linguistics",
     "English Literature",
-    "Theatre and Performance Studies",
     "Geography",
     "Global Studies",
     "History",
@@ -95,4 +93,18 @@ export const interestsDict = {
   "career progression": ["internship", "research"],
   business: ["management", "finance"],
   computing: ["machine-learning", "OOP", "data analysis"],
+};
+
+// sample personal details for user profile setup. meant to extract from database
+export const sampleProfile = {
+  Name: "Hannah Tan",
+  StudentID: "A1234567B",
+  Username: "h_student",
+  Password: "h_student_1",
+  Faculty: "School of Computing",
+  Major: "Information Systems",
+  "Second Major": "Economics",
+  Minor: "", // or null?
+  "Special Programme": "RVRC",
+  Interests: ["easy to score", "finance", "machine learning"],
 };

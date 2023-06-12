@@ -5,16 +5,17 @@ import GridComponent from "./GridComponent";
 import { Typography, TextField, Box } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { sampleProfile } from "./Constants";
 
 function HomePage() {
   return (
     <div className="homepage">
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <AppBarComponent />
-        <DrawerComponent />
+        <DrawerComponent defaultTab={1} />
         <Box
+          className="remainingViewport"
           sx={{
-            marginLeft: "230px",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -28,7 +29,7 @@ function HomePage() {
               fontWeight: "700",
             }}
           >
-            Welcome Back, Hannah!
+            Welcome Back, {sampleProfile["Name"]}!
           </Typography>
           <Typography
             sx={{
@@ -57,3 +58,4 @@ function HomePage() {
 }
 
 export default HomePage;
+// use event context to keep quote of the day even when u switch to another tab and switch back

@@ -11,14 +11,16 @@ import {
   Badge,
   TextField,
   Divider,
+  Tooltip,
 } from "@mui/material";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
+import SettingsSuggestRoundedIcon from "@mui/icons-material/SettingsSuggestRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneRounded";
-import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
+import MarkChatReadRoundedIcon from "@mui/icons-material/MarkChatReadRounded";
 import React, { useState } from "react";
 import useScrollTrigger from "@mui/material/useScrollTrigger";
+import { Link } from "react-router-dom";
 
 // customise appbar to elevate and blur background on scrolling
 function CustomScroll(props) {
@@ -75,6 +77,8 @@ function SearchBar() {
   );
 }
 
+// NOTE: we should map a list of comments to display under notifications dropdown menu.
+
 // notifications menu component
 function NotifsMenu() {
   const [AnchorMenu, setAnchorMenu] = useState(null);
@@ -86,37 +90,81 @@ function NotifsMenu() {
   const handleClose = () => {
     setAnchorMenu(null);
   };
+
+  const [readNotif, setReadNotif] = useState(false);
+
+  const handleReadNotif = () => {
+    setReadNotif(true);
+    handleClose();
+  };
+
+  const [badgePresent, setBadgePresent] = useState(true);
+
+  const handleBadgePresent = (event) => {
+    setBadgePresent(false);
+    handleReadNotif();
+    handleClose();
+  };
+
   return (
     <div>
-      <Badge
-        sx={{ marginLeft: "630px" }}
-        overlap="circular"
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        variant="dot"
-        color="error"
-      >
-        <IconButton sx={{ color: "black" }} onClick={handleOpen}>
+      {badgePresent ? (
+        <Badge
+          sx={{ marginLeft: "630px" }}
+          overlap="circular"
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          variant="dot"
+          color="error"
+        >
+          <IconButton sx={{ color: "black" }} onClick={handleOpen}>
+            <NotificationsNoneRoundedIcon />
+          </IconButton>
+        </Badge>
+      ) : (
+        <IconButton
+          sx={{ marginLeft: "630px", color: "black" }}
+          onClick={handleOpen}
+        >
           <NotificationsNoneRoundedIcon />
         </IconButton>
-      </Badge>
+      )}
       <Menu
         open={Boolean(AnchorMenu)}
         anchorEl={AnchorMenu}
         onClose={handleClose}
       >
-        <Typography
+        <Box
           sx={{
-            margin: "20px",
-            marginBottom: "10px",
-            fontSize: "12px",
-            fontWeight: "600",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyItems: "center",
           }}
-          color="text.secondary"
         >
-          RECENTS
-        </Typography>
+          <Typography
+            sx={{
+              margin: "20px",
+              marginBottom: "10px",
+              fontSize: "12px",
+              fontWeight: "600",
+            }}
+            color="text.secondary"
+          >
+            RECENTS
+          </Typography>
+          <Tooltip sx={{ marginLeft: "300px" }} title="Mark all as read">
+            <IconButton onClick={handleBadgePresent}>
+              <MarkChatReadRoundedIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
         <Divider light />
-        <MenuItem onClick={handleClose}>
+        <MenuItem
+          style={{
+            opacity: readNotif ? 0.5 : 1,
+          }}
+          onClick={handleReadNotif}
+        >
           <Box
             sx={{
               margin: "20px",
@@ -160,8 +208,8 @@ function AvatarMenu() {
   };
 
   const avatarMenuItems = Array(
-    { text: "Edit Profile", icon: <PersonRoundedIcon /> },
-    { text: "Logout", icon: <LogoutRoundedIcon /> }
+    { text: "Profile", icon: <SettingsSuggestRoundedIcon />, link: "/profile" },
+    { text: "Logout", icon: <LogoutRoundedIcon />, link: "/sign-in" }
   );
   return (
     <div>
@@ -234,7 +282,12 @@ function AvatarMenu() {
         </Typography>
         <Box>
           {avatarMenuItems.map((item, index) => (
-            <MenuItem key={index} onClick={handleClose}>
+            <MenuItem
+              key={index}
+              onClick={handleClose}
+              component={Link}
+              to={item.link}
+            >
               {item.icon}
               <span style={{ marginLeft: "10px", fontWeight: 500 }}>
                 {item.text}

@@ -48,8 +48,8 @@ const dashboardItems = Array(
 
 // list of user menu sections
 const generalItems = Array(
-  { text: "Settings", icon: <SettingsSuggestRoundedIcon />, link: "/" },
-  { text: "Logout", icon: <LogoutRoundedIcon />, link: "/sign-up" }
+  { text: "Profile", icon: <SettingsSuggestRoundedIcon />, link: "/profile" },
+  { text: "Logout", icon: <LogoutRoundedIcon />, link: "/sign-in" }
 );
 
 // list of all menu sections
@@ -62,8 +62,9 @@ const combinedItems = [
 ];
 
 // main menu
-function DrawerComponent() {
-  const [selectedTab, setSelectedTab] = useState(1);
+function DrawerComponent(props) {
+  const { defaultTab } = props;
+  const [selectedTab, setSelectedTab] = useState(defaultTab);
 
   const handleSelectTab = (event, value) => {
     setSelectedTab(value);
