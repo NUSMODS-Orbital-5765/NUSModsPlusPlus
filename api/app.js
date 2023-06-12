@@ -13,6 +13,7 @@ dotenv.config();
 
 const app = express();
 app.use(cors());
+
 const port = process.env.PORT || 3001;
 
 app.get('/', async (req,res) => {
@@ -31,9 +32,15 @@ app.post("/register", jsonParser, (request, response) => {
       console.log("Create User Object")
       const user = {
         name: request.body.name,
-        studentID: request.body.studentID,
-        email: request.body.email,
-        password: hashedPassword
+        studentId: request.body.studentId,
+        username: request.body.username,
+        password: hashedPassword,
+        faculty: request.body.studentId,
+        primaryMajor: request.body.primaryMajor,
+        secondaryMajor: request.body.secondaryMajor,
+        minors: request.body.minors,
+        programme: request.body.programme,
+        interests: request.body.interests
       };
 
       // save the new user
@@ -71,7 +78,7 @@ app.post("/register", jsonParser, (request, response) => {
 app.post("/login",jsonParser, (request, response) => {
     prisma.user.findUnique({
         where: {
-          email: request.body.email,
+          username: request.body.username,
         },
       })
     .then((user)=>{
@@ -111,7 +118,7 @@ app.post("/login",jsonParser, (request, response) => {
      })
     .catch((e) => {
       response.status(404).send({
-        message: "Email not found",
+        message: "username not found",
         e,
       });
     });
