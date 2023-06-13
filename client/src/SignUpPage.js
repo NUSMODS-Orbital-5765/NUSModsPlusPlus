@@ -55,7 +55,7 @@ export function DefaultHeader(props) {
 }
 
 // NEW styling for text fields NAM HALP
-export function DefaultTextField({label, defaultText, setfn}) {
+export function DefaultTextField({name, label, defaultText, setfn}) {
   const [requiredField, setRequiredField] = useState(defaultText);
   const [error, setError] = useState(false);
   const handleRequiredFieldChange = (event) => {
@@ -67,7 +67,7 @@ export function DefaultTextField({label, defaultText, setfn}) {
   return (
     <TextField
       sx={{ marginBottom: "20px" }}
-      name={label}
+      name={name}
       label={label}
       variant="outlined"
       value={requiredField}
@@ -116,7 +116,7 @@ export function PasswordField({defaultText, setfn}) {
     <TextField
       sx={{ marginBottom: "-30px" }}
       name="password"
-      label="password"
+      label="Password"
       variant="outlined"
       value={requiredField}
       onChange={(e) => {handleRequiredFieldChange(e);setfn(e)}}
@@ -286,10 +286,10 @@ export const StepOne = ({ handleRegisterInfo }) => {
       <Box sx={{ marginTop: "-10px" }}>
         <DefaultHeader text="General Information" />
       </Box>
-      <DefaultTextField label="name" defaultText="" setfn={handleRegisterInfo}/>
-      <DefaultTextField label="studentId" defaultText="" setfn={handleRegisterInfo}/>
+      <DefaultTextField name = "Name" label="name" defaultText="" setfn={handleRegisterInfo}/>
+      <DefaultTextField name = "StudentID" label="studentId" defaultText="" setfn={handleRegisterInfo}/>
       <DefaultHeader text="Account Information" />
-      <DefaultTextField label="username" defaultText="" setfn={handleRegisterInfo}/>
+      <DefaultTextField name = "Username" label="username" defaultText="" setfn={handleRegisterInfo}/>
       <PasswordField defaultText="" setfn={handleRegisterInfo}/>
     </Box>
   );
