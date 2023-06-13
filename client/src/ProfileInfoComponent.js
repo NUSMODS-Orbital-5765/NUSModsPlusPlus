@@ -34,7 +34,7 @@ export const ProfileHeader = (props) => {
 const ProfileInfoComponent = () => {
   const [editableDetails, setEditableDetails] = useState(false);
   const handleEditableDetails = () => {
-    setEditableDetails(true);
+    setEditableDetails(!editableDetails);
   };
 
   return (
