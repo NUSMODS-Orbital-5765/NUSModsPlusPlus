@@ -108,3 +108,9 @@ export const sampleProfile = {
   "Special Programme": "RVRC",
   Interests: ["easy to score", "finance", "machine learning"],
 };
+
+// sample posts (just for demo purposes. posts can be added via frontend and don't need to be linked to database.)
+export const samplePosts = {};
+
+// tags category list
+export const postTagsList = ["finance", "business", "econs", "homework"];

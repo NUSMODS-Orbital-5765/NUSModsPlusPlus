@@ -16,3 +16,13 @@ body {
 .logoImage {
   margin-top: -80px;
 }
+
+.no-image {
+  width: 200px;
+  height: 200px;
+}
+
+.my-text-field .ql-editor {
+  font-size: 16px;
+  font-family: "Inter", sans-serif;
+}

@@ -562,7 +562,7 @@ const PlannerPage = () => {
 
   return (
     <div>
-      <DrawerComponent />
+      <DrawerComponent defaultTab={2} />
       <AppBarComponent />
       <Box
         sx={{

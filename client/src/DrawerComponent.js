@@ -4,7 +4,7 @@ import HouseRoundedIcon from "@mui/icons-material/HouseRounded";
 import TodayRoundedIcon from "@mui/icons-material/TodayRounded";
 import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
 import CalculateRoundedIcon from "@mui/icons-material/CalculateRounded";
-import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
+import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import SettingsSuggestRoundedIcon from "@mui/icons-material/SettingsSuggestRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import { useState } from "react";
@@ -42,8 +42,8 @@ const dashboardItems = Array(
     link: "/planner",
   },
   { text: "Modules", icon: <MenuBookRoundedIcon />, link: "/" },
-  { text: "My GPA", icon: <CalculateRoundedIcon />, link: "/" },
-  { text: "Shared", icon: <ChatRoundedIcon />, link: "/" }
+  { text: "My GPA", icon: <CalculateRoundedIcon />, link: "/calculator" },
+  { text: "Community", icon: <PeopleAltRoundedIcon />, link: "/community" }
 );
 
 // list of user menu sections

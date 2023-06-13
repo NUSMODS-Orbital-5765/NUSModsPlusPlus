@@ -5,6 +5,8 @@ import HomePage from "./HomePage";
 import PlannerPage from "./PlannerPage";
 import SignUpPage from "./SignUpPage";
 import ProfilePage from "./ProfilePage";
+import GPACalculatorPage from "./GPACalculatorPage";
+import CommunityPage from "./CommunityPage";
 import ModulesPage from "./ModulesPage";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -18,6 +20,8 @@ const App = () => {
       <Route path="/sign-in" element={<SignInPage />} />
       <Route path="/sign-up" element={<SignUpPage />} />
       <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/calculator" element={<GPACalculatorPage />} />
+      <Route path="/community" element={<CommunityPage />} />
     </Routes>
   );
 };

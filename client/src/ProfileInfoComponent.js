@@ -125,7 +125,7 @@ const ProfileInfoComponent = () => {
                 filledOption={sampleProfile["Minor"]}
               />
               <DefaultAutocomplete
-                label="Minor"
+                label="Special Programme (if any)"
                 optionsList={progsList}
                 filledOption={sampleProfile["Special Programme"]}
               />

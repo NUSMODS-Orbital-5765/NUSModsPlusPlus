@@ -21,6 +21,7 @@ import MarkChatReadRoundedIcon from "@mui/icons-material/MarkChatReadRounded";
 import React, { useState } from "react";
 import useScrollTrigger from "@mui/material/useScrollTrigger";
 import { Link } from "react-router-dom";
+import { sampleProfile } from "./Constants";
 
 // customise appbar to elevate and blur background on scrolling
 function CustomScroll(props) {
@@ -254,7 +255,7 @@ function AvatarMenu() {
             fontWeight: "600",
           }}
         >
-          Hannah Tan
+          {sampleProfile["Name"]}
         </Typography>
         <Typography
           sx={{
@@ -266,7 +267,10 @@ function AvatarMenu() {
           }}
           color="text.secondary"
         >
-          h_user@gmail.com
+          Signed in as{" "}
+          <span style={{ textDecoration: "underline" }}>
+            {sampleProfile["Username"]}
+          </span>
         </Typography>
         <Divider light />
         <Typography

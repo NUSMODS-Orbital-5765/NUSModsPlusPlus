@@ -1,22 +1,21 @@
-//COMPLETE
 import AppBarComponent from "./AppBarComponent";
 import DrawerComponent from "./DrawerComponent";
-import ProfilePictureComponent from "./ProfilePictureComponent";
-import ProfileInfoComponent from "./ProfileInfoComponent";
-import { Typography, Box, Grid, Button } from "@mui/material";
-import { sampleProfile } from "./Constants";
+import UploadPost from "./UploadPost";
+import { Typography, Box } from "@mui/material";
 
-// layout of profile page
-function ProfilePage() {
+// styling for main page
+const CommunityPage = () => {
   return (
     <div className="homepage">
       <AppBarComponent />
-      <DrawerComponent defaultTab={8} />
+      <DrawerComponent defaultTab={5} />
       <Box
         className="remainingViewport"
         sx={{
           display: "flex",
-          flexDirection: "column",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyItems: "center",
         }}
       >
         <Box
@@ -34,7 +33,7 @@ function ProfilePage() {
               fontWeight: 700,
             }}
           >
-            Edit Profile
+            Community
           </Typography>
           <Typography
             variant="h1"
@@ -43,16 +42,17 @@ function ProfilePage() {
               fontWeight: 200,
             }}
           >
-            Today I choose to be the{" "}
-            <span style={{ color: "#536DFE" }}>best</span> version of myself.
+            A collection of the best study resources, by{" "}
+            <span style={{ color: "#536DFE" }}>you</span>, for{" "}
+            <span style={{ color: "#536DFE" }}>you</span>.
           </Typography>
         </Box>
-        <Grid sx={{ marginBottom: "30px" }} container spacing={2}>
-          <ProfilePictureComponent />
-          <ProfileInfoComponent />
-        </Grid>
+        <Box marginTop="60px">
+          <UploadPost />
+        </Box>
       </Box>
     </div>
   );
-}
-export default ProfilePage;
+};
+
+export default CommunityPage;

@@ -75,7 +75,7 @@ export const ProfilePictureComponent = () => {
           flexDirection: "column",
           alignItems: "center",
           justifyItems: "center",
-          marginTop: "50px",
+          marginTop: "10px",
           marginBottom: "50px",
           marginLeft: "50px",
           marginRight: "50px",
@@ -94,9 +94,7 @@ export const ProfilePictureComponent = () => {
         <Tooltip title="Click to Upload Image" placement="top">
           <label htmlFor="upload-photo">
             <IconButton component="span">
-              <ImageNotSupportedRoundedIcon
-                sx={{ fontSize: "80px", color: "text.secondary" }}
-              />
+              <img className="no-image" src="no-image.png" />
             </IconButton>
           </label>
         </Tooltip>
