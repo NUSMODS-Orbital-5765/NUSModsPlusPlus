@@ -55,7 +55,7 @@ export function DefaultHeader(props) {
 }
 
 // NEW styling for text fields NAM HALP
-export function DefaultTextField({name, label, defaultText, setfn}) {
+export function DefaultTextField({name, label, defaultText, setfn, disabled}) {
   const [requiredField, setRequiredField] = useState(defaultText);
   const [error, setError] = useState(false);
   const handleRequiredFieldChange = (event) => {
@@ -70,6 +70,7 @@ export function DefaultTextField({name, label, defaultText, setfn}) {
       name={name}
       label={label}
       variant="outlined"
+      disabled = {disabled}
       value={requiredField}
       onChange={(e)=>{handleRequiredFieldChange(e);setfn(e)}}
       required
@@ -81,12 +82,13 @@ export function DefaultTextField({name, label, defaultText, setfn}) {
 
 
 // NEW STYLING FOR AUTOCOMPLETE COMPONENTS NAM HALP
-export function DefaultAutocomplete({optionsList, name, label, setfn}) {
+export function DefaultAutocomplete({optionsList, name, label, setfn, disabled}) {
   return (
     <Autocomplete
       sx={{ marginTop: "20px" }}
       disablePortal
       name={name}
+      disabled = {disabled}
       options={optionsList}
       onChange={(e, v) => {
         setfn({target:{name:name,value:v}});
@@ -98,7 +100,7 @@ export function DefaultAutocomplete({optionsList, name, label, setfn}) {
 
 
 // NEW STYLING FOR PASSWORD FIELD NAM HALP
-export function PasswordField({defaultText, setfn}) {
+export function PasswordField({defaultText, setfn, disabled}) {
   const [showPassword, setShowPassword] = useState(true);
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
@@ -118,6 +120,7 @@ export function PasswordField({defaultText, setfn}) {
       name="password"
       label="Password"
       variant="outlined"
+      disabled = {disabled}
       value={requiredField}
       onChange={(e) => {handleRequiredFieldChange(e);setfn(e)}}
       required
@@ -142,7 +145,7 @@ export function PasswordField({defaultText, setfn}) {
 }
 
 // NEW styling for faculty & major field NAM HALP
-export function FacultyMajorField({ filledFaculty, filledMajor, setfn}) {
+export function FacultyMajorField({ filledFaculty, filledMajor, setfn, disabled}) {
   const [selectedFaculty, setSelectedFaculty] = useState(filledFaculty);
   const [selectedMajor, setSelectedMajor] = useState(filledMajor);
 
@@ -177,6 +180,7 @@ export function FacultyMajorField({ filledFaculty, filledMajor, setfn}) {
           required
           name="faculty"
           label="faculty"
+          disabled = {disabled}
           value={selectedFaculty}
           onChange={(e)=>{handleFacultyChange(e);setfn(e)}}
         >
@@ -194,6 +198,7 @@ export function FacultyMajorField({ filledFaculty, filledMajor, setfn}) {
             required
             name="primaryMajor"
             label="Major"
+            disabled = {disabled}
             value={selectedMajor}
             onChange={(e)=>{handleMajorChange(e);setfn(e)}}
           >
@@ -210,7 +215,7 @@ export function FacultyMajorField({ filledFaculty, filledMajor, setfn}) {
 }
 
 // NEW STYLING FOR INTERESTS FIELD NAM HALP
-export function InterestsField({filledInterests, setfn}) {
+export function InterestsField({filledInterests, setfn, disabled}) {
   const [myInterests, setMyInterests] = useState(filledInterests);
   const handleInterests = (event) => {
     setMyInterests(event.target.value);
@@ -223,6 +228,7 @@ export function InterestsField({filledInterests, setfn}) {
         multiple
         name="interests"
         value={myInterests}
+        disabled = {disabled}
         onChange={(e)=>{handleInterests(e);setfn(e)}}
         label="My Interests"
         renderValue={(selected) => (

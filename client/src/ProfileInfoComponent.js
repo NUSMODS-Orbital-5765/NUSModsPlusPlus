@@ -85,7 +85,7 @@ const ProfileInfoComponent = () => {
               flexDirection: "row",
             }}
           >
-            <Box
+            <Box component="form"
               sx={{
                 display: "flex",
                 flexDirection: "column",
@@ -94,37 +94,44 @@ const ProfileInfoComponent = () => {
             >
               <ProfileHeader text="General Information" />
               <DefaultTextField
+                disabled = {!editableDetails}
                 label="Name"
-                filledText={sampleProfile["Name"]}
+                defaultText={sampleProfile["Name"]}
               />
               <DefaultTextField
+                disabled = {!editableDetails}
                 label="StudentID"
-                filledText={sampleProfile["StudentID"]}
+                defaultText={sampleProfile["StudentID"]}
               />
               <ProfileHeader text="Account Information" />
               <DefaultTextField
+                disabled = {!editableDetails}
                 label="Username"
-                filledText={sampleProfile["Username"]}
+                defaultText={sampleProfile["Username"]}
               />
-              <PasswordField filledText={sampleProfile["Password"]} />
+              <PasswordField disabled = {!editableDetails} defaultText={sampleProfile["Password"]} />
             </Box>
             <Box sx={{ marginLeft: "50px" }}>
               <ProfileHeader text="Academic Information" />
               <FacultyMajorField
+                disabled = {!editableDetails}
                 filledFaculty={sampleProfile["Faculty"]}
                 filledMajor={sampleProfile["Major"]}
               />
               <DefaultAutocomplete
+                disabled = {!editableDetails}
                 label="Second Major"
                 optionsList={majorList}
                 filledOption={sampleProfile["Second Major"]}
               />
               <DefaultAutocomplete
+                disabled = {!editableDetails}
                 label="Minor"
                 optionsList={majorList}
                 filledOption={sampleProfile["Minor"]}
               />
               <DefaultAutocomplete
+                disabled = {!editableDetails}
                 label="Special Programme (if any)"
                 optionsList={progsList}
                 filledOption={sampleProfile["Special Programme"]}
@@ -135,7 +142,7 @@ const ProfileInfoComponent = () => {
             sx={{ margin: "10px", display: "flex", flexDirection: "column" }}
           >
             <ProfileHeader text="User Preferences" />
-            <InterestsField filledInterests={sampleProfile["Interests"]} />
+            <InterestsField disabled = {!editableDetails} filledInterests={sampleProfile["Interests"]} />
           </Box>
         </Box>
         <Button
