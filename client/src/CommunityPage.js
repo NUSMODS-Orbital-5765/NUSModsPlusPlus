@@ -104,9 +104,21 @@ const CommunityPage = () => {
           <FormControl sx={{ marginLeft: "-300px" }}>
             <InputLabel variant="standard">Sort By</InputLabel>
             <NativeSelect>
+              <option value={"none"}>None</option>
               <option value={"timestamp"}>Latest</option>
-              <option value={"category"}>Category</option>
+              <option value={"likes"}>Most Popular</option>
+            </NativeSelect>
+          </FormControl>
+          <FormControl sx={{ marginLeft: "20px" }}>
+            <InputLabel variant="standard">Filter By</InputLabel>
+            <NativeSelect>
+              <option value={"none"}>None</option>
               <option value={"liked"}>Liked</option>
+              <optgroup label="Post Category">
+                <option value={"study guide"}>Study Guide</option>
+                <option value={"module review"}>Module Review</option>
+                <option value={"notes"}>Notes</option>
+              </optgroup>
             </NativeSelect>
           </FormControl>
         </Box>

@@ -138,7 +138,8 @@ export const UploadFile = () => {
 };
 
 // styling for tags field for post
-export const TagsField = () => {
+export const TagsField = (props) => {
+  const selectedMajor = props.selectedMajor;
   const [myTags, setMyTags] = useState([]);
   const [newTag, setNewTag] = useState("");
   const [tagsList, setTagsList] = useState(postTagsList);
@@ -159,6 +160,17 @@ export const TagsField = () => {
   const handleNewTagChange = (event) => {
     setNewTag(event.target.value);
   };
+
+  useEffect(() => {
+    if (selectedMajor) {
+      setMyTags((prevTags) => {
+        if (!prevTags.includes(selectedMajor)) {
+          return [...prevTags, selectedMajor];
+        }
+        return prevTags;
+      });
+    }
+  }, [selectedMajor]);
 
   const handleOpenNewTagDialog = () => {
     setOpenNewTagDialog(true);
@@ -301,6 +313,12 @@ export const UploadPostForm = () => {
     setIsFormValid(isValid);
   };
 
+  // combines related major with the tags (automatic) for easier sorting. can remove if not nec
+  const [selectedMajor, setSelectedMajor] = useState("");
+  const handleSelectedMajor = (event, value) => {
+    setSelectedMajor(value || "");
+  };
+
   return (
     <form onSubmit={handleSubmit}>
       <FormControl sx={{ width: "100%" }}>
@@ -332,6 +350,7 @@ export const UploadPostForm = () => {
           sx={{ marginTop: "20px" }}
           disablePortal
           name="Related Major (if applicable)"
+          onChange={handleSelectedMajor}
           options={majorList}
           renderInput={(params) => (
             <TextField
@@ -345,7 +364,7 @@ export const UploadPostForm = () => {
       <MyTextEditor />
       <UploadFile />
       <FormControl sx={{ marginTop: "30px", width: "100%" }}>
-        <TagsField />
+        <TagsField selectedMajor={selectedMajor} />
       </FormControl>
       <Button
         disabled={!isFormValid}
