@@ -1,7 +1,21 @@
+//COMPLETE
 import AppBarComponent from "./AppBarComponent";
 import DrawerComponent from "./DrawerComponent";
 import UploadPost from "./UploadPost";
-import { Typography, Box } from "@mui/material";
+import PostsGrid from "./PostsGrid";
+import {
+  Typography,
+  Box,
+  TextField,
+  Button,
+  IconButton,
+  FormControl,
+  NativeSelect,
+  InputLabel,
+} from "@mui/material";
+import { samplePosts } from "./Constants";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import FilterAltRoundedIcon from "@mui/icons-material/FilterAltRounded";
 
 // styling for main page
 const CommunityPage = () => {
@@ -13,7 +27,7 @@ const CommunityPage = () => {
         className="remainingViewport"
         sx={{
           display: "flex",
-          flexDirection: "row",
+          flexDirection: "column",
           alignItems: "center",
           justifyItems: "center",
         }}
@@ -22,15 +36,15 @@ const CommunityPage = () => {
           sx={{
             display: "flex",
             flexDirection: "column",
-            padding: "30px",
-            marginBottom: "15px",
+            alignItems: "center",
+            justifyItems: "center",
           }}
         >
           <Typography
             sx={{
-              marginTop: "60px",
-              fontSize: "40px",
-              fontWeight: 700,
+              marginTop: "150px",
+              fontSize: "50px",
+              fontWeight: "700",
             }}
           >
             Community
@@ -47,8 +61,59 @@ const CommunityPage = () => {
             <span style={{ color: "#536DFE" }}>you</span>.
           </Typography>
         </Box>
-        <Box marginTop="60px">
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyItems: "center",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <IconButton sx={{ marginTop: "40px" }}>
+              <SearchRoundedIcon />
+            </IconButton>
+            <TextField
+              sx={{
+                width: "70ch",
+                marginTop: "20px",
+                borderRadius: "5px",
+              }}
+              variant="standard"
+              label="Search post titles or tags..."
+            ></TextField>
+          </Box>
           <UploadPost />
+        </Box>
+        <Box
+          sx={{
+            marginTop: "20px",
+            marginBottom: "20px",
+            display: "flex",
+            justifyItems: "center",
+            alignItems: "center",
+          }}
+        >
+          <FormControl sx={{ marginLeft: "-300px" }}>
+            <InputLabel variant="standard">Sort By</InputLabel>
+            <NativeSelect>
+              <option value={"timestamp"}>Latest</option>
+              <option value={"category"}>Category</option>
+              <option value={"liked"}>Liked</option>
+            </NativeSelect>
+          </FormControl>
+        </Box>
+        <Box
+          sx={{ display: "flex", justifyItems: "center", alignItems: "center" }}
+        >
+          <PostsGrid postsList={samplePosts} />
         </Box>
       </Box>
     </div>

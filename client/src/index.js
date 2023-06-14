@@ -18,9 +18,6 @@ const theme = createTheme({
     textPrimary: {
       main: "#000000",
     },
-    textSecondary: {
-      main: "#7E7E7E",
-    },
     success: {
       main: "#44b700",
     },
