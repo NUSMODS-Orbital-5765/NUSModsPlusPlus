@@ -389,7 +389,7 @@ const SignUpPage = () => {
     console.log(registerInfo);
   }, [registerInfo]);
 
-  const registerAPI = "https://nusmods.onrender.com/register";
+  const registerAPI = `${process.env.REACT_APP_API_LINK}/register`;
   const submitLoginForm = () => {
     axios
       .post(registerAPI, registerInfo)
