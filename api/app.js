@@ -7,7 +7,8 @@ const jsonParser = bodyParser.json();
 const jwt = require("jsonwebtoken");
 const auth = require("./auth");
 const cors = require("cors");
-
+const { request } = require("http");
+const { BlobServiceClient } = require("@azure/storage-blob");
 dotenv.config();
 
 
@@ -97,7 +98,7 @@ app.post("/login",jsonParser, (request, response) => {
           const token = jwt.sign(
             {
               userId: user._id,
-              userEmail: user.email,
+              userName: user.username,
             },
             "RANDOM-TOKEN",
             { expiresIn: "24h" }
@@ -106,7 +107,8 @@ app.post("/login",jsonParser, (request, response) => {
            //   return success response
            response.status(200).send({
             message: "Login Successful",
-            email: user.email,
+            username: user.username,
+            userId: user.id,
             token,
           });})
         .catch((error) => {
@@ -123,6 +125,23 @@ app.post("/login",jsonParser, (request, response) => {
       });
     });
 })
+
+app.post("/post/upload", (request,response) => {
+  console.log("Create User Object")
+      const user = {
+        name: request.body.name,
+        studentId: request.body.studentId,
+        username: request.body.username,
+        password: hashedPassword,
+        faculty: request.body.studentId,
+        primaryMajor: request.body.primaryMajor,
+        secondaryMajor: request.body.secondaryMajor,
+        minors: request.body.minors,
+        programme: request.body.programme,
+        interests: request.body.interests
+      };
+  
+});
 // free endpoint
 app.get("/free-endpoint", (request, response) => {
     response.json({ message: "You are free to access me anytime" });

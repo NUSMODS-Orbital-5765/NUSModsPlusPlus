@@ -11,7 +11,7 @@ import ModulesPage from "./ModulesPage";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Routes, Route } from "react-router-dom";
-
+import ProtectedRoute from "./auth/ProtectedRoute";
 const App = () => {
   return (
     <Routes>
@@ -19,7 +19,11 @@ const App = () => {
       <Route path="/planner" element={<PlannerPage />} />
       <Route path="/sign-in" element={<SignInPage />} />
       <Route path="/sign-up" element={<SignUpPage />} />
-      <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/profile" element={
+      <ProtectedRoute>
+        <ProfilePage/>
+      </ProtectedRoute>
+      } />
       <Route path="/calculator" element={<GPACalculatorPage />} />
       <Route path="/community" element={<CommunityPage />} />
     </Routes>
