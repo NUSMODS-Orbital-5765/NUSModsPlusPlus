@@ -2,20 +2,81 @@
 import AppBarComponent from "./AppBarComponent";
 import DrawerComponent from "./DrawerComponent";
 import UploadPost from "./UploadPost";
-import PostsGrid from "./PostsGrid";
+import DefaultPostCard from "./DefaultPostCard";
 import {
   Typography,
   Box,
   TextField,
-  Button,
   IconButton,
   FormControl,
   NativeSelect,
   InputLabel,
+  Fab,
+  Tooltip,
+  Grid,
 } from "@mui/material";
 import { samplePosts } from "./Constants";
+import React, { useState, useEffect } from "react";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import FilterAltRoundedIcon from "@mui/icons-material/FilterAltRounded";
+import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
+
+// mapping posts onto a grid design
+const PostsGrid = ({ postsList }) => {
+  return (
+    <Grid
+      sx={{
+        marginLeft: "-55ch",
+        marginTop: "-12ch",
+        padding: "15ch",
+      }}
+      container
+      spacing={2}
+    >
+      {postsList.map((post, index) => (
+        <Grid item xs={6} key={index}>
+          <DefaultPostCard post={post} />
+        </Grid>
+      ))}
+    </Grid>
+  );
+};
+
+// back to top button
+export const BackToTop = () => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      setIsVisible(scrollTop > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  return (
+    <div>
+      {isVisible && (
+        <Tooltip title="Back to Top" placement="top">
+          <Fab color="primary" onClick={scrollToTop}>
+            <ArrowUpwardRoundedIcon sx={{ fontSize: "30px" }} />
+          </Fab>
+        </Tooltip>
+      )}
+    </div>
+  );
+};
 
 // styling for main page
 const CommunityPage = () => {
@@ -111,7 +172,7 @@ const CommunityPage = () => {
           </FormControl>
           <FormControl sx={{ marginLeft: "20px" }}>
             <InputLabel variant="standard">Filter By</InputLabel>
-            <NativeSelect>
+            <NativeSelect variant="standard">
               <option value={"none"}>None</option>
               <option value={"liked"}>Liked</option>
               <optgroup label="Post Category">
@@ -122,10 +183,14 @@ const CommunityPage = () => {
             </NativeSelect>
           </FormControl>
         </Box>
+        <PostsGrid postsList={samplePosts} />
         <Box
-          sx={{ display: "flex", justifyItems: "center", alignItems: "center" }}
+          sx={{
+            marginTop: "-10ch",
+            marginBottom: "5ch",
+          }}
         >
-          <PostsGrid postsList={samplePosts} />
+          <BackToTop />
         </Box>
       </Box>
     </div>

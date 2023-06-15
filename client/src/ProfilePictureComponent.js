@@ -164,7 +164,7 @@ export const ProfilePictureComponent = () => {
           borderRadius: "5px",
           marginLeft: "50px",
           width: "400px",
-          boxShadow: 0,
+          boxShadow: 1,
         }}
       >
         <CardContent>
