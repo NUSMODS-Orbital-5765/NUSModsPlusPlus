@@ -43,7 +43,7 @@ const ProfileInfoComponent = () => {
         borderRadius: "5px",
         marginLeft: "30px",
         width: "700px",
-        boxShadow: 0,
+        boxShadow: 1,
       }}
     >
       <CardContent>
@@ -69,7 +69,7 @@ const ProfileInfoComponent = () => {
             Personal Details
           </Typography>
           <Button
-            sx={{ marginLeft: "280px" }}
+            sx={{ marginLeft: "30px" }}
             onClick={handleEditableDetails}
             variant="outlined"
           >
@@ -85,7 +85,8 @@ const ProfileInfoComponent = () => {
               flexDirection: "row",
             }}
           >
-            <Box component="form"
+            <Box
+              component="form"
               sx={{
                 display: "flex",
                 flexDirection: "column",
@@ -94,44 +95,47 @@ const ProfileInfoComponent = () => {
             >
               <ProfileHeader text="General Information" />
               <DefaultTextField
-                disabled = {!editableDetails}
+                disabled={!editableDetails}
                 label="Name"
                 defaultText={sampleProfile["Name"]}
               />
               <DefaultTextField
-                disabled = {!editableDetails}
+                disabled={!editableDetails}
                 label="StudentID"
                 defaultText={sampleProfile["StudentID"]}
               />
               <ProfileHeader text="Account Information" />
               <DefaultTextField
-                disabled = {!editableDetails}
+                disabled={!editableDetails}
                 label="Username"
                 defaultText={sampleProfile["Username"]}
               />
-              <PasswordField disabled = {!editableDetails} defaultText={sampleProfile["Password"]} />
+              <PasswordField
+                disabled={!editableDetails}
+                defaultText={sampleProfile["Password"]}
+              />
             </Box>
             <Box sx={{ marginLeft: "50px" }}>
               <ProfileHeader text="Academic Information" />
               <FacultyMajorField
-                disabled = {!editableDetails}
+                disabled={!editableDetails}
                 filledFaculty={sampleProfile["Faculty"]}
                 filledMajor={sampleProfile["Major"]}
               />
               <DefaultAutocomplete
-                disabled = {!editableDetails}
+                disabled={!editableDetails}
                 label="Second Major"
                 optionsList={majorList}
                 filledOption={sampleProfile["Second Major"]}
               />
               <DefaultAutocomplete
-                disabled = {!editableDetails}
+                disabled={!editableDetails}
                 label="Minor"
                 optionsList={majorList}
                 filledOption={sampleProfile["Minor"]}
               />
               <DefaultAutocomplete
-                disabled = {!editableDetails}
+                disabled={!editableDetails}
                 label="Special Programme (if any)"
                 optionsList={progsList}
                 filledOption={sampleProfile["Special Programme"]}
@@ -142,7 +146,10 @@ const ProfileInfoComponent = () => {
             sx={{ margin: "10px", display: "flex", flexDirection: "column" }}
           >
             <ProfileHeader text="User Preferences" />
-            <InterestsField disabled = {!editableDetails} filledInterests={sampleProfile["Interests"]} />
+            <InterestsField
+              disabled={!editableDetails}
+              filledInterests={sampleProfile["Interests"]}
+            />
           </Box>
         </Box>
         <Button

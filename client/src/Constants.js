@@ -117,6 +117,30 @@ nextDay.setDate(currentDate.getDate() + 1);
 export const followingDay = new Date();
 followingDay.setDate(nextDay.getDate() + 1);
 
+// each post should have a list of comments, but i'm just using one comment list for each post for simplicity
+export const sampleComments = [
+  {
+    timestamp: currentDate,
+    content:
+      "Curabitur lacinia commodo metus, sed varius felis scelerisque eu. In sit amet nibh sem. Vivamus nec aliquam sapien, eu semper dolor. Duis rhoncus vulputate cursus. In vel gravida orci, et dapibus nunc. Praesent eu erat porta, varius tellus in, vulputate mi. Pellentesque dapibus turpis velit, vitae convallis nisi porttitor sit amet. Cras a posuere metus, pharetra facilisis justo.",
+    author: "ryan123",
+    avatar: "profilepic_1.png",
+  },
+  {
+    timestamp: nextDay,
+    content: "Nullam egestas at ex nec fermentum. Cras a tellus quis.",
+    author: "nam1nam",
+    avatar: "profilepic_1.png",
+  },
+  {
+    timestamp: followingDay,
+    content:
+      "Duis tincidunt nec est id efficitur. Ut porttitor fermentum dictum.",
+    author: "joannee",
+    avatar: "profilepic_2.png",
+  },
+];
+
 export const samplePosts = [
   {
     timestamp: currentDate, // it's not in the form, but should record time and date of upload once button is pressed
@@ -159,6 +183,48 @@ export const samplePosts = [
     avatar: "profilepic_2.png",
     likes: 39,
     comments: 3,
+  },
+  {
+    timestamp: followingDay,
+    title: "Why is CS2040 so hard??",
+    category: "Module Review",
+    related_major: "Computer Science",
+    content:
+      "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Etiam rhoncus congue nibh, dapibus varius mauris. Pellentesque habitant morbi tristique senectus et netus et malesuada fames.",
+    upload_file: "",
+    tags: ["csmods", "java"],
+    author: "joannee",
+    avatar: "profilepic_2.png",
+    likes: 39,
+    comments: 3,
+  },
+  {
+    timestamp: followingDay,
+    title: "Why is CS2040 so hard??",
+    category: "Module Review",
+    related_major: "Computer Science",
+    content:
+      "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Etiam rhoncus congue nibh, dapibus varius mauris. Pellentesque habitant morbi tristique senectus et netus et malesuada fames.",
+    upload_file: "",
+    tags: ["csmods", "java"],
+    author: "joannee",
+    avatar: "profilepic_2.png",
+    likes: 39,
+    comments: 3,
+  },
+  {
+    timestamp: nextDay,
+    title: "Mindmaps that I used for EC1101E revision",
+    category: "Notes",
+    related_major: "Economics",
+    content:
+      "Fusce cursus ipsum magna, sit amet facilisis erat maximus et. Nunc accumsan placerat finibus. Pellentesque congue lectus ac leo vestibulum, non luctus felis consectetur. Cras pulvinar odio libero, vel vestibulum.",
+    upload_file: "EconsNotes.pdf",
+    tags: ["homework", "econs", "homework help"],
+    author: "nam1nam",
+    avatar: "profilepic_1.png",
+    likes: 200,
+    comments: 1,
   },
 ];
 

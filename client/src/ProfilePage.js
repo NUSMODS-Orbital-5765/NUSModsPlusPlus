@@ -3,7 +3,7 @@ import AppBarComponent from "./AppBarComponent";
 import DrawerComponent from "./DrawerComponent";
 import ProfilePictureComponent from "./ProfilePictureComponent";
 import ProfileInfoComponent from "./ProfileInfoComponent";
-import { Typography, Box, Grid, Button } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import { sampleProfile } from "./Constants";
 
 // layout of profile page
@@ -17,40 +17,41 @@ function ProfilePage() {
         sx={{
           display: "flex",
           flexDirection: "column",
+          alignItems: "center",
+          justifyItems: "center",
+          marginBottom: "30px",
         }}
       >
-        <Box
+        <Typography
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            padding: "30px",
-            marginBottom: "15px",
+            marginTop: "150px",
+            fontSize: "50px",
+            fontWeight: "700",
           }}
         >
-          <Typography
-            sx={{
-              marginTop: "60px",
-              fontSize: "40px",
-              fontWeight: 700,
-            }}
-          >
-            Edit Profile
-          </Typography>
-          <Typography
-            variant="h1"
-            sx={{
-              fontSize: "16px",
-              fontWeight: 200,
-            }}
-          >
-            Today I choose to be the{" "}
-            <span style={{ color: "#536DFE" }}>best</span> version of myself.
-          </Typography>
-        </Box>
-        <Grid sx={{ marginBottom: "30px" }} container spacing={2}>
-          <ProfilePictureComponent />
-          <ProfileInfoComponent />
-        </Grid>
+          Edit Profile
+        </Typography>
+        <Typography
+          variant="h1"
+          sx={{
+            fontSize: "16px",
+            fontWeight: 200,
+          }}
+        >
+          Today I choose to be the{" "}
+          <span style={{ color: "#536DFE" }}>best</span> version of myself.
+        </Typography>
+      </Box>
+      <Box
+        className="remainingViewport"
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          padding: "30px",
+        }}
+      >
+        <ProfilePictureComponent />
+        <ProfileInfoComponent />
       </Box>
     </div>
   );

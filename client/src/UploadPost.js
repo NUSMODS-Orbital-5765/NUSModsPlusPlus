@@ -24,6 +24,7 @@ import React, { useState, useEffect } from "react";
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
 import "./App.css";
+import { SlideTransition } from "./StyledComponents";
 
 // sliding transition
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -419,7 +420,6 @@ const UploadPost = () => {
         <Fab
           color="primary"
           onClick={handleOpenUpload}
-          size="large"
           sx={{
             "&:hover": {
               transform: "scale(1.2)",
@@ -427,10 +427,14 @@ const UploadPost = () => {
             },
           }}
         >
-          <AddRoundedIcon />
+          <AddRoundedIcon sx={{ fontSize: "30px" }} />
         </Fab>
       </Tooltip>
-      <Dialog fullScreen open={openUpload} TransitionComponent={Transition}>
+      <Dialog
+        fullScreen
+        open={openUpload}
+        TransitionComponent={SlideTransition}
+      >
         <DialogTitle sx={{ margin: "30px", marginBottom: "0px" }}>
           <Box
             sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}
