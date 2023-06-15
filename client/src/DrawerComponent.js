@@ -45,11 +45,13 @@ const dashboardItems = Array(
   { text: "My GPA", icon: <CalculateRoundedIcon />, link: "/calculator" },
   { text: "Community", icon: <PeopleAltRoundedIcon />, link: "/community" }
 );
-
+const logOut = () => {
+  localStorage.clear();
+}
 // list of user menu sections
 const generalItems = Array(
   { text: "Profile", icon: <SettingsSuggestRoundedIcon />, link: "/profile" },
-  { text: "Logout", icon: <LogoutRoundedIcon />, link: "/sign-in" }
+  { text: "Logout", icon: <LogoutRoundedIcon />, link: "/sign-in", actionOnClick: logOut}
 );
 
 // list of all menu sections
@@ -90,6 +92,7 @@ function DrawerComponent(props) {
                 value={index}
                 component={Link}
                 to={item.link}
+                onClick={item.actionOnClick}
                 sx={{
                   borderRadius: "5px",
                   marginTop: "10px",

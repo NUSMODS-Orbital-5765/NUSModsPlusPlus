@@ -17,6 +17,7 @@ import LogoComponent from "./LogoComponent";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
+
 const SignInPage = () => {
   const navigate = useNavigate();
   //settings for toggling password visibility
@@ -38,7 +39,7 @@ const SignInPage = () => {
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
   };
-  const loginAPI = "https://nusmods.onrender.com/login";
+  const loginAPI = `${process.env.REACT_APP_API_LINK}/login`;
   const submitLoginForm = () => {
     const btnPointer = document.querySelector('#login-btn');
     btnPointer.setAttribute('disabled', true);
@@ -54,8 +55,12 @@ const SignInPage = () => {
             return;
         }
       alert("Login Successfully");
-      localStorage.removeItem('user-token');
+      console.log(data);
+      localStorage.clear();
       localStorage.setItem('user-token', token);
+      localStorage.setItem('username', data.username);
+      localStorage.setItem('userId', data.userId);
+      
       setTimeout(() => {
           navigate('/');
       }, 500);

@@ -11,10 +11,10 @@ datasource db {
 }
 
 model User {
-  id             Int      @id @default(autoincrement())
+  id             Int       @id @default(autoincrement())
   name           String
-  studentId      String   @unique
-  username       String   @unique
+  studentId      String    @unique
+  username       String    @unique
   password       String
   faculty        String
   primaryMajor   String
@@ -22,4 +22,28 @@ model User {
   minors         String?
   programme      String
   interests      String[]
+  Post           Post[]
+  Comment        Comment[]
+}
+
+model Post {
+  id           Int      @id @default(autoincrement())
+  title        String
+  dateCreated  DateTime
+  relatedMajor String?
+  category     String
+  content      String
+  upload_file  String[]
+  tags         String[]
+  author       User     @relation(fields: [authorId], references: [id])
+  authorId     Int
+  avatar       String
+  likes        String
+  comment      String
+}
+
+model Comment {
+  id       Int  @id @default(autoincrement())
+  author   User @relation(fields: [authorId], references: [id])
+  authorId Int
 }
