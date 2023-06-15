@@ -31,7 +31,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 // text editor for post
-const MyTextEditor = () => {
+const MyTextEditor = ({handleFormContent}) => {
   const [content, setContent] = useState("");
 
   const quillModules = {
@@ -55,6 +55,7 @@ const MyTextEditor = () => {
 
   const handleContentChange = (value) => {
     setContent(value);
+    handleFormContent(value);
   };
 
   return (
@@ -140,6 +141,7 @@ export const UploadFile = () => {
 // styling for tags field for post
 export const TagsField = (props) => {
   const selectedMajor = props.selectedMajor;
+  const handleFormTag = props.handleFormTag;
   const [myTags, setMyTags] = useState([]);
   const [newTag, setNewTag] = useState("");
   const [tagsList, setTagsList] = useState(postTagsList);
@@ -171,6 +173,7 @@ export const TagsField = (props) => {
       });
     }
   }, [selectedMajor]);
+  useEffect(()=>handleFormTag(myTags),[myTags]);
 
   const handleOpenNewTagDialog = () => {
     setOpenNewTagDialog(true);
@@ -275,10 +278,6 @@ export const TagsField = (props) => {
 
 // styling for post upload form component
 export const UploadPostForm = () => {
-  // placeholder for actual post upload feature
-  const handleSubmit = () => {
-    console.log("submitted!");
-  };
 
   // form validation
   const [isFormValid, setIsFormValid] = useState(false);
@@ -313,14 +312,39 @@ export const UploadPostForm = () => {
     setIsFormValid(isValid);
   };
 
+  const [formContent,setFormContent] = useState("");
+  const handleFormContent = (value) => {
+    setFormContent(value);
+  }
+  const [formTag, setFormTag] = useState([]);
+  const handleFormTag = (value) => {
+    setFormTag(value)
+  }
   // combines related major with the tags (automatic) for easier sorting. can remove if not nec
   const [selectedMajor, setSelectedMajor] = useState("");
   const handleSelectedMajor = (event, value) => {
     setSelectedMajor(value || "");
   };
 
+  const userId = localStorage.getItem('userId')
+
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const post = {
+      dateCreated: new Date(), // it's not in the form, but should record time and date of upload once button is pressed
+      title: postTitle,
+      category: postCategory,
+      relatedMajor: selectedMajor,
+      content: formContent,
+      upload_file: "", // possible to store the filepreviewURL so can download the file on click?
+      tags: formTag,
+      author: {connect: {id: userId}}, // this should be a user object, which connects to a profile (will set up later lol)
+    };
+    console.log(post);
+  };
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit = {(e)=>handleSubmit(e)}>
       <FormControl sx={{ width: "100%" }}>
         <TextField
           label="Post Title"
@@ -361,10 +385,10 @@ export const UploadPostForm = () => {
           )}
         />
       </FormControl>
-      <MyTextEditor />
+      <MyTextEditor handleFormContent={handleFormContent}/>
       <UploadFile />
       <FormControl sx={{ marginTop: "30px", width: "100%" }}>
-        <TagsField selectedMajor={selectedMajor} />
+        <TagsField selectedMajor={selectedMajor} handleFormTag={handleFormTag}/>
       </FormControl>
       <Button
         disabled={!isFormValid}
