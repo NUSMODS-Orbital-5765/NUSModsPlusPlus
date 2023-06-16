@@ -6,32 +6,28 @@ import {
   DialogTitle,
   DialogContent,
   Button,
+  Select,
   TextField,
   FormControl,
+  MenuItem,
   InputLabel,
   Autocomplete,
   Fab,
   Tooltip,
-  Select,
-  Snackbar,
-  MenuItem,
 } from "@mui/material";
 import { majorList } from "../Constants";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import React, { useState, useEffect } from "react";
 import { SlideTransition } from "../StyledComponents";
-import { MyTextEditor, PostTagsField } from "../FormStyledComponents";
+import { MyTextEditor } from "../FormStyledComponents";
+import PostTagsField from "./UploadPostTagsField";
 import UploadPostFile, { PostFileAllowedTypes } from "./UploadPostFile";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 // styling for post upload form component
 export const UploadPostForm = () => {
-  // placeholder for actual post upload feature
-  const [submitSuccess, setSubmitSuccess] = useState(false);
-  const handleSubmit = () => {
-    console.log("submitted!");
-    setSubmitSuccess(true);
-  };
-
+  const navigate = useNavigate();
   // form validation
   const [isFormValid, setIsFormValid] = useState(false);
   const [postTitle, setPostTitle] = useState("");
@@ -65,14 +61,53 @@ export const UploadPostForm = () => {
     setIsFormValid(isValid);
   };
 
+  const [formContent, setFormContent] = useState("");
+  const handleFormContent = (value) => {
+    setFormContent(value);
+  };
+  const [formTag, setFormTag] = useState([]);
+  const handleFormTag = (value) => {
+    setFormTag(value);
+  };
   // combines related major with the tags (automatic) for easier sorting. can remove if not nec
   const [selectedMajor, setSelectedMajor] = useState("");
   const handleSelectedMajor = (event, value) => {
     setSelectedMajor(value || "");
   };
 
+  const userId = localStorage.getItem("userId");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const post = {
+      dateCreated: new Date(),
+      title: postTitle,
+      category: postCategory,
+      relatedMajor: selectedMajor,
+      content: formContent,
+      upload_file: "",
+      tags: formTag,
+      author: userId,
+    };
+    console.log(post);
+    const uploadAPI = `${process.env.REACT_APP_API_LINK}/post/upload`;
+
+    axios
+      .post(uploadAPI, post)
+      .then((response) => {
+        alert("Upload Post Successfully");
+        console.log(response);
+        //useNavigate need to be initalise at top
+        setTimeout(() => {
+          navigate("/community");
+        }, 500);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={(e) => handleSubmit(e)}>
       <FormControl sx={{ width: "100%" }}>
         <TextField
           label="Post Title"
@@ -113,12 +148,15 @@ export const UploadPostForm = () => {
           )}
         />
       </FormControl>
-      <MyTextEditor />
+      <MyTextEditor handleFormContent={handleFormContent} />
       <Box sx={{ marginTop: "30px" }}>
         <UploadPostFile allowedTypes={PostFileAllowedTypes} />
       </Box>
       <FormControl sx={{ marginTop: "30px", width: "100%" }}>
-        <PostTagsField selectedMajor={selectedMajor} />
+        <PostTagsField
+          selectedMajor={selectedMajor}
+          handleFormTag={handleFormTag}
+        />
       </FormControl>
       <Button
         disabled={!isFormValid}
@@ -129,14 +167,6 @@ export const UploadPostForm = () => {
       >
         Create Post
       </Button>
-      {submitSuccess && (
-        <Snackbar
-          open={submitSuccess}
-          autoHideDuration={3000}
-          onClose={() => setSubmitSuccess(false)}
-          message="Post created successfully"
-        />
-      )}
     </form>
   );
 };

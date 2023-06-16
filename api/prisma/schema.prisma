@@ -37,9 +37,8 @@ model Post {
   tags         String[]
   author       User     @relation(fields: [authorId], references: [id])
   authorId     Int
-  avatar       String
-  likes        String
-  comment      String
+  likes        Int @default(0)
+  comment      Int  @default(0)
 }
 
 model Comment {
