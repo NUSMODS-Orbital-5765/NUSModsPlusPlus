@@ -8,7 +8,6 @@ const jwt = require("jsonwebtoken");
 const auth = require("./auth");
 const cors = require("cors");
 const { request } = require("http");
-const { BlobServiceClient } = require("@azure/storage-blob");
 dotenv.config();
 
 
@@ -126,21 +125,37 @@ app.post("/login",jsonParser, (request, response) => {
     });
 })
 
-app.post("/post/upload", (request,response) => {
-  console.log("Create User Object")
-      const user = {
-        name: request.body.name,
-        studentId: request.body.studentId,
-        username: request.body.username,
-        password: hashedPassword,
-        faculty: request.body.studentId,
-        primaryMajor: request.body.primaryMajor,
-        secondaryMajor: request.body.secondaryMajor,
-        minors: request.body.minors,
-        programme: request.body.programme,
-        interests: request.body.interests
+app.post("/post/upload",jsonParser, (request,response) => {
+  console.log("Create Post Object")
+      
+      const post = {
+        dateCreated: new Date(request.body.dateCreated), // it's not in the form, but should record time and date of upload once button is pressed
+        title: request.body.title,
+        category: request.body.category,
+        relatedMajor: request.body.relatedMajor,
+        content: request.body.content,
+        upload_file: request.body.upload_file, // possible to store the filepreviewURL so can download the file on click?
+        tags: request.body.tags,
+        author: {connect: {id: parseInt(request.body.author)}}, // this should be a user object, which connects to a profile (will set up later lol)
       };
-  
+      console.log(post);
+      prisma.post.create({data:post,})
+        // return success if the new user is added to the database successfully
+        .then((result) => {
+            console.log("Post Created")
+          response.status(201).send({
+            message: "User Created Successfully",
+            result,
+          });
+        })
+        // catch error if the new user wasn't added successfully to the database
+        .catch((error) => {
+          console.log(error.message)
+          response.status(500).send({
+            message: "Error creating post",
+            error,
+          });
+        });
 });
 // free endpoint
 app.get("/free-endpoint", (request, response) => {
