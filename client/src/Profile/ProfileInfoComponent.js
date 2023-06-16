@@ -1,16 +1,13 @@
 //COMPLETE
-// handleUpload feature for "save" button not done.
-// i dunno how to set the editable feature (click on edit to edit, otherwise disabled. clicking on save will disable all fields)
-// this is to prevent any unnecessary changes.
 import { Card, CardContent, Typography, Box, Button } from "@mui/material";
-import { majorList, progsList, sampleProfile } from "./Constants";
+import { majorList, progsList, sampleProfile } from "../Constants";
 import {
-  DefaultTextField,
-  DefaultAutocomplete,
-  PasswordField,
-  FacultyMajorField,
-  InterestsField,
-} from "./SignUpPage";
+  FormTextField,
+  FormAutocomplete,
+  FormPasswordField,
+  FormFacultyMajorField,
+  FormInterestsField,
+} from "../FormStyledComponents";
 import React, { useState } from "react";
 
 // styling for headers
@@ -94,47 +91,47 @@ const ProfileInfoComponent = () => {
               }}
             >
               <ProfileHeader text="General Information" />
-              <DefaultTextField
+              <FormTextField
                 disabled={!editableDetails}
                 label="Name"
                 defaultText={sampleProfile["Name"]}
               />
-              <DefaultTextField
+              <FormTextField
                 disabled={!editableDetails}
                 label="StudentID"
                 defaultText={sampleProfile["StudentID"]}
               />
               <ProfileHeader text="Account Information" />
-              <DefaultTextField
+              <FormTextField
                 disabled={!editableDetails}
                 label="Username"
                 defaultText={sampleProfile["Username"]}
               />
-              <PasswordField
+              <FormPasswordField
                 disabled={!editableDetails}
                 defaultText={sampleProfile["Password"]}
               />
             </Box>
             <Box sx={{ marginLeft: "50px" }}>
               <ProfileHeader text="Academic Information" />
-              <FacultyMajorField
+              <FormFacultyMajorField
                 disabled={!editableDetails}
                 filledFaculty={sampleProfile["Faculty"]}
                 filledMajor={sampleProfile["Major"]}
               />
-              <DefaultAutocomplete
+              <FormAutocomplete
                 disabled={!editableDetails}
                 label="Second Major"
                 optionsList={majorList}
                 filledOption={sampleProfile["Second Major"]}
               />
-              <DefaultAutocomplete
+              <FormAutocomplete
                 disabled={!editableDetails}
                 label="Minor"
                 optionsList={majorList}
                 filledOption={sampleProfile["Minor"]}
               />
-              <DefaultAutocomplete
+              <FormAutocomplete
                 disabled={!editableDetails}
                 label="Special Programme (if any)"
                 optionsList={progsList}
@@ -146,7 +143,7 @@ const ProfileInfoComponent = () => {
             sx={{ margin: "10px", display: "flex", flexDirection: "column" }}
           >
             <ProfileHeader text="User Preferences" />
-            <InterestsField
+            <FormInterestsField
               disabled={!editableDetails}
               filledInterests={sampleProfile["Interests"]}
             />

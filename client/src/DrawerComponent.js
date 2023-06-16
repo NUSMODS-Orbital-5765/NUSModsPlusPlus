@@ -1,67 +1,8 @@
 //COMPLETE
 import { Drawer, Typography, Divider, Tabs, Tab } from "@mui/material";
-import HouseRoundedIcon from "@mui/icons-material/HouseRounded";
-import TodayRoundedIcon from "@mui/icons-material/TodayRounded";
-import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
-import CalculateRoundedIcon from "@mui/icons-material/CalculateRounded";
-import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
-import SettingsSuggestRoundedIcon from "@mui/icons-material/SettingsSuggestRounded";
-import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-
-// creates headers for different menu sections
-function createSectionHeader(text) {
-  return (
-    <div>
-      <Typography
-        sx={{
-          paddingTop: "30px",
-          paddingLeft: "30px",
-          fontWeight: 600,
-          fontSize: "14px",
-        }}
-        color="text.secondary"
-      >
-        {text}
-      </Typography>
-    </div>
-  );
-}
-
-// list of main menu sections
-const dashboardItems = Array(
-  {
-    text: "Home",
-    icon: <HouseRoundedIcon />,
-    link: "/",
-  },
-  {
-    text: "Planner",
-    icon: <TodayRoundedIcon />,
-    link: "/planner",
-  },
-  { text: "Modules", icon: <MenuBookRoundedIcon />, link: "/" },
-  { text: "My GPA", icon: <CalculateRoundedIcon />, link: "/calculator" },
-  { text: "Community", icon: <PeopleAltRoundedIcon />, link: "/community" }
-);
-const logOut = () => {
-  localStorage.clear();
-}
-// list of user menu sections
-const generalItems = Array(
-  { text: "Profile", icon: <SettingsSuggestRoundedIcon />, link: "/profile" },
-  { text: "Logout", icon: <LogoutRoundedIcon />, link: "/sign-in", actionOnClick: logOut}
-);
-
-// list of all menu sections
-const combinedItems = [
-  { text: "DASHBOARD", isSectionHeader: true },
-  ...dashboardItems,
-  { text: "divider", isDivider: true },
-  { text: "GENERAL", isSectionHeader: true },
-  ...generalItems,
-];
+import { combinedItems, SectionHeader } from "./Home/HomePageStyledComponents";
 
 // main menu
 function DrawerComponent(props) {
@@ -84,7 +25,7 @@ function DrawerComponent(props) {
           if (item.isDivider) {
             return <Divider light key={index} />;
           } else if (item.isSectionHeader) {
-            return createSectionHeader(item.text);
+            return <SectionHeader text={item.text} />;
           } else {
             return (
               <Tab
@@ -155,5 +96,3 @@ function DrawerComponent(props) {
 }
 
 export default DrawerComponent;
-
-//TODO: let the highlight move along with the tab indicator.

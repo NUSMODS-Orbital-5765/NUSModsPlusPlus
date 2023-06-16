@@ -1,29 +1,31 @@
-import AppBarComponent from "./AppBarComponent";
+import AppBarComponent from "./AppBar/AppBarComponent";
 import DrawerComponent from "./DrawerComponent";
 import { Typography, Card, CardContent, Box } from "@mui/material";
+import { PageHeader } from "./StyledComponents";
+
+const SemesterTabs = () => {
+  return <div></div>;
+};
 
 const GPACalculatorPage = () => {
   return (
     <div className="homepage">
       <AppBarComponent />
       <DrawerComponent defaultTab={4} />
-      <Box
-        className="remainingViewport"
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <Typography
-          sx={{
-            padding: "30px",
-            marginTop: "60px",
-            fontSize: "40px",
-            fontWeight: 700,
-          }}
-        >
-          GPA Calculator
-        </Typography>
+      <Box className="remainingViewport">
+        <PageHeader
+          header="GPA Calculator"
+          subtitle={
+            <div>
+              A <span style={{ color: "#536DFE" }}>powerful</span>,{" "}
+              <span style={{ color: "#536DFE" }}>interactive</span> calculator
+              at your fingertips.
+            </div>
+          }
+        />
+        <Card sx={{ marginTop: "30px" }}>
+          <CardContent></CardContent>
+        </Card>
       </Box>
     </div>
   );

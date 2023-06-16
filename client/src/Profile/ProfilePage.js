@@ -1,10 +1,10 @@
 //COMPLETE
-import AppBarComponent from "./AppBarComponent";
-import DrawerComponent from "./DrawerComponent";
+import AppBarComponent from "../AppBar/AppBarComponent";
+import DrawerComponent from "../DrawerComponent";
 import ProfilePictureComponent from "./ProfilePictureComponent";
 import ProfileInfoComponent from "./ProfileInfoComponent";
-import { Typography, Box } from "@mui/material";
-import { sampleProfile } from "./Constants";
+import { Box } from "@mui/material";
+import { PageHeader } from "../StyledComponents";
 
 // layout of profile page
 function ProfilePage() {
@@ -22,25 +22,15 @@ function ProfilePage() {
           marginBottom: "30px",
         }}
       >
-        <Typography
-          sx={{
-            marginTop: "150px",
-            fontSize: "50px",
-            fontWeight: "700",
-          }}
-        >
-          Edit Profile
-        </Typography>
-        <Typography
-          variant="h1"
-          sx={{
-            fontSize: "16px",
-            fontWeight: 200,
-          }}
-        >
-          Today I choose to be the{" "}
-          <span style={{ color: "#536DFE" }}>best</span> version of myself.
-        </Typography>
+        <PageHeader
+          header="Edit Profile"
+          subtitle={
+            <div>
+              Today I choose to be the{" "}
+              <span style={{ color: "#536DFE" }}>best</span> version of myself.
+            </div>
+          }
+        />
       </Box>
       <Box
         className="remainingViewport"

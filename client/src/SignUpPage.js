@@ -8,36 +8,26 @@ import {
   StepLabel,
   Button,
   CardActions,
-  TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  InputAdornment,
-  IconButton,
-  Chip,
-  Autocomplete,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
-import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
-import LogoComponent from "./LogoComponent";
-import {
-  facultyList,
-  majorDict,
-  majorList,
-  progsList,
-  interestsDict,
-} from "./Constants";
-import {useNavigate } from "react-router-dom";
+import { LogoComponent } from "./StyledComponents";
+import { majorList, progsList } from "./Constants";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import {
+  FormAutocomplete,
+  FormTextField,
+  FormFacultyMajorField,
+  FormPasswordField,
+  FormInterestsField,
+} from "./FormStyledComponents";
 
-// styling for headers
-export function DefaultHeader(props) {
+// styling for form headers
+export const FormHeader = (props) => {
   const { text } = props;
   return (
     <Typography
@@ -52,234 +42,9 @@ export function DefaultHeader(props) {
       {text}
     </Typography>
   );
-}
+};
 
-// NEW styling for text fields NAM HALP
-export function DefaultTextField({name, label, defaultText, setfn, disabled}) {
-  const [requiredField, setRequiredField] = useState(defaultText);
-  const [error, setError] = useState(false);
-  const handleRequiredFieldChange = (event) => {
-    const value = event.target.value;
-    setRequiredField(value);
-    setError(value === "");
-  };
-
-  return (
-    <TextField
-      sx={{ marginBottom: "20px" }}
-      name={name}
-      label={label}
-      variant="outlined"
-      disabled = {disabled}
-      value={requiredField}
-      onChange={(e)=>{handleRequiredFieldChange(e);setfn(e)}}
-      required
-      error={error}
-      helperText={error ? "Field cannot be empty" : ""}
-    ></TextField>
-  );
-}
-
-
-// NEW STYLING FOR AUTOCOMPLETE COMPONENTS NAM HALP
-export function DefaultAutocomplete({optionsList, name, label, setfn, disabled}) {
-  return (
-    <Autocomplete
-      sx={{ marginTop: "20px" }}
-      disablePortal
-      name={name}
-      disabled = {disabled}
-      options={optionsList}
-      onChange={(e, v) => {
-        setfn({target:{name:name,value:v}});
-      }}
-      renderInput={(params) => <TextField {...params} label={label} />}
-    />
-  );
-}
-
-
-// NEW STYLING FOR PASSWORD FIELD NAM HALP
-export function PasswordField({defaultText, setfn, disabled}) {
-  const [showPassword, setShowPassword] = useState(true);
-  const handleTogglePassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const [requiredField, setRequiredField] = useState(defaultText);
-  const [error, setError] = useState(false);
-  const handleRequiredFieldChange = (event) => {
-    const value = event.target.value;
-    setRequiredField(value);
-    setError(value === "");
-  };
-
-  return (
-    <TextField
-      sx={{ marginBottom: "-30px" }}
-      name="password"
-      label="Password"
-      variant="outlined"
-      disabled = {disabled}
-      value={requiredField}
-      onChange={(e) => {handleRequiredFieldChange(e);setfn(e)}}
-      required
-      type={showPassword ? "text" : "password"}
-      error={error}
-      helperText={error ? "Field cannot be empty" : ""}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            <IconButton onClick={handleTogglePassword}>
-              {showPassword ? (
-                <VisibilityRoundedIcon />
-              ) : (
-                <VisibilityOffRoundedIcon />
-              )}
-            </IconButton>
-          </InputAdornment>
-        ),
-      }}
-    ></TextField>
-  );
-}
-
-// NEW styling for faculty & major field NAM HALP
-export function FacultyMajorField({ filledFaculty, filledMajor, setfn, disabled}) {
-  const [selectedFaculty, setSelectedFaculty] = useState(filledFaculty);
-  const [selectedMajor, setSelectedMajor] = useState(filledMajor);
-
-  // setSelectedMajor("") to add new Select field
-  const handleFacultyChange = (event) => {
-    setSelectedFaculty(event.target.value);
-    setSelectedMajor("");
-  };
-
-  const handleMajorChange = (event) => {
-    setSelectedMajor(event.target.value);
-  };
-
-  //get available majors for the selected faculty
-  const getMajorOptions = () => {
-    if (selectedFaculty) {
-      return majorDict[selectedFaculty];
-    }
-    return [];
-  };
-
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <FormControl>
-        <InputLabel>Faculty</InputLabel>
-        <Select
-          required
-          name="faculty"
-          label="faculty"
-          disabled = {disabled}
-          value={selectedFaculty}
-          onChange={(e)=>{handleFacultyChange(e);setfn(e)}}
-        >
-          {facultyList.map((faculty) => (
-            <MenuItem key={faculty} value={faculty}>
-              {faculty}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      {selectedFaculty && (
-        <FormControl sx={{ marginTop: "20px" }}>
-          <InputLabel>Major</InputLabel>
-          <Select
-            required
-            name="primaryMajor"
-            label="Major"
-            disabled = {disabled}
-            value={selectedMajor}
-            onChange={(e)=>{handleMajorChange(e);setfn(e)}}
-          >
-            {getMajorOptions().map((major, index) => (
-              <MenuItem key={index} value={major}>
-                {major}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      )}
-    </Box>
-  );
-}
-
-// NEW STYLING FOR INTERESTS FIELD NAM HALP
-export function InterestsField({filledInterests, setfn, disabled}) {
-  const [myInterests, setMyInterests] = useState(filledInterests);
-  const handleInterests = (event) => {
-    setMyInterests(event.target.value);
-  };
-
-  return (
-    <FormControl>
-      <InputLabel id="my-interests">My Interests</InputLabel>
-      <Select
-        multiple
-        name="interests"
-        value={myInterests}
-        disabled = {disabled}
-        onChange={(e)=>{handleInterests(e);setfn(e)}}
-        label="My Interests"
-        renderValue={(selected) => (
-          <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-            {selected &&
-              selected.length > 0 &&
-              selected.map((interest, index) => (
-                <Chip
-                  variant="filled"
-                  color="primary"
-                  sx={{ margin: "5px" }}
-                  key={index}
-                  label={interest}
-                />
-              ))}
-          </Box>
-        )}
-      >
-        {Object.entries(interestsDict).map(([category, interests]) => {
-          console.log(interests);
-          return [
-            <MenuItem key={category}>
-              <Typography
-                sx={{
-                  fontSize: "12px",
-                  fontWeight: 600,
-                  textTransform: "uppercase",
-                  marginTop: category === "module related" ? "5px" : "20px",
-                  color: "black",
-                }}
-              >
-                {category}
-              </Typography>
-            </MenuItem>,
-            ...interests.map((interest) => (
-              <MenuItem
-                sx={{ marginLeft: "2px" }}
-                key={interest}
-                value={interest}
-              >
-                {interest}
-              </MenuItem>
-            )),
-          ];
-        })}
-      </Select>
-    </FormControl>
-  );
-}
-
-// NEW CONTENT FOR FIRST STEP NAM HALP
+// styling for first step
 export const StepOne = ({ handleRegisterInfo }) => {
   return (
     <Box
@@ -290,18 +55,33 @@ export const StepOne = ({ handleRegisterInfo }) => {
       }}
     >
       <Box sx={{ marginTop: "-10px" }}>
-        <DefaultHeader text="General Information" />
+        <FormHeader text="General Information" />
       </Box>
-      <DefaultTextField name = "Name" label="name" defaultText="" setfn={handleRegisterInfo}/>
-      <DefaultTextField name = "StudentID" label="studentId" defaultText="" setfn={handleRegisterInfo}/>
-      <DefaultHeader text="Account Information" />
-      <DefaultTextField name = "Username" label="username" defaultText="" setfn={handleRegisterInfo}/>
-      <PasswordField defaultText="" setfn={handleRegisterInfo}/>
+      <FormTextField
+        name="Name"
+        label="name"
+        defaultText=""
+        setfn={handleRegisterInfo}
+      />
+      <FormTextField
+        name="StudentID"
+        label="studentId"
+        defaultText=""
+        setfn={handleRegisterInfo}
+      />
+      <FormHeader text="Account Information" />
+      <FormTextField
+        name="Username"
+        label="username"
+        defaultText=""
+        setfn={handleRegisterInfo}
+      />
+      <FormPasswordField defaultText="" setfn={handleRegisterInfo} />
     </Box>
   );
 };
 
-// NEW CONTENT FOR SECOND STEP NAM HALP
+// styling for second step
 export const StepTwo = ({ handleRegisterInfo }) => {
   return (
     <Box
@@ -312,34 +92,37 @@ export const StepTwo = ({ handleRegisterInfo }) => {
       }}
     >
       <Box sx={{ marginTop: "-10px" }}>
-        <DefaultHeader text="Academic Information" />
+        <FormHeader text="Academic Information" />
       </Box>
-      <FacultyMajorField filledMajor="" filledFaculty="" setfn={handleRegisterInfo}/>
-      <DefaultAutocomplete
+      <FormFacultyMajorField
+        filledMajor=""
+        filledFaculty=""
+        setfn={handleRegisterInfo}
+      />
+      <FormAutocomplete
         optionsList={majorList}
         label="Second Major (if any)"
-        name = "secondaryMajor"
+        name="secondaryMajor"
         setfn={handleRegisterInfo}
       />
-      <DefaultAutocomplete
+      <FormAutocomplete
         optionsList={majorList}
         label="Minor (if any)"
-        name = "minors"
+        name="minors"
         setfn={handleRegisterInfo}
       />
-      <DefaultAutocomplete
+      <FormAutocomplete
         optionsList={progsList}
         label="Special Programme (if any)"
-        name = "programme"
+        name="programme"
         setfn={handleRegisterInfo}
       />
     </Box>
   );
 };
 
-
-// NEW CONTENT FOR THIRD STEP NAM HALP
-export const StepThree = ({handleRegisterInfo}) => {
+// styling for third step
+export const StepThree = ({ handleRegisterInfo }) => {
   return (
     <Box
       sx={{
@@ -349,21 +132,20 @@ export const StepThree = ({handleRegisterInfo}) => {
       }}
     >
       <Box sx={{ marginTop: "-10px" }}>
-        <DefaultHeader text="User Preferences" />
+        <FormHeader text="User Preferences" />
       </Box>
-      <InterestsField filledInterests={[]} setfn={handleRegisterInfo}/>
+      <FormInterestsField filledInterests={[]} setfn={handleRegisterInfo} />
     </Box>
   );
 };
 
-
-// NEW MAIN SIGN UP COMPONENT NAM HALP
+// styling for main component
 const SignUpPage = () => {
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(0);
   const steps = ["Setting Up...", "Almost There...", "One Last Thing..."];
   const [openNextStepDialog, setOpenNextStepDialog] = useState(false);
-  
+
   const [registerInfo, setRegisterInfo] = useState({
     name: "",
     studentId: "",
@@ -446,9 +228,15 @@ const SignUpPage = () => {
               </Step>
             ))}
           </Stepper>
-          {activeStep === 0 && <StepOne handleRegisterInfo={handleRegisterInfo}/>}
-          {activeStep === 1 && <StepTwo handleRegisterInfo={handleRegisterInfo}/>}
-          {activeStep === 2 && <StepThree handleRegisterInfo={handleRegisterInfo}/>}
+          {activeStep === 0 && (
+            <StepOne handleRegisterInfo={handleRegisterInfo} />
+          )}
+          {activeStep === 1 && (
+            <StepTwo handleRegisterInfo={handleRegisterInfo} />
+          )}
+          {activeStep === 2 && (
+            <StepThree handleRegisterInfo={handleRegisterInfo} />
+          )}
         </CardContent>
         <CardActions>
           <Box
@@ -460,10 +248,7 @@ const SignUpPage = () => {
             }}
           >
             {activeStep === 2 ? (
-              <Button
-                sx={{ marginLeft: "112ch" }}
-                onClick={submitLoginForm}
-              >
+              <Button sx={{ marginLeft: "112ch" }} onClick={submitLoginForm}>
                 Submit
               </Button>
             ) : (

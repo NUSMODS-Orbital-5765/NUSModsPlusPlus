@@ -13,10 +13,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
-import LogoComponent from "./LogoComponent";
+import { LogoComponent } from "./StyledComponents";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-
 
 const SignInPage = () => {
   const navigate = useNavigate();
@@ -24,50 +23,55 @@ const SignInPage = () => {
   const [showPassword, setShowPassword] = useState(true);
   const [loginInfo, setloginInfo] = useState({
     username: "",
-    password: ""})
-  const handleLoginInfo = evt => {
-      const name = evt.target.name;
-      const value = evt.target.value;
-      setloginInfo({
-        ...loginInfo,
-        [name]: value
-      });
-    }
+    password: "",
+  });
+  const handleLoginInfo = (evt) => {
+    const name = evt.target.name;
+    const value = evt.target.value;
+    setloginInfo({
+      ...loginInfo,
+      [name]: value,
+    });
+  };
 
-  useEffect(()=>{console.log(loginInfo)},[loginInfo]);
+  useEffect(() => {
+    console.log(loginInfo);
+  }, [loginInfo]);
 
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
   };
   const loginAPI = `${process.env.REACT_APP_API_LINK}/login`;
   const submitLoginForm = () => {
-    const btnPointer = document.querySelector('#login-btn');
-    btnPointer.setAttribute('disabled', true);
-    btnPointer.innerHTML = 'Please wait..';
-    axios.post(loginAPI, loginInfo).then((response) => {
-      
-      btnPointer.innerHTML = 'Login';
-      btnPointer.removeAttribute('disabled');
-      const data = response.data;
-      const token = data.token;
+    const btnPointer = document.querySelector("#login-btn");
+    btnPointer.setAttribute("disabled", true);
+    btnPointer.innerHTML = "Please wait..";
+    axios
+      .post(loginAPI, loginInfo)
+      .then((response) => {
+        btnPointer.innerHTML = "Login";
+        btnPointer.removeAttribute("disabled");
+        const data = response.data;
+        const token = data.token;
         if (!token) {
-            alert('Unable to login. Please try after some time.');
-            return;
+          alert("Unable to login. Please try after some time.");
+          return;
         }
-      alert("Login Successfully");
-      console.log(data);
-      localStorage.clear();
-      localStorage.setItem('user-token', token);
-      localStorage.setItem('username', data.username);
-      localStorage.setItem('userId', data.userId);
-      
-      setTimeout(() => {
-          navigate('/');
-      }, 500);
-}).catch((error) => {
-      console.log(error);
-  });
-  }
+        alert("Login Successfully");
+        console.log(data);
+        localStorage.clear();
+        localStorage.setItem("user-token", token);
+        localStorage.setItem("username", data.username);
+        localStorage.setItem("userId", data.userId);
+
+        setTimeout(() => {
+          navigate("/");
+        }, 500);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <Box

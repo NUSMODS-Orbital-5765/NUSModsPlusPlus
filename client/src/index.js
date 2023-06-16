@@ -4,6 +4,12 @@ import App from "./App";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { BrowserRouter as Router } from "react-router-dom";
 
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+  },
+});
+
 const theme = createTheme({
   typography: {
     fontFamily: "'Inter','sans-serif'",

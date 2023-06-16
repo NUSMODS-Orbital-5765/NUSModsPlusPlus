@@ -1,11 +1,11 @@
 //COMPLETE
-import AppBarComponent from "./AppBarComponent";
-import DrawerComponent from "./DrawerComponent";
-import GridComponent from "./GridComponent";
+import AppBarComponent from "../AppBar/AppBarComponent";
+import DrawerComponent from "../DrawerComponent";
+import GridComponent from "../GridComponent";
 import { Typography, TextField, Box } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { sampleProfile } from "./Constants";
+import { sampleProfile } from "../Constants";
 
 function HomePage() {
   return (
@@ -24,7 +24,7 @@ function HomePage() {
         >
           <Typography
             sx={{
-              marginTop: "200px",
+              marginTop: "100px",
               fontSize: "50px",
               fontWeight: "700",
             }}

@@ -1,12 +1,12 @@
 //COMPLETE
 import "./App.css";
 import SignInPage from "./SignInPage";
-import HomePage from "./HomePage";
+import HomePage from "./Home/HomePage";
 import PlannerPage from "./PlannerPage";
 import SignUpPage from "./SignUpPage";
-import ProfilePage from "./ProfilePage";
+import ProfilePage from "./Profile/ProfilePage";
 import GPACalculatorPage from "./GPACalculatorPage";
-import CommunityPage from "./CommunityPage";
+import CommunityPage from "./Community/CommunityPage";
 import ModulesPage from "./ModulesPage";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -19,11 +19,17 @@ const App = () => {
       <Route path="/planner" element={<PlannerPage />} />
       <Route path="/sign-in" element={<SignInPage />} />
       <Route path="/sign-up" element={<SignUpPage />} />
-      <Route element={<ProtectedRoute />}>
-        <Route path="/profile" element={<ProfilePage />} />
-      </Route>
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <ProfilePage />
+          </ProtectedRoute>
+        }
+      />
       <Route path="/calculator" element={<GPACalculatorPage />} />
       <Route path="/community" element={<CommunityPage />} />
+      <Route path="/modules" element={<ModulesPage />} />
     </Routes>
   );
 };

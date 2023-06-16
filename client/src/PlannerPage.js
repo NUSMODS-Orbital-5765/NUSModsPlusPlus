@@ -1,4 +1,5 @@
-import AppBarComponent from "./AppBarComponent";
+// TO DELETE
+import AppBarComponent from "./AppBar/AppBarComponent";
 import DrawerComponent from "./DrawerComponent";
 import React, { useState } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";

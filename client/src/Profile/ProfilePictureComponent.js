@@ -1,5 +1,4 @@
 //COMPLETE
-// Note: Sorry i had to put all the components together, cause i have to use the same hooks
 import {
   Typography,
   Box,
@@ -9,17 +8,15 @@ import {
   IconButton,
   Tooltip,
   Snackbar,
+  Input,
 } from "@mui/material";
 import React, { useState, useRef } from "react";
-import ImageNotSupportedRoundedIcon from "@mui/icons-material/ImageNotSupportedRounded";
-import Input from "@mui/base/Input";
 import AvatarEditor from "react-avatar-editor";
 
 // profile picture section with upload feature
 export const ProfilePictureComponent = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewURL, setPreviewURL] = useState("/sample_icon.png");
-  const [errorMessage, setErrorMessage] = useState(false);
 
   const validateFileType = (file) => {
     const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
@@ -31,11 +28,9 @@ export const ProfilePictureComponent = () => {
     if (file && validateFileType(file)) {
       setSelectedFile(file);
       previewImage(file);
-      setErrorMessage(false);
     } else {
       setSelectedFile(null);
       setPreviewURL(null);
-      setErrorMessage(true);
     }
   };
 
@@ -193,17 +188,6 @@ export const ProfilePictureComponent = () => {
             >
               Save
             </Button>
-            {errorMessage ? (
-              <Typography
-                sx={{ marginLeft: "20px" }}
-                align="center"
-                color="error"
-              >
-                Invalid File Type. File must end in .JPEG, .PNG or .JPG.
-              </Typography>
-            ) : (
-              ""
-            )}
             <Snackbar
               open={openDialog}
               autoHideDuration={3000}

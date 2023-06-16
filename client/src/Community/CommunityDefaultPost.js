@@ -29,75 +29,23 @@ import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import React, { useState, useEffect } from "react";
-import { SlideTransition } from "./StyledComponents";
-import { sampleComments } from "./Constants";
-import { formatDistanceToNow } from "date-fns";
+import { SlideTransition } from "../StyledComponents";
+import { sampleComments } from "../Constants";
 import { createPortal } from "react-dom";
-
-// function for date formatting (feel free to change if nec)
-const formatDate = (dateTime) => {
-  return formatDistanceToNow(dateTime, { addSuffix: true });
-};
-
-// code for post comments
-export const PostComments = (props) => {
-  const { commentsList } = props;
-  return (
-    <div>
-      {commentsList.map((comment, index) => (
-        <Box
-          sx={{
-            marginBottom: "20px",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyItems: "center",
-            }}
-          >
-            <Avatar key={index} alt={comment.author} src={comment.avatar} />
-            <Typography sx={{ fontWeight: 600, marginLeft: "10px" }}>
-              {comment.author}
-            </Typography>
-            <Typography
-              variant="h1"
-              sx={{
-                fontSize: "16px",
-                fontWeight: 500,
-                marginLeft: "30px",
-                color: "#536DFE",
-              }}
-            >
-              {formatDate(comment.timestamp)}
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              marginLeft: "20px",
-              borderLeft: "3px solid #536DFE",
-              paddingLeft: "28px",
-            }}
-          >
-            <Typography>{comment.content}</Typography>
-          </Box>
-        </Box>
-      ))}
-    </div>
-  );
-};
+import { formatDate } from "../Constants";
+import CommunityPostComments from "./CommunityPostComments";
 
 // styling for post preview
 export const ViewPostDialog = (props) => {
   const post = props.post;
-  const opencond = props.opencond;
-  const closefunc = props.closefunc;
+  const openCondition = props.openCondition;
+  const closeFunction = props.closeFunction;
   return (
-    <Dialog open={opencond} maxWidth="md" TransitionComponent={SlideTransition}>
+    <Dialog
+      open={openCondition}
+      maxWidth="md"
+      TransitionComponent={SlideTransition}
+    >
       <DialogTitle sx={{ margin: "30px", marginBottom: "0px" }}>
         <Box
           sx={{
@@ -123,7 +71,7 @@ export const ViewPostDialog = (props) => {
               {formatDate(post.timestamp)}
             </Typography>
             <Tooltip title="Close" placement="top">
-              <IconButton onClick={closefunc}>
+              <IconButton onClick={closeFunction}>
                 <CloseRoundedIcon color="error" sx={{ fontSize: "30px" }} />
               </IconButton>
             </Tooltip>
@@ -219,14 +167,14 @@ export const ViewPostDialog = (props) => {
           ></TextField>
           <Button variant="contained">Post</Button>
         </Box>
-        <PostComments commentsList={sampleComments} />
+        <CommunityPostComments commentsList={sampleComments} />
       </DialogContent>
     </Dialog>
   );
 };
 
 // code for each post
-const DefaultPostCard = (props) => {
+const CommunityDefaultPost = (props) => {
   const post = props.post;
   const [extensionOpen, setExtensionOpen] = useState(false);
   const [arrowDirection, setArrowDirection] = useState("down");
@@ -315,8 +263,8 @@ const DefaultPostCard = (props) => {
               createPortal(
                 <ViewPostDialog
                   post={post}
-                  opencond={viewPost}
-                  closefunc={handleCloseViewPost}
+                  openCondition={viewPost}
+                  closeFunction={handleCloseViewPost}
                 />,
                 document.body
               )}
@@ -469,4 +417,4 @@ const DefaultPostCard = (props) => {
   );
 };
 
-export default DefaultPostCard;
+export default CommunityDefaultPost;
