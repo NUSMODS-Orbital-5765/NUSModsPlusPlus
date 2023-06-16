@@ -10,3 +10,5 @@ export const SlideTransition = React.forwardRef(function Transition(
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
+
+export const PageHeader = () => {};
