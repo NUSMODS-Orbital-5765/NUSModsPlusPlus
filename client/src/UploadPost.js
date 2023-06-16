@@ -25,7 +25,8 @@ import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
 import "./App.css";
 import { SlideTransition } from "./StyledComponents";
-
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 // sliding transition
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -279,7 +280,7 @@ export const TagsField = (props) => {
 
 // styling for post upload form component
 export const UploadPostForm = () => {
-
+  const navigate = useNavigate();
   // form validation
   const [isFormValid, setIsFormValid] = useState(false);
   const [postTitle, setPostTitle] = useState("");
@@ -327,23 +328,38 @@ export const UploadPostForm = () => {
     setSelectedMajor(value || "");
   };
 
-  const userId = localStorage.getItem('userId')
+  const userId = localStorage.getItem('userId');
 
   
   const handleSubmit = (e) => {
     e.preventDefault();
     const post = {
-      dateCreated: new Date(), // it's not in the form, but should record time and date of upload once button is pressed
+      dateCreated: new Date(), 
       title: postTitle,
       category: postCategory,
       relatedMajor: selectedMajor,
       content: formContent,
-      upload_file: "", // possible to store the filepreviewURL so can download the file on click?
+      upload_file: "", 
       tags: formTag,
-      author: {connect: {id: userId}}, // this should be a user object, which connects to a profile (will set up later lol)
+      author: userId, 
     };
     console.log(post);
-  };
+    const uploadAPI = `${process.env.REACT_APP_API_LINK}/post/upload`;
+    
+    axios
+      .post(uploadAPI, post)
+      .then((response) => {
+        alert("Upload Post Successfully");
+        console.log(response);
+        //useNavigate need to be initalise at top
+        setTimeout(() => {
+          navigate("/community");
+        }, 500);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    };
   return (
     <form onSubmit = {(e)=>handleSubmit(e)}>
       <FormControl sx={{ width: "100%" }}>

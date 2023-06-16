@@ -19,9 +19,11 @@ const App = () => {
       <Route path="/planner" element={<PlannerPage />} />
       <Route path="/sign-in" element={<SignInPage />} />
       <Route path="/sign-up" element={<SignUpPage />} />
-      <Route element={<ProtectedRoute />}>
-        <Route path="/profile" element={<ProfilePage />} />
-      </Route>
+        <Route path="/profile" element={
+        <ProtectedRoute>
+          <ProfilePage />
+        </ProtectedRoute>
+        }/>
       <Route path="/calculator" element={<GPACalculatorPage />} />
       <Route path="/community" element={<CommunityPage />} />
     </Routes>
