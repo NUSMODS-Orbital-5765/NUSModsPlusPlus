@@ -86,6 +86,10 @@ const CommunityPage = () => {
     
     axios.get(postGetAPI,postGetDetail)
     .then((res) => {
+      res.data.postList.map((post)=>{
+        const filePath = post.upload_file;
+        post.upload_file = filePath == "" ? null: 'https://nusmods.s3.ap-southeast-1.amazonaws.com/'+filePath;
+      })
       setPostList(res.data.postList);
       setPostReceived(true);
     }

@@ -28,7 +28,7 @@ import { PutObjectCommand, DeleteObjectCommand} from "@aws-sdk/client-s3";
 import { s3Client } from "../libs/s3Client";
 import { nanoid } from 'nanoid'
 // styling for post upload form component
-export const UploadPostForm = () => {
+export const UploadPostForm = (props) => {
   const navigate = useNavigate();
   // form validation
   const [isFormValid, setIsFormValid] = useState(false);
@@ -125,9 +125,8 @@ export const UploadPostForm = () => {
         alert("Upload Post Successfully");
 
         //useNavigate need to be initalise at top
-        setTimeout(() => {
-          navigate("/community");
-        }, 500);
+        props.handleCloseUpload();
+        window.location.reload();
       })
       .catch((error) => {
         console.log(error.message);
@@ -251,7 +250,7 @@ const UploadPost = () => {
           </Box>
         </DialogTitle>
         <DialogContent sx={{ margin: "30px" }}>
-          <UploadPostForm />
+          <UploadPostForm handleCloseUpload={handleCloseUpload} />
         </DialogContent>
       </Dialog>
     </div>
