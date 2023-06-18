@@ -268,7 +268,8 @@ export function FormInterestsField({ filledInterests, setfn, disabled }) {
 }
 
 // text editor for post
-export const MyTextEditor = () => {
+export const MyTextEditor = (props) => {
+  const handleFormContent = props.handleFormContent;
   const [content, setContent] = useState("");
 
   const quillModules = {
@@ -292,6 +293,7 @@ export const MyTextEditor = () => {
 
   const handleContentChange = (value) => {
     setContent(value);
+    handleFormContent(value);
   };
 
   return (

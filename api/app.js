@@ -2,26 +2,27 @@ const express = require("express");
 const dotenv = require("dotenv");
 const prisma = require("./db/prisma");
 const bcrypt = require("bcrypt");
-const bodyParser = require("body-parser");
-const jsonParser = bodyParser.json();
 const jwt = require("jsonwebtoken");
 const auth = require("./auth");
 const cors = require("cors");
+const formidable = require("express-formidable");
 const { request } = require("http");
 dotenv.config();
 
 const app = express();
-app.use(cors());
+
+const jsonParser = express.json();
 
 const port = process.env.PORT || 3001;
 
-app.get("/", async (req, res) => {
+app.use(cors());
+app.get("/", jsonParser, async (req, res) => {
   const users = await prisma.user.findMany();
   const names = users.map((user) => user.name);
   res.send(`There are ${names.length} which are ${names.join(", ")}`);
 });
 // register endpoint
-app.post("/register", jsonParser, (request, response) => {
+app.post("/register", (request, response) => {
   console.log("Receive POST registration");
   // hash the password
   bcrypt
@@ -76,6 +77,7 @@ app.post("/register", jsonParser, (request, response) => {
 //     "password": "password"
 // }
 app.post("/login", jsonParser, (request, response) => {
+  console.log("User Logging in")
   prisma.user
     .findUnique({
       where: {
@@ -128,7 +130,7 @@ app.post("/login", jsonParser, (request, response) => {
 });
 
 app.post("/post/upload", jsonParser, (request, response) => {
-  // connect is for sql relations
+  
   console.log("Create Post Object");
   const post = {
     dateCreated: request.body.dateCreated,
@@ -140,7 +142,6 @@ app.post("/post/upload", jsonParser, (request, response) => {
     tags: request.body.tags,
     author: {connect: {id: Number(request.body.author)}},
   };
-  
   prisma.post
         .create({ data: post })
         // return success if the new post is added to the database successfully

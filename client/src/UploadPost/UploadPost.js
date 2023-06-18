@@ -24,7 +24,9 @@ import PostTagsField from "./UploadPostTagsField";
 import UploadPostFile, { PostFileAllowedTypes } from "./UploadPostFile";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import { PutObjectCommand, DeleteObjectCommand} from "@aws-sdk/client-s3";
+import { s3Client } from "../libs/s3Client";
+import { nanoid } from 'nanoid'
 // styling for post upload form component
 export const UploadPostForm = () => {
   const navigate = useNavigate();
@@ -69,6 +71,10 @@ export const UploadPostForm = () => {
   const handleFormTag = (value) => {
     setFormTag(value);
   };
+  const [formFile, setFormFile] = useState("");
+  const handleFormFile = (value) => {
+    setFormFile(value);
+  }
   // combines related major with the tags (automatic) for easier sorting. can remove if not nec
   const [selectedMajor, setSelectedMajor] = useState("");
   const handleSelectedMajor = (event, value) => {
@@ -79,16 +85,35 @@ export const UploadPostForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const post = {
-      dateCreated: new Date(),
-      title: postTitle,
-      category: postCategory,
-      relatedMajor: selectedMajor,
-      content: formContent,
-      upload_file: "",
-      tags: formTag,
-      author: userId,
+    const folderId = nanoid();
+    const filePath = `post/${folderId}/`+formFile.name
+    const AWSparams = {
+      Bucket: process.env.REACT_APP_BUCKET_NAME, // The name of the bucket. For example, 'sample-bucket-101'.
+      Key: filePath, // The name of the object. For example, 'sample_upload.txt'.
+      Body: formFile, // The content of the object. For example, 'Hello world!".
     };
+    
+    
+    s3Client.send(new PutObjectCommand(AWSparams))
+    .then((response) =>{ //nothing, continue
+    })
+    .catch((err) => {
+      console.log("Error", err);
+      alert('Fail to upload File');
+      
+    });
+
+
+    const post = { 
+    dateCreated: new Date(),
+    title: postTitle,
+    category: postCategory,
+    relatedMajor: selectedMajor,
+    content: formContent,
+    upload_file: filePath,
+    tags: formTag,
+    author: userId,
+    }
     console.log(post);
     const uploadAPI = `${process.env.REACT_APP_API_LINK}/post/upload`;
 
@@ -96,7 +121,7 @@ export const UploadPostForm = () => {
       .post(uploadAPI, post)
       .then((response) => {
         alert("Upload Post Successfully");
-        console.log(response);
+
         //useNavigate need to be initalise at top
         setTimeout(() => {
           navigate("/community");
@@ -104,6 +129,8 @@ export const UploadPostForm = () => {
       })
       .catch((error) => {
         console.log(error.message);
+        //undo the insertion
+        s3Client.send(new PutObjectCommand({Bucket: process.env.REACT_APP_BUCKET_NAME, Key: filePath}));
       });
   };
   return (
@@ -150,7 +177,7 @@ export const UploadPostForm = () => {
       </FormControl>
       <MyTextEditor handleFormContent={handleFormContent} />
       <Box sx={{ marginTop: "30px" }}>
-        <UploadPostFile allowedTypes={PostFileAllowedTypes} />
+        <UploadPostFile allowedTypes={PostFileAllowedTypes} handleFormFile={handleFormFile} />
       </Box>
       <FormControl sx={{ marginTop: "30px", width: "100%" }}>
         <PostTagsField
