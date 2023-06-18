@@ -161,8 +161,9 @@ app.post("/post/upload", jsonParser, (request, response) => {
           });
         });
 });
-// free endpoint
-app.get("/post/all-post", (request, response) => {
+
+app.get("/post/get", (request, response) => {
+  console.log("POST GET REQUEST");
   prisma.post.findMany({
     skip: 0,
     take: 8,
@@ -170,11 +171,12 @@ app.get("/post/all-post", (request, response) => {
       dateCreated: "desc",
     }
   })
-  .then(result => {
-    console.log("Sending Posts");
-    response.status(201).send({
+  .then(postList => {
+    console.log("Getting Post");
+    console.log(postList);
+    response.status(200).send({
       message: "Post Get Successfully, Page 1",
-      result,
+      postList,
     });
   })
   .catch(error => {

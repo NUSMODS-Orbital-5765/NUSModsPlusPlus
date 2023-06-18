@@ -68,7 +68,7 @@ export const ViewPostDialog = (props) => {
                 textTransform: "uppercase",
               }}
             >
-              {formatDate(post.timestamp)}
+              {formatDate(new Date(post.dateCreated))}
             </Typography>
             <Tooltip title="Close" placement="top">
               <IconButton onClick={closeFunction}>
@@ -241,7 +241,7 @@ const CommunityDefaultPost = (props) => {
                 textTransform: "uppercase",
               }}
             >
-              {formatDate(post.timestamp)}
+              {formatDate(new Date(post.dateCreated))}
             </Typography>
             <Tooltip title="See More" placement="top">
               <IconButton

@@ -3,6 +3,7 @@ import AppBarComponent from "../AppBar/AppBarComponent";
 import DrawerComponent from "../DrawerComponent";
 import UploadPost from "../UploadPost/UploadPost";
 import CommunityDefaultPost from "./CommunityDefaultPost";
+import axios from "axios";
 import {
   Box,
   FormControl,
@@ -16,10 +17,10 @@ import {
   samplePostsTags,
 } from "../Constants";
 import { PageHeader, BackToTop, SearchBar } from "../StyledComponents";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 // mapping posts onto a grid design
-export const PostsGrid = ({ postsList }) => {
+export const PostsGrid = ({ postList }) => {
   return (
     <Grid
       sx={{
@@ -30,7 +31,7 @@ export const PostsGrid = ({ postsList }) => {
       container
       spacing={2}
     >
-      {postsList.map((post, index) => (
+      {postList.map((post, index) => (
         <Grid item xs={6} key={index}>
           <CommunityDefaultPost post={post} />
         </Grid>
@@ -69,6 +70,30 @@ export const SortAndFilter = () => {
 
 // styling for main page
 const CommunityPage = () => {
+  const [page, setPage] = useState(1);
+  const [sortValue, setSortValue] = useState('');
+  const [filterValue, setFilterValue] = useState('');
+  const [postReceived, setPostReceived] = useState(false);
+  const [postList, setPostList] = useState();
+  const postGetAPI = `${process.env.REACT_APP_API_LINK}/post/get`;
+  const postGetDetail = {
+    page: 1,
+    sortValue: sortValue,
+    filterValue: filterValue,
+  }
+
+  useEffect(()=>{
+    
+    axios.get(postGetAPI,postGetDetail)
+    .then((res) => {
+      setPostList(res.data.postList);
+      setPostReceived(true);
+    }
+      )
+    .catch((err)=>console.log(err));
+  }
+    , [page]
+  )
   return (
     <div className="homepage">
       <AppBarComponent />
@@ -120,7 +145,7 @@ const CommunityPage = () => {
         >
           <SortAndFilter />
         </Box>
-        <PostsGrid postsList={samplePosts} />
+        {postReceived && <PostsGrid postList={postList} />}
         <Box
           sx={{
             marginTop: "-10ch",
