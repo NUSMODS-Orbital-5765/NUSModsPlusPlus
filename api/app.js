@@ -127,20 +127,38 @@ app.post("/login", jsonParser, (request, response) => {
     });
 });
 
-app.post("/post/upload", (request, response) => {
-  console.log("Create User Object");
-  const user = {
-    name: request.body.name,
-    studentId: request.body.studentId,
-    username: request.body.username,
-    password: hashedPassword,
-    faculty: request.body.studentId,
-    primaryMajor: request.body.primaryMajor,
-    secondaryMajor: request.body.secondaryMajor,
-    minors: request.body.minors,
-    programme: request.body.programme,
-    interests: request.body.interests,
+app.post("/post/upload", jsonParser, (request, response) => {
+  // connect is for sql relations
+  console.log("Create Post Object");
+  const post = {
+    dateCreated: request.body.dateCreated,
+    title: request.body.title,
+    category: request.body.category,
+    relatedMajor: request.body.relatedMajor,
+    content: request.body.content,
+    upload_file: request.body.upload_file,
+    tags: request.body.tags,
+    author: {connect: {id: Number(request.body.author)}},
   };
+  
+  prisma.post
+        .create({ data: post })
+        // return success if the new post is added to the database successfully
+        .then((result) => {
+          console.log("Created Post");
+          response.status(201).send({
+            message: "Post Created Successfully",
+            result,
+          });
+        })
+        // catch error if the new post wasn't added successfully to the database
+        .catch((error) => {
+          console.log(error);
+          response.status(500).send({
+            message: "Error creating Post",
+            error,
+          });
+        });
 });
 // free endpoint
 app.get("/free-endpoint", (request, response) => {
