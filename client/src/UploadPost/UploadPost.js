@@ -82,13 +82,13 @@ export const UploadPostForm = () => {
   };
 
   const userId = localStorage.getItem("userId");
-
+  let filePath = "";
   const handleSubmit = (e) => {
     
     e.preventDefault();
-    if (formFile != '') {
+    if (formFile !== "") {
     const folderId = nanoid();
-    const filePath = `post/${folderId}/`+formFile.name
+    filePath = `post/${folderId}/`+formFile.name
     const AWSparams = {
       Bucket: process.env.REACT_APP_BUCKET_NAME, // The name of the bucket. For example, 'sample-bucket-101'.
       Key: filePath, // The name of the object. For example, 'sample_upload.txt'.
@@ -132,8 +132,8 @@ export const UploadPostForm = () => {
       .catch((error) => {
         console.log(error.message);
         //undo the insertion
-        if (formFile!="") {
-          s3Client.send(new PutObjectCommand({Bucket: process.env.REACT_APP_BUCKET_NAME, Key: filePath}));
+        if (formFile!=="") {
+          s3Client.send(new DeleteObjectCommand({Bucket: process.env.REACT_APP_BUCKET_NAME, Key: filePath}));
         }
       });
   };

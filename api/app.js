@@ -162,6 +162,30 @@ app.post("/post/upload", jsonParser, (request, response) => {
         });
 });
 // free endpoint
+app.get("/post/all-post", (request, response) => {
+  prisma.post.findMany({
+    skip: 0,
+    take: 8,
+    orderBy: {
+      dateCreated: "desc",
+    }
+  })
+  .then(result => {
+    console.log("Sending Posts");
+    response.status(201).send({
+      message: "Post Get Successfully, Page 1",
+      result,
+    });
+  })
+  .catch(error => {
+    console.log(error);
+    response.status(500).send({
+      message: "Error Getting Post",
+      error,
+    });
+  })
+
+})
 app.get("/free-endpoint", (request, response) => {
   response.json({ message: "You are free to access me anytime" });
 });
