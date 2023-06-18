@@ -84,7 +84,9 @@ export const UploadPostForm = () => {
   const userId = localStorage.getItem("userId");
 
   const handleSubmit = (e) => {
+    
     e.preventDefault();
+    if (formFile != '') {
     const folderId = nanoid();
     const filePath = `post/${folderId}/`+formFile.name
     const AWSparams = {
@@ -101,7 +103,7 @@ export const UploadPostForm = () => {
       console.log("Error", err);
       alert('Fail to upload File');
       
-    });
+    });}
 
 
     const post = { 
@@ -130,7 +132,9 @@ export const UploadPostForm = () => {
       .catch((error) => {
         console.log(error.message);
         //undo the insertion
-        s3Client.send(new PutObjectCommand({Bucket: process.env.REACT_APP_BUCKET_NAME, Key: filePath}));
+        if (formFile!="") {
+          s3Client.send(new PutObjectCommand({Bucket: process.env.REACT_APP_BUCKET_NAME, Key: filePath}));
+        }
       });
   };
   return (
