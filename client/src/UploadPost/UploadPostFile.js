@@ -11,14 +11,17 @@ export const PostFileAllowedTypes = [
 ];
 const UploadPostFile = (props) => {
   const allowedTypes = props.allowedTypes;
+  const handleFormFile = props.handleFormFile;
   const [selectedFile, setSelectedFile] = useState(null);
 
   const handleSelectedFile = (event) => {
     const file = event.target.files[0];
     if (file && validateFileType(file)) {
       setSelectedFile(file);
+      handleFormFile(file);
     } else {
       setSelectedFile(null);
+      handleFormFile("");
     }
   };
 

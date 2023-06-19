@@ -2,26 +2,27 @@ const express = require("express");
 const dotenv = require("dotenv");
 const prisma = require("./db/prisma");
 const bcrypt = require("bcrypt");
-const bodyParser = require("body-parser");
-const jsonParser = bodyParser.json();
 const jwt = require("jsonwebtoken");
 const auth = require("./auth");
 const cors = require("cors");
+const formidable = require("express-formidable");
 const { request } = require("http");
 dotenv.config();
 
 const app = express();
-app.use(cors());
+
+const jsonParser = express.json();
 
 const port = process.env.PORT || 3001;
 
-app.get("/", async (req, res) => {
+app.use(cors());
+app.get("/", jsonParser, async (req, res) => {
   const users = await prisma.user.findMany();
   const names = users.map((user) => user.name);
   res.send(`There are ${names.length} which are ${names.join(", ")}`);
 });
 // register endpoint
-app.post("/register", jsonParser, (request, response) => {
+app.post("/register", (request, response) => {
   console.log("Receive POST registration");
   // hash the password
   bcrypt
@@ -76,6 +77,7 @@ app.post("/register", jsonParser, (request, response) => {
 //     "password": "password"
 // }
 app.post("/login", jsonParser, (request, response) => {
+  console.log("User Logging in")
   prisma.user
     .findUnique({
       where: {
@@ -127,22 +129,65 @@ app.post("/login", jsonParser, (request, response) => {
     });
 });
 
-app.post("/post/upload", (request, response) => {
-  console.log("Create User Object");
-  const user = {
-    name: request.body.name,
-    studentId: request.body.studentId,
-    username: request.body.username,
-    password: hashedPassword,
-    faculty: request.body.studentId,
-    primaryMajor: request.body.primaryMajor,
-    secondaryMajor: request.body.secondaryMajor,
-    minors: request.body.minors,
-    programme: request.body.programme,
-    interests: request.body.interests,
+app.post("/post/upload", jsonParser, (request, response) => {
+  
+  console.log("Create Post Object");
+  const post = {
+    dateCreated: request.body.dateCreated,
+    title: request.body.title,
+    category: request.body.category,
+    relatedMajor: request.body.relatedMajor,
+    content: request.body.content,
+    upload_file: request.body.upload_file,
+    tags: request.body.tags,
+    author: {connect: {id: Number(request.body.author)}},
   };
+  prisma.post
+        .create({ data: post })
+        // return success if the new post is added to the database successfully
+        .then((result) => {
+          console.log("Created Post");
+          response.status(201).send({
+            message: "Post Created Successfully",
+            result,
+          });
+        })
+        // catch error if the new post wasn't added successfully to the database
+        .catch((error) => {
+          console.log(error);
+          response.status(500).send({
+            message: "Error creating Post",
+            error,
+          });
+        });
 });
-// free endpoint
+
+app.get("/post/get", (request, response) => {
+  console.log("POST GET REQUEST");
+  prisma.post.findMany({
+    skip: 0,
+    take: 8,
+    orderBy: {
+      dateCreated: "desc",
+    }
+  })
+  .then(postList => {
+    console.log("Getting Post");
+    console.log(postList);
+    response.status(200).send({
+      message: "Post Get Successfully, Page 1",
+      postList,
+    });
+  })
+  .catch(error => {
+    console.log(error);
+    response.status(500).send({
+      message: "Error Getting Post",
+      error,
+    });
+  })
+
+})
 app.get("/free-endpoint", (request, response) => {
   response.json({ message: "You are free to access me anytime" });
 });
