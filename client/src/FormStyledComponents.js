@@ -13,6 +13,7 @@ import {
   Autocomplete,
   InputAdornment,
   IconButton,
+  NativeSelect,
 } from "@mui/material";
 import { facultyList, majorDict, interestsDict } from "./Constants";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
@@ -303,5 +304,21 @@ export const MyTextEditor = () => {
         formats={quillFormats}
       />
     </Box>
+  );
+};
+
+// native select styling
+export const DefaultNativeSelect = (props) => {
+  const optionsDict = props.optionsDict;
+  const label = props.label;
+  return (
+    <FormControl>
+      <InputLabel variant="standard">{label}</InputLabel>
+      <NativeSelect>
+        {Object.entries(optionsDict).map(([key, value]) => (
+          <option value={value}>{key}</option>
+        ))}
+      </NativeSelect>
+    </FormControl>
   );
 };

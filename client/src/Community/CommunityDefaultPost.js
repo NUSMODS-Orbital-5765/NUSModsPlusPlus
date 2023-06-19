@@ -20,6 +20,7 @@ import {
   DialogContent,
   Checkbox,
   TextField,
+  Slide,
 } from "@mui/material";
 import { TransitionGroup } from "react-transition-group";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
@@ -29,14 +30,14 @@ import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import React, { useState, useEffect } from "react";
-import { SlideTransition } from "../StyledComponents";
+import { SlideUpTransition } from "../StyledComponents";
 import { sampleComments } from "../Constants";
 import { createPortal } from "react-dom";
 import { formatDate } from "../Constants";
 import CommunityPostComments from "./CommunityPostComments";
 
 // styling for post preview
-export const ViewPostDialog = (props) => {
+export const CommunityPostDialog = (props) => {
   const post = props.post;
   const openCondition = props.openCondition;
   const closeFunction = props.closeFunction;
@@ -44,7 +45,7 @@ export const ViewPostDialog = (props) => {
     <Dialog
       open={openCondition}
       maxWidth="md"
-      TransitionComponent={SlideTransition}
+      TransitionComponent={SlideUpTransition}
     >
       <DialogTitle sx={{ margin: "30px", marginBottom: "0px" }}>
         <Box
@@ -261,7 +262,7 @@ const CommunityDefaultPost = (props) => {
             </Tooltip>
             {viewPost &&
               createPortal(
-                <ViewPostDialog
+                <CommunityPostDialog
                   post={post}
                   openCondition={viewPost}
                   closeFunction={handleCloseViewPost}

@@ -36,7 +36,7 @@ export const SearchBarScroll = (props) => {
 export const dashboardItems = Array(
   {
     text: "Home",
-    icon: <HouseRoundedIcon />,
+    icon: <HouseRoundedIcon sx={{ fontSize: "30px" }} />,
     link: "/",
   },
   {
@@ -44,9 +44,21 @@ export const dashboardItems = Array(
     icon: <TodayRoundedIcon />,
     link: "/planner",
   },
-  { text: "Modules", icon: <MenuBookRoundedIcon />, link: "/modules" },
-  { text: "My GPA", icon: <CalculateRoundedIcon />, link: "/calculator" },
-  { text: "Community", icon: <PeopleAltRoundedIcon />, link: "/community" }
+  {
+    text: "Modules",
+    icon: <MenuBookRoundedIcon sx={{ fontSize: "30px" }} />,
+    link: "/modules",
+  },
+  {
+    text: "My GPA",
+    icon: <CalculateRoundedIcon sx={{ fontSize: "30px" }} />,
+    link: "/calculator",
+  },
+  {
+    text: "Community",
+    icon: <PeopleAltRoundedIcon sx={{ fontSize: "30px" }} />,
+    link: "/community",
+  }
 );
 const logOut = () => {
   localStorage.clear();
@@ -54,10 +66,14 @@ const logOut = () => {
 
 // list of user menu sections
 export const generalItems = Array(
-  { text: "Profile", icon: <SettingsSuggestRoundedIcon />, link: "/profile" },
+  {
+    text: "Profile",
+    icon: <SettingsSuggestRoundedIcon sx={{ fontSize: "30px" }} />,
+    link: "/profile",
+  },
   {
     text: "Logout",
-    icon: <LogoutRoundedIcon />,
+    icon: <LogoutRoundedIcon sx={{ fontSize: "30px" }} />,
     link: "/sign-in",
     actionOnClick: logOut,
   }

@@ -5,7 +5,7 @@ import HomePage from "./Home/HomePage";
 import PlannerPage from "./PlannerPage";
 import SignUpPage from "./SignUpPage";
 import ProfilePage from "./Profile/ProfilePage";
-import GPACalculatorPage from "./GPACalculatorPage";
+import GPACalculatorPage from "./GPACalculator/GPACalculatorPage";
 import CommunityPage from "./Community/CommunityPage";
 import ModulesPage from "./ModulesPage";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";

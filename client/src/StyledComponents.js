@@ -13,8 +13,8 @@ import React, { useState, useEffect } from "react";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded"; // for back to top button
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 
-// sliding transition
-export const SlideTransition = React.forwardRef(function Transition(
+// sliding upwards transition
+export const SlideUpTransition = React.forwardRef(function Transition(
   props,
   ref
 ) {
@@ -45,6 +45,22 @@ export const LogoComponent = () => {
         A new way to plan
       </Typography>
     </Box>
+  );
+};
+
+// styling for basic page header (no subtitle)
+export const PageHeaderNoSubtitle = ({ header }) => {
+  return (
+    <Typography
+      sx={{
+        marginLeft: "20px",
+        marginRight: "20px",
+        fontSize: "40px",
+        fontWeight: 700,
+      }}
+    >
+      {header}
+    </Typography>
   );
 };
 

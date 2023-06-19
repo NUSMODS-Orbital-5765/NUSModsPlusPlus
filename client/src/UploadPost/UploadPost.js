@@ -18,7 +18,7 @@ import {
 import { majorList } from "../Constants";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import React, { useState, useEffect } from "react";
-import { SlideTransition } from "../StyledComponents";
+import { SlideUpTransition } from "../StyledComponents";
 import { MyTextEditor } from "../FormStyledComponents";
 import PostTagsField from "./UploadPostTagsField";
 import UploadPostFile, { PostFileAllowedTypes } from "./UploadPostFile";
@@ -200,7 +200,7 @@ const UploadPost = () => {
       <Dialog
         fullScreen
         open={openUpload}
-        TransitionComponent={SlideTransition}
+        TransitionComponent={SlideUpTransition}
       >
         <DialogTitle sx={{ margin: "30px", marginBottom: "0px" }}>
           <Box
