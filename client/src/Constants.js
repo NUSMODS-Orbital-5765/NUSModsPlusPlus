@@ -1,4 +1,5 @@
 import { formatDistanceToNow } from "date-fns";
+import { red, orange, yellow } from "@mui/material/colors";
 
 // list of nus faculties
 export const facultyList = [
@@ -328,6 +329,18 @@ export const sampleSemesterModules = [
   },
 ];
 
+// set the current semester
+export const currentSemesterModules = sampleSemesterModules
+  .filter((object) => object.year === "22/23")
+  .flatMap((year) => year.semesters["Semester 2"])
+  .map((module) => module.moduleCode);
+
+// set the next semester
+export const nextSemesterModules = sampleSemesterModules
+  .filter((object) => object.year === "23/24")
+  .flatMap((year) => year.semesters["Semester 1"])
+  .map((module) => module.moduleCode);
+
 // honours classification and corresponding gpa
 export const HonoursGPAGuide = {
   "Honours (Highest Distinction)": 4.5,
@@ -344,3 +357,23 @@ export const PossibleSemestersList = [
   "Special Term 1",
   "Special Term 2",
 ];
+
+// compress these three later on
+// list of priorities (only use for events and tasks)
+export const priorityList = ["Very High", "High", "Average", "Low"];
+
+// list of priorities and respective colors
+export const priorityColors = {
+  4: red[500],
+  3: orange[500],
+  2: yellow[500],
+  1: "#44b700",
+};
+
+// list of priorities and respective values
+export const priorityValues = {
+  "Very High": 4,
+  High: 3,
+  Average: 2,
+  Low: 1,
+};

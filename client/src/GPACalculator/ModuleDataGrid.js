@@ -1,3 +1,5 @@
+//COMPLETE
+// make the grade field editable so that user can "import modules" and update with grades accordingly.
 import {
   Autocomplete,
   TextField,
@@ -31,7 +33,7 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
         totalSum += gpa;
       }
     });
-    return totalSum / rows.length;
+    return (totalSum / rows.length).toFixed(2); // correct to 2 dp
   };
 
   // moduleList loaded will change when the tab changes.
@@ -88,6 +90,7 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
     console.log("newRow:", newRow);
 
     setRows((prevRows) => [...prevRows, newRow]);
+    setOpenAddRow(false);
   };
 
   // handle deletion of modules (using red cross button)

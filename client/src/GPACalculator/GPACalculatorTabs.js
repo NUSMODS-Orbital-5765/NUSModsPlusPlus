@@ -8,7 +8,7 @@ import ByYearView from "./ByYearView";
 import { PageHeaderNoSubtitle } from "../StyledComponents";
 
 // component for switching between different views
-const GPACalculatorContent = (props) => {
+const GPACalculatorTabs = (props) => {
   const { viewList } = props;
   const maxViewIndex = viewList.length - 1;
   const [currentView, setCurrentView] = useState(0);
@@ -96,4 +96,4 @@ const GPACalculatorContent = (props) => {
   );
 };
 
-export default GPACalculatorContent;
+export default GPACalculatorTabs;

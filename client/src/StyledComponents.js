@@ -8,10 +8,13 @@ import {
   Typography,
   TextField,
   Autocomplete,
+  IconButton,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded"; // for back to top button
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
+import NavigateBeforeRoundedIcon from "@mui/icons-material/NavigateBeforeRounded";
 
 // sliding upwards transition
 export const SlideUpTransition = React.forwardRef(function Transition(
@@ -179,6 +182,77 @@ export const SearchBar = (props) => {
           />
         )}
       />
+    </Box>
+  );
+};
+
+// styling for multiple tabs view (use icon to switch between tabs)
+export const MultipleTabsView = (props) => {
+  const { viewList } = props.viewList;
+  const tabContentList = props.tabContentList;
+  const maxViewIndex = viewList.length - 1;
+  const [currentView, setCurrentView] = useState(0);
+
+  const handlePrevView = () => {
+    currentView === 0
+      ? setCurrentView(maxViewIndex)
+      : setCurrentView(currentView - 1);
+  };
+
+  const handleNextView = () => {
+    currentView === maxViewIndex
+      ? setCurrentView(0)
+      : setCurrentView(currentView + 1);
+  };
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyItems: "center",
+      }}
+    >
+      <Tooltip title="Switch to previous view">
+        <IconButton
+          sx={{
+            "&:hover": {
+              backgroundColor: "transparent",
+              transform: "translateX(-5px)",
+              transition: "transform 0.1s",
+            },
+          }}
+          onClick={handlePrevView}
+        >
+          <NavigateBeforeRoundedIcon
+            sx={{
+              color: "#536DFE",
+              fontSize: "40px",
+            }}
+          />
+        </IconButton>
+      </Tooltip>
+      <PageHeaderNoSubtitle header={viewList[currentView]} />
+      <Tooltip title="Switch to next view">
+        <IconButton
+          sx={{
+            "&:hover": {
+              backgroundColor: "transparent",
+              transform: "translateX(5px)",
+              transition: "transform 0.1s",
+            },
+          }}
+          onClick={handleNextView}
+        >
+          <NavigateNextRoundedIcon
+            sx={{
+              color: "#536DFE",
+              fontSize: "40px",
+            }}
+          />
+        </IconButton>
+      </Tooltip>
     </Box>
   );
 };

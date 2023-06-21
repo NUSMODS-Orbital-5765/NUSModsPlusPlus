@@ -10,6 +10,7 @@ import {
   NativeSelect,
   InputLabel,
   Grid,
+  Typography,
 } from "@mui/material";
 import {
   postRecommendations,
@@ -18,7 +19,30 @@ import {
 } from "../Constants";
 import { PageHeader, BackToTop, SearchBar } from "../StyledComponents";
 import React, { useEffect, useState } from "react";
+import HeartBrokenRoundedIcon from "@mui/icons-material/HeartBrokenRounded";
 
+// no posts placeholder
+export const NoPostsPlaceholder = () => {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyItems: "center",
+      }}
+    >
+      <HeartBrokenRoundedIcon
+        sx={{ fontSize: "100px", color: "text.secondary" }}
+      />
+      <Typography
+        sx={{ color: "text.secondary", fontSize: "50px", fontWeight: 700 }}
+      >
+        No Posts Yet
+      </Typography>
+    </Box>
+  );
+};
 // mapping posts onto a grid design
 export const PostsGrid = ({ postList }) => {
   return (
@@ -71,8 +95,8 @@ export const SortAndFilter = () => {
 // styling for main page
 const CommunityPage = () => {
   const [page, setPage] = useState(1);
-  const [sortValue, setSortValue] = useState('');
-  const [filterValue, setFilterValue] = useState('');
+  const [sortValue, setSortValue] = useState("");
+  const [filterValue, setFilterValue] = useState("");
   const [postReceived, setPostReceived] = useState(false);
   const [postList, setPostList] = useState();
   const postGetAPI = `${process.env.REACT_APP_API_LINK}/post/get`;
@@ -80,24 +104,24 @@ const CommunityPage = () => {
     page: 1,
     sortValue: sortValue,
     filterValue: filterValue,
-  }
+  };
 
-  useEffect(()=>{
-    
-    axios.get(postGetAPI,postGetDetail)
-    .then((res) => {
-      res.data.postList.map((post)=>{
-        const filePath = post.upload_file;
-        post.upload_file = filePath == "" ? null: 'https://nusmods.s3.ap-southeast-1.amazonaws.com/'+filePath;
+  useEffect(() => {
+    axios
+      .get(postGetAPI, postGetDetail)
+      .then((res) => {
+        res.data.postList.map((post) => {
+          const filePath = post.upload_file;
+          post.upload_file =
+            filePath == ""
+              ? null
+              : "https://nusmods.s3.ap-southeast-1.amazonaws.com/" + filePath;
+        });
+        setPostList(res.data.postList);
+        setPostReceived(true);
       })
-      setPostList(res.data.postList);
-      setPostReceived(true);
-    }
-      )
-    .catch((err)=>console.log(err));
-  }
-    , [page]
-  )
+      .catch((err) => console.log(err));
+  }, [page]);
   return (
     <div className="homepage">
       <AppBarComponent />
@@ -143,11 +167,15 @@ const CommunityPage = () => {
             marginTop: "20px",
             marginBottom: "20px",
             display: "flex",
+            flexDirection: "column",
             justifyItems: "center",
             alignItems: "center",
           }}
         >
           <SortAndFilter />
+          <Box sx={{ marginTop: "100px", marginBottom: "150px" }}>
+            {!postList && <NoPostsPlaceholder />}
+          </Box>
         </Box>
         {postReceived && <PostsGrid postList={postList} />}
         <Box
