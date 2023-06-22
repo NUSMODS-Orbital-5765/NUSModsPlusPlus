@@ -23,7 +23,7 @@ app.get("/", jsonParser, async (req, res) => {
   res.send(`There are ${names.length} which are ${names.join(", ")}`);
 });
 // register endpoint
-app.post("/register", (request, response) => {
+app.post("/register",jsonParser, (request, response) => {
   console.log("Receive POST registration");
   // hash the password
   bcrypt
@@ -218,7 +218,7 @@ app.post('/profile/update', [jsonParser,auth], (request, response) => {
       username: response.locals.username,
     },
     data: {
-
+      name: request.body.name,
     }
   })
   response.json("auth and in")

@@ -161,7 +161,7 @@ export function FormFacultyMajorField({
         <Select
           required
           name="faculty"
-          label="faculty"
+          label="Faculty"
           disabled={disabled}
           value={selectedFaculty}
           onChange={(e) => {

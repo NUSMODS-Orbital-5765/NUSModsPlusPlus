@@ -58,21 +58,21 @@ export const StepOne = ({ handleRegisterInfo }) => {
         <FormHeader text="General Information" />
       </Box>
       <FormTextField
-        name="Name"
-        label="name"
+        name="name"
+        label="Name"
         defaultText=""
         setfn={handleRegisterInfo}
       />
       <FormTextField
-        name="StudentID"
-        label="studentId"
+        name="studentId"
+        label="StudentID"
         defaultText=""
         setfn={handleRegisterInfo}
       />
       <FormHeader text="Account Information" />
       <FormTextField
-        name="Username"
-        label="username"
+        name="username"
+        label="Username"
         defaultText=""
         setfn={handleRegisterInfo}
       />
