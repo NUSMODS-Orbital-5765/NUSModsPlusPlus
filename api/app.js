@@ -8,6 +8,7 @@ const cors = require("cors");
 const formidable = require("express-formidable");
 const { request } = require("http");
 const { json } = require("body-parser");
+const { error } = require("console");
 dotenv.config();
 
 const app = express();
@@ -36,7 +37,7 @@ app.post("/register",jsonParser, (request, response) => {
         studentId: request.body.studentId,
         username: request.body.username,
         password: hashedPassword,
-        faculty: request.body.studentId,
+        faculty: request.body.faculty,
         primaryMajor: request.body.primaryMajor,
         secondaryMajor: request.body.secondaryMajor,
         minors: request.body.minors,
@@ -57,6 +58,7 @@ app.post("/register",jsonParser, (request, response) => {
         })
         // catch error if the new user wasn't added successfully to the database
         .catch((error) => {
+          console.log(error);
           response.status(500).send({
             message: "Error creating user",
             error,
@@ -78,7 +80,7 @@ app.post("/register",jsonParser, (request, response) => {
 //     "password": "password"
 // }
 app.post("/login", jsonParser, (request, response) => {
-  console.log("User Logging in")
+  console.log(`User ${request.body.username} Logging in`)
   prisma.user
     .findUnique({
       where: {
@@ -101,7 +103,7 @@ app.post("/login", jsonParser, (request, response) => {
           const token = jwt.sign(
             {
               userId: user._id,
-              userName: user.username,
+              username: user.username,
             },
             "RANDOM-TOKEN",
             { expiresIn: "24h" }
@@ -215,13 +217,33 @@ app.get('/profile/get', jsonParser, (request, response) => {
 app.post('/profile/update', [jsonParser,auth], (request, response) => {
   prisma.user.update({
     where: {
-      username: response.locals.username,
+      username: response.locals.user.username,
     },
     data: {
       name: request.body.name,
+      studentId: request.body.studentId,
+      faculty: request.body.faculty,
+      primaryMajor: request.body.primaryMajor,
+      secondaryMajor: request.body.secondaryMajor,
+      minors: request.body.minors,
+      programme: request.body.programme,
+      interests: request.body.interests,
     }
   })
-  response.json("auth and in")
+  .then(res => {
+    console.log("Updating User Profile");
+    response.status(200).send({
+      message: "User Update Successfully at id = "+ res.id,
+      res,
+    });
+  })
+  .catch(error => {
+    console.log(error);
+    response.status(500).send({
+      message: "Error Getting User",
+      error,
+    });
+  })
 })
 
 app.get("/free-endpoint", (request, response) => {

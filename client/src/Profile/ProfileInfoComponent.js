@@ -35,22 +35,49 @@ const ProfileInfoComponent = () => {
   const handleEditableDetails = () => {
     setEditableDetails(!editableDetails);
   };
+  const handleProfileInfo = (evt) => {
+    const name = evt.target.name;
+    const value = evt.target.value;
+    setProfileInfo({
+      ...profileInfo,
+      [name]: value,
+    });
+  }; 
   useEffect( ()=>{
   const userId = localStorage.getItem("userId");
   const GETprofileURL = process.env.REACT_APP_API_LINK + "/profile/get";
   axios.get(GETprofileURL, {
     params: {
-      userId: 1,
+      userId: userId,
     }
   })
   .then(user=>{
-    console.log(user.data.user);
     setProfileInfo(user.data.user);
     setIsFetch(true);
+    console.log(user.data.user);
   })
   .catch(err=>console.log(err))},[]);
+
+  const postUpdateAPI = `${process.env.REACT_APP_API_LINK}/profile/update`;
+  const submitProfileUpdate = () => {
+    axios
+      .post(postUpdateAPI, profileInfo,  {
+        headers: { Authorization: `Bearer ${localStorage.getItem("user-token")}` }
+    })
+      .then((response) => {
+        alert("Profile Update Successfully");
+        console.log(response);
+        //useNavigate need to be initalise at top
+      })
+      .catch((error) => {
+        alert("Fail to Update")
+        console.log(error);
+      });
+  };
+
+
   return (
-    isFetch?<Card
+    isFetch&&<Card
       sx={{
         borderRadius: "5px",
         marginLeft: "30px",
@@ -109,22 +136,29 @@ const ProfileInfoComponent = () => {
               <FormTextField
                 disabled={!editableDetails}
                 label="Name"
+                name="name"
                 defaultText={profileInfo.name}
+                setfn={handleProfileInfo}
               />
               <FormTextField
                 disabled={!editableDetails}
                 label="StudentID"
+                name="studentId"
                 defaultText={profileInfo.studentId}
+                setfn={handleProfileInfo}
               />
               <ProfileHeader text="Account Information" />
               <FormTextField
-                disabled={!editableDetails}
+                disabled={true}
                 label="Username"
+                name="username"
                 defaultText={profileInfo.username}
+                setfn={handleProfileInfo}
               />
               <FormPasswordField
-                disabled={!editableDetails}
+                disabled={true}
                 defaultText={sampleProfile["Password"]}
+                setfn={handleProfileInfo}
               />
             </Box>
             <Box sx={{ marginLeft: "50px" }}>
@@ -133,24 +167,31 @@ const ProfileInfoComponent = () => {
                 disabled={!editableDetails}
                 filledFaculty={profileInfo.faculty}
                 filledMajor={profileInfo.primaryMajor}
+                setfn={handleProfileInfo}
               />
               <FormAutocomplete
                 disabled={!editableDetails}
                 label="Second Major"
+                name = "secondaryMajor"
                 optionsList={majorList}
                 defaultText={profileInfo.secondaryMajor}
+                setfn={handleProfileInfo}
               />
               <FormAutocomplete
                 disabled={!editableDetails}
                 label="Minor"
+                name = "minors"
                 optionsList={majorList}
                 defaultText={profileInfo.minors}
+                setfn={handleProfileInfo}
               />
               <FormAutocomplete
                 disabled={!editableDetails}
+                name = "programme"
                 label="Special Programme (if any)"
                 optionsList={progsList}
                 defaultText={profileInfo.programme}
+                setfn={handleProfileInfo}
               />
             </Box>
           </Box>
@@ -160,12 +201,13 @@ const ProfileInfoComponent = () => {
             <ProfileHeader text="User Preferences" />
             <FormInterestsField
               disabled={!editableDetails}
+              setfn={handleProfileInfo}
               filledInterests={profileInfo.interests}
             />
           </Box>
         </Box>
         <Button
-          onClick={() => setEditableDetails(false)}
+          onClick={submitProfileUpdate}
           sx={{ marginTop: "20px" }}
           variant="contained"
           color="primary"
@@ -173,7 +215,7 @@ const ProfileInfoComponent = () => {
           Save
         </Button>
       </CardContent>
-    </Card>:<></>
+    </Card>
   )
 };
 export default ProfileInfoComponent;
