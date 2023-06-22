@@ -2,7 +2,7 @@
 import "./App.css";
 import SignInPage from "./SignInPage";
 import HomePage from "./Home/HomePage";
-import PlannerPage from "./PlannerPage";
+import PlannerPage from "./Planner/PlannerPage";
 import SignUpPage from "./SignUpPage";
 import ProfilePage from "./Profile/ProfilePage";
 import GPACalculatorPage from "./GPACalculator/GPACalculatorPage";
@@ -14,22 +14,24 @@ import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./auth/ProtectedRoute";
 const App = () => {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/planner" element={<PlannerPage />} />
-      <Route path="/sign-in" element={<SignInPage />} />
-      <Route path="/sign-up" element={<SignUpPage />} />
-      <Route
-        path="/profile"
-        element={
-          <ProtectedRoute>
-            <ProfilePage />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="/calculator" element={<GPACalculatorPage />} />
-      <Route path="/community" element={<CommunityPage />} />
-    </Routes>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/planner" element={<PlannerPage />} />
+        <Route path="/sign-in" element={<SignInPage />} />
+        <Route path="/sign-up" element={<SignUpPage />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/calculator" element={<GPACalculatorPage />} />
+        <Route path="/community" element={<CommunityPage />} />
+      </Routes>
+    </LocalizationProvider>
   );
 };
 

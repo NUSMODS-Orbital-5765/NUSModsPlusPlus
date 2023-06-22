@@ -1,4 +1,3 @@
-//NEEDS CHANGES
 import {
   Stack,
   Tabs,
@@ -22,7 +21,6 @@ import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRigh
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useState } from "react";
 import Grid from "@mui/material/Grid";
-import EventsMoreButton from "./EventsMoreButton";
 import {
   pink,
   red,
@@ -433,7 +431,6 @@ function GridComponent() {
                 <Typography variant="h5" component="div">
                   My Modules
                 </Typography>
-                <EventsMoreButton />
               </Box>
               <MyModules />
             </div>
@@ -453,7 +450,6 @@ function GridComponent() {
                 <Typography variant="h5" component="div">
                   Upcoming Events
                 </Typography>
-                <EventsMoreButton />
               </Box>
               <UpcomingEvents />
             </div>
@@ -495,7 +491,6 @@ function GridComponent() {
                 <Typography variant="h5" component="div">
                   Upcoming Tasks
                 </Typography>
-                <EventsMoreButton />
               </Box>
               <UpcomingTasks />
             </div>
