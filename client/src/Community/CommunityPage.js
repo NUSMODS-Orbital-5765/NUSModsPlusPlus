@@ -111,10 +111,10 @@ const CommunityPage = () => {
     
     axios.get(postGetAPI,postGetDetail)
     .then((res) => {
-      res.data.postList.map((post)=>{
-        const filePath = post.upload_file;
-        post.upload_file = filePath == "" ? null: AWSLinkGenerate(filePath);
-      })
+      console.log(res.data.postList);
+    setPostList(res.data.postList);
+    setPostReceived(true);
+    })
       .catch((err) => console.log(err));
   }, [page]);
   return (
@@ -168,9 +168,9 @@ const CommunityPage = () => {
           }}
         >
           <SortAndFilter />
-          <Box sx={{ marginTop: "100px", marginBottom: "150px" }}>
-            {!postList && <NoPostsPlaceholder />}
-          </Box>
+          {!postReceived&&<Box sx={{ marginTop: "100px", marginBottom: "150px" }}>
+            <NoPostsPlaceholder />
+          </Box>}
         </Box>
         {postReceived && <PostsGrid postList={postList} />}
         <Box

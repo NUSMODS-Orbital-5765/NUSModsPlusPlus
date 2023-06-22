@@ -143,7 +143,7 @@ export const CommunityPostDialog = (props) => {
           </Button>
           {post.upload_file && (
             <Typography sx={{ marginLeft: "20px", fontWeight: 600 }}>
-              {post.upload_file}
+              {AWSLinkGenerate(post.upload_file)}
             </Typography>
           )}
         </Box>
@@ -197,7 +197,6 @@ const CommunityDefaultPost = (props) => {
   const [viewPost, setViewPost] = useState(false);
   const handleOpenViewPost = () => {
     setViewPost(true);
-    console.log(viewPost);
     setViewed(true);
   };
 

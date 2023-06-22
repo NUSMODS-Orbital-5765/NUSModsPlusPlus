@@ -177,6 +177,7 @@ app.get("/post/get", (request, response) => {
   })
   .then(postList => {
     console.log("Getting Post");
+    console.log(postList);
     response.status(200).send({
       message: "Post Get Successfully, Page 1",
       postList,
@@ -210,7 +211,18 @@ app.get('/profile/get', jsonParser, (request, response) => {
     });
   })
 })
+// token = 
+app.post('/profile/update', [jsonParser,auth], (request, response) => {
+  prisma.user.update({
+    where: {
+      username: response.locals.username,
+    },
+    data: {
 
+    }
+  })
+  response.json("auth and in")
+})
 
 app.get("/free-endpoint", (request, response) => {
   response.json({ message: "You are free to access me anytime" });
