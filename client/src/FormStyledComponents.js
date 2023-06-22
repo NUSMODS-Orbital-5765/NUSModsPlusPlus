@@ -55,12 +55,14 @@ export function FormAutocomplete({
   label,
   setfn,
   disabled,
+  defaultText,
 }) {
   return (
     <Autocomplete
       sx={{ marginTop: "20px" }}
       disablePortal
       name={name}
+      defaultValue={defaultText}
       disabled={disabled}
       options={optionsList}
       onChange={(e, v) => {

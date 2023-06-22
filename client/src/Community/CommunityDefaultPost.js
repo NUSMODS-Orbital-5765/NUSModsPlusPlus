@@ -35,7 +35,7 @@ import { sampleComments } from "../Constants";
 import { createPortal } from "react-dom";
 import { formatDate } from "../Constants";
 import CommunityPostComments from "./CommunityPostComments";
-
+import AWSLinkGenerate from "../libs/AWSLinkGenerate";
 // styling for post preview
 export const CommunityPostDialog = (props) => {
   const post = props.post;
@@ -93,8 +93,8 @@ export const CommunityPostDialog = (props) => {
         >
           <Chip
             sx={{ padding: "5px", fontSize: "15px" }}
-            avatar={<Avatar alt="ProfilePic" src={post.avatar} />}
-            label={post.author}
+            avatar={<Avatar alt="ProfilePic" src={AWSLinkGenerate(post.author.avatar)} />}
+            label={post.author.username}
             variant="filled"
           />
           <Chip
@@ -331,8 +331,8 @@ const CommunityDefaultPost = (props) => {
           >
             <Chip
               sx={{ marginTop: "10px" }}
-              avatar={<Avatar alt="ProfilePic" src={post.avatar} />}
-              label={post.author}
+              avatar={<Avatar alt="ProfilePic" src={AWSLinkGenerate(post.author.avatar)} />}
+              label={post.author.username}
               variant="filled"
             />
             <Chip

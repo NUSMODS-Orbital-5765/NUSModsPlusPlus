@@ -8,8 +8,8 @@ import {
   FormFacultyMajorField,
   FormInterestsField,
 } from "../FormStyledComponents";
-import React, { useState } from "react";
-
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 // styling for headers
 export const ProfileHeader = (props) => {
   const { text } = props;
@@ -30,12 +30,27 @@ export const ProfileHeader = (props) => {
 
 const ProfileInfoComponent = () => {
   const [editableDetails, setEditableDetails] = useState(false);
+  const [profileInfo, setProfileInfo] = useState();
+  const [isFetch, setIsFetch] = useState(false);
   const handleEditableDetails = () => {
     setEditableDetails(!editableDetails);
   };
-
+  useEffect( ()=>{
+  const userId = localStorage.getItem("userId");
+  const GETprofileURL = process.env.REACT_APP_API_LINK + "/profile/get";
+  axios.get(GETprofileURL, {
+    params: {
+      userId: 1,
+    }
+  })
+  .then(user=>{
+    console.log(user.data.user);
+    setProfileInfo(user.data.user);
+    setIsFetch(true);
+  })
+  .catch(err=>console.log(err))},[]);
   return (
-    <Card
+    isFetch?<Card
       sx={{
         borderRadius: "5px",
         marginLeft: "30px",
@@ -94,18 +109,18 @@ const ProfileInfoComponent = () => {
               <FormTextField
                 disabled={!editableDetails}
                 label="Name"
-                defaultText={sampleProfile["Name"]}
+                defaultText={profileInfo.name}
               />
               <FormTextField
                 disabled={!editableDetails}
                 label="StudentID"
-                defaultText={sampleProfile["StudentID"]}
+                defaultText={profileInfo.studentId}
               />
               <ProfileHeader text="Account Information" />
               <FormTextField
                 disabled={!editableDetails}
                 label="Username"
-                defaultText={sampleProfile["Username"]}
+                defaultText={profileInfo.username}
               />
               <FormPasswordField
                 disabled={!editableDetails}
@@ -116,26 +131,26 @@ const ProfileInfoComponent = () => {
               <ProfileHeader text="Academic Information" />
               <FormFacultyMajorField
                 disabled={!editableDetails}
-                filledFaculty={sampleProfile["Faculty"]}
-                filledMajor={sampleProfile["Major"]}
+                filledFaculty={profileInfo.faculty}
+                filledMajor={profileInfo.primaryMajor}
               />
               <FormAutocomplete
                 disabled={!editableDetails}
                 label="Second Major"
                 optionsList={majorList}
-                filledOption={sampleProfile["Second Major"]}
+                defaultText={profileInfo.secondaryMajor}
               />
               <FormAutocomplete
                 disabled={!editableDetails}
                 label="Minor"
                 optionsList={majorList}
-                filledOption={sampleProfile["Minor"]}
+                defaultText={profileInfo.minors}
               />
               <FormAutocomplete
                 disabled={!editableDetails}
                 label="Special Programme (if any)"
                 optionsList={progsList}
-                filledOption={sampleProfile["Special Programme"]}
+                defaultText={profileInfo.programme}
               />
             </Box>
           </Box>
@@ -145,7 +160,7 @@ const ProfileInfoComponent = () => {
             <ProfileHeader text="User Preferences" />
             <FormInterestsField
               disabled={!editableDetails}
-              filledInterests={sampleProfile["Interests"]}
+              filledInterests={profileInfo.interests}
             />
           </Box>
         </Box>
@@ -158,7 +173,7 @@ const ProfileInfoComponent = () => {
           Save
         </Button>
       </CardContent>
-    </Card>
-  );
+    </Card>:<></>
+  )
 };
 export default ProfileInfoComponent;

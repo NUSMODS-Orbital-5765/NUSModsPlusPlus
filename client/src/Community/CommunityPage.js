@@ -4,6 +4,7 @@ import DrawerComponent from "../DrawerComponent";
 import UploadPost from "../UploadPost/UploadPost";
 import CommunityDefaultPost from "./CommunityDefaultPost";
 import axios from "axios";
+import AWSLinkGenerate from '../libs/AWSLinkGenerate';
 import {
   Box,
   FormControl,
@@ -88,7 +89,7 @@ const CommunityPage = () => {
     .then((res) => {
       res.data.postList.map((post)=>{
         const filePath = post.upload_file;
-        post.upload_file = filePath == "" ? null: 'https://nusmods.s3.ap-southeast-1.amazonaws.com/'+filePath;
+        post.upload_file = filePath == "" ? null: AWSLinkGenerate(filePath);
       })
       setPostList(res.data.postList);
       setPostReceived(true);

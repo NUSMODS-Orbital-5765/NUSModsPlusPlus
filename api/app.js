@@ -7,6 +7,7 @@ const auth = require("./auth");
 const cors = require("cors");
 const formidable = require("express-formidable");
 const { request } = require("http");
+const { json } = require("body-parser");
 dotenv.config();
 
 const app = express();
@@ -169,11 +170,13 @@ app.get("/post/get", (request, response) => {
     take: 8,
     orderBy: {
       dateCreated: "desc",
+    },
+    include: {
+      author: true,
     }
   })
   .then(postList => {
     console.log("Getting Post");
-    console.log(postList);
     response.status(200).send({
       message: "Post Get Successfully, Page 1",
       postList,
@@ -186,8 +189,29 @@ app.get("/post/get", (request, response) => {
       error,
     });
   })
-
 })
+app.get('/profile/get', jsonParser, (request, response) => {
+  console.log(request.query);
+  prisma.user.findUnique({
+    where: {id: parseInt(request.query.userId),}
+  })
+  .then(user => {
+    console.log("Getting User Profile");
+    response.status(200).send({
+      message: "User Get Successfully at id ="+request.body.userId,
+      user,
+    });
+  })
+  .catch(error => {
+    console.log(error);
+    response.status(500).send({
+      message: "Error Getting User",
+      error,
+    });
+  })
+})
+
+
 app.get("/free-endpoint", (request, response) => {
   response.json({ message: "You are free to access me anytime" });
 });
