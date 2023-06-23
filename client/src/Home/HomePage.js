@@ -1,7 +1,7 @@
 //COMPLETE
 import AppBarComponent from "../AppBar/AppBarComponent";
 import DrawerComponent from "../DrawerComponent";
-import GridComponent from "./GridComponent";
+import HomePageShortcuts from "./HomePageShortcuts";
 import { Typography, TextField, Box } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -51,7 +51,7 @@ function HomePage() {
             }}
           />
         </Box>
-        <GridComponent />
+        <HomePageShortcuts />
       </LocalizationProvider>
     </div>
   );

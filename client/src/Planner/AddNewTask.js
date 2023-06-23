@@ -27,6 +27,9 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import CheckBoxOutlineBlankOutlinedIcon from "@mui/icons-material/CheckBoxOutlineBlankOutlined";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { format } from "date-fns";
 
 // main component
 const AddNewTask = () => {
@@ -115,6 +118,7 @@ const AddNewTask = () => {
     // keep the task name and priority
     const [taskName, setTaskName] = useState("");
     const [taskPriority, setTaskPriority] = useState("");
+    const [taskReminder, setTaskReminder] = useState(null);
 
     const handleSetTaskName = (event) => {
       setTaskName(event.target.value);
@@ -124,11 +128,16 @@ const AddNewTask = () => {
       setTaskPriority(event.target.value);
     };
 
+    const handleSetTaskReminder = (date) => {
+      setTaskReminder(date);
+    };
+
     // add a new task to the category in the dictionary
     const confirmAddTask = () => {
       const newTask = {
         name: taskName,
         priority: priorityValues[taskPriority],
+        reminder: taskReminder.format("DD MMMM YYYY"),
       };
       setCategoryTasks((prevCategoryTasks) => ({
         ...prevCategoryTasks,
@@ -179,6 +188,13 @@ const AddNewTask = () => {
                 ))}
               </Select>
             </FormControl>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Remind Me"
+                sx={{ marginLeft: "20px", width: "30ch" }}
+                onChange={handleSetTaskReminder}
+              />
+            </LocalizationProvider>
             <Button
               onClick={confirmAddTask}
               color="success"
@@ -210,6 +226,7 @@ const AddNewTask = () => {
   const TaskCheckBox = ({ categoryName }) => {
     const tasks = categoryTasks[categoryName];
 
+    // to set the checkboxes as "complete" once they are checked
     const [checkedItems, setCheckedItems] = useState(
       new Array(tasks.length).fill(false)
     );
@@ -223,7 +240,14 @@ const AddNewTask = () => {
     return (
       <FormGroup>
         {tasks.map((task, index) => (
-          <div>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyItems: "center",
+            }}
+          >
             <FormControlLabel
               key={index}
               control={
@@ -242,19 +266,30 @@ const AddNewTask = () => {
               }
               checked={checkedItems[index]}
               onChange={handleCheck(index)}
-              label={task.name}
-              style={{
-                textDecoration: checkedItems[index] ? "line-through" : "none",
-                opacity: checkedItems[index] ? 0.2 : 1,
-              }}
+              label={
+                <Typography
+                  sx={{
+                    fontWeight: 700,
+                    fontSize: "17px",
+                    textDecoration: checkedItems[index]
+                      ? "line-through"
+                      : "none",
+                    opacity: checkedItems[index] ? 0.2 : 1,
+                  }}
+                >
+                  {task.name}
+                  <span style={{ marginLeft: "30px" }}>Due:&nbsp;</span>
+                  <span style={{ color: "#7E7E7E" }}>{task.reminder}</span>
+                </Typography>
+              }
             />
             <IconButton
               onClick={() => handleDeleteTask(categoryName, index)}
               sx={{ marginLeft: "auto" }}
             >
-              <ClearRoundedIcon />
+              <ClearRoundedIcon color="error" />
             </IconButton>
-          </div>
+          </Box>
         ))}
       </FormGroup>
     );
@@ -268,9 +303,32 @@ const AddNewTask = () => {
           return (
             <Accordion key={index} sx={{ boxShadow: 0 }}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography sx={{ fontSize: "30px", fontWeight: 700 }}>
-                  {category}
-                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyItems: "center",
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: "30px",
+                      fontWeight: 700,
+                    }}
+                  >
+                    {category}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      marginLeft: "50px",
+                      color: "#536DFE",
+                      fontWeight: 600,
+                    }}
+                  >
+                    {categoryTasks[category].length} items
+                  </Typography>
+                </Box>
               </AccordionSummary>
               <AccordionDetails sx={{ marginTop: "-20px" }}>
                 <AddNewTaskButton categoryName={category} />
@@ -301,125 +359,3 @@ const AddNewTask = () => {
 };
 
 export default AddNewTask;
-
-/*
-        <Dialog disableEscapeKeyDown open={open} onClose={handleClose}>
-          <DialogTitle>Add New Task</DialogTitle>
-          <DialogContent>
-            <Box sx={{ display: "flex", flexDirection: "column" }}>
-              <TextField
-                sx={{ margin: "10px", width: "40ch" }}
-                label="Task Name"
-                variant="outlined"
-                value={taskName}
-                onChange={(event) => setTaskName(event.target.value)}
-                required
-              />
-              <DatePicker
-                format="DD-MM-YYYY"
-                label="Due Date"
-                sx={{ margin: "10px", width: "40ch" }}
-                value={taskDueDate}
-                onChange={(date) => setTaskDueDate(date.format("DD-MM-YYYY"))}
-                required
-              />
-              <FormControl sx={{ margin: "10px", width: "40ch" }}>
-                <InputLabel id="priority-label">Priority</InputLabel>
-                <Select
-                  onChange={(event) => setTaskPriority(event.target.value)}
-                  label="priority"
-                  required
-                >
-                  <MenuItem value={"Very High"}>Very High</MenuItem>
-                  <MenuItem value={"High"}>High</MenuItem>
-                  <MenuItem value={"Average"}>Average</MenuItem>
-                  <MenuItem value={"Low"}>Low</MenuItem>
-                </Select>
-              </FormControl>
-              <FormControl sx={{ margin: "10px", width: "40ch" }}>
-                <InputLabel id="category-label">Category</InputLabel>
-                <Select
-                  onChange={(event) => setTaskCategory(event.target.value)}
-                  label="category"
-                  required
-                >
-                  <MenuItem value={"BT1101"}>BT1101</MenuItem>
-                  <MenuItem value={"CS1010S"}>CS1010S</MenuItem>
-                  <MenuItem value={"MA1521"}>MA1521</MenuItem>
-                  <MenuItem value={"NGN2001"}>NGN2001</MenuItem>
-                  <MenuItem value={"IS1108"}>IS1108</MenuItem>
-                </Select>
-                <Button sx={{ marginTop: "10px" }} variant="contained">
-                  Or Add New Category
-                </Button>
-              </FormControl>
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleAddTask} color="primary">
-              OK
-            </Button>
-            <Button onClick={handleClose} color="error">
-              Cancel
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <Tabs value={activeTab} onChange={handleChange}>
-          <Tab label="Module View" />
-          <Tab label="Table View" />
-        </Tabs>
-        {activeTab === 0 && (
-          <div>
-            {/*map (key, value) */
-/*
-            {Object.entries(tasksByCategory).map(([category, tasks]) => (
-              <Accordion sx={{ margin: "20px", width: "135ch" }} key={category}>
-                <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />}>
-                  <Typography sx={{ fontWeight: "700" }}>{category}</Typography>
-                </AccordionSummary>
-                {tasks.map((task, index) => (
-                  <Box
-                    sx={{
-                      margin: "20px",
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyItems: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <FormControlLabel
-                      key={index}
-                      control={<Checkbox />}
-                      label={task.name}
-                    />
-                    <Typography
-                      key={index}
-                      sx={{
-                        marginLeft: "50px",
-                        fontWeight: "700",
-                        color: "black",
-                      }}
-                    >
-                      Do By: {task.dueDate}
-                    </Typography>
-                  </Box>
-                ))}
-              </Accordion>
-            ))}
-          </div>
-        )}
-        {activeTab === 1 && (
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DataGrid
-              sx={{
-                marginLeft: "20px",
-                padding: "20px",
-                width: "110ch",
-              }}
-              rows={TaskRows}
-              columns={TaskColumns}
-            />
-          </LocalizationProvider>
-        )}
-      </Card>
-      */

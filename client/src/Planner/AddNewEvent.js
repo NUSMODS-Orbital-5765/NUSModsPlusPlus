@@ -29,6 +29,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import { DataGrid } from "@mui/x-data-grid";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
+import { format } from "date-fns";
 
 // styling of new event button + handle addition of new event
 const AddNewEvent = () => {
@@ -78,8 +79,8 @@ const AddNewEvent = () => {
     const newEvent = {
       id: events.length + 1,
       name: eventName,
-      date: eventDate.format("DD-MM-YYYY"),
-      time: eventTime.format("HH:mm"),
+      date: eventDate.format("DD MMMM YYYY"),
+      time: eventTime.format("hh:mm A"),
       category: eventCategory,
       priority: eventPriority,
     };
@@ -282,7 +283,7 @@ const AddNewEvent = () => {
               width: "20px",
               height: "20px",
               borderRadius: "50%",
-              backgroundColor: priorityColors[params.value],
+              backgroundColor: priorityColors[params.value], // priority is an integer from 1 to 4
               marginRight: "8px",
             }}
           />

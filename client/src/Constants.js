@@ -377,3 +377,226 @@ export const priorityValues = {
   Average: 2,
   Low: 1,
 };
+
+// list of sample day events for homepage timetable
+export const sampleDayEvents = [
+  {
+    name: "Lunch with Lauren",
+    date: "22-06-2003",
+    time: "12:30 PM",
+    category: "Personal",
+    priority: 1,
+  },
+  {
+    name: "CS2030 Lab",
+    date: "22-06-2003",
+    time: "2:00 PM",
+    category: "CS2030",
+    priority: 4,
+  },
+  {
+    name: "Team Meeting",
+    date: "22-06-2003",
+    time: "5:00 PM",
+    category: "Personal",
+    priority: 3,
+  },
+  {
+    name: "Suite Dinner",
+    date: "22-06-2003",
+    time: "6:00 PM",
+    category: "Personal",
+    priority: 1,
+  },
+  {
+    name: "Submit NTW essay",
+    date: "22-06-2003",
+    time: "11:00 PM",
+    category: "NTW2004",
+    priority: 4,
+  },
+];
+
+// list of sample week events for homepage timetable
+// need to extract from database
+export const sampleWeekEvents = [
+  {
+    day: "Monday",
+    events: [
+      {
+        name: "Lunch",
+        date: "19-06-2003",
+        time: "12:30 PM",
+        category: "Personal",
+        priority: 1,
+      },
+      {
+        name: "MA2001 Tutorial",
+        date: "19-06-2003",
+        time: "2:00 PM",
+        category: "MA2001",
+        priority: 4,
+      },
+      {
+        name: "Dinner with Amy",
+        date: "19-06-2003",
+        time: "5:00 PM",
+        category: "Personal",
+        priority: 1,
+      },
+    ],
+  },
+  {
+    day: "Tuesday",
+    events: [
+      {
+        name: "BT2102 Lab",
+        date: "20-06-2003",
+        time: "1:00 PM",
+        category: "BT2102",
+        priority: 3,
+      },
+      {
+        name: "NTW Lesson",
+        date: "20-06-2003",
+        time: "4:00 PM",
+        category: "NTW2004",
+        priority: 3,
+      },
+      {
+        name: "Dinner",
+        date: "20-06-2003",
+        time: "6:30 PM",
+        category: "Personal",
+        priority: 1,
+      },
+    ],
+  },
+  {
+    day: "Wednesday",
+    events: [
+      {
+        name: "Consult with Prof",
+        date: "21-06-2003",
+        time: "1:00 PM",
+        category: "NTW2004",
+        priority: 3,
+      },
+      {
+        name: "EC1101 tutorial 9",
+        date: "21-06-2003",
+        time: "4:00 PM",
+        category: "EC1101E",
+        priority: 3,
+      },
+    ],
+  },
+  {
+    day: "Thursday",
+    events: [
+      {
+        name: "Lunch with Lauren",
+        date: "22-06-2003",
+        time: "12:30 PM",
+        category: "Personal",
+        priority: 1,
+      },
+      {
+        name: "CS2030 Lab",
+        date: "22-06-2003",
+        time: "2:00 PM",
+        category: "CS2030",
+        priority: 4,
+      },
+      {
+        name: "Team Meeting",
+        date: "22-06-2003",
+        time: "5:00 PM",
+        category: "Personal",
+        priority: 3,
+      },
+      {
+        name: "Suite Dinner",
+        date: "22-06-2003",
+        time: "6:00 PM",
+        category: "Personal",
+        priority: 1,
+      },
+      {
+        name: "Submit NTW essay",
+        date: "22-06-2003",
+        time: "11:00 PM",
+        category: "NTW2004",
+        priority: 4,
+      },
+    ],
+  },
+  {
+    day: "Friday",
+    events: [
+      {
+        name: "Lunch",
+        date: "23-06-2003",
+        time: "12:30 PM",
+        category: "Personal",
+        priority: 1,
+      },
+      {
+        name: "Dinner with Jon",
+        date: "23-06-2003",
+        time: "6:00 PM",
+        category: "Personal",
+        priority: 1,
+      },
+    ],
+  },
+];
+
+// list of sample tasks with the reminder date set to today.
+// has to be updated in the actual planner page; i haven't figured that out yet.
+export const sampleDayTasks = [
+  {
+    name: "Watch CS2030 Lecture",
+    priority: 4,
+    reminder: "22 June 2023",
+  },
+  {
+    name: "MA2001 Tutorial 9",
+    priority: 3,
+    reminder: "22 June 2023",
+  },
+  {
+    name: "Buy snacks from Octobox",
+    priority: 1,
+    reminder: "22 June 2023",
+  },
+  {
+    name: "Do laundry",
+    priority: 1,
+    reminder: "22 June 2023",
+  },
+  {
+    name: "Read meeting minutes",
+    priority: 3,
+    reminder: "22 June 2023",
+  },
+  {
+    name: "Charge my phone",
+    priority: 2,
+    reminder: "22 June 2023",
+  },
+];
+
+// shortform of days
+export const getShortDay = (day) => {
+  const shortDays = {
+    Monday: "Mon",
+    Tuesday: "Tue",
+    Wednesday: "Wed",
+    Thursday: "Thu",
+    Friday: "Fri",
+    Saturday: "Sat",
+    Sunday: "Sun",
+  };
+  return shortDays[day];
+};
