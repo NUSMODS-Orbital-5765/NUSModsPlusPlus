@@ -8,8 +8,8 @@ import {
   FormFacultyMajorField,
   FormInterestsField,
 } from "../FormStyledComponents";
-import React, { useState } from "react";
-
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 // styling for headers
 export const ProfileHeader = (props) => {
   const { text } = props;
@@ -30,12 +30,54 @@ export const ProfileHeader = (props) => {
 
 const ProfileInfoComponent = () => {
   const [editableDetails, setEditableDetails] = useState(false);
+  const [profileInfo, setProfileInfo] = useState();
+  const [isFetch, setIsFetch] = useState(false);
   const handleEditableDetails = () => {
     setEditableDetails(!editableDetails);
   };
+  const handleProfileInfo = (evt) => {
+    const name = evt.target.name;
+    const value = evt.target.value;
+    setProfileInfo({
+      ...profileInfo,
+      [name]: value,
+    });
+  }; 
+  useEffect( ()=>{
+  const userId = localStorage.getItem("userId");
+  const GETprofileURL = process.env.REACT_APP_API_LINK + "/profile/get";
+  axios.get(GETprofileURL, {
+    params: {
+      userId: userId,
+    }
+  })
+  .then(user=>{
+    setProfileInfo(user.data.user);
+    setIsFetch(true);
+    console.log(user.data.user);
+  })
+  .catch(err=>console.log(err))},[]);
+
+  const postUpdateAPI = `${process.env.REACT_APP_API_LINK}/profile/update`;
+  const submitProfileUpdate = () => {
+    axios
+      .post(postUpdateAPI, profileInfo,  {
+        headers: { Authorization: `Bearer ${localStorage.getItem("user-token")}` }
+    })
+      .then((response) => {
+        alert("Profile Update Successfully");
+        console.log(response);
+        //useNavigate need to be initalise at top
+      })
+      .catch((error) => {
+        alert("Fail to Update")
+        console.log(error);
+      });
+  };
+
 
   return (
-    <Card
+    isFetch&&<Card
       sx={{
         borderRadius: "5px",
         marginLeft: "30px",
@@ -94,48 +136,62 @@ const ProfileInfoComponent = () => {
               <FormTextField
                 disabled={!editableDetails}
                 label="Name"
-                defaultText={sampleProfile["Name"]}
+                name="name"
+                defaultText={profileInfo.name}
+                setfn={handleProfileInfo}
               />
               <FormTextField
                 disabled={!editableDetails}
                 label="StudentID"
-                defaultText={sampleProfile["StudentID"]}
+                name="studentId"
+                defaultText={profileInfo.studentId}
+                setfn={handleProfileInfo}
               />
               <ProfileHeader text="Account Information" />
               <FormTextField
-                disabled={!editableDetails}
+                disabled={true}
                 label="Username"
-                defaultText={sampleProfile["Username"]}
+                name="username"
+                defaultText={profileInfo.username}
+                setfn={handleProfileInfo}
               />
               <FormPasswordField
-                disabled={!editableDetails}
+                disabled={true}
                 defaultText={sampleProfile["Password"]}
+                setfn={handleProfileInfo}
               />
             </Box>
             <Box sx={{ marginLeft: "50px" }}>
               <ProfileHeader text="Academic Information" />
               <FormFacultyMajorField
                 disabled={!editableDetails}
-                filledFaculty={sampleProfile["Faculty"]}
-                filledMajor={sampleProfile["Major"]}
+                filledFaculty={profileInfo.faculty}
+                filledMajor={profileInfo.primaryMajor}
+                setfn={handleProfileInfo}
               />
               <FormAutocomplete
                 disabled={!editableDetails}
                 label="Second Major"
+                name = "secondaryMajor"
                 optionsList={majorList}
-                filledOption={sampleProfile["Second Major"]}
+                defaultText={profileInfo.secondaryMajor}
+                setfn={handleProfileInfo}
               />
               <FormAutocomplete
                 disabled={!editableDetails}
                 label="Minor"
+                name = "minors"
                 optionsList={majorList}
-                filledOption={sampleProfile["Minor"]}
+                defaultText={profileInfo.minors}
+                setfn={handleProfileInfo}
               />
               <FormAutocomplete
                 disabled={!editableDetails}
+                name = "programme"
                 label="Special Programme (if any)"
                 optionsList={progsList}
-                filledOption={sampleProfile["Special Programme"]}
+                defaultText={profileInfo.programme}
+                setfn={handleProfileInfo}
               />
             </Box>
           </Box>
@@ -145,12 +201,13 @@ const ProfileInfoComponent = () => {
             <ProfileHeader text="User Preferences" />
             <FormInterestsField
               disabled={!editableDetails}
-              filledInterests={sampleProfile["Interests"]}
+              setfn={handleProfileInfo}
+              filledInterests={profileInfo.interests}
             />
           </Box>
         </Box>
         <Button
-          onClick={() => setEditableDetails(false)}
+          onClick={submitProfileUpdate}
           sx={{ marginTop: "20px" }}
           variant="contained"
           color="primary"
@@ -159,6 +216,6 @@ const ProfileInfoComponent = () => {
         </Button>
       </CardContent>
     </Card>
-  );
+  )
 };
 export default ProfileInfoComponent;

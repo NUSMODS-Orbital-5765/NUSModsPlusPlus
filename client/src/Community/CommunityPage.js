@@ -4,6 +4,7 @@ import DrawerComponent from "../DrawerComponent";
 import UploadPost from "../UploadPost/UploadPost";
 import CommunityDefaultPost from "./CommunityDefaultPost";
 import axios from "axios";
+import AWSLinkGenerate from '../libs/AWSLinkGenerate';
 import {
   Box,
   FormControl,
@@ -104,22 +105,16 @@ const CommunityPage = () => {
     page: 1,
     sortValue: sortValue,
     filterValue: filterValue,
-  };
+  }
 
-  useEffect(() => {
-    axios
-      .get(postGetAPI, postGetDetail)
-      .then((res) => {
-        res.data.postList.map((post) => {
-          const filePath = post.upload_file;
-          post.upload_file =
-            filePath == ""
-              ? null
-              : "https://nusmods.s3.ap-southeast-1.amazonaws.com/" + filePath;
-        });
-        setPostList(res.data.postList);
-        setPostReceived(true);
-      })
+  useEffect(()=>{
+    
+    axios.get(postGetAPI,postGetDetail)
+    .then((res) => {
+      console.log(res.data.postList);
+    setPostList(res.data.postList);
+    setPostReceived(true);
+    })
       .catch((err) => console.log(err));
   }, [page]);
   return (
@@ -173,9 +168,9 @@ const CommunityPage = () => {
           }}
         >
           <SortAndFilter />
-          <Box sx={{ marginTop: "100px", marginBottom: "150px" }}>
-            {!postList && <NoPostsPlaceholder />}
-          </Box>
+          {!postReceived&&<Box sx={{ marginTop: "100px", marginBottom: "150px" }}>
+            <NoPostsPlaceholder />
+          </Box>}
         </Box>
         {postReceived && <PostsGrid postList={postList} />}
         <Box
