@@ -23,13 +23,15 @@ import {
   priorityColors,
   priorityValues,
 } from "../Constants";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import { DataGrid } from "@mui/x-data-grid";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
+import axios from "axios";
 import { format } from "date-fns";
+import { id } from "date-fns/locale";
 
 // styling of new event button + handle addition of new event
 const AddNewEvent = () => {
@@ -77,22 +79,64 @@ const AddNewEvent = () => {
 
   const handleAddEvent = () => {
     const newEvent = {
-      id: events.length + 1,
+      id: events.length+1,
       name: eventName,
       date: eventDate.format("DD MMMM YYYY"),
       time: eventTime.format("hh:mm A"),
       category: eventCategory,
       priority: eventPriority,
     };
+    const AddEventAPI = `${process.env.REACT_APP_API_LINK}/event/add`;
+
+    axios
+      .post(AddEventAPI, newEvent, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("user-token")}` }
+    })
+      .then((response) => {
+        alert("Upload Event Successfully");
+        setEvents((prevEvents) => [...prevEvents, newEvent]);
+        setOpenDialog(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        //undo the insertion
+        alert("Event added Failed" + error.message);
+        });
+      }
     
-    setEvents((prevEvents) => [...prevEvents, newEvent]);
-    setOpenDialog(false);
-  };
 
   // handle deletion of events
   const handleDeleteEvent = (id) => {
     setEvents((prevEvents) => prevEvents.filter((event) => event.id !== id));
   };
+  
+
+  useEffect(()=> {
+  const GetEventAPI = `${process.env.REACT_APP_API_LINK}/event/get`;
+  axios
+  .get(GetEventAPI, {
+    params:{userId:localStorage.getItem("userId")},
+    headers: { Authorization: `Bearer ${localStorage.getItem("user-token")}` }
+})
+  .then((response) => {
+    const postedEvents = response.data.events;
+    let count = 1;
+    postedEvents.map(event=>{
+      event.eventId = event.id;
+      event.id = count;
+      delete event.userId;
+      count++;
+    });
+    console.log(postedEvents)
+    setEvents((prevEvents) => postedEvents);
+  })
+  .catch((error) => {
+    console.log(error);
+    //undo the insertion
+    alert("Event added Failed " + error.message);
+    })}
+    ,[]
+  )
 
   // styling for dialog with form fields for event details
   const AddNewEventDialog = () => {
@@ -306,7 +350,7 @@ const AddNewEvent = () => {
       <Box sx={{ height: 400, width: "100%" }}>
         <DataGrid
           sx={{ fontSize: "15px" }}
-          rows={eventsList}
+          rows={events}
           columns={columns}
         />
       </Box>
@@ -324,7 +368,7 @@ const AddNewEvent = () => {
         Add New Event
       </Button>
       {AddNewEventDialog()}
-      <EventsDataGrid eventsList={events} />
+      <EventsDataGrid />
     </Box>
   );
 };

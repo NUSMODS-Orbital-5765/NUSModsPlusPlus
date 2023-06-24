@@ -15,7 +15,11 @@ const app = express();
 const jsonParser = express.json();
 
 const port = process.env.PORT || 3001;
-
+function exclude(user, keys) {
+      return Object.fromEntries(
+        Object.entries(user).filter(([key]) => !keys.includes(key))
+      );
+    }
 app.use(cors());
 app.get("/", jsonParser, async (req, res) => {
   const users = await prisma.user.findMany();
@@ -278,12 +282,43 @@ app.post('/event/add', [jsonParser,auth], (request, response) => {
     });
   })
 })
+
+// app.post('/event/delete', [jsonParser,auth], (request, response) => {
+
+//   console.log("POST event delete request")
+//   prisma.event.delete({
+
+//     data: {
+//       name: request.body.name,
+//       date: request.body.date,
+//       time: request.body.time,
+//       category: request.body.category,
+//       priority: request.body.priority,
+//       user: {connect: {username: response.locals.user.username}},
+//     }
+//   })
+//   .then(res => {
+//     console.log("Added Event Successfully");
+//     response.status(200).send({
+//       message: `Add Event ${res.id} successfully at username = ${response.locals.user.username}`,
+//       res,
+//     });
+//   })
+//   .catch(error => {
+//     console.log(error);
+//     response.status(500).send({
+//       message: "Error Adding Event",
+//       error,
+//     });
+//   })
+// })
 app.get("/event/get", [jsonParser,auth], (request, response) => {
   console.log("Getting Events List");
   prisma.user.findUnique({
-    where: {username: 'username'}}).Event()
+    where: {username: response.locals.user.username}}).Event()
   .then(events => {
     console.log("Getting Events List");
+    
     response.status(200).send({
       message: "Events List Get Successfully at user id = " + request.query.userId,
       events,
