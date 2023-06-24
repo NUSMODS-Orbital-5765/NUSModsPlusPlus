@@ -51,7 +51,7 @@ const AppBarAvatar = () => {
           sx={{
             margin: "20px",
             marginBottom: "10px",
-            fontSize: "12px",
+            fontSize: "14px",
             fontWeight: "600",
           }}
           color="text.secondary"
@@ -88,8 +88,8 @@ const AppBarAvatar = () => {
           sx={{
             margin: "20px",
             marginBottom: "10px",
-            fontSize: "12px",
             fontWeight: "600",
+            fontSize: "14px",
           }}
           color="text.secondary"
         >
@@ -104,7 +104,13 @@ const AppBarAvatar = () => {
               to={item.link}
             >
               {item.icon}
-              <span style={{ marginLeft: "10px", fontWeight: 500 }}>
+              <span
+                style={{
+                  fontSize: "17px",
+                  marginLeft: "10px",
+                  fontWeight: 500,
+                }}
+              >
                 {item.text}
               </span>
             </MenuItem>
