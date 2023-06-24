@@ -14,24 +14,73 @@ import {
   InputAdornment,
   IconButton,
   NativeSelect,
+  Stepper,
+  Step,
+  StepLabel,
 } from "@mui/material";
 import { facultyList, majorDict, interestsDict } from "./Constants";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 
+// styling for signup welcome message
+export const SignUpWelcomeMessage = () => {
+  <Typography sx={{ fontWeight: "700", fontSize: "50px" }}>
+    Welcome! Let's get you settled.
+  </Typography>;
+};
+
+// styling for stepper component
+export const SignUpStepper = ({ activeStep }) => {
+  const steps = ["Setting Up...", "Almost There...", "One Last Thing..."];
+  return (
+    <Box sx={{ width: "100%" }}>
+      <Stepper activeStep={activeStep} alternativeLabel>
+        {steps.map((label, index) => (
+          <Step key={index}>
+            <StepLabel>{label}</StepLabel>
+          </Step>
+        ))}
+      </Stepper>
+    </Box>
+  );
+};
+
+// styling for form headers
+export const FormHeader = (props) => {
+  const { text } = props;
+  return (
+    <Typography
+      color="text.primary"
+      sx={{
+        marginTop: "30px",
+        fontWeight: 700,
+        marginBottom: "15px",
+        textTransform: "uppercase",
+      }}
+    >
+      {text}
+    </Typography>
+  );
+};
+
 // styling for text fields
 export function FormTextField({ name, label, defaultText, setfn, disabled }) {
   const [requiredField, setRequiredField] = useState(defaultText);
   const [error, setError] = useState(false);
+
   const handleRequiredFieldChange = (event) => {
     const value = event.target.value;
+    const isError = value === "";
+    setError(isError);
     setRequiredField(value);
-    setError(value === "");
+    if (!isError) {
+      setfn(event);
+    }
   };
 
   return (
     <TextField
-      sx={{ marginBottom: "20px" }}
+      fullWidth
       name={name}
       label={label}
       variant="outlined"
@@ -39,7 +88,6 @@ export function FormTextField({ name, label, defaultText, setfn, disabled }) {
       value={requiredField}
       onChange={(e) => {
         handleRequiredFieldChange(e);
-        setfn(e);
       }}
       required
       error={error}
@@ -48,28 +96,37 @@ export function FormTextField({ name, label, defaultText, setfn, disabled }) {
   );
 }
 
-// styling for autocomplete components
-export function FormAutocomplete({
-  optionsList,
-  name,
-  label,
-  setfn,
-  disabled,
-  defaultText,
-}) {
+// styling for username field
+export function FormUsernameField({ defaultText, setfn, disabled }) {
+  const [requiredField, setRequiredField] = useState(defaultText);
+  const [error, setError] = useState(false);
+  const handleRequiredFieldChange = (event) => {
+    const value = event.target.value;
+    setRequiredField(value);
+
+    const usernameRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
+    const isError = !usernameRegex.test(value);
+    setError(isError);
+    if (!isError) {
+      setfn(event);
+    }
+  };
+
   return (
-    <Autocomplete
-      sx={{ marginTop: "20px" }}
-      disablePortal
-      name={name}
-      defaultValue={defaultText}
+    <TextField
+      fullWidth
+      name="username"
+      label="Username"
+      variant="outlined"
       disabled={disabled}
-      options={optionsList}
-      onChange={(e, v) => {
-        setfn({ target: { name: name, value: v } });
+      value={requiredField}
+      onChange={(e) => {
+        handleRequiredFieldChange(e);
       }}
-      renderInput={(params) => <TextField {...params} label={label} />}
-    />
+      required
+      error={error}
+      helperText={error ? "Username must contain at least 8 characters" : ""}
+    ></TextField>
   );
 }
 
@@ -85,12 +142,19 @@ export function FormPasswordField({ defaultText, setfn, disabled }) {
   const handleRequiredFieldChange = (event) => {
     const value = event.target.value;
     setRequiredField(value);
-    setError(value === "");
+
+    const passwordRegex =
+      /^(?=.*[A-Za-z\d])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const isError = !passwordRegex.test(value);
+    setError(isError);
+    if (!isError) {
+      setfn(event);
+    }
   };
 
   return (
     <TextField
-      sx={{ marginBottom: "-30px" }}
+      fullWidth
       name="password"
       label="Password"
       variant="outlined"
@@ -98,12 +162,15 @@ export function FormPasswordField({ defaultText, setfn, disabled }) {
       value={requiredField}
       onChange={(e) => {
         handleRequiredFieldChange(e);
-        setfn(e);
       }}
       required
       type={showPassword ? "text" : "password"}
       error={error}
-      helperText={error ? "Field cannot be empty" : ""}
+      helperText={
+        error
+          ? "Password must contain at least 8 characters and at least one special character"
+          : ""
+      }
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
@@ -118,6 +185,65 @@ export function FormPasswordField({ defaultText, setfn, disabled }) {
         ),
       }}
     ></TextField>
+  );
+}
+
+// styling for email field
+export const FormEmailField = ({ defaultText, setfn, disabled }) => {
+  const [requiredField, setRequiredField] = useState(defaultText);
+  const [error, setError] = useState(false);
+
+  const handleRequiredFieldChange = (event) => {
+    const value = event.target.value;
+    setRequiredField(value);
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isError = !emailRegex.test(value);
+    setError(isError);
+    if (!isError) {
+      setfn(event);
+    }
+  };
+
+  return (
+    <TextField
+      name="email"
+      label="Recovery Email"
+      type="email"
+      disabled={disabled}
+      value={requiredField}
+      onChange={(e) => {
+        handleRequiredFieldChange(e);
+      }}
+      error={error}
+      required
+      helperText={error ? "Invalid email format" : ""}
+    />
+  );
+};
+
+// styling for autocomplete components
+export function FormAutocomplete({
+  optionsList,
+  name,
+  label,
+  setfn,
+  disabled,
+  defaultText,
+}) {
+  return (
+    <Autocomplete
+      fullWidth
+      disablePortal
+      name={name}
+      defaultValue={defaultText}
+      disabled={disabled}
+      options={optionsList}
+      onChange={(e, v) => {
+        setfn({ target: { name: name, value: v } });
+      }}
+      renderInput={(params) => <TextField {...params} label={label} />}
+    />
   );
 }
 
