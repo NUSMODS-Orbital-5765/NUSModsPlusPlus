@@ -3,6 +3,10 @@
 
 generator client {
   provider = "prisma-client-js"
+
+}
+generator dbml {
+  provider = "prisma-dbml-generator"
 }
 
 datasource db {
@@ -25,6 +29,7 @@ model User {
   avatar         String?
   Post           Post[]
   Comment        Comment[]
+  Event          Event[]
 }
 
 model Post {
@@ -121,4 +126,15 @@ model ModuleGroup {
   major        Major[]
   minor        Minor[]
   CommonModule CommonModule[]
+}
+
+model Event {
+  id       Int    @id @default(autoincrement())
+  name     String
+  date     String
+  time     String
+  category String
+  priority Int
+  user     User   @relation(fields: [userId], references: [id])
+  userId   Int
 }
