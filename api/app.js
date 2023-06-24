@@ -5,7 +5,6 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const auth = require("./auth");
 const cors = require("cors");
-const formidable = require("express-formidable");
 const { request } = require("http");
 const { json } = require("body-parser");
 const { error } = require("console");
@@ -201,7 +200,7 @@ app.get('/profile/get', jsonParser, (request, response) => {
   .then(user => {
     console.log("Getting User Profile");
     response.status(200).send({
-      message: "User Get Successfully at id ="+request.body.userId,
+      message: "User Get Successfully at id ="+request.query.userId,
       user,
     });
   })
@@ -246,6 +245,54 @@ app.post('/profile/update', [jsonParser,auth], (request, response) => {
     console.log(error);
     response.status(500).send({
       message: "Error Getting User",
+      error,
+    });
+  })
+})
+
+app.post('/event/add', [jsonParser,auth], (request, response) => {
+
+  console.log("Post event add request")
+  prisma.event.create({
+    data: {
+      name: request.body.name,
+      date: request.body.date,
+      time: request.body.time,
+      category: request.body.category,
+      priority: request.body.priority,
+      user: {connect: {username: response.locals.user.username}},
+    }
+  })
+  .then(res => {
+    console.log("Added Event Successfully");
+    response.status(200).send({
+      message: `Add Event ${res.id} successfully at username = ${response.locals.user.username}`,
+      res,
+    });
+  })
+  .catch(error => {
+    console.log(error);
+    response.status(500).send({
+      message: "Error Adding Event",
+      error,
+    });
+  })
+})
+app.get("/event/get", [jsonParser,auth], (request, response) => {
+  console.log("Getting Events List");
+  prisma.user.findUnique({
+    where: {username: 'username'}}).Event()
+  .then(events => {
+    console.log("Getting Events List");
+    response.status(200).send({
+      message: "Events List Get Successfully at user id = " + request.query.userId,
+      events,
+    });
+  })
+  .catch(error => {
+    console.log(error);
+    response.status(500).send({
+      message: "Error Getting Event",
       error,
     });
   })

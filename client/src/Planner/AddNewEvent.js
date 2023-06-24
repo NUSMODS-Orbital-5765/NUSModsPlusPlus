@@ -84,7 +84,7 @@ const AddNewEvent = () => {
       category: eventCategory,
       priority: eventPriority,
     };
-
+    
     setEvents((prevEvents) => [...prevEvents, newEvent]);
     setOpenDialog(false);
   };
@@ -323,7 +323,7 @@ const AddNewEvent = () => {
       >
         Add New Event
       </Button>
-      {setOpenDialog && AddNewEventDialog()}
+      {AddNewEventDialog()}
       <EventsDataGrid eventsList={events} />
     </Box>
   );
