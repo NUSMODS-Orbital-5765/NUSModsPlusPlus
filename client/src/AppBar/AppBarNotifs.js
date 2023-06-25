@@ -6,14 +6,11 @@ import React, { useState } from "react";
 import {
   Avatar,
   Box,
-  Tooltip,
   IconButton,
-  Button,
   Typography,
   Menu,
-  MenuItem,
   Badge,
-  Divider,
+  List,
 } from "@mui/material";
 import { notifsList } from "../Constants";
 import { formatDate } from "../Constants";
@@ -41,20 +38,30 @@ export const DefaultNotif = (props) => {
   }
 
   return (
-    <Button sx={{ opacity: readNotif ? 0.5 : 1 }} onClick={handleReadNotif}>
+    <Box
+      sx={{
+        margin: "20px",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        opacity: readNotif ? 0.5 : 1,
+      }}
+    >
       <Box
         sx={{
-          margin: "20px",
           display: "flex",
-          flexDirection: "column",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyItems: "center",
         }}
       >
+        <Avatar sx={{ width: 70, height: 70 }} alt="Admin Icon" src={avatar} />
         <Box
           sx={{
             display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
+            flexDirection: "column",
+            justifyItems: "center",
           }}
         >
           <Box
@@ -62,14 +69,8 @@ export const DefaultNotif = (props) => {
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
-              marginRight: "50px",
             }}
           >
-            <Avatar
-              sx={{ width: 50, height: 50 }}
-              alt="Admin Icon"
-              src={avatar}
-            />
             <Typography
               sx={{
                 textTransform: "none",
@@ -80,36 +81,42 @@ export const DefaultNotif = (props) => {
             >
               {author} {notifAction}
             </Typography>
+            <Typography
+              variant="h1"
+              sx={{
+                marginLeft: "50px",
+                color: "#536DFE",
+                textTransform: "none",
+                fontWeight: 500,
+                fontSize: "15px",
+              }}
+            >
+              {formatDate(timestamp)}
+            </Typography>
           </Box>
           <Typography
-            variant="h1"
-            sx={{ textTransform: "none", fontWeight: 500, fontSize: "15px" }}
+            sx={{ marginLeft: "10px", textTransform: "none" }}
+            color="text.secondary"
           >
-            {formatDate(timestamp)}
+            {content}
           </Typography>
         </Box>
-        <Typography
-          sx={{ marginLeft: "20px", textTransform: "none" }}
-          color="text.secondary"
-        >
-          {content}
-        </Typography>
       </Box>
-    </Button>
+      <IconButton onClick={handleReadNotif}>
+        {readNotif ? (
+          <DoneAllRoundedIcon color="primary" />
+        ) : (
+          <DoneRoundedIcon color="primary" />
+        )}
+      </IconButton>
+    </Box>
   );
 };
 
 // map a list of notifications
-export const AllNotifs = (props) => {
-  const opacityCondition = props.opacityCondition;
+export const AllNotifs = () => {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        opacity: opacityCondition ? 0.5 : 1,
-      }}
-    >
+    <List>
       {notifsList.map((notif, index) => (
         <DefaultNotif
           key={index}
@@ -120,8 +127,7 @@ export const AllNotifs = (props) => {
           timestamp={notif.timestamp}
         />
       ))}
-      <Divider light />
-    </Box>
+    </List>
   );
 };
 
@@ -164,42 +170,12 @@ const AppBarNotifs = () => {
         </IconButton>
       )}
       <Menu
+        maxWidth="md"
         open={Boolean(AnchorMenu)}
         anchorEl={AnchorMenu}
         onClose={handleClose}
       >
-        <Box
-          sx={{
-            padding: "10px",
-            paddingLeft: "20px",
-            paddingRight: "20px",
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Typography
-            sx={{
-              fontWeight: "600",
-            }}
-          >
-            RECENTS
-          </Typography>
-          <Tooltip
-            title={badgePresent ? "Mark all as read" : "You're up to date"}
-          >
-            <IconButton onClick={handleBadgePresent}>
-              {badgePresent ? (
-                <DoneRoundedIcon color="primary" />
-              ) : (
-                <DoneAllRoundedIcon color="primary" />
-              )}
-            </IconButton>
-          </Tooltip>
-        </Box>
-        <Divider light />
-        <AllNotifs opacityCondition={!badgePresent} />
+        <AllNotifs />
       </Menu>
     </Box>
   );
