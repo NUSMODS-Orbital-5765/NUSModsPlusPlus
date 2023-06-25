@@ -42,7 +42,7 @@ export const dashboardItems = Array(
   {
     text: "Planner",
     icon: <TodayRoundedIcon />,
-    link: "/planner",
+    link: "/planner-events",
   },
   {
     text: "Modules",
@@ -109,4 +109,13 @@ export const SectionHeader = (props) => {
 };
 
 // list of site search recommendations (needs editing)
-export const siteRecommendations = ["Home", "Task", "Event"];
+export const siteRecommendations = [
+  { option: "back to home", link: "/" },
+  { option: "add todos", link: "/planner-todos" },
+  { option: "add events", link: "/planner-events" },
+  { option: "plan modules", link: "/modules" },
+  { option: "edit profile", link: "/profile" },
+  { option: "logout", link: "/sign-in" },
+  { option: "calculate gpa", link: "/calculator" },
+  { option: "new post", link: "/community" },
+];

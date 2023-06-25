@@ -104,9 +104,9 @@ export const DefaultNotif = (props) => {
       </Box>
       <IconButton onClick={handleReadNotif}>
         {readNotif ? (
-          <DoneRoundedIcon color="primary" />
-        ) : (
           <DoneAllRoundedIcon color="primary" />
+        ) : (
+          <DoneRoundedIcon color="primary" />
         )}
       </IconButton>
     </Box>

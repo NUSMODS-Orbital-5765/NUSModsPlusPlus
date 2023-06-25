@@ -15,6 +15,7 @@ import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded"; // 
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
 import NavigateBeforeRoundedIcon from "@mui/icons-material/NavigateBeforeRounded";
+import { useNavigate } from "react-router-dom";
 
 // sliding upwards transition
 export const SlideUpTransition = React.forwardRef(function Transition(
@@ -142,17 +143,22 @@ export const BackToTop = () => {
 // styling for a default search bar
 // needs logic for displaying searches
 export const SearchBar = (props) => {
+  const navigate = useNavigate();
   const label = props.label;
   const searchRecommendations = props.searchRecommendations;
   const width = props.width;
+
+  // navigate to the respective page
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
-      displaySearches(event);
+      const selectedOption = event.target.value;
+      const matchedOption = searchRecommendations.find(
+        (option) => option.option === selectedOption
+      );
+      if (matchedOption) {
+        navigate(matchedOption.link);
+      }
     }
-  };
-
-  const displaySearches = (event) => {
-    console.log(event.target.value);
   };
 
   return (
@@ -170,6 +176,7 @@ export const SearchBar = (props) => {
       <Autocomplete
         freeSolo
         options={searchRecommendations}
+        getOptionLabel={(option) => option.option}
         renderInput={(params) => (
           <TextField
             sx={{ width: { width } }}
@@ -178,7 +185,6 @@ export const SearchBar = (props) => {
             margin="normal"
             variant="standard"
             onKeyDown={handleKeyDown}
-            onChange={displaySearches}
           />
         )}
       />
