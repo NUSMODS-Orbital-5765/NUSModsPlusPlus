@@ -94,6 +94,7 @@ const AddNewEvent = () => {
     })
       .then((response) => {
         alert("Upload Event Successfully");
+        newEvent.eventId=response.data.res.id;
         setEvents((prevEvents) => [...prevEvents, newEvent]);
         setOpenDialog(false);
       })
@@ -151,7 +152,7 @@ const AddNewEvent = () => {
     })}
     ,[]
   )
-
+  useEffect(()=>console.log(events),[events]);
   // styling for dialog with form fields for event details
   const AddNewEventDialog = () => {
     return (
