@@ -40,6 +40,7 @@ app.post("/register",jsonParser, (request, response) => {
         studentId: request.body.studentId,
         username: request.body.username,
         password: hashedPassword,
+        email: request.body.email,
         faculty: request.body.faculty,
         primaryMajor: request.body.primaryMajor,
         secondaryMajor: request.body.secondaryMajor,
@@ -76,12 +77,7 @@ app.post("/register",jsonParser, (request, response) => {
       });
     });
 });
-// {
-//     "name": "Yuting",
-//     "studentID": "GG2123",
-//     "email": "look4us@u.nus.edu",
-//     "password": "password"
-// }
+
 app.post("/login", jsonParser, (request, response) => {
   console.log(`User ${request.body.username} Logging in`)
   prisma.user
@@ -309,7 +305,7 @@ app.get("/event/get", [jsonParser,auth], (request, response) => {
   prisma.user.findUnique({
     where: {username: response.locals.user.username}}).Event()
   .then(events => {
-    console.log("Getting Events List");
+    console.log("Get Events List Successfully");
     
     response.status(200).send({
       message: "Events List Get Successfully at user id = " + request.query.userId,
