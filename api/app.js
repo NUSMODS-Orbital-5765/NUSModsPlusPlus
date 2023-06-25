@@ -214,11 +214,7 @@ app.get('/profile/get', jsonParser, (request, response) => {
 })
 // token = 
 app.post('/profile/update', [jsonParser,auth], (request, response) => {
-  if(response.locals.user.username !== request.body.username) {
-    response.status(403).send({
-      message: "Invalid User Permission",
-    });
-  }
+  
   prisma.user.update({
     where: {
       username: response.locals.user.username,
