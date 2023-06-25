@@ -18,8 +18,7 @@ const SignUpStepThree = () => {
   const [registerInfo, setRegisterInfo] = useState(prevRegisterInfo);
 
   const registerAPI = `${process.env.REACT_APP_API_LINK}/register`;
-  const submitLoginForm = () => {
-    navigate("/sign-in");
+  const submitRegisterForm = () => {
     axios
       .post(registerAPI, registerInfo)
       .then((response) => {
@@ -43,7 +42,7 @@ const SignUpStepThree = () => {
       [name]: value,
     });
   };
-
+  
   return (
     <Box
       sx={{
@@ -86,7 +85,7 @@ const SignUpStepThree = () => {
           <Button
             sx={{ marginLeft: "115ch" }}
             variant="contained"
-            onClick={submitLoginForm}
+            onClick={submitRegisterForm}
           >
             Submit
           </Button>
