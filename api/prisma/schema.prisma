@@ -5,21 +5,137 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id             Int      @id @default(autoincrement())
+  id             Int       @id @default(autoincrement())
   name           String
-  studentId      String   @unique
-  username       String   @unique
+  studentId      String    @unique
+  username       String    @unique
   password       String
+  email          String    @unique
   faculty        String
   primaryMajor   String
   secondaryMajor String?
   minors         String?
   programme      String
   interests      String[]
+  avatar         String?
+  Post           Post[]
+  Comment        Comment[]
+  Event          Event[]
+}
+
+model Post {
+  id           Int      @id @default(autoincrement())
+  title        String
+  dateCreated  DateTime
+  relatedMajor String?
+  category     String
+  content      String
+  upload_file  String[]
+  tags         String[]
+  author       User     @relation(fields: [authorId], references: [id])
+  authorId     Int
+  likes        Int      @default(0)
+  comment      Int      @default(0)
+}
+
+model Comment {
+  id       Int  @id @default(autoincrement())
+  author   User @relation(fields: [authorId], references: [id])
+  authorId Int
+}
+
+model Faculty {
+  id           Int            @id @default(autoincrement())
+  name         String
+  Major        Major[]
+  Minor        Minor[]
+  CommonModule CommonModule[]
+}
+
+model Major {
+  id          Int           @id @default(autoincrement())
+  name        String
+  faculty     Faculty       @relation(fields: [facultyId], references: [id])
+  facultyId   Int
+  requirement ModuleGroup[]
+  Programme   Programme[]
+}
+
+model Minor {
+  id          Int           @id @default(autoincrement())
+  name        String
+  faculty     Faculty       @relation(fields: [facultyId], references: [id])
+  facultyId   Int
+  requirement ModuleGroup[]
+}
+
+model CommonModule {
+  id          Int           @id @default(autoincrement())
+  name        String
+  faculty     Faculty       @relation(fields: [facultyId], references: [id])
+  requirement ModuleGroup[]
+  facultyId   Int
+  Programme   Programme[]
+}
+
+model Programme {
+  id             Int          @id @default(autoincrement())
+  name           String
+  commonMod      CommonModule @relation(fields: [commonModuleId], references: [id])
+  major          Major        @relation(fields: [majorId], references: [id])
+  majorId        Int
+  commonModuleId Int
+}
+
+model Module {
+  id              Int           @id @default(autoincrement())
+  title           String
+  moduleCode      String
+  description     String
+  moduleCredit    Int
+  department      String
+  faculty         String
+  professor       String[]
+  semester        Semester      @relation(fields: [semesterId], references: [id])
+  prequesiteTree  Json?
+  SUablity        Boolean
+  preclusion      String[]
+  semesterId      Int
+  moduleGroupList ModuleGroup[]
+}
+
+model Semester {
+  id           Int      @id @default(autoincrement())
+  semesterCode String
+  Module       Module[]
+}
+
+model ModuleGroup {
+  id           Int            @id @default(autoincrement())
+  title        String
+  moduleList   Module[]
+  major        Major[]
+  minor        Minor[]
+  CommonModule CommonModule[]
+}
+
+model Event {
+  id       Int    @id @default(autoincrement())
+  name     String
+  date     String
+  time     String
+  category String
+  priority Int
+  user     User   @relation(fields: [userId], references: [id])
+  userId   Int
 }
