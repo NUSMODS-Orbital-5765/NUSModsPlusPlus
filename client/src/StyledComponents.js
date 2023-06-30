@@ -37,7 +37,10 @@ export const LogoComponent = () => {
         marginBottom: "20px",
       }}
     >
-      <img src="nusmods_logo_white.png" style={{ width: "30%" }} />
+      <img
+        src={`${process.env.PUBLIC_URL}/nusmods_logo_white.png`}
+        style={{ width: "30%" }}
+      />
       <Typography
         variant="h1"
         sx={{
@@ -46,7 +49,7 @@ export const LogoComponent = () => {
           fontWeight: 300,
         }}
       >
-        A new way to plan
+        Plan well, score well
       </Typography>
     </Box>
   );

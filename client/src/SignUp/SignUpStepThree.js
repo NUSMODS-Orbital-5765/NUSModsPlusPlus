@@ -52,15 +52,18 @@ const SignUpStepThree = () => {
         flexDirection: "column",
         alignItems: "center",
         backgroundImage: `url(${process.env.PUBLIC_URL}/signup_background.png)`,
-        backgroundSize: "cover",
+        backgroundSize: "100% 100%", // addresses issue of having to put margins to extend background artificially
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
+        minHeight: "100vh",
       }}
     >
       <Box sx={{ marginTop: "-80px" }}>
         <LogoComponent />
       </Box>
-      <Card sx={{ marginTop: "20px", marginBottom: "50px", minWidth: "150ch" }}>
+      <Card
+        sx={{ marginTop: "20px", marginBottom: "250px", minWidth: "150ch" }}
+      >
         <CardContent sx={{ margin: "10px" }}>
           <Typography
             sx={{ marginBottom: "20px", fontWeight: "700", fontSize: "50px" }}

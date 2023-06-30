@@ -41,7 +41,7 @@ const SignUpStepTwo = () => {
 
   // go to the next page while using the same state
   const handleNextStep = () => {
-    navigate("/sign-up-step-three", { state: { registerInfo } });
+    navigate("/student/sign-up-step-three", { state: { registerInfo } });
   };
 
   // check for errors among the fields
@@ -58,9 +58,10 @@ const SignUpStepTwo = () => {
         flexDirection: "column",
         alignItems: "center",
         backgroundImage: `url(${process.env.PUBLIC_URL}/signup_background.png)`,
-        backgroundSize: "cover",
+        backgroundSize: "100% 100%",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
+        minHeight: "100vh",
       }}
     >
       <Box sx={{ marginTop: "-80px" }}>

@@ -111,7 +111,7 @@ export const SectionHeader = (props) => {
 // list of site search recommendations (needs editing)
 export const siteRecommendations = [
   { option: "back to home", link: "/" },
-  { option: "add todos", link: "/planner-todos" },
+  { option: "add todos", link: "/planner-tasks" },
   { option: "add events", link: "/planner-events" },
   { option: "plan modules", link: "/modules" },
   { option: "edit profile", link: "/profile" },
