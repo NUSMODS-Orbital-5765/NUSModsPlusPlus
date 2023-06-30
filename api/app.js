@@ -40,6 +40,7 @@ app.post("/register",jsonParser, (request, response) => {
         studentId: request.body.studentId,
         username: request.body.username,
         password: hashedPassword,
+        email: request.body.email,
         faculty: request.body.faculty,
         primaryMajor: request.body.primaryMajor,
         secondaryMajor: request.body.secondaryMajor,
@@ -76,12 +77,7 @@ app.post("/register",jsonParser, (request, response) => {
       });
     });
 });
-// {
-//     "name": "Yuting",
-//     "studentID": "GG2123",
-//     "email": "look4us@u.nus.edu",
-//     "password": "password"
-// }
+
 app.post("/login", jsonParser, (request, response) => {
   console.log(`User ${request.body.username} Logging in`)
   prisma.user
@@ -218,11 +214,7 @@ app.get('/profile/get', jsonParser, (request, response) => {
 })
 // token = 
 app.post('/profile/update', [jsonParser,auth], (request, response) => {
-  if(response.locals.user.username !== request.body.username) {
-    response.status(403).send({
-      message: "Invalid User Permission",
-    });
-  }
+  
   prisma.user.update({
     where: {
       username: response.locals.user.username,
@@ -283,41 +275,33 @@ app.post('/event/add', [jsonParser,auth], (request, response) => {
   })
 })
 
-// app.post('/event/delete', [jsonParser,auth], (request, response) => {
+app.post('/event/delete', [jsonParser,auth], (request, response) => {
 
-//   console.log("POST event delete request")
-//   prisma.event.delete({
-
-//     data: {
-//       name: request.body.name,
-//       date: request.body.date,
-//       time: request.body.time,
-//       category: request.body.category,
-//       priority: request.body.priority,
-//       user: {connect: {username: response.locals.user.username}},
-//     }
-//   })
-//   .then(res => {
-//     console.log("Added Event Successfully");
-//     response.status(200).send({
-//       message: `Add Event ${res.id} successfully at username = ${response.locals.user.username}`,
-//       res,
-//     });
-//   })
-//   .catch(error => {
-//     console.log(error);
-//     response.status(500).send({
-//       message: "Error Adding Event",
-//       error,
-//     });
-//   })
-// })
+  console.log("POST event delete request")
+  prisma.event.delete({
+    where: {id: request.body.eventId}
+  })
+  .then(res => {
+    console.log("Delete Event Successfully");
+    response.status(200).send({
+      message: `Delete Event successfully at username = ${response.locals.user.username}`,
+      res,
+    });
+  })
+  .catch(error => {
+    console.log(error);
+    response.status(500).send({
+      message: "Error Deleting Event",
+      error,
+    });
+  })
+})
 app.get("/event/get", [jsonParser,auth], (request, response) => {
   console.log("Getting Events List");
   prisma.user.findUnique({
     where: {username: response.locals.user.username}}).Event()
   .then(events => {
-    console.log("Getting Events List");
+    console.log("Get Events List Successfully");
     
     response.status(200).send({
       message: "Events List Get Successfully at user id = " + request.query.userId,

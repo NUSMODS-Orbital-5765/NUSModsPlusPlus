@@ -3,8 +3,8 @@
 
 generator client {
   provider = "prisma-client-js"
-
 }
+
 generator dbml {
   provider = "prisma-dbml-generator"
 }
@@ -20,6 +20,7 @@ model User {
   studentId      String    @unique
   username       String    @unique
   password       String
+  email          String    @unique
   faculty        String
   primaryMajor   String
   secondaryMajor String?

@@ -94,6 +94,7 @@ const AddNewEvent = () => {
     })
       .then((response) => {
         alert("Upload Event Successfully");
+        newEvent.eventId=response.data.res.id;
         setEvents((prevEvents) => [...prevEvents, newEvent]);
         setOpenDialog(false);
       })
@@ -104,10 +105,24 @@ const AddNewEvent = () => {
         });
       }
     
-
+  
   // handle deletion of events
-  const handleDeleteEvent = (id) => {
-    setEvents((prevEvents) => prevEvents.filter((event) => event.id !== id));
+  const handleDeleteEvent = (id, eventId) => {
+    const DeleteEventAPI = `${process.env.REACT_APP_API_LINK}/event/delete`;
+    const deleteJsonBody = {eventId: eventId};
+    axios
+      .post(DeleteEventAPI, deleteJsonBody, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("user-token")}` }
+    })
+      .then((response) => {
+        alert("Delete Event Successfully");
+        setEvents((prevEvents) => prevEvents.filter((event) => event.id !== id));
+      })
+      .catch((error) => {
+        console.log(error);
+        //undo the insertion
+        alert("Event Delete Failed" + error.message);
+      });
   };
   
 
@@ -137,7 +152,7 @@ const AddNewEvent = () => {
     })}
     ,[]
   )
-
+  useEffect(()=>console.log(events),[events]);
   // styling for dialog with form fields for event details
   const AddNewEventDialog = () => {
     return (
@@ -339,7 +354,7 @@ const AddNewEvent = () => {
         width: 120,
         sortable: false,
         renderCell: (params) => (
-          <IconButton onClick={() => handleDeleteEvent(params.row.id)}>
+          <IconButton onClick={() => handleDeleteEvent(params.row.id,params.row.eventId)}>
             <ClearRoundedIcon color="error" />
           </IconButton>
         ),

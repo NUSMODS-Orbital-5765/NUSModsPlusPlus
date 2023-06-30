@@ -168,7 +168,7 @@ const CommunityPage = () => {
           }}
         >
           <SortAndFilter />
-          {!postReceived&&<Box sx={{ marginTop: "100px", marginBottom: "150px" }}>
+          {(!postReceived||postList==undefined)&&<Box sx={{ marginTop: "100px", marginBottom: "150px" }}>
             <NoPostsPlaceholder />
           </Box>}
         </Box>
