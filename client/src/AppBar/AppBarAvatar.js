@@ -10,12 +10,22 @@ import {
   MenuItem,
   Badge,
   Divider,
+  List,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
 import SettingsSuggestRoundedIcon from "@mui/icons-material/SettingsSuggestRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import CreateRoundedIcon from "@mui/icons-material/CreateRounded";
+
+export const avatarItems = [
+  { label: "Profile", icon: <SettingsRoundedIcon />, link: "/profile" },
+  { label: "My Posts", icon: <CreateRoundedIcon />, link: "/profile" },
+  { label: "Liked Posts", icon: <FavoriteRoundedIcon />, link: "/profile" },
+  { label: "Logout", icon: <LogoutRoundedIcon />, link: "/sign-in" },
+];
 
 const AppBarAvatar = () => {
   // opening the menu
@@ -79,98 +89,22 @@ const AppBarAvatar = () => {
           </Box>
         </Box>
         <Divider />
-
-        <MenuItem onClick={handleCloseMenu}>Profile</MenuItem>
-        <MenuItem onClick={handleCloseMenu}>Liked Posts</MenuItem>
-        <MenuItem onClick={handleCloseMenu}>My account</MenuItem>
-        <MenuItem onClick={handleCloseMenu}>Logout</MenuItem>
+        {avatarItems.map((item, index) => (
+          <Link
+            key={index}
+            to={item.link}
+            onClick={handleCloseMenu}
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <MenuItem sx={{ margin: "10px", borderRadius: "10px" }}>
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText>{item.label}</ListItemText>
+            </MenuItem>
+          </Link>
+        ))}
       </Menu>
     </div>
   );
 };
 
 export default AppBarAvatar;
-
-/*
-<Link to="/profile" onClick={handleCloseMenu}>
-          <MenuItem>
-            <ListItemIcon>
-              <ContentCopy fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Profile</ListItemText>
-          </MenuItem>
-        </Link>
-        */
-
-/*
-<Typography
-          sx={{
-            margin: "20px",
-            marginBottom: "10px",
-            fontSize: "14px",
-            fontWeight: "600",
-          }}
-          color="text.secondary"
-        >
-          USER
-        </Typography>
-        <Typography
-          sx={{
-            marginRight: "20px",
-            marginLeft: "20px",
-            fontSize: "18px",
-            fontWeight: "600",
-          }}
-        >
-          {sampleProfile["Name"]}
-        </Typography>
-        <Typography
-          sx={{
-            marginRight: "20px",
-            marginLeft: "20px",
-            marginBottom: "10px",
-            fontSize: "18px",
-            fontWeight: "600",
-          }}
-          color="text.secondary"
-        >
-          Signed in as{" "}
-          <span style={{ textDecoration: "underline" }}>
-            {sampleProfile["Username"]}
-          </span>
-        </Typography>
-        <Divider light />
-        <Typography
-          sx={{
-            margin: "20px",
-            marginBottom: "10px",
-            fontWeight: "600",
-            fontSize: "14px",
-          }}
-          color="text.secondary"
-        >
-          OPTIONS
-        </Typography>
-        <Box>
-          {generalItems.map((item, index) => (
-            <MenuItem
-              key={index}
-              onClick={handleClose}
-              component={Link}
-              to={item.link}
-            >
-              {item.icon}
-              <span
-                style={{
-                  fontSize: "17px",
-                  marginLeft: "10px",
-                  fontWeight: 500,
-                }}
-              >
-                {item.text}
-              </span>
-            </MenuItem>
-          ))}
-        </Box>
-      </Menu>
-*/
