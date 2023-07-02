@@ -32,13 +32,14 @@ const App = () => {
           element={<SignUpStepThree />}
         />
         <Route path="/admin/sign-up" element={<AdminSignUpPage />} />
+        <Route path="/profile" element={<ProfilePage selectedTab={0} />} />
         <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <ProfilePage />
-            </ProtectedRoute>
-          }
+          path="/profile/my-posts"
+          element={<ProfilePage selectedTab={1} />}
+        />
+        <Route
+          path="/profile/liked-posts"
+          element={<ProfilePage selectedTab={2} />}
         />
         <Route path="/calculator" element={<GPACalculatorPage />} />
         <Route path="/community" element={<CommunityPage />} />
@@ -46,5 +47,16 @@ const App = () => {
     </LocalizationProvider>
   );
 };
+
+/*
+<Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        */
 
 export default App;
