@@ -10,11 +10,9 @@ import {
   MenuItem,
   Badge,
   Divider,
-  List,
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import SettingsSuggestRoundedIcon from "@mui/icons-material/SettingsSuggestRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
@@ -65,7 +63,7 @@ const AppBarAvatar = () => {
         <Box
           sx={{
             margin: "10px",
-            marginRight: "20px",
+            marginRight: "30px",
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
