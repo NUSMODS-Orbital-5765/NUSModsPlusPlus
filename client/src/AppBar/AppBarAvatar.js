@@ -96,7 +96,7 @@ const AppBarAvatar = () => {
             style={{ textDecoration: "none", color: "inherit" }}
           >
             <MenuItem sx={{ margin: "10px", borderRadius: "10px" }}>
-              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemIcon sx={{ color: "black" }}>{item.icon}</ListItemIcon>
               <ListItemText>{item.label}</ListItemText>
             </MenuItem>
           </Link>
