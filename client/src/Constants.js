@@ -101,6 +101,7 @@ export const interestsDict = {
 // sample personal details for user profile setup. meant to extract from database
 export const sampleProfile = {
   Name: "Hannah Tan",
+  Avatar: "sample_icon.png",
   StudentID: "A1234567B",
   Username: "h_student",
   Password: "h_student_1",
@@ -146,7 +147,7 @@ export const sampleComments = [
 
 export const samplePosts = [
   {
-    timestamp: currentDay, // it's not in the form, but should record time and date of upload once button is pressed
+    dateCreated: currentDay, // it's not in the form, but should record time and date of upload once button is pressed
     title: "Recent changes to the MA2001 curriculum",
     category: "Study Guide",
     related_major: "Mathematics",
@@ -160,7 +161,7 @@ export const samplePosts = [
     comments: 5,
   },
   {
-    timestamp: nextDay,
+    dateCreated: nextDay,
     title: "Mindmaps that I used for EC1101E revision",
     category: "Notes",
     related_major: "Economics",
@@ -174,7 +175,7 @@ export const samplePosts = [
     comments: 1,
   },
   {
-    timestamp: followingDay,
+    dateCreated: followingDay,
     title: "Why is CS2040 so hard??",
     category: "Module Review",
     related_major: "Computer Science",
@@ -188,7 +189,7 @@ export const samplePosts = [
     comments: 3,
   },
   {
-    timestamp: followingDay,
+    dateCreated: followingDay,
     title: "Why is CS2040 so hard??",
     category: "Module Review",
     related_major: "Computer Science",
@@ -202,7 +203,7 @@ export const samplePosts = [
     comments: 3,
   },
   {
-    timestamp: followingDay,
+    dateCreated: followingDay,
     title: "Why is CS2040 so hard??",
     category: "Module Review",
     related_major: "Computer Science",
@@ -216,7 +217,7 @@ export const samplePosts = [
     comments: 3,
   },
   {
-    timestamp: nextDay,
+    dateCreated: nextDay,
     title: "Mindmaps that I used for EC1101E revision",
     category: "Notes",
     related_major: "Economics",
@@ -255,23 +256,54 @@ export const notifsList = [
     avatar: "profilepic_2.png",
     author: "admin 1",
     content: "You are not approved for exemption from MA2001.",
-    type: "comment",
+    type: "mention",
+    url: "/modules",
+    readStatus: false,
   },
   {
     timestamp: nextDay,
     avatar: "profilepic_1.png",
     author: "admin 2",
     content: "You are missing two core modules: BT2101 and BT2102.",
-    type: "comment",
+    type: "mention",
+    url: "/modules",
+    readStatus: false,
   },
   {
     timestamp: followingDay,
     avatar: "profilepic_2.png",
     author: "admin 3",
-    content: "Your 2022/2023 Sem 1 Plan is successful.",
+    content: "",
     type: "approve",
+    url: "/modules",
+    readStatus: false,
+  },
+  {
+    timestamp: followingDay,
+    avatar: "profilepic_2.png",
+    author: "random_user",
+    content: "",
+    type: "like",
+    url: "/community", // should replace with the actual url
+    readStatus: false,
+  },
+  {
+    timestamp: followingDay,
+    avatar: "profilepic_2.png",
+    author: "random_user",
+    content:
+      "Amazing post! Really insightful and covered all the necessary details. On that note, I would like to add that the curriculum board has discussed and intended for the new curriculum to be released much earlier.",
+    type: "comment",
+    url: "/community",
+    readStatus: false,
   },
 ];
+
+// notifsList with id
+export const notifsListWithId = notifsList.map((notif, index) => ({
+  ...notif,
+  id: index,
+}));
 
 // list of possible views
 export const GPACalculatorViewList = ["By Year", "Overall GPA"];
@@ -600,3 +632,12 @@ export const getShortDay = (day) => {
   };
   return shortDays[day];
 };
+
+// for the homepage UI
+export const quotesList = [
+  "Inspiration does exist, but it must find you working. —Pablo Picasso",
+  "Don't settle for average. Bring your best to the moment. Then, whether it fails or succeeds, at least you know you gave all you had.” —Angela Bassett",
+  "Difficulties increase the nearer we get to the goal. —Johann Wolfgang von Goethe",
+  "Whatever you think, be sure it is what you think; whatever you want, be sure that is what you want; whatever you feel, be sure that is what you feel.—T.S. Eliot",
+  "Let us live so that when we come to die even the undertaker will be sorry. - Mark Twain",
+];

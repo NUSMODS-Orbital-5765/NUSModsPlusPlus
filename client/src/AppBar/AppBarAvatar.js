@@ -11,27 +11,31 @@ import {
   Badge,
   Divider,
 } from "@mui/material";
-import { generalItems } from "../Home/HomePageStyledComponents";
+import SettingsSuggestRoundedIcon from "@mui/icons-material/SettingsSuggestRounded";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
+import CreateRoundedIcon from "@mui/icons-material/CreateRounded";
 
 const AppBarAvatar = () => {
-  const [AnchorMenu, setAnchorMenu] = useState(null);
-
-  const handleOpen = (event) => {
-    setAnchorMenu(event.currentTarget);
+  // opening the menu
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleOpenMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
   };
 
-  const handleClose = () => {
-    setAnchorMenu(null);
-  };
   return (
     <div>
       <IconButton
-        onClick={handleOpen}
+        onClick={handleOpenMenu}
         sx={{ margin: "20px", marginLeft: "10px" }}
       >
         <Badge
           overlap="circular"
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }} // this one is just to show whether the person is logged in or not, maybe not important lol can delete if necessary
           variant="dot"
           color="success"
         >
@@ -43,11 +47,63 @@ const AppBarAvatar = () => {
         </Badge>
       </IconButton>
       <Menu
-        open={Boolean(AnchorMenu)}
-        anchorEl={AnchorMenu}
-        onClose={handleClose}
+        sx={{ borderRadius: "10px" }}
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleCloseMenu}
       >
-        <Typography
+        <Box
+          sx={{
+            margin: "10px",
+            marginRight: "20px",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyItems: "center",
+          }}
+        >
+          <Avatar
+            sx={{ width: 70, height: 70 }}
+            src={sampleProfile["Avatar"]}
+          />
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography sx={{ fontSize: "20px", fontWeight: 600 }}>
+              {sampleProfile["Name"]}
+            </Typography>
+            <Typography color="text.secondary">
+              Signed in as{" "}
+              <span style={{ textDecoration: "underline" }}>
+                {sampleProfile["Username"]}
+              </span>
+            </Typography>
+          </Box>
+        </Box>
+        <Divider />
+
+        <MenuItem onClick={handleCloseMenu}>Profile</MenuItem>
+        <MenuItem onClick={handleCloseMenu}>Liked Posts</MenuItem>
+        <MenuItem onClick={handleCloseMenu}>My account</MenuItem>
+        <MenuItem onClick={handleCloseMenu}>Logout</MenuItem>
+      </Menu>
+    </div>
+  );
+};
+
+export default AppBarAvatar;
+
+/*
+<Link to="/profile" onClick={handleCloseMenu}>
+          <MenuItem>
+            <ListItemIcon>
+              <ContentCopy fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Profile</ListItemText>
+          </MenuItem>
+        </Link>
+        */
+
+/*
+<Typography
           sx={{
             margin: "20px",
             marginBottom: "10px",
@@ -117,8 +173,4 @@ const AppBarAvatar = () => {
           ))}
         </Box>
       </Menu>
-    </div>
-  );
-};
-
-export default AppBarAvatar;
+*/

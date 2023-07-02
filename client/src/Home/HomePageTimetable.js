@@ -60,15 +60,9 @@ export const TodayTimeline = ({ eventsList, tasksList }) => {
         justifyItems: "center",
       }}
     >
-      <Timeline position="alternate">
+      <Timeline>
         {eventsList.map((dayEvent, index) => (
           <TimelineItem key={index}>
-            <TimelineOppositeContent
-              sx={{ fontSize: "17px" }}
-              color="text.secondary"
-            >
-              {dayEvent.time}
-            </TimelineOppositeContent>
             <TimelineSeparator>
               <TimelineDot
                 sx={{
@@ -77,8 +71,13 @@ export const TodayTimeline = ({ eventsList, tasksList }) => {
               />
               {index !== eventsList.length - 1 && <TimelineConnector />}
             </TimelineSeparator>
-            <TimelineContent sx={{ fontSize: "17px", fontWeight: 700 }}>
-              {dayEvent.name}
+            <TimelineContent>
+              <Typography sx={{ fontSize: "17px", fontWeight: 700 }}>
+                {dayEvent.name}
+              </Typography>
+              <Typography sx={{ fontSize: "15px" }} color="text.secondary">
+                {dayEvent.time}
+              </Typography>
             </TimelineContent>
           </TimelineItem>
         ))}

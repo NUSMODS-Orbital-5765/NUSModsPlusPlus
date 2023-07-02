@@ -1,182 +1,346 @@
-import NotificationsActiveRoundedIcon from "@mui/icons-material/NotificationsActiveRounded";
-import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneRounded";
-import DoneRoundedIcon from "@mui/icons-material/DoneRounded";
-import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
+import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
+import MarkEmailReadRoundedIcon from "@mui/icons-material/MarkEmailReadRounded";
 import React, { useState } from "react";
 import {
   Avatar,
   Box,
   IconButton,
   Typography,
-  Menu,
   Badge,
   List,
+  Drawer,
+  Divider,
+  Tabs,
+  Tab,
+  Button,
 } from "@mui/material";
-import { notifsList } from "../Constants";
+import { notifsListWithId } from "../Constants";
 import { formatDate } from "../Constants";
+import { red } from "@mui/material/colors";
+import { useNavigate } from "react-router-dom";
+
+// notif count
+export const NotifCount = ({ label, unreadCount, labelColor }) => {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyItems: "center",
+      }}
+    >
+      {label}
+      <Box
+        sx={{
+          backgroundColor: labelColor,
+          color: "white",
+          borderRadius: "50%",
+          width: "25px",
+          height: "25px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginLeft: "10px",
+        }}
+      >
+        {unreadCount}
+      </Box>
+    </Box>
+  );
+};
 
 // styling for a single notif
 export const DefaultNotif = (props) => {
+  const id = props.id;
   const timestamp = props.timestamp;
   const avatar = props.avatar;
   const author = props.author;
   const content = props.content;
-  const notifType = props.notifType;
+  const type = props.type;
+  const readStatus = props.readStatus;
+  const handleNotifClick = props.handleNotifClick;
 
-  // blur the notif once it is viewed
-  const [readNotif, setReadNotif] = useState(false);
-
-  const handleReadNotif = () => {
-    setReadNotif(true);
+  // max words for truncation
+  const truncateContent = (content, wordLimit) => {
+    const words = content.split(" ");
+    if (words.length <= wordLimit) {
+      return content;
+    }
+    const truncatedWords = words.slice(0, wordLimit);
+    return truncatedWords.join(" ") + "...";
   };
 
-  let notifAction = "";
-  if (notifType === "comment") {
-    notifAction = "commented:";
-  } else if (notifType === "approve") {
-    notifAction = "approved your plan.";
-  }
+  const truncatedContent = truncateContent(content, 10);
+
+  // to set the content for the notification
+  const getNotifContent = (type) => {
+    if (type === "comment") {
+      return "commented on your post";
+    } else if (type === "like") {
+      return "liked your post";
+    } else if (type === "approve") {
+      return "approved your plan";
+    } else if (type === "mention") {
+      return "mentioned you";
+    }
+  };
 
   return (
-    <Box
-      sx={{
-        margin: "20px",
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        opacity: readNotif ? 0.5 : 1,
-      }}
-    >
+    <div>
       <Box
         sx={{
+          margin: "20px",
           display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyItems: "center",
+          flexDirection: "column",
+          opacity: readStatus ? 0.5 : 1,
+          transition: "transform 0.3s",
+          "&:hover": {
+            transform: "scale(1.05)",
+          },
         }}
+        onClick={handleNotifClick}
       >
-        <Avatar sx={{ width: 70, height: 70 }} alt="Admin Icon" src={avatar} />
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column",
+            flexDirection: "row",
+            alignItems: "center",
             justifyItems: "center",
           }}
         >
+          <Avatar
+            sx={{ width: 70, height: 70 }}
+            alt="Admin Icon"
+            src={avatar}
+          />
           <Box
             sx={{
+              marginLeft: "10px",
               display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
+              flexDirection: "column",
             }}
           >
             <Typography
               sx={{
                 textTransform: "none",
-                marginLeft: "10px",
                 fontWeight: 600,
                 color: "text.primary",
               }}
             >
-              {author} {notifAction}
+              {author}{" "}
+              <Typography component="span" fontWeight={400}>
+                {getNotifContent(type)}
+              </Typography>
             </Typography>
             <Typography
               variant="h1"
               sx={{
-                marginLeft: "50px",
+                marginTop: "5px",
                 color: "#536DFE",
                 textTransform: "none",
                 fontWeight: 500,
-                fontSize: "15px",
+                fontSize: "14px",
               }}
             >
               {formatDate(timestamp)}
             </Typography>
           </Box>
-          <Typography
-            sx={{ marginLeft: "10px", textTransform: "none" }}
-            color="text.secondary"
-          >
-            {content}
-          </Typography>
         </Box>
-      </Box>
-      <IconButton onClick={handleReadNotif}>
-        {readNotif ? (
-          <DoneAllRoundedIcon color="primary" />
-        ) : (
-          <DoneRoundedIcon color="primary" />
+        {content !== "" && (
+          <Box
+            sx={{
+              marginTop: "10px",
+              marginLeft: "80px",
+              borderRadius: "10px",
+              backgroundColor: "#f2f2f2",
+              overflow: "hidden",
+            }}
+          >
+            <Typography sx={{ margin: "15px" }}>{truncatedContent}</Typography>
+          </Box>
         )}
-      </IconButton>
-    </Box>
-  );
-};
-
-// map a list of notifications
-export const AllNotifs = () => {
-  return (
-    <List>
-      {notifsList.map((notif, index) => (
-        <DefaultNotif
-          key={index}
-          avatar={notif.avatar}
-          author={notif.author}
-          content={notif.content}
-          notifType={notif.type}
-          timestamp={notif.timestamp}
-        />
-      ))}
-    </List>
+        <Box
+          sx={{
+            marginLeft: "80px",
+            marginTop: "10px",
+            display: "flex",
+            flexDirection: "row",
+          }}
+        ></Box>
+      </Box>
+      <Divider sx={{ marginLeft: "-20px", marginRight: "-20px" }} />
+    </div>
   );
 };
 
 // styling for notification icon & pop-up
 const AppBarNotifs = () => {
-  const [AnchorMenu, setAnchorMenu] = useState(null);
-
-  const handleOpen = (event) => {
-    setAnchorMenu(event.currentTarget);
+  const navigate = useNavigate();
+  // opening and closing the sidebar
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const handleOpenNotifs = () => {
+    setOpenDrawer(true);
+  };
+  const handleCloseNotifs = () => {
+    setOpenDrawer(false);
   };
 
-  const handleClose = () => {
-    setAnchorMenu(null);
+  // switching tabs logic
+  const [currentTab, setCurrentTab] = useState(0);
+  const handleChangeTab = (event, activeTab) => {
+    setCurrentTab(activeTab);
   };
 
-  // remove the badge once the notif is read
-  const [badgePresent, setBadgePresent] = useState(true);
+  // handling read notifs status
+  const [currentNotifs, setCurrentNotifs] = useState(notifsListWithId);
 
-  const handleBadgePresent = (event) => {
-    setBadgePresent(false);
-    handleClose();
+  // update the read state of each notification
+  const handleReadNotif = (id) => {
+    const updatedNotifs = currentNotifs.map((notif) => {
+      if (notif.id === id) {
+        return { ...notif, readStatus: true };
+      }
+      return notif;
+    });
+
+    setCurrentNotifs(updatedNotifs);
   };
 
+  // display badge if have unread notifications, otherwise no badge if all read
   return (
     <Box sx={{ marginLeft: "55ch" }}>
-      {badgePresent ? (
+      {currentNotifs.filter((notif) => notif.readStatus === false).length ===
+      0 ? (
+        <IconButton sx={{ color: "black" }} onClick={handleOpenNotifs}>
+          <MarkEmailReadRoundedIcon sx={{ fontSize: "30px" }} />
+        </IconButton>
+      ) : (
         <Badge
           overlap="circular"
           anchorOrigin={{ vertical: "top", horizontal: "right" }}
           variant="dot"
           color="error"
         >
-          <IconButton sx={{ color: "black" }} onClick={handleOpen}>
-            <NotificationsActiveRoundedIcon sx={{ fontSize: "30px" }} />
+          <IconButton sx={{ color: "black" }} onClick={handleOpenNotifs}>
+            <EmailRoundedIcon sx={{ fontSize: "30px" }} />
           </IconButton>
         </Badge>
-      ) : (
-        <IconButton sx={{ color: "black" }} onClick={handleOpen}>
-          <NotificationsNoneRoundedIcon sx={{ fontSize: "30px" }} />
-        </IconButton>
       )}
-      <Menu
-        maxWidth="md"
-        open={Boolean(AnchorMenu)}
-        anchorEl={AnchorMenu}
-        onClose={handleClose}
+      <Drawer
+        sx={{
+          width: 400,
+          flexShrink: 0,
+          "& .MuiDrawer-paper": {
+            width: 400,
+            boxSizing: "border-box",
+          },
+        }}
+        anchor="right"
+        open={openDrawer}
+        onClose={handleCloseNotifs}
       >
-        <AllNotifs />
-      </Menu>
+        <Box sx={{ margin: "20px" }}>
+          <Typography sx={{ fontSize: "30px", fontWeight: 600 }}>
+            Inbox
+          </Typography>
+          <Tabs value={currentTab} onChange={handleChangeTab}>
+            <Tab
+              label={
+                <NotifCount
+                  label="All"
+                  unreadCount={currentNotifs.length}
+                  labelColor="#1a90ff"
+                />
+              }
+            />
+            <Tab
+              label={
+                <NotifCount
+                  label="Unread"
+                  unreadCount={
+                    currentNotifs.filter((notif) => notif.readStatus === false)
+                      .length
+                  }
+                  labelColor={red[500]}
+                />
+              }
+            />
+            <Tab
+              label={
+                <NotifCount
+                  label="Read"
+                  unreadCount={
+                    currentNotifs.filter((notif) => notif.readStatus === true)
+                      .length
+                  }
+                  labelColor="#44b700"
+                />
+              }
+            />
+          </Tabs>
+          <Divider
+            sx={{ margin: "-20px", marginBottom: "-30px", marginTop: "0px" }}
+          />
+        </Box>
+        {currentTab === 0 && (
+          <List>
+            {currentNotifs.map((notif, index) => (
+              <DefaultNotif
+                key={index}
+                id={notif.id}
+                avatar={notif.avatar}
+                author={notif.author}
+                content={notif.content}
+                type={notif.type}
+                timestamp={notif.timestamp}
+                readStatus={notif.readStatus}
+                handleNotifClick={() => handleReadNotif(notif.id)}
+              />
+            ))}
+          </List>
+        )}
+        {currentTab === 1 && (
+          <List>
+            {currentNotifs
+              .filter((notif) => notif.readStatus === false)
+              .map((notif, index) => (
+                <DefaultNotif
+                  key={index}
+                  id={notif.id}
+                  avatar={notif.avatar}
+                  author={notif.author}
+                  content={notif.content}
+                  type={notif.type}
+                  timestamp={notif.timestamp}
+                  url={notif.url}
+                  readStatus={notif.readStatus}
+                  handleNotifClick={() => handleReadNotif(notif.id)}
+                />
+              ))}
+          </List>
+        )}
+        {currentTab === 2 && (
+          <List>
+            {currentNotifs
+              .filter((notif) => notif.readStatus === true)
+              .map((notif, index) => (
+                <DefaultNotif
+                  key={index}
+                  id={notif.id}
+                  avatar={notif.avatar}
+                  author={notif.author}
+                  content={notif.content}
+                  type={notif.type}
+                  timestamp={notif.timestamp}
+                  url={notif.url}
+                  readStatus={notif.readStatus}
+                  handleNotifClick={() => handleReadNotif(notif.id)}
+                />
+              ))}
+          </List>
+        )}
+      </Drawer>
     </Box>
   );
 };

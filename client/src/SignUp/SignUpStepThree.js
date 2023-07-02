@@ -42,7 +42,7 @@ const SignUpStepThree = () => {
       [name]: value,
     });
   };
-  
+
   return (
     <Box
       sx={{
@@ -61,7 +61,12 @@ const SignUpStepThree = () => {
         <LogoComponent />
       </Box>
       <Card
-        sx={{ marginTop: "20px", marginBottom: "250px", minWidth: "150ch" }}
+        sx={{
+          borderRadius: "10px",
+          marginTop: "20px",
+          marginBottom: "250px",
+          minWidth: "150ch",
+        }}
       >
         <CardContent sx={{ margin: "10px" }}>
           <Typography

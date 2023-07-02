@@ -25,9 +25,9 @@ export const SeeMoreArrowButton = ({ pageName }) => {
         to={pageLinks[pageName]}
       >
         <ArrowForwardRoundedIcon
+          color="primary"
           sx={{
-            color: "#536DFE",
-            fontSize: "40px",
+            fontSize: "30px",
           }}
         />
       </IconButton>
@@ -48,7 +48,6 @@ const HomePageShortcuts = () => {
       }}
     >
       <HomePageTimetable />
-      <HomePageRecommendedPosts />
     </Box>
   );
 };

@@ -41,7 +41,7 @@ function DrawerComponent(props) {
                   textTransform: "none",
                   alignItems: "flex-start",
                   backgroundColor:
-                    selectedTab === index ? "#e8f0fe" : "inherit",
+                    selectedTab === index ? "#e7f2ff" : "inherit",
                 }}
                 label={
                   <Typography
@@ -51,7 +51,7 @@ function DrawerComponent(props) {
                       justifyItems: "center",
                       fontSize: "20px",
                       fontWeight: 500,
-                      color: selectedTab === index ? "#536DFE" : "text.primary",
+                      color: selectedTab === index ? "#1a90ff" : "text.primary",
                     }}
                   >
                     {item.icon}

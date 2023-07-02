@@ -118,7 +118,7 @@ const SignInPage = () => {
         }, 500);
       })
       .catch((error) => {
-        console.log(error);
+        alert(error);
       });
   };
 
@@ -271,7 +271,7 @@ const SignInPage = () => {
                 <Box sx={{ display: "flex", flexDirection: "row" }}>
                   <FormControlLabel
                     control={<Checkbox />}
-                    label="Remember Me"
+                    label="Remember Me" // haven't included the "remember me" info
                   />
                   <Button
                     variant="contained"

@@ -67,7 +67,14 @@ const SignUpStepTwo = () => {
       <Box sx={{ marginTop: "-80px" }}>
         <LogoComponent />
       </Box>
-      <Card sx={{ marginTop: "20px", marginBottom: "50px", minWidth: "150ch" }}>
+      <Card
+        sx={{
+          borderRadius: "10px",
+          marginTop: "20px",
+          marginBottom: "50px",
+          minWidth: "150ch",
+        }}
+      >
         <CardContent sx={{ margin: "10px" }}>
           <Typography
             sx={{ marginBottom: "20px", fontWeight: "700", fontSize: "50px" }}

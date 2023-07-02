@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { BrowserRouter as Router } from "react-router-dom";
+import { red } from "@mui/material/colors";
 
 const darkTheme = createTheme({
   palette: {
@@ -19,13 +20,16 @@ const theme = createTheme({
   },
   palette: {
     primary: {
-      main: "#536DFE",
+      main: "#1a90ff",
     },
     textPrimary: {
       main: "#000000",
     },
     success: {
       main: "#44b700",
+    },
+    error: {
+      main: red[500],
     },
   },
 });

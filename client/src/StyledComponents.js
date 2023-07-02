@@ -9,6 +9,7 @@ import {
   TextField,
   Autocomplete,
   IconButton,
+  LinearProgress,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded"; // for back to top button
@@ -263,5 +264,24 @@ export const MultipleTabsView = (props) => {
         </IconButton>
       </Tooltip>
     </Box>
+  );
+};
+
+// styled progress bar
+export const ProgressBar = ({ color, value }) => {
+  return (
+    <LinearProgress
+      color={color}
+      sx={{
+        borderRadius: "5px",
+        height: "10px",
+        backgroundColor: "#DCDCDC",
+        "& .MuiLinearProgress-bar": {
+          borderRadius: "5px",
+        },
+      }}
+      variant="determinate"
+      value={value}
+    />
   );
 };

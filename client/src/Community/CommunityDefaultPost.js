@@ -93,7 +93,12 @@ export const CommunityPostDialog = (props) => {
         >
           <Chip
             sx={{ padding: "5px", fontSize: "15px" }}
-            avatar={<Avatar alt="ProfilePic" src={AWSLinkGenerate(post.author.avatar)} />}
+            avatar={
+              <Avatar
+                alt="ProfilePic"
+                src={AWSLinkGenerate(post.author.avatar)}
+              />
+            }
             label={post.author.username}
             variant="filled"
           />
@@ -330,7 +335,12 @@ const CommunityDefaultPost = (props) => {
           >
             <Chip
               sx={{ marginTop: "10px" }}
-              avatar={<Avatar alt="ProfilePic" src={AWSLinkGenerate(post.author.avatar)} />}
+              avatar={
+                <Avatar
+                  alt="ProfilePic"
+                  src={AWSLinkGenerate(post.author.avatar)}
+                />
+              }
               label={post.author.username}
               variant="filled"
             />

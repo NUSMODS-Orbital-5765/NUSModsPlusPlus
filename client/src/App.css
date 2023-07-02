@@ -1,12 +1,9 @@
 body {
-  background-color: #f2f5f9;
+  background-color: white;
 }
 
 .homepage {
-  background-image: url("/public/home_background.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background-color: white;
 }
 
 .remainingViewport {
