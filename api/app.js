@@ -132,8 +132,6 @@ app.post("/login", jsonParser, (request, response) => {
 });
 
 app.post("/post/upload", jsonParser, (request, response) => {
-  
-  console.log("Create Post Object");
   const post = {
     dateCreated: request.body.dateCreated,
     title: request.body.title,
@@ -144,11 +142,12 @@ app.post("/post/upload", jsonParser, (request, response) => {
     tags: request.body.tags,
     author: {connect: {id: Number(request.body.author)}},
   };
+  console.log("Create Post Object");
   prisma.post
         .create({ data: post })
         // return success if the new post is added to the database successfully
         .then((result) => {
-          console.log("Created Post");
+          console.log("Created Post Successfully");
           response.status(201).send({
             message: "Post Created Successfully",
             result,
@@ -316,7 +315,63 @@ app.get("/event/get", [jsonParser,auth], (request, response) => {
     });
   })
 })
+app.post("/post/get-comment", jsonParser, (request, response) => {
+  console.log("Getting Comment from Post " + request.body.postId);
+  prisma.comment.findMany({
+    where: {post: {every: {id: 1}}},
+    include: {author: {
+        select: {
+          username: true,
+          avatar: true,
+        },
+      },
+    },
+  })
+  .then(commentsList => {
+    console.log("Getting Comment List");
+  
+    response.status(200).send({
+      message: "Getting Comment Successfully from Post " + request.body.postId,
+      commentsList,
+    });
+  })
+  .catch(error => {
+    console.log(error);
+    response.status(500).send({
+      message: "Error Getting Comment",
+      error,
+    });
+  })
+}
 
+)
+app.post("/post/add-comment", jsonParser, (request, response) => {
+  const comment = {
+    dateCreated: request.body.dateCreated,
+    content: request.body.content,
+    post: {connect: {id: Number(request.body.postId)}},
+    author: {connect: {username: request.body.author}},
+  };
+  console.log("Create Comment Object");
+  prisma.comment
+        .create({ data: comment })
+        // return success if the new post is added to the database successfully
+        .then((commentsList) => {
+          console.log(`Created Comment Successfully to post ${request.body.postId} and username ${request.body.author}`);
+          response.status(201).send({
+            message: "Comment Created Successfully",
+            commentsList,
+          });
+        })
+        // catch error if the new post wasn't added successfully to the database
+        .catch((error) => {
+          console.log(error);
+          response.status(500).send({
+            message: "Error creating Comment",
+            error,
+          });
+        });
+});
 app.get("/free-endpoint", (request, response) => {
   response.json({ message: "You are free to access me anytime" });
 });

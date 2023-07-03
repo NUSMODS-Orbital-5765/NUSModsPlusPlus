@@ -13,7 +13,7 @@ Table User {
   primaryMajor String [not null]
   secondaryMajor String
   minors String
-  programme String [not null]
+  programme String
   interests String[] [not null]
   avatar String
   Post Post [not null]
@@ -33,12 +33,15 @@ Table Post {
   author User [not null]
   authorId Int [not null]
   likes Int [not null, default: 0]
-  comment Int [not null, default: 0]
+  Comment Comment [not null]
 }
 
 Table Comment {
   id Int [pk, increment]
+  dateCreated DateTime [not null]
   author User [not null]
+  content String [not null]
+  post Post [not null]
   authorId Int [not null]
 }
 
