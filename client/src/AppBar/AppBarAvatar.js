@@ -52,7 +52,7 @@ const AppBarAvatar = () => {
           <Avatar
             sx={{ width: 50, height: 50 }}
             alt="Sample Icon"
-            src="sample_icon.png"
+            src={sampleProfile["Avatar"]}
           />
         </Badge>
       </IconButton>

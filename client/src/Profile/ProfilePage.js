@@ -1,6 +1,7 @@
 //COMPLETE
 // remember to add the icon component
-// decide how to render the posts
+// remember to change the border radius for the inbox tabs so that they look round.
+// no need to set different urls for the different tabs since they are all view only anyways
 import AppBarComponent from "../AppBar/AppBarComponent";
 import DrawerComponent from "../DrawerComponent";
 import {
@@ -22,6 +23,7 @@ import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import CreateRoundedIcon from "@mui/icons-material/CreateRounded";
+import LockRoundedIcon from "@mui/icons-material/LockRounded";
 
 // button for viewing public profile
 export const PublicProfileButton = ({ disabledCondition }) => {
@@ -59,10 +61,15 @@ export const profileTabsList = [
     icon: <FavoriteRoundedIcon />,
     link: "/profile/liked-posts",
   },
+  {
+    label: "Account Security",
+    icon: <LockRoundedIcon />,
+    link: "/profile/account",
+  },
 ];
 
 // layout of profile page
-function ProfilePage({ selectedTab }) {
+const ProfilePage = ({ selectedTab }) => {
   // handling the tabs field
   const [currentTab, setCurrentTab] = useState(selectedTab);
   const handleChangeTab = (event, activeTab) => {
@@ -75,6 +82,7 @@ function ProfilePage({ selectedTab }) {
     setPublicProfile(!publicProfile);
   };
 
+  // styling the switch component to toggle between public and private profile
   const PublicProfileSwitch = () => {
     return (
       <Box
@@ -162,16 +170,17 @@ function ProfilePage({ selectedTab }) {
           </Box>
           <Tabs
             sx={{
-              marginLeft: "80ch",
+              marginLeft: "55ch",
             }}
             value={currentTab}
             onChange={handleChangeTab}
           >
             {profileTabsList.map((item, index) => (
               <Tab
-                key={index}
+                sx={{ borderRadius: "10px 10px 0 0" }}
                 component={Link}
                 to={item.link}
+                key={index}
                 label={
                   <Box
                     sx={{
@@ -202,10 +211,6 @@ function ProfilePage({ selectedTab }) {
       </Box>
     </div>
   );
-}
+};
 
 export default ProfilePage;
-
-/*
-
-*/
