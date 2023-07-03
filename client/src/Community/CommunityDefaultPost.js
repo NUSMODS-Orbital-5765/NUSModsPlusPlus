@@ -173,7 +173,7 @@ export const CommunityPostDialog = (props) => {
           ></TextField>
           <Button variant="contained">Post</Button>
         </Box>
-        <CommunityPostComments commentsList={sampleComments} />
+        <CommunityPostComments postId={post.id} />
       </DialogContent>
     </Dialog>
   );
@@ -209,6 +209,9 @@ const CommunityDefaultPost = (props) => {
     setViewPost(false);
   };
 
+  useEffect(()=>{
+
+  },[])
   // how post looks like on screen
   return (
     <div className="remainingViewport">
