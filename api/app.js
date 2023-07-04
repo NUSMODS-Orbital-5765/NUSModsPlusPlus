@@ -316,6 +316,26 @@ app.get("/event/get", [jsonParser,auth], (request, response) => {
     });
   })
 })
+app.post("/homepage/get-name", jsonParser, (request, response)=>{
+  console.log("Get user fullname")
+  prisma.user.findUnique({
+    where: {id: Number(request.body.userId)}
+  })
+  .then(res => {
+    console.log("Get Name Successfully");
+    response.status(200).send({
+      message: `Get Name successfully at username = ${res.username}`,
+      res,
+    });
+  })
+  .catch(error => {
+    console.log(error);
+    response.status(500).send({
+      message: "Error Getting Name",
+      error,
+    });
+  })
+})
 
 app.get("/free-endpoint", (request, response) => {
   response.json({ message: "You are free to access me anytime" });
