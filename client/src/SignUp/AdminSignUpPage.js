@@ -52,7 +52,7 @@ const AdminSignUpPage = () => {
     >
       <Box
         sx={{
-          width: "50%",
+          width: "40%",
           height: "100vh",
           backgroundColor: "#e7f2ff",
           display: "flex",
@@ -61,15 +61,13 @@ const AdminSignUpPage = () => {
           alignItems: "flex-start",
         }}
       >
-        <Box sx={{ margin: "20px" }}>
+        <Box sx={{ margin: "30px" }}>
           <Typography
-            sx={{ color: "#004d80", fontSize: "50px", fontWeight: 700 }}
+            sx={{ color: "#004d80", fontSize: "40px", fontWeight: 700 }}
           >
             Plan well, score well.
           </Typography>
-          <Typography
-            sx={{ fontSize: "20px", marginTop: "20px", color: "#004d80" }}
-          >
+          <Typography sx={{ marginTop: "20px", color: "#004d80" }}>
             Join the community today.
           </Typography>
         </Box>
