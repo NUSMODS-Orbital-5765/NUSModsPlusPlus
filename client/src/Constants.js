@@ -1,6 +1,9 @@
 import { formatDistanceToNow } from "date-fns";
 import { red, orange, yellow } from "@mui/material/colors";
 
+// iMPORTANT I REALISED THERE IS SUCH THING AS A DOUBLE DEGREE
+// get them to choose plan, add: degree, major, minor. (use a button to open the textfield)
+
 // list of nus faculties
 export const facultyList = [
   "Faculty of Arts and Social Sciences",
@@ -106,9 +109,9 @@ export const sampleProfile = {
   Username: "h_student",
   Password: "h_student_1",
   Faculty: "School of Computing",
-  Major: "Information Systems",
-  "Second Major": "Economics",
-  Minor: "", // or null?
+  Degree: ["Information Systems"],
+  Major: ["Economics"],
+  Minor: ["Statistics"],
   "Special Programme": "RVRC",
   Bio: "Hi there! Nice to meet you!",
   Interests: ["easy to score", "finance", "machine learning"],

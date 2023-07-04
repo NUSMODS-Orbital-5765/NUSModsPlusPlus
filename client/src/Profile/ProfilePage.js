@@ -162,7 +162,7 @@ const ProfilePage = ({ selectedTab }) => {
                 {sampleProfile["Name"]}
               </Typography>
               <Typography sx={{ color: "#004d80" }}>
-                Student • {sampleProfile["Major"]}
+                Student • {sampleProfile["Degree"]}
               </Typography>
               <PublicProfileSwitch />
             </Box>

@@ -4,7 +4,7 @@ import DrawerComponent from "../DrawerComponent";
 import UploadPost from "../UploadPost/UploadPost";
 import CommunityDefaultPost from "./CommunityDefaultPost";
 import axios from "axios";
-import AWSLinkGenerate from '../libs/AWSLinkGenerate';
+import AWSLinkGenerate from "../libs/AWSLinkGenerate";
 import {
   Box,
   FormControl,
@@ -68,7 +68,7 @@ export const PostsGrid = ({ postList }) => {
 // styling for sort and filter features
 export const SortAndFilter = () => {
   return (
-    <div>
+    <Box sx={{ display: "flex", flexDirection: "row" }}>
       <FormControl>
         <InputLabel variant="standard">Sort By</InputLabel>
         <NativeSelect>
@@ -89,7 +89,7 @@ export const SortAndFilter = () => {
           </optgroup>
         </NativeSelect>
       </FormControl>
-    </div>
+    </Box>
   );
 };
 
@@ -105,16 +105,16 @@ const CommunityPage = () => {
     page: 1,
     sortValue: sortValue,
     filterValue: filterValue,
-  }
+  };
 
-  useEffect(()=>{
-    
-    axios.get(postGetAPI,postGetDetail)
-    .then((res) => {
-      console.log(res.data.postList);
-    setPostList(res.data.postList);
-    setPostReceived(true);
-    })
+  useEffect(() => {
+    axios
+      .get(postGetAPI, postGetDetail)
+      .then((res) => {
+        console.log(res.data.postList);
+        setPostList(res.data.postList);
+        setPostReceived(true);
+      })
       .catch((err) => console.log(err));
   }, [page]);
   return (
@@ -168,9 +168,11 @@ const CommunityPage = () => {
           }}
         >
           <SortAndFilter />
-          {(!postReceived||postList==undefined)&&<Box sx={{ marginTop: "100px", marginBottom: "150px" }}>
-            <NoPostsPlaceholder />
-          </Box>}
+          {(!postReceived || postList == undefined) && (
+            <Box sx={{ marginTop: "100px", marginBottom: "150px" }}>
+              <NoPostsPlaceholder />
+            </Box>
+          )}
         </Box>
         {postReceived && <PostsGrid postList={postList} />}
         <Box

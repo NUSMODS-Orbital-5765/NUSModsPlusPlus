@@ -1,6 +1,10 @@
 import AppBarComponent from "../AppBar/AppBarComponent";
 import DrawerComponent from "../DrawerComponent";
-import { sampleProfile } from "../Constants";
+import { sampleProfile, samplePosts, formatDate } from "../Constants";
+import { SortAndFilter } from "../Community/CommunityPage";
+import CommunityDefaultPost, {
+  CommunityPostDialog,
+} from "../Community/CommunityDefaultPost";
 import {
   Box,
   Typography,
@@ -10,9 +14,107 @@ import {
   TextField,
   Button,
 } from "@mui/material";
-import FolderRoundedIcon from "@mui/icons-material/FolderRounded";
 import React, { useState } from "react";
+import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
+import AutoStoriesRoundedIcon from "@mui/icons-material/AutoStoriesRounded";
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
+import ImportContactsRoundedIcon from "@mui/icons-material/ImportContactsRounded";
 
+// list of information to map
+// change this to a mapping function which checks profile fields before mapping
+export const AboutInfoList = ({ sampleProfile }) => {
+  const createContent = (fieldName, contentArray, prefix, icon) => {
+    const content = {
+      content: prefix + " " + contentArray[0],
+      icon: icon,
+    };
+
+    if (contentArray.length > 1) {
+      const formattedContent = `${prefix} ${contentArray.join(", ")}`;
+      content.content = formattedContent;
+    }
+
+    return content;
+  };
+
+  const degreeContent = createContent(
+    "Degree",
+    sampleProfile["Degree"],
+    "",
+    <AutoStoriesRoundedIcon />
+  );
+  const majorContent = createContent(
+    "Major",
+    sampleProfile["Major"],
+    "Second Major in",
+    <MenuBookRoundedIcon />
+  );
+  const minorContent = createContent(
+    "Minor",
+    sampleProfile["Minor"],
+    "Minor in",
+    <ImportContactsRoundedIcon />
+  );
+
+  return [
+    { content: sampleProfile["Faculty"], icon: <LocationOnRoundedIcon /> },
+    degreeContent,
+    majorContent,
+    minorContent,
+    {
+      content: sampleProfile["Special Programme"],
+      icon: <HomeRoundedIcon />,
+    },
+  ];
+};
+
+// mapping of posts
+// includes sorting function, taken from Community Page
+export const PostsDisplay = ({ postsList }) => {
+  const samplePost = postsList[0];
+  return <CommunityDefaultPost post={samplePost} />;
+};
+
+/*
+<Box
+      sx={{
+        marginRight: "55px",
+        transition: "transform 0.3s",
+        "&:hover": {
+          transform: "scale(1.05)",
+        },
+      }}
+    >
+      <Card
+        sx={{
+          borderRadius: "10px",
+          marginTop: "30px",
+          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <CardContent sx={{ margin: "10px" }}>
+          <Typography
+            color="primary"
+            sx={{
+              fontSize: "15px",
+              fontWeight: 600,
+              textTransform: "uppercase",
+            }}
+          >
+            {formatDate(samplePost.dateCreated)}
+          </Typography>
+          <Typography
+            sx={{ marginTop: "20px", fontSize: "35px", fontWeight: 700 }}
+          >
+            {samplePost.title}
+          </Typography>
+        </CardContent>
+      </Card>
+    </Box>
+    */
+
+// main page component
 const PublicProfilePage = () => {
   // edit the bio
   const [editableField, setEditableField] = useState(false);
@@ -86,7 +188,7 @@ const PublicProfilePage = () => {
                 {sampleProfile["Name"]}
               </Typography>
               <Typography sx={{ color: "#004d80" }}>
-                Student • {sampleProfile["Major"]}
+                Student • {sampleProfile["Degree"]}
               </Typography>
             </Box>
           </Box>
@@ -97,7 +199,9 @@ const PublicProfilePage = () => {
               borderRadius: "10px",
               margin: "55px",
               marginTop: "-10px",
-              boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+              backgroundColor: "#f2f2f2",
+              boxShadow: 0,
+              flex: "20%",
             }}
           >
             <CardContent sx={{ margin: "10px" }}>
@@ -121,7 +225,7 @@ const PublicProfilePage = () => {
                   multiline
                   disabled={!editableField}
                   onChange={handleChangeBio}
-                  sx={{ marginRight: "10px" }}
+                  sx={{ marginRight: "10px", marginTop: "20px" }}
                 />
                 {editableField ? (
                   <Button
@@ -138,18 +242,28 @@ const PublicProfilePage = () => {
                   </Button>
                 )}
               </Box>
-              <Box
-                sx={{
-                  marginTop: "10px",
-                  display: "flex",
-                  flexDirection: "row",
-                }}
-              >
-                <FolderRoundedIcon sx={{ marginRight: "10px" }} />
-                <Typography>Hello</Typography>
+              <Box sx={{ marginTop: "30px" }}>
+                {AboutInfoList({ sampleProfile }).map((infoItem, index) => (
+                  <Box
+                    sx={{
+                      marginTop: "20px",
+                      display: "flex",
+                      flexDirection: "row",
+                    }}
+                  >
+                    {infoItem.icon}
+                    <Typography sx={{ marginLeft: "10px" }}>
+                      {infoItem.content}
+                    </Typography>
+                  </Box>
+                ))}
               </Box>
             </CardContent>
           </Card>
+          <Box sx={{ flex: "60%" }}>
+            <SortAndFilter />
+            <PostsDisplay postsList={samplePosts} />
+          </Box>
         </Box>
       </Box>
     </div>
