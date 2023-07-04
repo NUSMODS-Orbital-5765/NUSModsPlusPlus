@@ -142,3 +142,16 @@ model Event {
   user     User   @relation(fields: [userId], references: [id])
   userId   Int
 }
+
+model Admin {
+  id        Int     @id @default(autoincrement())
+  name      String
+  studentId String  @unique
+  username  String  @unique
+  password  String
+  email     String  @unique
+  position  String
+  faculty   String
+  avatar    String?
+  programme String?
+}
