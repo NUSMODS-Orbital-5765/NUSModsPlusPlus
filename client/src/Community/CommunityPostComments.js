@@ -6,7 +6,7 @@ import { useState } from "react";
 import axios from "axios";
 
 const CommunityPostComments = (props) => {
-  const { postId } = props;
+  const { postId, commentAddStatus } = props;
 
   const [commentsList, setCommentsList] = useState([]);
   
@@ -19,7 +19,7 @@ const CommunityPostComments = (props) => {
     setCommentsList(res.data.commentsList);
     })
       .catch((err) => console.log(err));
-  }, []);
+  }, [commentAddStatus]);
 
   return (
     <div>

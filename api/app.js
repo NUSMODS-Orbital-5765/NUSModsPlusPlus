@@ -350,7 +350,7 @@ app.post("/post/add-comment", jsonParser, (request, response) => {
     dateCreated: request.body.dateCreated,
     content: request.body.content,
     post: {connect: {id: Number(request.body.postId)}},
-    author: {connect: {username: request.body.author}},
+    author: {connect: {id: Number(request.body.author)}},
   };
   console.log("Create Comment Object");
   prisma.comment
