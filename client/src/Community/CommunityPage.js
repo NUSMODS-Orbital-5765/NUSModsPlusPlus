@@ -97,7 +97,7 @@ export const NoPostsPlaceholder = () => {
 export const PostsGrid = ({ postList }) => {
   return (
     <Box sx={{ margin: "55px" }}>
-      <Grid container spacing={2}>
+      <Grid container spacing={7}>
         {postList.map((post, index) => (
           <Grid item xs={6} key={index}>
             <CommunityDefaultPost post={post} />
@@ -120,7 +120,7 @@ const PostsRow = ({ postList, title }) => {
         sx={{
           overflowX: "scroll",
           marginRight: "55px",
-          marginTop: "20px",
+          marginTop: "10px",
           marginBottom: "30px",
         }}
       >
@@ -211,22 +211,10 @@ const CommunityPage = () => {
         }}
       >
         <CommunityHeader />
-        <Box
-          sx={{
-            marginLeft: "55px",
-          }}
-        >
-          <SearchBar
-            label="Search post titles or tags..."
-            searchRecommendations={postRecommendations} // to keep a list of all post tags/ post titles. search component is autocomplete
-            width="70ch"
-          />
-        </Box>
         <PostsRow postList={samplePosts} title="Top Posts" />
         <PostsRow postList={samplePosts} title="New in Computing" />
         <Box
           sx={{
-            marginTop: "20px",
             marginBottom: "20px",
             display: "flex",
             flexDirection: "column",
@@ -234,14 +222,13 @@ const CommunityPage = () => {
             alignItems: "center",
           }}
         >
-          <SortAndFilter />
-          <Box
-            sx={{
-              marginTop: "-10ch",
-              marginBottom: "5ch",
-            }}
-          >
-            <BackToTop />
+          <SearchBar
+            label="Search post titles or tags..."
+            searchRecommendations={postRecommendations} // to keep a list of all post tags/ post titles. search component is autocomplete
+            width="70ch"
+          />
+          <Box sx={{ marginTop: "20px" }}>
+            <SortAndFilter />
           </Box>
         </Box>
         {(!postReceived || postList == undefined) && (
@@ -249,10 +236,13 @@ const CommunityPage = () => {
             <NoPostsPlaceholder />
           </Box>
         )}
+        {postReceived && <PostsGrid postList={postList} />}
+        {/* just for me to see what the posts look like, pls delete*/}
+        <PostsGrid postList={samplePosts} />
+        <Box sx={{ marginBottom: "5ch" }}>
+          <BackToTop />
+        </Box>
       </Box>
-      {postReceived && <PostsGrid postList={postList} />}
-      {/* just for me to see what the posts look like, pls delete*/}
-      <PostsGrid postList={samplePosts} />
     </div>
   );
 };
