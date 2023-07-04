@@ -11,7 +11,7 @@ import TasksPlannerPage from "./Planner/TasksPlannerPage";
 import GPACalculatorPage from "./GPACalculator/GPACalculatorPage";
 import CommunityPage from "./Community/CommunityPage";
 import ModulesPage from "./ModulesPage";
-import AdminSignUpPage from "./Profile/AdminSignUpPage";
+import AdminSignUpPage from "./SignUp/AdminSignUpPage";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Routes, Route } from "react-router-dom";

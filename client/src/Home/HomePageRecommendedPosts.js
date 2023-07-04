@@ -9,18 +9,15 @@ import {
   Checkbox,
 } from "@mui/material";
 import React, { useState } from "react";
-import NavigateBeforeRoundedIcon from "@mui/icons-material/NavigateBeforeRounded";
-import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import CommentRoundedIcon from "@mui/icons-material/CommentRounded";
 import { samplePosts, formatDate } from "../Constants";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { Carousel } from "react-responsive-carousel";
 import "./RecommendedPostStyles.css";
 import { SeeMoreArrowButton } from "./HomePageShortcuts";
 import { CommunityPostDialog } from "../Community/CommunityDefaultPost";
 import { createPortal } from "react-dom";
+import { CarouselComponent } from "../StyledComponents";
 
 // custom post rendering (not the same as community default post)
 export const MiniPost = ({ post }) => {
@@ -125,44 +122,6 @@ export const MiniPost = ({ post }) => {
 
 // styling for posts shortcut
 const HomePageRecommendedPosts = () => {
-  // customising the "next" and "prev" buttons
-  const CustomPrevButton = ({ onClick }) => (
-    <IconButton
-      onClick={onClick}
-      sx={{
-        position: "absolute",
-        top: "50px",
-        left: "0px",
-        zIndex: 1,
-        "&:hover": {
-          backgroundColor: "transparent",
-          transform: "translateX(5px)",
-          transition: "transform 0.1s",
-        },
-      }}
-    >
-      <NavigateBeforeRoundedIcon sx={{ color: "#1a90ff", fontSize: "30px" }} />
-    </IconButton>
-  );
-
-  const CustomNextButton = ({ onClick }) => (
-    <IconButton
-      onClick={onClick}
-      sx={{
-        position: "absolute",
-        top: "50px",
-        right: "0px",
-        "&:hover": {
-          backgroundColor: "transparent",
-          transform: "translateX(5px)",
-          transition: "transform 0.1s",
-        },
-      }}
-    >
-      <NavigateNextRoundedIcon sx={{ color: "#1a90ff", fontSize: "30px" }} />
-    </IconButton>
-  );
-
   // finding the top 3 posts by likes
   const sortedPosts = samplePosts.sort((a, b) => b.likes - a.likes);
   const top5Posts = Array.from(new Set(sortedPosts.slice(0, 5)));
@@ -184,21 +143,7 @@ const HomePageRecommendedPosts = () => {
           </Typography>
           <SeeMoreArrowButton pageName="Community" />
         </Box>
-        <Carousel
-          showThumbs={false}
-          showStatus={false}
-          infiniteLoop={true}
-          autoPlay={true}
-          interval={5000}
-          renderArrowPrev={(onClickHandler, hasPrev) =>
-            hasPrev && <CustomPrevButton onClick={onClickHandler} />
-          }
-          renderArrowNext={(onClickHandler, hasNext) =>
-            hasNext && <CustomNextButton onClick={onClickHandler} />
-          }
-        >
-          {slides}
-        </Carousel>
+        <CarouselComponent fontSize="30px" slides={slides} />
       </CardContent>
     </Card>
   );

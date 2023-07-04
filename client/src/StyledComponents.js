@@ -17,6 +17,8 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
 import NavigateBeforeRoundedIcon from "@mui/icons-material/NavigateBeforeRounded";
 import { useNavigate } from "react-router-dom";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Carousel } from "react-responsive-carousel";
 
 // sliding upwards transition
 export const SlideUpTransition = React.forwardRef(function Transition(
@@ -285,3 +287,66 @@ export const ProgressBar = ({ color, value }) => {
     />
   );
 };
+
+// styled carousel component
+export const CarouselComponent = ({ slides, fontSize }) => {
+  const CustomPrevButton = ({ onClick }) => (
+    <IconButton
+      onClick={onClick}
+      sx={{
+        position: "absolute",
+        top: "50px",
+        left: "0px",
+        zIndex: 1,
+        "&:hover": {
+          backgroundColor: "transparent",
+          transform: "translateX(5px)",
+          transition: "transform 0.1s",
+        },
+      }}
+    >
+      <NavigateBeforeRoundedIcon
+        sx={{ color: "#1a90ff", fontSize: fontSize }}
+      />
+    </IconButton>
+  );
+
+  const CustomNextButton = ({ onClick }) => (
+    <IconButton
+      onClick={onClick}
+      sx={{
+        position: "absolute",
+        top: "50px",
+        right: "0px",
+        "&:hover": {
+          backgroundColor: "transparent",
+          transform: "translateX(5px)",
+          transition: "transform 0.1s",
+        },
+      }}
+    >
+      <NavigateNextRoundedIcon sx={{ color: "#1a90ff", fontSize: fontSize }} />
+    </IconButton>
+  );
+
+  return (
+    <Carousel
+      showThumbs={false}
+      showStatus={false}
+      infiniteLoop={true}
+      autoPlay={true}
+      interval={5000}
+      renderArrowPrev={(onClickHandler, hasPrev) =>
+        hasPrev && <CustomPrevButton onClick={onClickHandler} />
+      }
+      renderArrowNext={(onClickHandler, hasNext) =>
+        hasNext && <CustomNextButton onClick={onClickHandler} />
+      }
+    >
+      {slides}
+    </Carousel>
+  );
+};
+
+// slides for sign in/ sign up pages, which will take up half the page.
+export const WelcomeSlides = [];
