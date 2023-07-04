@@ -4,7 +4,7 @@ import { formatDate } from "../Constants";
 import { Box, Typography, Avatar } from "@mui/material";
 import { useState } from "react";
 import axios from "axios";
-
+import AWSLinkGenerate from "../libs/AWSLinkGenerate";
 const CommunityPostComments = (props) => {
   const { postId, commentAddStatus } = props;
 
@@ -39,7 +39,7 @@ const CommunityPostComments = (props) => {
               justifyItems: "center",
             }}
           >
-            <Avatar key={index} alt={comment.author.username} src={comment.author.avatar} />
+            <Avatar key={index} alt={comment.author.username} src={AWSLinkGenerate(comment.author.avatar)} />
             <Typography sx={{ fontWeight: 600, marginLeft: "10px" }}>
               {comment.author.username}
             </Typography>
