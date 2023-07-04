@@ -146,7 +146,7 @@ model Event {
 model Admin {
   id        Int     @id @default(autoincrement())
   name      String
-  studentId String  @unique
+  staffId String  @unique
   username  String  @unique
   password  String
   email     String  @unique
