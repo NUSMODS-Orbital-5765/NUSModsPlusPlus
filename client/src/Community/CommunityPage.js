@@ -4,7 +4,7 @@ import DrawerComponent from "../DrawerComponent";
 import UploadPost from "../UploadPost/UploadPost";
 import CommunityDefaultPost from "./CommunityDefaultPost";
 import axios from "axios";
-import AWSLinkGenerate from '../libs/AWSLinkGenerate';
+import AWSLinkGenerate from "../libs/AWSLinkGenerate";
 import {
   Box,
   FormControl,
@@ -21,6 +21,55 @@ import {
 import { PageHeader, BackToTop, SearchBar } from "../StyledComponents";
 import React, { useEffect, useState } from "react";
 import HeartBrokenRoundedIcon from "@mui/icons-material/HeartBrokenRounded";
+
+// page header (which contains upload post)
+export const CommunityHeader = () => {
+  return (
+    <Box
+      sx={{
+        margin: "55px",
+        marginTop: "20px",
+        marginBottom: "20px",
+        borderRadius: "10px",
+        backgroundColor: "#e7f2ff",
+        flexDirection: "row",
+        display: "flex",
+        alignItems: "center",
+        justifyItems: "center",
+        justifyContent: "space-between",
+      }}
+    >
+      <Box sx={{ margin: "30px", display: "flex", flexDirection: "column" }}>
+        <Typography
+          sx={{
+            fontSize: "40px",
+            fontWeight: 700,
+            color: "#004d80",
+          }}
+        >
+          The best study resources.
+          <br />
+          By you, for you.
+        </Typography>
+        <Box
+          sx={{
+            alignItems: "center",
+            justifyItems: "center",
+            marginTop: "30px",
+            display: "flex",
+            flexDirection: "row",
+          }}
+        >
+          <Typography sx={{ marginRight: "20px", color: "#004d80" }}>
+            Make your first post today.
+          </Typography>
+          <UploadPost />
+        </Box>
+      </Box>
+      <img style={{ margin: "20px", width: "30%" }} src="/learning_icon.png" />
+    </Box>
+  );
+};
 
 // no posts placeholder
 export const NoPostsPlaceholder = () => {
@@ -47,21 +96,57 @@ export const NoPostsPlaceholder = () => {
 // mapping posts onto a grid design
 export const PostsGrid = ({ postList }) => {
   return (
-    <Grid
-      sx={{
-        marginLeft: "-55ch",
-        marginTop: "-12ch",
-        padding: "15ch",
-      }}
-      container
-      spacing={2}
-    >
-      {postList.map((post, index) => (
-        <Grid item xs={6} key={index}>
-          <CommunityDefaultPost post={post} />
-        </Grid>
-      ))}
-    </Grid>
+    <Box sx={{ margin: "55px" }}>
+      <Grid container spacing={2}>
+        {postList.map((post, index) => (
+          <Grid item xs={6} key={index}>
+            <CommunityDefaultPost post={post} />
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
+  );
+};
+
+// row of posts rather than the usual grid
+// sort the posts before mapping as a postList
+const PostsRow = ({ postList, title }) => {
+  return (
+    <Box sx={{ marginLeft: "55px", marginTop: "20px" }}>
+      <Typography sx={{ fontSize: "40px", fontWeight: 700 }}>
+        {title}
+      </Typography>
+      <Box
+        sx={{
+          overflowX: "scroll",
+          marginRight: "55px",
+          marginTop: "20px",
+          marginBottom: "30px",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyItems: "center",
+          }}
+        >
+          {postList.map((post, index) => (
+            <Box
+              key={index}
+              sx={{
+                minWidth: "50ch",
+                margin: "10px",
+                marginRight: "50px",
+              }}
+            >
+              <CommunityDefaultPost post={post} />
+            </Box>
+          ))}
+        </Box>
+      </Box>
+    </Box>
   );
 };
 
@@ -81,12 +166,9 @@ export const SortAndFilter = () => {
         <InputLabel variant="standard">Filter By</InputLabel>
         <NativeSelect variant="standard">
           <option value={"none"}>None</option>
-          <option value={"liked"}>Liked</option>
-          <optgroup label="Post Category">
-            <option value={"study guide"}>Study Guide</option>
-            <option value={"module review"}>Module Review</option>
-            <option value={"notes"}>Notes</option>
-          </optgroup>
+          <option value={"study guide"}>Study Guide</option>
+          <option value={"module review"}>Module Review</option>
+          <option value={"notes"}>Notes</option>
         </NativeSelect>
       </FormControl>
     </div>
@@ -105,16 +187,16 @@ const CommunityPage = () => {
     page: 1,
     sortValue: sortValue,
     filterValue: filterValue,
-  }
+  };
 
-  useEffect(()=>{
-    
-    axios.get(postGetAPI,postGetDetail)
-    .then((res) => {
-      console.log(res.data.postList);
-    setPostList(res.data.postList);
-    setPostReceived(true);
-    })
+  useEffect(() => {
+    axios
+      .get(postGetAPI, postGetDetail)
+      .then((res) => {
+        console.log(res.data.postList);
+        setPostList(res.data.postList);
+        setPostReceived(true);
+      })
       .catch((err) => console.log(err));
   }, [page]);
   return (
@@ -126,37 +208,22 @@ const CommunityPage = () => {
         sx={{
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
-          justifyItems: "center",
         }}
       >
-        <PageHeader
-          header="Community"
-          subtitle={
-            <div>
-              A collection of the best study resources, by{" "}
-              <span style={{ color: "#536DFE" }}>you</span>, for{" "}
-              <span style={{ color: "#536DFE" }}>you</span>.
-            </div>
-          }
-        />
+        <CommunityHeader />
         <Box
           sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyItems: "center",
+            marginLeft: "55px",
           }}
         >
-          <Box sx={{ marginRight: "20px" }}>
-            <SearchBar
-              label="Search post titles or tags..."
-              searchRecommendations={postRecommendations}
-              width="70ch"
-            />
-          </Box>
-          <UploadPost />
+          <SearchBar
+            label="Search post titles or tags..."
+            searchRecommendations={postRecommendations} // to keep a list of all post tags/ post titles. search component is autocomplete
+            width="70ch"
+          />
         </Box>
+        <PostsRow postList={samplePosts} title="Top Posts" />
+        <PostsRow postList={samplePosts} title="New in Computing" />
         <Box
           sx={{
             marginTop: "20px",
@@ -168,20 +235,24 @@ const CommunityPage = () => {
           }}
         >
           <SortAndFilter />
-          {(!postReceived||postList==undefined)&&<Box sx={{ marginTop: "100px", marginBottom: "150px" }}>
+          <Box
+            sx={{
+              marginTop: "-10ch",
+              marginBottom: "5ch",
+            }}
+          >
+            <BackToTop />
+          </Box>
+        </Box>
+        {(!postReceived || postList == undefined) && (
+          <Box sx={{ marginTop: "100px", marginBottom: "150px" }}>
             <NoPostsPlaceholder />
-          </Box>}
-        </Box>
-        {postReceived && <PostsGrid postList={postList} />}
-        <Box
-          sx={{
-            marginTop: "-10ch",
-            marginBottom: "5ch",
-          }}
-        >
-          <BackToTop />
-        </Box>
+          </Box>
+        )}
       </Box>
+      {postReceived && <PostsGrid postList={postList} />}
+      {/* just for me to see what the posts look like, pls delete*/}
+      <PostsGrid postList={samplePosts} />
     </div>
   );
 };

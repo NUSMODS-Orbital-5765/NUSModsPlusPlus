@@ -9,15 +9,17 @@ const CommunityPostComments = (props) => {
   const { postId, commentAddStatus } = props;
 
   const [commentsList, setCommentsList] = useState([]);
-  
+
   const commentGetAPI = `${process.env.REACT_APP_API_LINK}/post/get-comment`;
-  useEffect(()=>{
-    axios.post(commentGetAPI,{
-        postId: postId})
-    .then((res) => {
-      console.log(res.data.commentsList);
-    setCommentsList(res.data.commentsList);
-    })
+  useEffect(() => {
+    axios
+      .post(commentGetAPI, {
+        postId: postId,
+      })
+      .then((res) => {
+        console.log(res.data.commentsList);
+        setCommentsList(res.data.commentsList);
+      })
       .catch((err) => console.log(err));
   }, [commentAddStatus]);
 
@@ -39,7 +41,11 @@ const CommunityPostComments = (props) => {
               justifyItems: "center",
             }}
           >
-            <Avatar key={index} alt={comment.author.username} src={AWSLinkGenerate(comment.author.avatar)} />
+            <Avatar
+              key={index}
+              alt={comment.author.username}
+              src={AWSLinkGenerate(comment.author.avatar)}
+            />
             <Typography sx={{ fontWeight: 600, marginLeft: "10px" }}>
               {comment.author.username}
             </Typography>
@@ -49,7 +55,7 @@ const CommunityPostComments = (props) => {
                 fontSize: "16px",
                 fontWeight: 500,
                 marginLeft: "30px",
-                color: "#536DFE",
+                color: "#19a0ff",
               }}
             >
               {formatDate(new Date(comment.dateCreated))}
@@ -58,7 +64,7 @@ const CommunityPostComments = (props) => {
           <Box
             sx={{
               marginLeft: "20px",
-              borderLeft: "3px solid #536DFE",
+              borderLeft: "3px solid #19a0ff",
               paddingLeft: "28px",
             }}
           >
