@@ -25,7 +25,7 @@ model User {
   primaryMajor   String
   secondaryMajor String?
   minors         String?
-  programme      String
+  programme      String?
   interests      String[]
   avatar         String?
   Post           Post[]
@@ -34,7 +34,7 @@ model User {
 }
 
 model Post {
-  id           Int      @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
   title        String
   dateCreated  DateTime
   relatedMajor String?
@@ -42,16 +42,19 @@ model Post {
   content      String
   upload_file  String[]
   tags         String[]
-  author       User     @relation(fields: [authorId], references: [id])
+  author       User      @relation(fields: [authorId], references: [id])
   authorId     Int
-  likes        Int      @default(0)
-  comment      Int      @default(0)
+  likes        Int       @default(0)
+  Comment      Comment[]
 }
 
 model Comment {
-  id       Int  @id @default(autoincrement())
-  author   User @relation(fields: [authorId], references: [id])
-  authorId Int
+  id          Int      @id @default(autoincrement())
+  dateCreated DateTime
+  author      User     @relation(fields: [authorId], references: [id])
+  content     String
+  post        Post[]
+  authorId    Int
 }
 
 model Faculty {

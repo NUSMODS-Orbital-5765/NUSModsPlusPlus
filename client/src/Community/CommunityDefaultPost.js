@@ -36,11 +36,36 @@ import { createPortal } from "react-dom";
 import { formatDate } from "../Constants";
 import CommunityPostComments from "./CommunityPostComments";
 import AWSLinkGenerate from "../libs/AWSLinkGenerate";
+import axios from "axios";
 // styling for post preview
 export const CommunityPostDialog = (props) => {
   const post = props.post;
   const openCondition = props.openCondition;
   const closeFunction = props.closeFunction;
+
+  const [commentContent, setCommentContent] = useState(1);
+  const [commentAddStatus, setCommentAddStatus] = useState(false);
+  const commentAddAPI = `${process.env.REACT_APP_API_LINK}/post/add-comment`;
+  const handleAddComment = () => {
+    if (commentContent === "") {alert("Empty Comment")}
+    else {
+      axios.post(commentAddAPI,{
+        content: commentContent,
+        dateCreated: new Date(),
+        author: localStorage.getItem("userId"),
+        postId: post.id
+      }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("user-token")}` }
+    })
+    .then((res) => {
+    console.log(res);
+    alert("Successfully add comment");
+    setCommentAddStatus(commentAddStatus+1);
+    console.log(commentAddStatus);
+    })
+    .catch((err) => console.log(err));
+    }
+  }
   return (
     <Dialog
       open={openCondition}
@@ -168,12 +193,13 @@ export const CommunityPostDialog = (props) => {
             sx={{ marginLeft: "20px", marginRight: "20px", width: "80%" }}
             variant="filled"
             label="Add a comment..."
+            onChange={e=>setCommentContent(e.target.value)}
             multiline
             maxRows={4}
           ></TextField>
-          <Button variant="contained">Post</Button>
+          <Button variant="contained" onClick={handleAddComment}>Post</Button>
         </Box>
-        <CommunityPostComments commentsList={sampleComments} />
+        <CommunityPostComments postId={post.id} commentAddStatus={commentAddStatus}/>
       </DialogContent>
     </Dialog>
   );
@@ -209,6 +235,9 @@ const CommunityDefaultPost = (props) => {
     setViewPost(false);
   };
 
+  useEffect(()=>{
+
+  },[])
   // how post looks like on screen
   return (
     <div className="remainingViewport">
