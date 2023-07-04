@@ -151,20 +151,21 @@ const PostsRow = ({ postList, title }) => {
 };
 
 // styling for sort and filter features
-export const SortAndFilter = () => {
+export const SortAndFilter = (props) => {
+  const {setFilterValue, setSortValue} = props;
   return (
     <div>
-      <FormControl>
-        <InputLabel variant="standard">Sort By</InputLabel>
-        <NativeSelect>
+      <FormControl >
+        <InputLabel variant="standard" >Sort By</InputLabel>
+        <NativeSelect onChange={e=>{setSortValue(e.target.value)}}>
           <option value={"none"}>None</option>
           <option value={"timestamp"}>Latest</option>
           <option value={"likes"}>Most Popular</option>
         </NativeSelect>
       </FormControl>
       <FormControl sx={{ marginLeft: "20px" }}>
-        <InputLabel variant="standard">Filter By</InputLabel>
-        <NativeSelect variant="standard">
+        <InputLabel variant="standard" >Filter By</InputLabel>
+        <NativeSelect variant="standard" onChange={e=>{setFilterValue(e.target.value)}}>
           <option value={"none"}>None</option>
           <option value={"study guide"}>Study Guide</option>
           <option value={"module review"}>Module Review</option>
@@ -182,23 +183,38 @@ const CommunityPage = () => {
   const [filterValue, setFilterValue] = useState("");
   const [postReceived, setPostReceived] = useState(false);
   const [postList, setPostList] = useState();
-  const postGetAPI = `${process.env.REACT_APP_API_LINK}/post/get`;
-  const postGetDetail = {
-    page: 1,
-    sortValue: sortValue,
-    filterValue: filterValue,
-  };
+  const [topPostList, setTopPostList] = useState([]);
+  const postSearchAPI = `${process.env.REACT_APP_API_LINK}/post/search`;
+  const postGetTopAPI = `${process.env.REACT_APP_API_LINK}/post/top`;
+  
 
   useEffect(() => {
+    console.log([sortValue,filterValue]);
     axios
-      .get(postGetAPI, postGetDetail)
+      .post(postSearchAPI, {
+        sortValue: sortValue,
+        filterValue: filterValue})
       .then((res) => {
         console.log(res.data.postList);
         setPostList(res.data.postList);
         setPostReceived(true);
       })
       .catch((err) => console.log(err));
-  }, [page]);
+  }, [page,sortValue,filterValue]);
+
+  const handleTopPost = () => {
+    // Default of getting top post in last week, open further for day, month, year and all-time
+    axios
+      .post(postGetTopAPI, {
+          timePeriod: 7 * 24 * 60 * 60 * 1000,
+      })
+      .then((res) => {
+        console.log(res.data.topPostList);
+        setTopPostList(res.data.topPostList);
+      })
+      .catch((err) => console.log(err));
+  }
+  useEffect(handleTopPost,[]);
   return (
     <div className="homepage">
       <AppBarComponent />
@@ -211,7 +227,7 @@ const CommunityPage = () => {
         }}
       >
         <CommunityHeader />
-        <PostsRow postList={samplePosts} title="Top Posts" />
+        <PostsRow postList={topPostList} title="Top Posts" />
         <PostsRow postList={samplePosts} title="New in Computing" />
         <Box
           sx={{
@@ -228,7 +244,7 @@ const CommunityPage = () => {
             width="70ch"
           />
           <Box sx={{ marginTop: "20px" }}>
-            <SortAndFilter />
+            <SortAndFilter setSortValue={setSortValue} setFilterValue={setFilterValue} />
           </Box>
         </Box>
         {(!postReceived || postList == undefined) && (
@@ -238,7 +254,7 @@ const CommunityPage = () => {
         )}
         {postReceived && <PostsGrid postList={postList} />}
         {/* just for me to see what the posts look like, pls delete*/}
-        <PostsGrid postList={samplePosts} />
+        
         <Box sx={{ marginBottom: "5ch" }}>
           <BackToTop />
         </Box>

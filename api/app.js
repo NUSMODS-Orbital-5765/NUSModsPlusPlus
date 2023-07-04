@@ -163,20 +163,32 @@ app.post("/post/upload", jsonParser, (request, response) => {
         });
 });
 
-app.get("/post/get", (request, response) => {
-  console.log("POST GET REQUEST");
+app.post("/post/search", jsonParser, (request, response) => {
+  console.log("POST search REQUEST with filter = " + request.body.filterValue + " and sort value = " + request.body.sortValue);
+  console.log(request.body);
+  
+  //Deal with sortValue
+  let orderBy = {};
+  if (request.body.sortValue === "timestamp") {orderBy={dateCreated:"desc"}}
+  else if (request.body.sortValue === "likes") {orderBy={likes:"desc"}}
+  else {orderBy={dateCreated:"desc"}}
+
+  //Deal with filterValue
+  let where = {};
+  if (request.body.filterValue === "study guide") {where={category:"Study Guide"}}
+  else if (request.body.filterValue === "module review") {where={category:"Module Review"}}
+  else if (request.body.filterValue === "notes") {where={category:"Notes"}}
   prisma.post.findMany({
-    skip: 0,
-    take: 8,
-    orderBy: {
-      dateCreated: "desc",
-    },
+  //   skip: 0,
+  //   take: 8,
+    where,
+    orderBy,
     include: {
       author: true,
     }
   })
   .then(postList => {
-    console.log("Getting Post");
+    console.log("Getting Post Search: ");
     console.log(postList);
     response.status(200).send({
       message: "Post Get Successfully, Page 1",
@@ -191,6 +203,45 @@ app.get("/post/get", (request, response) => {
     });
   })
 })
+
+app.post("/post/top",jsonParser, (request, response) => {
+  console.log("POST top REQUEST");
+  const now = new Date();
+  const lowerDateLimit = new Date(now.getTime()-request.body.timePeriod);
+  console.log(lowerDateLimit);
+  prisma.post.findMany({
+    where: {
+      dateCreated: {
+        gte: lowerDateLimit,
+      }
+    },
+    orderBy: {
+      dateCreated: "desc",
+    },
+    include: {
+      author: true,
+    }
+  })
+  .then(topPostList => {
+    console.log("Getting Post Top: ")
+    console.log(topPostList);
+    response.status(200).send({
+      message: "Post TOP Get Successfully",
+      topPostList,
+    });
+  })
+  .catch(error => {
+    console.log(error);
+    response.status(500).send({
+      message: "Error Getting Post Top",
+      error,
+    });
+  })
+})
+
+
+
+
 app.get('/profile/get', jsonParser, (request, response) => {
   console.log(request.query);
   prisma.user.findUnique({
