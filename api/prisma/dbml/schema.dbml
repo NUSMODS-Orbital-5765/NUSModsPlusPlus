@@ -131,6 +131,19 @@ Table Event {
   userId Int [not null]
 }
 
+Table Admin {
+  id Int [pk, increment]
+  name String [not null]
+  studentId String [unique, not null]
+  username String [unique, not null]
+  password String [not null]
+  email String [unique, not null]
+  position String [not null]
+  faculty String [not null]
+  avatar String
+  programme String
+}
+
 Ref: Post.authorId > User.id
 
 Ref: Comment.authorId > User.id
