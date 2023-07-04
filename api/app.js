@@ -79,7 +79,8 @@ app.post("/register",jsonParser, (request, response) => {
 });
 
 app.post("/login", jsonParser, (request, response) => {
-  console.log(`User ${request.body.username} Logging in`)
+  console.log(`User ${request.body.status} with username = ${request.body.username} Logging in`)
+  if (request.body.status === "student") {
   prisma.user
     .findUnique({
       where: {
@@ -110,7 +111,7 @@ app.post("/login", jsonParser, (request, response) => {
 
           //   return success response
           response.status(200).send({
-            message: "Login Successful",
+            message: "Login User Successful at "+user.username,
             username: user.username,
             userId: user.id,
             token,
@@ -129,6 +130,58 @@ app.post("/login", jsonParser, (request, response) => {
         e,
       });
     });
+  }
+  else if (request.body.status === "admin") {
+    prisma.admin
+    .findUnique({
+      where: {
+        username: request.body.username,
+      },
+    })
+    .then((user) => {
+      bcrypt
+        .compare(request.body.password, user.password)
+        .then((passwordCheck) => {
+          // check if password matches
+          if (!passwordCheck) {
+            return response.status(400).send({
+              message: "Passwords does not match",
+              error,
+            });
+          }
+
+          //   create JWT token
+          const token = jwt.sign(
+            {
+              userId: user._id,
+              username: user.username,
+            },
+            "RANDOM-TOKEN",
+            { expiresIn: "24h" }
+          );
+
+          //   return success response
+          response.status(200).send({
+            message: "Login Admin Successful at " + user.username,
+            username: user.username,
+            userId: user.id,
+            token,
+          });
+        })
+        .catch((error) => {
+          response.status(400).send({
+            message: "Passwords does not match",
+            error,
+          });
+        });
+    })
+    .catch((e) => {
+      response.status(404).send({
+        message: "username not found",
+        e,
+      });
+    });
+  }
 });
 
 app.post("/post/upload", jsonParser, (request, response) => {
