@@ -42,7 +42,7 @@ export const LogoComponent = () => {
     >
       <img
         src={`${process.env.PUBLIC_URL}/nusmods_logo_white.png`}
-        style={{ width: "30%" }}
+        style={{ width: "50%" }}
       />
       <Typography
         variant="h1"
@@ -289,14 +289,19 @@ export const ProgressBar = ({ color, value }) => {
 };
 
 // styled carousel component
-export const CarouselComponent = ({ slides, fontSize, position }) => {
+export const CarouselComponent = ({
+  slides,
+  fontSize,
+  positionTop,
+  positionSide,
+}) => {
   const CustomPrevButton = ({ onClick }) => (
     <IconButton
       onClick={onClick}
       sx={{
         position: "absolute",
-        top: position,
-        left: "0px",
+        top: positionTop,
+        left: positionSide ? positionSide : "0px",
         zIndex: 1,
         "&:hover": {
           backgroundColor: "transparent",
@@ -316,8 +321,8 @@ export const CarouselComponent = ({ slides, fontSize, position }) => {
       onClick={onClick}
       sx={{
         position: "absolute",
-        top: position,
-        right: "0px",
+        top: positionTop,
+        right: positionSide ? positionSide : "0px",
         "&:hover": {
           backgroundColor: "transparent",
           transform: "translateX(5px)",
@@ -346,5 +351,84 @@ export const CarouselComponent = ({ slides, fontSize, position }) => {
     >
       {slides}
     </Carousel>
+  );
+};
+
+// list of welcome messages that we intend to map
+export const Intro = ({ title, subtitle, image, width }) => {
+  return (
+    <Box
+      sx={{
+        backgroundColor: "#e7f2ff",
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "flex-end",
+        alignItems: "flex-start",
+      }}
+    >
+      <Box sx={{ margin: "30px" }}>
+        <Typography
+          sx={{ color: "#004d80", fontSize: "50px", fontWeight: 700 }}
+        >
+          {title}
+        </Typography>
+        <Typography
+          sx={{ fontSize: "20px", marginTop: "20px", color: "#004d80" }}
+        >
+          {subtitle}
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "flex-end",
+        }}
+      >
+        <img alt="Sample Icon" src={image} />
+      </Box>
+    </Box>
+  );
+};
+
+export const WelcomeMessageCarousel = [
+  <Intro
+    title="Study smart, not hard."
+    subtitle="Join the community today."
+    image="/join-icon.png"
+  />,
+  <Intro
+    title="Carefully curated academic resources, created by your peers."
+    subtitle="From module reviews, to study notes, to academic guides, we've got it all."
+    image="/community-intro.png"
+  />,
+  <Intro
+    title="Schedule tasks and events easily."
+    subtitle="Our student-focused planner takes care of all your academic and non-academic needs."
+    image="/planner-intro.png"
+  />,
+  <Intro
+    title="Plan your modules correctly and efficiently."
+    subtitle="Get study plan recommendations, easily verify programme requirements, and receive admin validation."
+    image="/module-intro.png"
+  />,
+  <Intro
+    title="Track your grades easily with our handy GPA calculator."
+    subtitle="Get S/U recommendations, calculate semester, yearly and cumulative GPAs, and more."
+    image="/calculator-intro.png"
+  />,
+];
+
+export const WelcomeCarousel = () => {
+  return (
+    <Box sx={{ backgroundColor: "#e7f2ff" }}>
+      <CarouselComponent
+        slides={WelcomeMessageCarousel}
+        fontSize="50px"
+        positionTop="50%"
+        positionSide="5%"
+      />
+    </Box>
   );
 };

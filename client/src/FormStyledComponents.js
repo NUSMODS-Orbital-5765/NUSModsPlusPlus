@@ -130,7 +130,7 @@ export function FormUsernameField({ defaultText, setfn, disabled }) {
   );
 }
 
-// styling for password field
+// styling for password field (with confirm password)
 export function FormPasswordField({ defaultText, setfn, disabled }) {
   const [showPassword, setShowPassword] = useState(true);
   const handleTogglePassword = () => {
@@ -138,7 +138,9 @@ export function FormPasswordField({ defaultText, setfn, disabled }) {
   };
 
   const [requiredField, setRequiredField] = useState(defaultText);
-  const [error, setError] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
+  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
   const handleRequiredFieldChange = (event) => {
     const value = event.target.value;
     setRequiredField(value);
@@ -146,45 +148,62 @@ export function FormPasswordField({ defaultText, setfn, disabled }) {
     const passwordRegex =
       /^(?=.*[A-Za-z\d])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     const isError = !passwordRegex.test(value);
-    setError(isError);
-    if (!isError) {
-      setfn(event);
-    }
+    setPasswordError(isError);
+  };
+
+  const handleConfirmPasswordChange = (event) => {
+    const value = event.target.value;
+    setConfirmPassword(value);
+    setConfirmPasswordError(requiredField !== value);
   };
 
   return (
-    <TextField
-      fullWidth
-      name="password"
-      label="Password"
-      variant="outlined"
-      disabled={disabled}
-      value={requiredField}
-      onChange={(e) => {
-        handleRequiredFieldChange(e);
-      }}
-      required
-      type={showPassword ? "text" : "password"}
-      error={error}
-      helperText={
-        error
-          ? "Password must contain at least 8 characters and at least one special character"
-          : ""
-      }
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            <IconButton onClick={handleTogglePassword}>
-              {showPassword ? (
-                <VisibilityRoundedIcon />
-              ) : (
-                <VisibilityOffRoundedIcon />
-              )}
-            </IconButton>
-          </InputAdornment>
-        ),
-      }}
-    ></TextField>
+    <>
+      <TextField
+        fullWidth
+        name="password"
+        label="Password"
+        variant="outlined"
+        disabled={disabled}
+        value={requiredField}
+        onChange={handleRequiredFieldChange}
+        required
+        type={showPassword ? "text" : "password"}
+        error={passwordError}
+        helperText={
+          passwordError
+            ? "Password must contain at least 8 characters and at least one special character"
+            : ""
+        }
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton onClick={handleTogglePassword}>
+                {showPassword ? (
+                  <VisibilityRoundedIcon />
+                ) : (
+                  <VisibilityOffRoundedIcon />
+                )}
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
+      <TextField
+        sx={{ marginTop: "20px" }}
+        fullWidth
+        name="confirmPassword"
+        label="Confirm Password"
+        variant="outlined"
+        disabled={disabled}
+        value={confirmPassword}
+        onChange={handleConfirmPasswordChange}
+        required
+        type={showPassword ? "text" : "password"}
+        error={confirmPasswordError}
+        helperText={confirmPasswordError ? "Passwords do not match" : ""}
+      />
+    </>
   );
 }
 
@@ -207,6 +226,7 @@ export const FormEmailField = ({ defaultText, setfn, disabled }) => {
 
   return (
     <TextField
+      fullWidth
       name="email"
       label="Recovery Email"
       type="email"
