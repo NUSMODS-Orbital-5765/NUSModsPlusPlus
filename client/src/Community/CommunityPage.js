@@ -12,6 +12,7 @@ import {
   InputLabel,
   Grid,
   Typography,
+  Pagination,
 } from "@mui/material";
 import {
   postRecommendations,
@@ -263,15 +264,24 @@ const CommunityPage = () => {
           </Box>
         </Box>
         <PostsRow postList={samplePosts} title="Top Posts" />
-        <PostsRow postList={samplePosts} title="New in Computing" />
         {(!postReceived || postList == undefined) && (
           <Box sx={{ marginTop: "100px", marginBottom: "150px" }}>
             <NoPostsPlaceholder />
           </Box>
         )}
         {postReceived && <PostsGrid postList={postList} />}
-        <Box sx={{ marginBottom: "5ch" }}>
+        <Box
+          sx={{
+            marginBottom: "5ch",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <BackToTop />
+          <Pagination sx={{ marginLeft: "50px" }} count={10} color="primary" />
         </Box>
       </Box>
     </div>
