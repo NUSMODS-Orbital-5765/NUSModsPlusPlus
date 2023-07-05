@@ -289,13 +289,13 @@ export const ProgressBar = ({ color, value }) => {
 };
 
 // styled carousel component
-export const CarouselComponent = ({ slides, fontSize }) => {
+export const CarouselComponent = ({ slides, fontSize, position }) => {
   const CustomPrevButton = ({ onClick }) => (
     <IconButton
       onClick={onClick}
       sx={{
         position: "absolute",
-        top: "50px",
+        top: position,
         left: "0px",
         zIndex: 1,
         "&:hover": {
@@ -316,7 +316,7 @@ export const CarouselComponent = ({ slides, fontSize }) => {
       onClick={onClick}
       sx={{
         position: "absolute",
-        top: "50px",
+        top: position,
         right: "0px",
         "&:hover": {
           backgroundColor: "transparent",
@@ -331,6 +331,7 @@ export const CarouselComponent = ({ slides, fontSize }) => {
 
   return (
     <Carousel
+      sx={{ width: "100%", height: "100%" }}
       showThumbs={false}
       showStatus={false}
       infiniteLoop={true}
@@ -347,6 +348,3 @@ export const CarouselComponent = ({ slides, fontSize }) => {
     </Carousel>
   );
 };
-
-// slides for sign in/ sign up pages, which will take up half the page.
-export const WelcomeSlides = [];

@@ -143,7 +143,7 @@ const HomePageRecommendedPosts = () => {
           </Typography>
           <SeeMoreArrowButton pageName="Community" />
         </Box>
-        <CarouselComponent fontSize="30px" slides={slides} />
+        <CarouselComponent fontSize="30px" slides={slides} position="30%" />
       </CardContent>
     </Card>
   );
