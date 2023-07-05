@@ -97,6 +97,11 @@ export const NoPostsPlaceholder = () => {
 export const PostsGrid = ({ postList }) => {
   return (
     <Box sx={{ margin: "55px" }}>
+      <Typography
+        sx={{ marginBottom: "20px", fontSize: "40px", fontWeight: 700 }}
+      >
+        All Posts
+      </Typography>
       <Grid container spacing={7}>
         {postList.map((post, index) => (
           <Grid item xs={6} key={index}>
@@ -211,8 +216,6 @@ const CommunityPage = () => {
         }}
       >
         <CommunityHeader />
-        <PostsRow postList={samplePosts} title="Top Posts" />
-        <PostsRow postList={samplePosts} title="New in Computing" />
         <Box
           sx={{
             marginBottom: "20px",
@@ -231,6 +234,8 @@ const CommunityPage = () => {
             <SortAndFilter />
           </Box>
         </Box>
+        <PostsRow postList={samplePosts} title="Top Posts" />
+        <PostsRow postList={samplePosts} title="New in Computing" />
         {(!postReceived || postList == undefined) && (
           <Box sx={{ marginTop: "100px", marginBottom: "150px" }}>
             <NoPostsPlaceholder />
