@@ -126,15 +126,10 @@ const SignInPage = () => {
   return (
     <Box
       sx={{
-        margin: "-8px",
+        margin: "-10px",
         display: "flex",
-        flexDirection: "column",
+        flexDirection: "row",
         alignItems: "center",
-        backgroundImage: `url(${process.env.PUBLIC_URL}/signin_background.png)`,
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "center",
-        height: "110vh",
       }}
     >
       <LogoComponent />
