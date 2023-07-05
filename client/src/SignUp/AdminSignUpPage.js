@@ -8,16 +8,24 @@ import {
   FormPasswordField,
 } from "../FormStyledComponents";
 import { useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 // admin sign up component
 const AdminSignUpPage = () => {
   const navigate = useNavigate();
+
+  // storing the inputs for account registration
   const [registerInfo, setRegisterInfo] = useState({
     username: "",
     password: "",
     email: "",
   });
+
+  const fieldErrors = [
+    registerInfo.username === "",
+    registerInfo.password === "",
+    registerInfo.email === "",
+  ];
 
   const handleRegisterInfo = (evt) => {
     const name = evt.target.name;
@@ -28,7 +36,22 @@ const AdminSignUpPage = () => {
     });
   };
 
+  const [isFormComplete, setIsFormComplete] = useState(false);
+
+  useEffect(() => {
+    handleFormCompletion(fieldErrors);
+  }, [registerInfo]);
+
+  // disable/enable button based on whether criteria for input fields are met
+  const handleFormCompletion = (fieldErrors) => {
+    const isComplete = Object.values(fieldErrors).every((error) => !error);
+    setIsFormComplete(isComplete);
+  };
+
+  // submitting login information
   const handleSubmit = () => {
+    console.log(registerInfo);
+    console.log(isFormComplete);
     navigate("/sign-in");
   };
 
@@ -77,6 +100,7 @@ const AdminSignUpPage = () => {
             sx={{ justifyItems: "flex-end" }}
             variant="contained"
             onClick={handleSubmit}
+            disabled={!isFormComplete}
           >
             Sign Up
           </Button>

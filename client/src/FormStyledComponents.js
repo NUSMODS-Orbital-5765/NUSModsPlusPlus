@@ -141,6 +141,7 @@ export function FormPasswordField({ defaultText, setfn, disabled }) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
+
   const handleRequiredFieldChange = (event) => {
     const value = event.target.value;
     setRequiredField(value);
@@ -149,6 +150,9 @@ export function FormPasswordField({ defaultText, setfn, disabled }) {
       /^(?=.*[A-Za-z\d])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     const isError = !passwordRegex.test(value);
     setPasswordError(isError);
+    if (!isError) {
+      setfn(event);
+    }
   };
 
   const handleConfirmPasswordChange = (event) => {
@@ -166,7 +170,9 @@ export function FormPasswordField({ defaultText, setfn, disabled }) {
         variant="outlined"
         disabled={disabled}
         value={requiredField}
-        onChange={handleRequiredFieldChange}
+        onChange={(e) => {
+          handleRequiredFieldChange(e);
+        }}
         required
         type={showPassword ? "text" : "password"}
         error={passwordError}
