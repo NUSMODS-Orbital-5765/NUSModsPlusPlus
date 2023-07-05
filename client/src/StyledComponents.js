@@ -29,7 +29,7 @@ export const SlideUpTransition = React.forwardRef(function Transition(
 });
 
 // logo for signin/signup
-export const LogoComponent = () => {
+export const LogoComponent = ({ width }) => {
   return (
     <Box
       sx={{
@@ -42,7 +42,7 @@ export const LogoComponent = () => {
     >
       <img
         src={`${process.env.PUBLIC_URL}/nusmods_logo.png`}
-        style={{ width: "50%" }}
+        style={{ width: width }}
       />
       <Typography
         variant="h1"

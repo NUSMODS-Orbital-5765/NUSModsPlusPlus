@@ -50,7 +50,6 @@ export const FormHeader = (props) => {
   const { text } = props;
   return (
     <Typography
-      color="text.primary"
       sx={{
         marginTop: "30px",
         fontWeight: 700,
@@ -311,6 +310,7 @@ export function FormFacultyMajorField({
       <FormControl>
         <InputLabel>Faculty</InputLabel>
         <Select
+          fullWidth
           required
           name="faculty"
           label="Faculty"
@@ -332,6 +332,7 @@ export function FormFacultyMajorField({
         <FormControl sx={{ marginTop: "20px" }}>
           <InputLabel>Major</InputLabel>
           <Select
+            fullWidth
             required
             name="primaryMajor"
             label="Major"
@@ -352,6 +353,11 @@ export function FormFacultyMajorField({
       )}
     </Box>
   );
+}
+
+// styling for minor field
+export function FormMinorField({ filledMinor, setfn, disabled }) {
+  return <div></div>;
 }
 
 // styling for interests field

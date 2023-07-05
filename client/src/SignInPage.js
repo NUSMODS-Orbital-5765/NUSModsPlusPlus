@@ -148,7 +148,7 @@ const SignInPage = () => {
           width: "60%",
         }}
       >
-        <LogoComponent />
+        <LogoComponent width="50%" />
         <Box sx={{ margin: "50px" }}>
           <Typography
             sx={{ marginBottom: "20px", fontWeight: "700", fontSize: "40px" }}

@@ -1,14 +1,25 @@
 // COMPLETE
-import { Box, Card, CardContent, Button, Typography } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  Button,
+  Typography,
+  Select,
+  FormControl,
+  InputLabel,
+  MenuItem,
+} from "@mui/material";
 import {
   FormTextField,
   FormPasswordField,
   FormUsernameField,
   FormEmailField,
-  SignUpWelcomeMessage,
-  SignUpStepper,
+  FormAutocomplete,
+  FormFacultyMajorField,
   FormHeader,
 } from "../FormStyledComponents";
+import { majorList, progsList } from "../Constants";
 import { LogoComponent } from "../StyledComponents";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -32,11 +43,11 @@ const SignUpStepOne = () => {
     password: "",
     email: "",
     faculty: "",
-    primaryMajor: "",
-    secondaryMajor: "",
-    minors: "",
+    primaryDegree: "",
+    secondDegree: "",
+    secondMajor: "",
+    minor: [],
     programme: "",
-    interests: [],
   });
 
   const handleRegisterInfo = (evt) => {
@@ -65,24 +76,25 @@ const SignUpStepOne = () => {
     username: registerInfo.username === "",
     password: registerInfo.password === "",
     email: registerInfo.email === "",
+    faculty: registerInfo.faculty === "",
+    degree: registerInfo.degree === [],
   };
 
   return (
     <Box
       sx={{
-        margin: "-8px",
+        margin: "-10px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        backgroundImage: `url(${process.env.PUBLIC_URL}/signup_background.png)`,
-        backgroundSize: "100% 100%",
-        backgroundRepeat: "no-repeat",
+        backgroundImage: `url(${process.env.PUBLIC_URL}/student-sign-up-background.png)`,
+        backgroundSize: "cover",
         backgroundPosition: "center",
         minHeight: "100vh",
       }}
     >
-      <Box sx={{ marginTop: "-80px" }}>
-        <LogoComponent />
+      <Box sx={{ marginTop: "-50px", marginBottom: "20px" }}>
+        <LogoComponent width="30%" />
       </Box>
       <Card
         sx={{
@@ -90,47 +102,109 @@ const SignUpStepOne = () => {
           marginTop: "20px",
           marginBottom: "50px",
           minWidth: "150ch",
+          boxShadow: 0,
         }}
       >
-        <CardContent sx={{ margin: "10px" }}>
+        <CardContent sx={{ margin: "20px" }}>
           <Typography
             sx={{ marginBottom: "20px", fontWeight: "700", fontSize: "50px" }}
           >
             Welcome! Let's get you settled.
           </Typography>
-          <SignUpStepper activeStep={0} />
           <Box
             sx={{
-              margin: "20px",
+              marginTop: "-20px",
               display: "flex",
-              flexDirection: "column",
+              flexDirection: "row",
             }}
           >
-            <Box sx={{ marginTop: "-10px" }}>
-              <FormHeader text="General Information" />
-            </Box>
-            <Box sx={{ marginBottom: "20px" }}>
+            <Box
+              sx={{
+                width: "50%",
+                margin: "20px",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <Box sx={{ marginTop: "-10px" }}>
+                <FormHeader text="General Information" />
+              </Box>
+              <Box sx={{ marginBottom: "20px" }}>
+                <FormTextField
+                  name="name"
+                  label="Name"
+                  defaultText=""
+                  setfn={handleRegisterInfo}
+                />
+              </Box>
               <FormTextField
-                name="name"
-                label="Name"
+                name="studentId"
+                label="StudentID"
                 defaultText=""
                 setfn={handleRegisterInfo}
               />
+              <FormHeader text="Account Information" />
+              <Box sx={{ marginBottom: "20px" }}>
+                <FormUsernameField defaultText="" setfn={handleRegisterInfo} />
+              </Box>
+              <Box sx={{ marginBottom: "20px" }}>
+                <FormPasswordField defaultText="" setfn={handleRegisterInfo} />
+              </Box>
+              <FormEmailField defaultText="" setfn={handleRegisterInfo} />
             </Box>
-            <FormTextField
-              name="studentId"
-              label="StudentID"
-              defaultText=""
-              setfn={handleRegisterInfo}
-            />
-            <FormHeader text="Account Information" />
-            <Box sx={{ marginBottom: "20px" }}>
-              <FormUsernameField defaultText="" setfn={handleRegisterInfo} />
+            <Box
+              sx={{
+                width: "50%",
+                margin: "20px",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <Box sx={{ marginTop: "-10px" }}>
+                <FormHeader text="Academic Information" />
+              </Box>
+              <Box sx={{ marginBottom: "20px" }}>
+                <FormFacultyMajorField
+                  filledMajor=""
+                  filledFaculty=""
+                  setfn={handleRegisterInfo}
+                />
+              </Box>
+              <Box sx={{ marginBottom: "20px" }}>
+                <FormControl fullWidth>
+                  <InputLabel id="academic-plan">Academic Plan</InputLabel>
+                  <Select label="Academic Plan" onChange={handleRegisterInfo}>
+                    <MenuItem value={"Single Degree"}>Single Degree</MenuItem>
+                    <MenuItem value={"Double Degree"}>Double Degree</MenuItem>
+                    <MenuItem value={"Double Major"}>Double Major</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+              <Box sx={{ marginBottom: "20px" }}>
+                <FormAutocomplete
+                  optionsList={majorList}
+                  label="Second Major (if any)"
+                  name="secondaryMajor"
+                  setfn={handleRegisterInfo}
+                />
+              </Box>
+              <Box sx={{ marginBottom: "20px" }}>
+                <FormAutocomplete
+                  optionsList={majorList}
+                  label="Minor (if any)"
+                  name="minors"
+                  setfn={handleRegisterInfo}
+                />
+              </Box>
+              <Box sx={{ marginBottom: "20px" }}>
+                <FormAutocomplete
+                  optionsList={progsList}
+                  label="Special Programme (if any)"
+                  name="programme"
+                  setfn={handleRegisterInfo}
+                />
+              </Box>
             </Box>
-            <Box sx={{ marginBottom: "20px" }}>
-              <FormPasswordField defaultText="" setfn={handleRegisterInfo} />
-            </Box>
-            <FormEmailField defaultText="" setfn={handleRegisterInfo} />
           </Box>
           <Button
             sx={{ marginLeft: "117ch" }}
