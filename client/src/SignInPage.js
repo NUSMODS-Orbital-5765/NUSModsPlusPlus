@@ -3,11 +3,8 @@
 // add admin sign-in feature
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import {
   Box,
-  Card,
-  CardContent,
   Button,
   TextField,
   Typography,
@@ -22,14 +19,14 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { LogoComponent, WelcomeCarousel } from "./StyledComponents";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const SignInPage = () => {
+// sign up dialog
+export const SignUpDialog = () => {
   // navigation to sign up page for new account
   const navigate = useNavigate();
 
@@ -43,16 +40,80 @@ const SignInPage = () => {
     setOpenDialog(false);
   };
 
-  const accessStudentSignUp = () => {
+  // links to respective sign up pages
+  const goToSignUp = () => {
+    console.log(selectedStatus);
     setOpenDialog(false);
-    navigate("/student/sign-up");
+    selectedStatus === "student"
+      ? navigate("/student/sign-up")
+      : navigate("/admin/sign-up");
   };
 
-  const accessAdminSignUp = () => {
-    setOpenDialog(false);
-    navigate("/admin/sign-up");
+  // log the correct user status
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const handleSelectStatus = (event) => {
+    setSelectedStatus(event.target.value);
   };
 
+  return (
+    <div>
+      <Button
+        color="success"
+        sx={{ marginLeft: "10px", color: "white" }}
+        variant="contained"
+        onClick={handleOpenDialog}
+      >
+        Get Started.
+      </Button>
+      <Dialog
+        sx={{ borderRadius: "10px" }}
+        open={openDialog}
+        onClose={handleCloseDialog}
+      >
+        <DialogTitle sx={{ margin: "10px", fontSize: "40px", fontWeight: 700 }}>
+          Join the community today.
+        </DialogTitle>
+        <DialogContent sx={{ margin: "10px", marginTop: "-10px" }}>
+          <Typography sx={{ marginBottom: "10px" }}>
+            Please select an option.
+          </Typography>
+          <FormControl fullWidth>
+            <InputLabel>I'm signing up as a...</InputLabel>
+            <Select
+              fullWidth
+              required
+              name="status"
+              label="I'm signing up as a..."
+              onChange={handleSelectStatus}
+            >
+              <MenuItem value={"student"}>Student</MenuItem>
+              <MenuItem value={"admin"}>Administrator</MenuItem>
+            </Select>
+          </FormControl>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "flex-end",
+              marginTop: "20px",
+            }}
+          >
+            <Button
+              onClick={goToSignUp}
+              disabled={selectedStatus === ""}
+              variant="contained"
+            >
+              Go
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
+
+const SignInPage = () => {
+  const navigate = useNavigate();
   //settings for toggling password visibility
   const [showPassword, setShowPassword] = useState(true);
   const handleTogglePassword = () => {
@@ -151,79 +212,29 @@ const SignInPage = () => {
         <LogoComponent width="50%" />
         <Box sx={{ margin: "50px" }}>
           <Typography
-            sx={{ marginBottom: "20px", fontWeight: "700", fontSize: "40px" }}
+            sx={{ marginBottom: "10px", fontWeight: "700", fontSize: "40px" }}
           >
             Welcome Back!
           </Typography>
-          <Typography
-            color="text.secondary"
+          <Box
             sx={{
-              marginTop: "10px",
-              fontSize: "17px",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyItems: "center",
             }}
           >
-            Are you new here?
-            <Button
-              color="success"
-              sx={{ marginLeft: "10px", color: "white" }}
-              variant="contained"
-              onClick={handleOpenDialog}
+            <Typography
+              color="text.secondary"
+              sx={{
+                marginTop: "10px",
+                fontSize: "17px",
+              }}
             >
-              Get Started.
-            </Button>
-            <Dialog
-              minWidth="md"
-              sx={{ borderRadius: "10px" }}
-              open={openDialog}
-              onClose={handleCloseDialog}
-            >
-              <DialogTitle>
-                <Box
-                  sx={{
-                    margin: "10px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Typography sx={{ fontSize: "40px", fontWeight: 700 }}>
-                    Sign Up As:
-                  </Typography>
-                  <IconButton
-                    sx={{ marginLeft: "30px" }}
-                    color="error"
-                    onClick={handleCloseDialog}
-                  >
-                    <CloseRoundedIcon sx={{ fontSize: "30px" }} />
-                  </IconButton>
-                </Box>
-              </DialogTitle>
-              <DialogContent sx={{ margin: "10px" }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <Button
-                    sx={{ fontSize: "17px" }}
-                    onClick={accessStudentSignUp}
-                    variant="contained"
-                  >
-                    Student
-                  </Button>
-                  <Button
-                    onClick={accessAdminSignUp}
-                    sx={{ marginTop: "30px", fontSize: "17px" }}
-                    variant="contained"
-                  >
-                    Administrator
-                  </Button>
-                </Box>
-              </DialogContent>
-            </Dialog>
-          </Typography>
+              Are you new here?
+            </Typography>
+            <SignUpDialog />
+          </Box>
           <FormControl sx={{ marginTop: "20px" }} fullWidth>
             <InputLabel>I am a...</InputLabel>
             <Select name="status" label="I am a..." onChange={handleLoginInfo}>
