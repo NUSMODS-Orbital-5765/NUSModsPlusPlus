@@ -96,14 +96,21 @@ const AdminSignUpPage = () => {
           <Box sx={{ marginBottom: "20px" }}>
             <FormEmailField setfn={handleRegisterInfo} />
           </Box>
-          <Button
-            sx={{ justifyItems: "flex-end" }}
-            variant="contained"
-            onClick={handleSubmit}
-            disabled={!isFormComplete}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "flex-end",
+            }}
           >
-            Sign Up
-          </Button>
+            <Button
+              variant="contained"
+              onClick={handleSubmit}
+              disabled={!isFormComplete}
+            >
+              Sign Up
+            </Button>
+          </Box>
         </Box>
       </Box>
     </Box>

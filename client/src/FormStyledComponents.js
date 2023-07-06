@@ -18,17 +18,11 @@ import {
   Step,
   StepLabel,
 } from "@mui/material";
-import { facultyList, majorDict, interestsDict } from "./Constants";
+import { facultyList, majorDict, interestsDict, majorList } from "./Constants";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 
-// styling for signup welcome message
-export const SignUpWelcomeMessage = () => {
-  <Typography sx={{ fontWeight: "700", fontSize: "50px" }}>
-    Welcome! Let's get you settled.
-  </Typography>;
-};
-
+// TO DELETE
 // styling for stepper component
 export const SignUpStepper = ({ activeStep }) => {
   const steps = ["Setting Up...", "Almost There...", "One Last Thing..."];
@@ -45,6 +39,7 @@ export const SignUpStepper = ({ activeStep }) => {
   );
 };
 
+// COMPLETE
 // styling for form headers
 export const FormHeader = (props) => {
   const { text } = props;
@@ -91,10 +86,11 @@ export function FormTextField({ name, label, defaultText, setfn, disabled }) {
       required
       error={error}
       helperText={error ? "Field cannot be empty" : ""}
-    ></TextField>
+    />
   );
 }
 
+// COMPLETE
 // styling for username field
 export function FormUsernameField({ defaultText, setfn, disabled }) {
   const [requiredField, setRequiredField] = useState(defaultText);
@@ -129,6 +125,7 @@ export function FormUsernameField({ defaultText, setfn, disabled }) {
   );
 }
 
+// COMPLETE
 // styling for password field (with confirm password)
 export function FormPasswordField({ defaultText, setfn, disabled }) {
   const [showPassword, setShowPassword] = useState(true);
@@ -212,6 +209,7 @@ export function FormPasswordField({ defaultText, setfn, disabled }) {
   );
 }
 
+// COMPLETE
 // styling for email field
 export const FormEmailField = ({ defaultText, setfn, disabled }) => {
   const [requiredField, setRequiredField] = useState(defaultText);
@@ -330,12 +328,12 @@ export function FormFacultyMajorField({
       </FormControl>
       {selectedFaculty && (
         <FormControl sx={{ marginTop: "20px" }}>
-          <InputLabel>Major</InputLabel>
+          <InputLabel>Primary Degree/Major</InputLabel>
           <Select
             fullWidth
             required
-            name="primaryMajor"
-            label="Major"
+            name="primaryDegree"
+            label="Primary Degree/Major"
             disabled={disabled}
             value={selectedMajor}
             onChange={(e) => {
@@ -356,15 +354,38 @@ export function FormFacultyMajorField({
 }
 
 // styling for minor field
-export function FormMinorField({ filledMinor, setfn, disabled }) {
-  return <div></div>;
-}
+export const FormMinorField = ({ filledMinor, setfn, disabled }) => {
+  const [selectedMinors, setSelectedMinors] = useState([]);
+
+  const handleMinorChange = (event, value) => {
+    setSelectedMinors(value);
+    setfn(value);
+  };
+
+  return (
+    <Autocomplete
+      name="minor"
+      disabled={disabled}
+      multiple
+      id="tags-outlined"
+      options={majorList}
+      getOptionLabel={(option) => option}
+      defaultValue={filledMinor}
+      filterSelectedOptions
+      onChange={handleMinorChange}
+      renderInput={(params) => (
+        <TextField {...params} label="Minors (if any)" />
+      )}
+    />
+  );
+};
 
 // styling for interests field
 export function FormInterestsField({ filledInterests, setfn, disabled }) {
   const [myInterests, setMyInterests] = useState(filledInterests);
   const handleInterests = (event) => {
     setMyInterests(event.target.value);
+    setfn(event);
   };
 
   return (

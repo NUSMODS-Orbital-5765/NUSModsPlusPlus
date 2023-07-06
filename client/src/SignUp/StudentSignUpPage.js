@@ -18,14 +18,16 @@ import {
   FormAutocomplete,
   FormFacultyMajorField,
   FormHeader,
+  FormMinorField,
 } from "../FormStyledComponents";
 import { majorList, progsList } from "../Constants";
 import { LogoComponent } from "../StyledComponents";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 // styling for first step
-const SignUpStepOne = () => {
+const StudentSignUpPage = () => {
   const navigate = useNavigate();
   const [isFormComplete, setIsFormComplete] = useState(false);
 
@@ -33,6 +35,12 @@ const SignUpStepOne = () => {
   const handleFormCompletion = (fieldErrors) => {
     const isComplete = Object.values(fieldErrors).every((error) => !error);
     setIsFormComplete(isComplete);
+  };
+
+  // check academic plan
+  const [academicPlan, setAcademicPlan] = useState("");
+  const handleAcademicPlanChange = (event) => {
+    setAcademicPlan(event.target.value);
   };
 
   // save inputs
@@ -59,14 +67,36 @@ const SignUpStepOne = () => {
     });
   };
 
+  const handleMinorInfo = (value) => {
+    setRegisterInfo({
+      ...registerInfo,
+      ["minor"]: value,
+    });
+  };
+
   // on first load of the page
   useEffect(() => {
     handleFormCompletion(fieldErrors);
   }, [registerInfo]);
 
-  // go to the next page while using the same state
-  const handleNextStep = () => {
-    navigate("/student/sign-up-step-two", { state: { registerInfo } });
+  // submitting register info
+  const registerAPI = `${process.env.REACT_APP_API_LINK}/register`;
+  const handleSubmit = () => {
+    axios
+      .post(registerAPI, registerInfo)
+      .then((response) => {
+        alert("Register Successfully");
+        console.log(response);
+        //useNavigate need to be initalise at top
+        setTimeout(() => {
+          navigate("/sign-in");
+        }, 500);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    console.log(registerInfo);
+    navigate("/sign-in");
   };
 
   // check for errors among the fields
@@ -77,19 +107,16 @@ const SignUpStepOne = () => {
     password: registerInfo.password === "",
     email: registerInfo.email === "",
     faculty: registerInfo.faculty === "",
-    degree: registerInfo.degree === [],
+    primaryDegree: registerInfo.primaryDegree === "",
   };
 
   return (
     <Box
       sx={{
-        margin: "-10px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        backgroundImage: `url(${process.env.PUBLIC_URL}/student-sign-up-background.png)`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundColor: "white",
         minHeight: "100vh",
       }}
     >
@@ -99,7 +126,7 @@ const SignUpStepOne = () => {
       <Card
         sx={{
           borderRadius: "10px",
-          marginTop: "20px",
+          marginTop: "-30px",
           marginBottom: "50px",
           minWidth: "150ch",
           boxShadow: 0,
@@ -173,28 +200,38 @@ const SignUpStepOne = () => {
               <Box sx={{ marginBottom: "20px" }}>
                 <FormControl fullWidth>
                   <InputLabel id="academic-plan">Academic Plan</InputLabel>
-                  <Select label="Academic Plan" onChange={handleRegisterInfo}>
+                  <Select
+                    label="Academic Plan"
+                    onChange={handleAcademicPlanChange}
+                  >
                     <MenuItem value={"Single Degree"}>Single Degree</MenuItem>
                     <MenuItem value={"Double Degree"}>Double Degree</MenuItem>
                     <MenuItem value={"Double Major"}>Double Major</MenuItem>
                   </Select>
                 </FormControl>
               </Box>
+              {academicPlan === "Double Degree" && (
+                <Box sx={{ marginBottom: "20px" }}>
+                  <FormAutocomplete
+                    optionsList={majorList}
+                    label="Second Degree"
+                    name="secondDegree"
+                    setfn={handleRegisterInfo}
+                  />
+                </Box>
+              )}
+              {academicPlan === "Double Major" && (
+                <Box sx={{ marginBottom: "20px" }}>
+                  <FormAutocomplete
+                    optionsList={majorList}
+                    label="Second Major"
+                    name="secondMajor"
+                    setfn={handleRegisterInfo}
+                  />
+                </Box>
+              )}
               <Box sx={{ marginBottom: "20px" }}>
-                <FormAutocomplete
-                  optionsList={majorList}
-                  label="Second Major (if any)"
-                  name="secondaryMajor"
-                  setfn={handleRegisterInfo}
-                />
-              </Box>
-              <Box sx={{ marginBottom: "20px" }}>
-                <FormAutocomplete
-                  optionsList={majorList}
-                  label="Minor (if any)"
-                  name="minors"
-                  setfn={handleRegisterInfo}
-                />
+                <FormMinorField setfn={handleMinorInfo} />
               </Box>
               <Box sx={{ marginBottom: "20px" }}>
                 <FormAutocomplete
@@ -206,18 +243,26 @@ const SignUpStepOne = () => {
               </Box>
             </Box>
           </Box>
-          <Button
-            sx={{ marginLeft: "117ch" }}
-            variant="contained"
-            disabled={!isFormComplete}
-            onClick={handleNextStep}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "flex-end",
+              marginRight: "20px",
+            }}
           >
-            Next
-          </Button>
+            <Button
+              variant="contained"
+              disabled={!isFormComplete}
+              onClick={handleSubmit}
+            >
+              Sign Up
+            </Button>
+          </Box>
         </CardContent>
       </Card>
     </Box>
   );
 };
 
-export default SignUpStepOne;
+export default StudentSignUpPage;

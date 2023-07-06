@@ -45,7 +45,7 @@ const SignInPage = () => {
 
   const accessStudentSignUp = () => {
     setOpenDialog(false);
-    navigate("/student/sign-up-step-one");
+    navigate("/student/sign-up");
   };
 
   const accessAdminSignUp = () => {
@@ -180,35 +180,43 @@ const SignInPage = () => {
               <DialogTitle>
                 <Box
                   sx={{
+                    margin: "10px",
                     display: "flex",
                     alignItems: "center",
                     justifyItems: "center",
                     justifyContent: "space-between",
                   }}
                 >
-                  <Typography sx={{ fontSize: "30px", fontWeight: 700 }}>
-                    I am a...
+                  <Typography sx={{ fontSize: "40px", fontWeight: 700 }}>
+                    Sign Up As:
                   </Typography>
-                  <IconButton color="error" onClick={handleCloseDialog}>
+                  <IconButton
+                    sx={{ marginLeft: "30px" }}
+                    color="error"
+                    onClick={handleCloseDialog}
+                  >
                     <CloseRoundedIcon sx={{ fontSize: "30px" }} />
                   </IconButton>
                 </Box>
               </DialogTitle>
-              <DialogContent>
+              <DialogContent sx={{ margin: "10px" }}>
                 <Box
                   sx={{
-                    width: "50ch",
                     display: "flex",
                     flexDirection: "column",
                   }}
                 >
-                  <Button onClick={accessStudentSignUp} variant="contained">
+                  <Button
+                    sx={{ fontSize: "17px" }}
+                    onClick={accessStudentSignUp}
+                    variant="contained"
+                  >
                     Student
                   </Button>
                   <Button
                     onClick={accessAdminSignUp}
-                    sx={{ marginTop: "20px" }}
-                    variant="outlined"
+                    sx={{ marginTop: "30px", fontSize: "17px" }}
+                    variant="contained"
                   >
                     Administrator
                   </Button>
@@ -264,7 +272,7 @@ const SignInPage = () => {
               }}
             >
               <Typography sx={{ fontSize: "17px" }} color="text.secondary">
-                <Link component={Link} to="/student/sign-up-step-one">
+                <Link component={Link} to="/student/sign-up">
                   Forgot Password?
                 </Link>
               </Typography>
