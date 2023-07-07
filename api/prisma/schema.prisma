@@ -150,7 +150,7 @@ model Admin {
   username  String  @unique
   password  String
   email     String  @unique
-  position  String
+  position  String?
   faculty   String
   avatar    String?
   programme String?
