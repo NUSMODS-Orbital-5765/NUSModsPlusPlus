@@ -263,7 +263,7 @@ const CommunityPage = () => {
             />
           </Box>
         </Box>
-        <PostsRow postList={samplePosts} title="Top Posts" />
+        <PostsRow postList={topPostList} title="Top Posts" />
         {(!postReceived || postList == undefined) && (
           <Box sx={{ marginTop: "100px", marginBottom: "150px" }}>
             <NoPostsPlaceholder />

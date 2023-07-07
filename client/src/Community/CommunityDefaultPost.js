@@ -44,7 +44,7 @@ export const CommunityPostDialog = (props) => {
   const closeFunction = props.closeFunction;
 
   const [commentContent, setCommentContent] = useState(1);
-  const [commentAddStatus, setCommentAddStatus] = useState(false);
+  const [commentAddStatus, setCommentAddStatus] = useState(0);
   const commentAddAPI = `${process.env.REACT_APP_API_LINK}/post/add-comment`;
   const handleAddComment = () => {
     if (commentContent === "") {
