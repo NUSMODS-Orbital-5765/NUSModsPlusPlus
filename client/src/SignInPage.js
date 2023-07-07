@@ -170,6 +170,7 @@ const SignInPage = () => {
         alert("Login Successfully");
         console.log(data);
         localStorage.clear();
+        localStorage.setItem("permission", loginInfo.status)
         localStorage.setItem("user-token", token);
         localStorage.setItem("username", data.username);
         localStorage.setItem("userId", data.userId);

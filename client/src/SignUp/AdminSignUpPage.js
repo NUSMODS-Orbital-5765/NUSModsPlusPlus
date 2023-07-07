@@ -6,20 +6,30 @@ import {
   FormUsernameField,
   FormEmailField,
   FormPasswordField,
+  FormTextField,
 } from "../FormStyledComponents";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-
+import axios from "axios";
 // admin sign up component
 const AdminSignUpPage = () => {
   const navigate = useNavigate();
 
   // storing the inputs for account registration
   const [registerInfo, setRegisterInfo] = useState({
+    name: "",
+    staffId: "",
     username: "",
     password: "",
     email: "",
+    faculty: "",
+    position: "",
+    code: "",
   });
+
+
+
+
 
   const fieldErrors = [
     registerInfo.username === "",
@@ -47,12 +57,23 @@ const AdminSignUpPage = () => {
     const isComplete = Object.values(fieldErrors).every((error) => !error);
     setIsFormComplete(isComplete);
   };
-
-  // submitting login information
+  const adminRegisterAPI = `${process.env.REACT_APP_API_LINK}/register/admin`;
+  // submitting sign-up admin information
   const handleSubmit = () => {
+    axios
+      .post(adminRegisterAPI, registerInfo)
+      .then((response) => {
+        alert("Register Admin Successfully");
+        console.log(response);
+        //useNavigate need to be initalise at top
+        setTimeout(() => {
+          navigate("/sign-in");
+        }, 500);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     console.log(registerInfo);
-    console.log(isFormComplete);
-    navigate("/sign-in");
   };
 
   return (
@@ -88,6 +109,22 @@ const AdminSignUpPage = () => {
             Welcome! Let's get you started.
           </Typography>
           <Box sx={{ marginBottom: "20px" }}>
+                <FormTextField
+                  name="name"
+                  label="Name"
+                  defaultText=""
+                  setfn={handleRegisterInfo}
+                />
+              </Box>
+            <Box sx={{ marginBottom: "20px" }}>
+              <FormTextField
+                name="staffId"
+                label="Staff ID"
+                defaultText=""
+                setfn={handleRegisterInfo}
+              />
+            </Box>
+          <Box sx={{ marginBottom: "20px" }}>
             <FormUsernameField setfn={handleRegisterInfo} />
           </Box>
           <Box sx={{ marginBottom: "20px" }}>
@@ -96,6 +133,31 @@ const AdminSignUpPage = () => {
           <Box sx={{ marginBottom: "20px" }}>
             <FormEmailField setfn={handleRegisterInfo} />
           </Box>
+          <Box sx={{ marginBottom: "20px" }}>
+            <FormTextField
+                  name="faculty"
+                  label="Faculty"
+                  defaultText=""
+                  setfn={handleRegisterInfo}
+              />
+          </Box>
+          <Box sx={{ marginBottom: "20px" }}>
+            <FormTextField
+                  name="position"
+                  label="Position"
+                  defaultText=""
+                  setfn={handleRegisterInfo}
+              />
+          </Box>
+          <Box sx={{ marginBottom: "20px" }}>
+            <FormTextField
+                  name="code"
+                  label="Secret Code"
+                  defaultText=""
+                  setfn={handleRegisterInfo}
+              />
+          </Box>
+          
           <Box
             sx={{
               display: "flex",

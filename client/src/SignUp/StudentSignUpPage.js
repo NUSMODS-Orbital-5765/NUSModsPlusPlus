@@ -80,10 +80,10 @@ const StudentSignUpPage = () => {
   }, [registerInfo]);
 
   // submitting register info
-  const registerAPI = `${process.env.REACT_APP_API_LINK}/register`;
+  const userRegisterAPI = `${process.env.REACT_APP_API_LINK}/register/user`;
   const handleSubmit = () => {
     axios
-      .post(registerAPI, registerInfo)
+      .post(userRegisterAPI, registerInfo)
       .then((response) => {
         alert("Register Successfully");
         console.log(response);
@@ -96,7 +96,7 @@ const StudentSignUpPage = () => {
         console.log(error);
       });
     console.log(registerInfo);
-    navigate("/sign-in");
+    
   };
 
   // check for errors among the fields
