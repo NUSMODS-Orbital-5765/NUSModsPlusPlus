@@ -54,7 +54,7 @@ const App = () => {
   );
 };
 
-/*
+/* replacing the previous profile page access url
 <Route
           path="/profile"
           element={
