@@ -136,11 +136,19 @@ export const BackToTop = () => {
   return (
     <div>
       {isVisible && (
-        <Tooltip title="Back to Top" placement="top">
-          <Fab color="primary" onClick={scrollToTop}>
-            <ArrowUpwardRoundedIcon sx={{ fontSize: "30px" }} />
-          </Fab>
-        </Tooltip>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignContent: "center",
+          }}
+        >
+          <Tooltip title="Back to Top" placement="top">
+            <Fab color="primary" onClick={scrollToTop}>
+              <ArrowUpwardRoundedIcon sx={{ fontSize: "30px" }} />
+            </Fab>
+          </Tooltip>
+        </Box>
       )}
     </div>
   );

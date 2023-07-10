@@ -25,7 +25,7 @@ import {
 import { TransitionGroup } from "react-transition-group";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
-import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
+import CommentRoundedIcon from "@mui/icons-material/CommentRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
@@ -44,28 +44,36 @@ export const CommunityPostDialog = (props) => {
   const closeFunction = props.closeFunction;
 
   const [commentContent, setCommentContent] = useState(1);
-  const [commentAddStatus, setCommentAddStatus] = useState(false);
+  const [commentAddStatus, setCommentAddStatus] = useState(0);
   const commentAddAPI = `${process.env.REACT_APP_API_LINK}/post/add-comment`;
   const handleAddComment = () => {
-    if (commentContent === "") {alert("Empty Comment")}
-    else {
-      axios.post(commentAddAPI,{
-        content: commentContent,
-        dateCreated: new Date(),
-        author: localStorage.getItem("userId"),
-        postId: post.id
-      }, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("user-token")}` }
-    })
-    .then((res) => {
-    console.log(res);
-    alert("Successfully add comment");
-    setCommentAddStatus(commentAddStatus+1);
-    console.log(commentAddStatus);
-    })
-    .catch((err) => console.log(err));
+    if (commentContent === "") {
+      alert("Empty Comment");
+    } else {
+      axios
+        .post(
+          commentAddAPI,
+          {
+            content: commentContent,
+            dateCreated: new Date(),
+            author: localStorage.getItem("userId"),
+            postId: post.id,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            },
+          }
+        )
+        .then((res) => {
+          console.log(res);
+          alert("Successfully add comment");
+          setCommentAddStatus(commentAddStatus + 1);
+          console.log(commentAddStatus);
+        })
+        .catch((err) => console.log(err));
     }
-  }
+  };
   return (
     <Dialog
       open={openCondition}
@@ -89,7 +97,7 @@ export const CommunityPostDialog = (props) => {
           >
             <Typography
               sx={{
-                color: "#536DFE",
+                color: "#19a0ff",
                 fontWeight: 600,
                 textTransform: "uppercase",
               }}
@@ -193,13 +201,18 @@ export const CommunityPostDialog = (props) => {
             sx={{ marginLeft: "20px", marginRight: "20px", width: "80%" }}
             variant="filled"
             label="Add a comment..."
-            onChange={e=>setCommentContent(e.target.value)}
+            onChange={(e) => setCommentContent(e.target.value)}
             multiline
             maxRows={4}
           ></TextField>
-          <Button variant="contained" onClick={handleAddComment}>Post</Button>
+          <Button variant="contained" onClick={handleAddComment}>
+            Post
+          </Button>
         </Box>
-        <CommunityPostComments postId={post.id} commentAddStatus={commentAddStatus}/>
+        <CommunityPostComments
+          postId={post.id}
+          commentAddStatus={commentAddStatus}
+        />
       </DialogContent>
     </Dialog>
   );
@@ -235,19 +248,17 @@ const CommunityDefaultPost = (props) => {
     setViewPost(false);
   };
 
-  useEffect(()=>{
-
-  },[])
+  useEffect(() => {}, []);
   // how post looks like on screen
   return (
-    <div className="remainingViewport">
+    <div>
       <Card
         sx={{
-          width: "450px",
+          width: "100%",
           height: "100%",
-          boxShadow: 1,
-          borderRadius: "5px",
-          marginBottom: "30px",
+          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+          borderRadius: "10px",
+          border: "1px solid #f2f2f2",
         }}
       >
         <CardContent
@@ -269,7 +280,7 @@ const CommunityDefaultPost = (props) => {
           >
             <Typography
               sx={{
-                color: "#536DFE",
+                color: "#19a0ff",
                 fontWeight: 600,
                 fontSize: "14px",
                 textTransform: "uppercase",
@@ -289,7 +300,8 @@ const CommunityDefaultPost = (props) => {
                 onClick={handleOpenViewPost}
               >
                 <ArrowForwardRoundedIcon
-                  sx={{ fontSize: "30px", color: "#536DFE" }}
+                  color="primary"
+                  sx={{ fontSize: "30px" }}
                 />
               </IconButton>
             </Tooltip>
@@ -336,7 +348,9 @@ const CommunityDefaultPost = (props) => {
                 icon={<FavoriteBorderRoundedIcon />}
                 checkedIcon={<FavoriteRoundedIcon />}
               />
-              <Typography>{liked ? post.likes + 1 : post.likes}</Typography>
+              <Typography sx={{ marginLeft: "-5px" }}>
+                {liked ? post.likes + 1 : post.likes}
+              </Typography>
             </Box>
             <Box
               sx={{
@@ -348,9 +362,11 @@ const CommunityDefaultPost = (props) => {
               }}
             >
               <Tooltip title="You have to view the post to comment.">
-                <ForumRoundedIcon />
+                <CommentRoundedIcon color="primary" />
               </Tooltip>
-              <Typography>{post.comments}</Typography>
+              <Typography sx={{ marginLeft: "5px" }}>
+                {post.comments}
+              </Typography>
             </Box>
           </Box>
           <Divider />

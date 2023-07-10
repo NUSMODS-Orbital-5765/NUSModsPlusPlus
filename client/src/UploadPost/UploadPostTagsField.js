@@ -30,6 +30,7 @@ export const PostTagsField = (props) => {
       setMyTags([...myTags, newTag]);
       setNewTag("");
     }
+    setOpenNewTagDialog(false);
   };
 
   const handleNewTagChange = (event) => {
