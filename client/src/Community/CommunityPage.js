@@ -198,6 +198,11 @@ const CommunityPage = () => {
   const [filterValue, setFilterValue] = useState("");
   const [postReceived, setPostReceived] = useState(false);
   const [postList, setPostList] = useState();
+  const [topPostList, setTopPostList] = useState([]);
+
+  const postSearchAPI = `${process.env.REACT_APP_API_LINK}/post/search`;
+  const postGetTopAPI = `${process.env.REACT_APP_API_LINK}/post/top`;
+
   const postGetAPI = `${process.env.REACT_APP_API_LINK}/post/get`;
   const postGetDetail = {
     page: 1,
@@ -207,9 +212,6 @@ const CommunityPage = () => {
 
   useEffect(() => {
     axios.get(postGetAPI, postGetDetail);
-    const [topPostList, setTopPostList] = useState([]);
-    const postSearchAPI = `${process.env.REACT_APP_API_LINK}/post/search`;
-    const postGetTopAPI = `${process.env.REACT_APP_API_LINK}/post/top`;
   });
 
   useEffect(() => {
