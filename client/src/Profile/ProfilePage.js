@@ -24,6 +24,7 @@ import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import CreateRoundedIcon from "@mui/icons-material/CreateRounded";
 import LockRoundedIcon from "@mui/icons-material/LockRounded";
+import AccountSecurityTab from "./AccountSecurityTab";
 
 // button for viewing public profile
 export const PublicProfileButton = ({ disabledCondition }) => {
@@ -136,14 +137,21 @@ const ProfilePage = ({ selectedTab }) => {
               alignItems: "center",
             }}
           >
-            <Avatar
-              sx={{
-                width: "20ch",
-                height: "20ch",
-              }}
-              alt="Sample Icon"
-              src={sampleProfile["Avatar"]}
-            />
+            <Tooltip placement="top" title="Change Photo">
+              <Avatar
+                sx={{
+                  width: "20ch",
+                  height: "20ch",
+                  filter: "brightness(100%)",
+                  transition: "filter 0.3s",
+                  "&:hover": {
+                    filter: "brightness(70%)",
+                  },
+                }}
+                alt="Sample Icon"
+                src={sampleProfile["Avatar"]}
+              />
+            </Tooltip>
             <Box
               sx={{
                 marginLeft: "10px",
@@ -205,9 +213,11 @@ const ProfilePage = ({ selectedTab }) => {
               />
             ))}
           </Tabs>
-          {currentTab === 0 && <ProfileInfoComponent />}
-          {currentTab === 1 && <ProfileInfoComponent />}
         </Box>
+        {currentTab === 0 && <ProfileInfoComponent />}
+        {currentTab === 1 && <ProfileInfoComponent />}
+        {currentTab === 2 && <ProfileInfoComponent />}
+        {currentTab === 3 && <AccountSecurityTab />}
       </Box>
     </div>
   );

@@ -76,44 +76,6 @@ export const PostsDisplay = ({ postsList }) => {
   return <CommunityDefaultPost post={samplePost} />;
 };
 
-/*
-<Box
-      sx={{
-        marginRight: "55px",
-        transition: "transform 0.3s",
-        "&:hover": {
-          transform: "scale(1.05)",
-        },
-      }}
-    >
-      <Card
-        sx={{
-          borderRadius: "10px",
-          marginTop: "30px",
-          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-        }}
-      >
-        <CardContent sx={{ margin: "10px" }}>
-          <Typography
-            color="primary"
-            sx={{
-              fontSize: "15px",
-              fontWeight: 600,
-              textTransform: "uppercase",
-            }}
-          >
-            {formatDate(samplePost.dateCreated)}
-          </Typography>
-          <Typography
-            sx={{ marginTop: "20px", fontSize: "35px", fontWeight: 700 }}
-          >
-            {samplePost.title}
-          </Typography>
-        </CardContent>
-      </Card>
-    </Box>
-    */
-
 // main page component
 const PublicProfilePage = () => {
   // edit the bio
