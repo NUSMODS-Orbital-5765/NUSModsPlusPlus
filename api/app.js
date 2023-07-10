@@ -26,9 +26,9 @@ app.get("/", jsonParser, async (req, res) => {
   const names = users.map((user) => user.name);
   res.send(`There are ${names.length} which are ${names.join(", ")}`);
 });
-// register endpoint
-app.post("/register",jsonParser, (request, response) => {
-  console.log("Receive POST registration");
+// register user endpoint
+app.post("/register/user",jsonParser, (request, response) => {
+  console.log("Receive POST User registration");
   // hash the password
   bcrypt
     .hash(request.body.password, 10)
@@ -77,9 +77,60 @@ app.post("/register",jsonParser, (request, response) => {
       });
     });
 });
+app.post("/register/admin",jsonParser, (request, response) => {
+  console.log("Receive POST Admin registration");
+  // hash the password
+  bcrypt
+    .hash(request.body.password, 10)
+    .then((hashedPassword) => {
+      // create a new user instance and collect the data
+      console.log("Create Admin Object");
+      const admin = {
+        name: request.body.name,
+        staffId: request.body.staffId,
+        username: request.body.username,
+        password: hashedPassword,
+        email: request.body.email,
+        faculty: request.body.faculty,
+        position: request.body.position,
+      };
+      if (request.body.code !== process.env.SECRET_CODE) {
+        response.status(201).send({
+        message: "Wrong Secret Code"
+      });
+      return;}
 
+      // save the new user
+      prisma.admin
+        .create({ data: admin })
+        // return success if the new user is added to the database successfully
+        .then((result) => {
+          console.log("Created Admin Successfully");
+          response.status(201).send({
+            message: "Admin Created Successfully",
+            result,
+          });
+        })
+        // catch error if the new user wasn't added successfully to the database
+        .catch((error) => {
+          console.log(error);
+          response.status(500).send({
+            message: "Error creating Admin Account",
+            error,
+          });
+        });
+    })
+    // catch error if the password hash isn't successful
+    .catch((e) => {
+      response.status(500).send({
+        message: "Password was not hashed successfully",
+        e,
+      });
+    });
+});
 app.post("/login", jsonParser, (request, response) => {
-  console.log(`User ${request.body.username} Logging in`)
+  console.log(`User ${request.body.status} with username = ${request.body.username} Logging in`)
+  if (request.body.status === "student") {
   prisma.user
     .findUnique({
       where: {
@@ -110,7 +161,7 @@ app.post("/login", jsonParser, (request, response) => {
 
           //   return success response
           response.status(200).send({
-            message: "Login Successful",
+            message: "Login User Successful at "+user.username,
             username: user.username,
             userId: user.id,
             token,
@@ -129,6 +180,58 @@ app.post("/login", jsonParser, (request, response) => {
         e,
       });
     });
+  }
+  else if (request.body.status === "admin") {
+    prisma.admin
+    .findUnique({
+      where: {
+        username: request.body.username,
+      },
+    })
+    .then((user) => {
+      bcrypt
+        .compare(request.body.password, user.password)
+        .then((passwordCheck) => {
+          // check if password matches
+          if (!passwordCheck) {
+            return response.status(400).send({
+              message: "Passwords does not match",
+              error,
+            });
+          }
+
+          //   create JWT token
+          const token = jwt.sign(
+            {
+              userId: user._id,
+              username: user.username,
+            },
+            "RANDOM-TOKEN",
+            { expiresIn: "24h" }
+          );
+
+          //   return success response
+          response.status(200).send({
+            message: "Login Admin Successful at " + user.username,
+            username: user.username,
+            userId: user.id,
+            token,
+          });
+        })
+        .catch((error) => {
+          response.status(400).send({
+            message: "Passwords does not match",
+            error,
+          });
+        });
+    })
+    .catch((e) => {
+      response.status(404).send({
+        message: "username not found",
+        e,
+      });
+    });
+  }
 });
 
 app.post("/post/upload", jsonParser, (request, response) => {

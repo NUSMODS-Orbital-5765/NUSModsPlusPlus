@@ -18,17 +18,11 @@ import {
   Step,
   StepLabel,
 } from "@mui/material";
-import { facultyList, majorDict, interestsDict } from "./Constants";
+import { facultyList, majorDict, interestsDict, majorList } from "./Constants";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 
-// styling for signup welcome message
-export const SignUpWelcomeMessage = () => {
-  <Typography sx={{ fontWeight: "700", fontSize: "50px" }}>
-    Welcome! Let's get you settled.
-  </Typography>;
-};
-
+// TO DELETE
 // styling for stepper component
 export const SignUpStepper = ({ activeStep }) => {
   const steps = ["Setting Up...", "Almost There...", "One Last Thing..."];
@@ -45,12 +39,12 @@ export const SignUpStepper = ({ activeStep }) => {
   );
 };
 
+// COMPLETE
 // styling for form headers
 export const FormHeader = (props) => {
   const { text } = props;
   return (
     <Typography
-      color="text.primary"
       sx={{
         marginTop: "30px",
         fontWeight: 700,
@@ -92,10 +86,11 @@ export function FormTextField({ name, label, defaultText, setfn, disabled }) {
       required
       error={error}
       helperText={error ? "Field cannot be empty" : ""}
-    ></TextField>
+    />
   );
 }
 
+// COMPLETE
 // styling for username field
 export function FormUsernameField({ defaultText, setfn, disabled }) {
   const [requiredField, setRequiredField] = useState(defaultText);
@@ -130,7 +125,8 @@ export function FormUsernameField({ defaultText, setfn, disabled }) {
   );
 }
 
-// styling for password field
+// COMPLETE
+// styling for password field (with confirm password)
 export function FormPasswordField({ defaultText, setfn, disabled }) {
   const [showPassword, setShowPassword] = useState(true);
   const handleTogglePassword = () => {
@@ -138,7 +134,10 @@ export function FormPasswordField({ defaultText, setfn, disabled }) {
   };
 
   const [requiredField, setRequiredField] = useState(defaultText);
-  const [error, setError] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
+  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
+
   const handleRequiredFieldChange = (event) => {
     const value = event.target.value;
     setRequiredField(value);
@@ -146,48 +145,71 @@ export function FormPasswordField({ defaultText, setfn, disabled }) {
     const passwordRegex =
       /^(?=.*[A-Za-z\d])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     const isError = !passwordRegex.test(value);
-    setError(isError);
+    setPasswordError(isError);
     if (!isError) {
       setfn(event);
     }
   };
 
+  const handleConfirmPasswordChange = (event) => {
+    const value = event.target.value;
+    setConfirmPassword(value);
+    setConfirmPasswordError(requiredField !== value);
+  };
+
   return (
-    <TextField
-      fullWidth
-      name="password"
-      label="Password"
-      variant="outlined"
-      disabled={disabled}
-      value={requiredField}
-      onChange={(e) => {
-        handleRequiredFieldChange(e);
-      }}
-      required
-      type={showPassword ? "text" : "password"}
-      error={error}
-      helperText={
-        error
-          ? "Password must contain at least 8 characters and at least one special character"
-          : ""
-      }
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            <IconButton onClick={handleTogglePassword}>
-              {showPassword ? (
-                <VisibilityRoundedIcon />
-              ) : (
-                <VisibilityOffRoundedIcon />
-              )}
-            </IconButton>
-          </InputAdornment>
-        ),
-      }}
-    ></TextField>
+    <>
+      <TextField
+        fullWidth
+        name="password"
+        label="Password"
+        variant="outlined"
+        disabled={disabled}
+        value={requiredField}
+        onChange={(e) => {
+          handleRequiredFieldChange(e);
+        }}
+        required
+        type={showPassword ? "text" : "password"}
+        error={passwordError}
+        helperText={
+          passwordError
+            ? "Password must contain at least 8 characters and at least one special character"
+            : ""
+        }
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton onClick={handleTogglePassword}>
+                {showPassword ? (
+                  <VisibilityRoundedIcon />
+                ) : (
+                  <VisibilityOffRoundedIcon />
+                )}
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+      />
+      <TextField
+        sx={{ marginTop: "20px" }}
+        fullWidth
+        name="confirmPassword"
+        label="Confirm Password"
+        variant="outlined"
+        disabled={disabled}
+        value={confirmPassword}
+        onChange={handleConfirmPasswordChange}
+        required
+        type={showPassword ? "text" : "password"}
+        error={confirmPasswordError}
+        helperText={confirmPasswordError ? "Passwords do not match" : ""}
+      />
+    </>
   );
 }
 
+// COMPLETE
 // styling for email field
 export const FormEmailField = ({ defaultText, setfn, disabled }) => {
   const [requiredField, setRequiredField] = useState(defaultText);
@@ -207,6 +229,7 @@ export const FormEmailField = ({ defaultText, setfn, disabled }) => {
 
   return (
     <TextField
+      fullWidth
       name="email"
       label="Recovery Email"
       type="email"
@@ -285,6 +308,7 @@ export function FormFacultyMajorField({
       <FormControl>
         <InputLabel>Faculty</InputLabel>
         <Select
+          fullWidth
           required
           name="faculty"
           label="Faculty"
@@ -304,11 +328,12 @@ export function FormFacultyMajorField({
       </FormControl>
       {selectedFaculty && (
         <FormControl sx={{ marginTop: "20px" }}>
-          <InputLabel>Major</InputLabel>
+          <InputLabel>Primary Degree/Major</InputLabel>
           <Select
+            fullWidth
             required
-            name="primaryMajor"
-            label="Major"
+            name="primaryDegree"
+            label="Primary Degree/Major"
             disabled={disabled}
             value={selectedMajor}
             onChange={(e) => {
@@ -328,11 +353,39 @@ export function FormFacultyMajorField({
   );
 }
 
+// styling for minor field
+export const FormMinorField = ({ filledMinor, setfn, disabled }) => {
+  const [selectedMinors, setSelectedMinors] = useState([]);
+
+  const handleMinorChange = (event, value) => {
+    setSelectedMinors(value);
+    setfn(value);
+  };
+
+  return (
+    <Autocomplete
+      name="minor"
+      disabled={disabled}
+      multiple
+      id="tags-outlined"
+      options={majorList}
+      getOptionLabel={(option) => option}
+      defaultValue={filledMinor}
+      filterSelectedOptions
+      onChange={handleMinorChange}
+      renderInput={(params) => (
+        <TextField {...params} label="Minors (if any)" />
+      )}
+    />
+  );
+};
+
 // styling for interests field
 export function FormInterestsField({ filledInterests, setfn, disabled }) {
   const [myInterests, setMyInterests] = useState(filledInterests);
   const handleInterests = (event) => {
     setMyInterests(event.target.value);
+    setfn(event);
   };
 
   return (
