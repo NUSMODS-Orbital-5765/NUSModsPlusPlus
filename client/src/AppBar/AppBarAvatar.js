@@ -10,16 +10,15 @@ import {
   MenuItem,
   Badge,
   Divider,
-  List,
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import SettingsSuggestRoundedIcon from "@mui/icons-material/SettingsSuggestRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import CreateRoundedIcon from "@mui/icons-material/CreateRounded";
 
+// list of controls available
 export const avatarItems = [
   { label: "Profile", icon: <SettingsRoundedIcon />, link: "/profile" },
   { label: "My Posts", icon: <CreateRoundedIcon />, link: "/profile" },
@@ -65,7 +64,7 @@ const AppBarAvatar = () => {
         <Box
           sx={{
             margin: "10px",
-            marginRight: "20px",
+            marginRight: "30px",
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
@@ -97,7 +96,7 @@ const AppBarAvatar = () => {
             style={{ textDecoration: "none", color: "inherit" }}
           >
             <MenuItem sx={{ margin: "10px", borderRadius: "10px" }}>
-              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemIcon sx={{ color: "black" }}>{item.icon}</ListItemIcon>
               <ListItemText>{item.label}</ListItemText>
             </MenuItem>
           </Link>
