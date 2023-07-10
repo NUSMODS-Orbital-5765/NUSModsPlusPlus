@@ -16,6 +16,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./auth/ProtectedRoute";
+import PublicProfilePage from "./Profile/PublicProfilePage";
 
 const App = () => {
   return (
@@ -32,7 +33,29 @@ const App = () => {
           element={<SignUpStepThree />}
         />
         <Route path="/admin/sign-up" element={<AdminSignUpPage />} />
+        <Route path="/profile" element={<ProfilePage selectedTab={0} />} />
         <Route
+          path="/profile/my-posts"
+          element={<ProfilePage selectedTab={1} />}
+        />
+        <Route
+          path="/profile/liked-posts"
+          element={<ProfilePage selectedTab={2} />}
+        />
+        <Route
+          path="/profile/account"
+          element={<ProfilePage selectedTab={3} />}
+        />
+        <Route path="/profile/public" element={<PublicProfilePage />} />
+        <Route path="/calculator" element={<GPACalculatorPage />} />
+        <Route path="/community" element={<CommunityPage />} />
+      </Routes>
+    </LocalizationProvider>
+  );
+};
+
+/*
+<Route
           path="/profile"
           element={
             <ProtectedRoute>
@@ -40,11 +63,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route path="/calculator" element={<GPACalculatorPage />} />
-        <Route path="/community" element={<CommunityPage />} />
-      </Routes>
-    </LocalizationProvider>
-  );
-};
+        */
 
 export default App;

@@ -1,6 +1,9 @@
 import { formatDistanceToNow } from "date-fns";
 import { red, orange, yellow } from "@mui/material/colors";
 
+// iMPORTANT I REALISED THERE IS SUCH THING AS A DOUBLE DEGREE
+// get them to choose plan, add: degree, major, minor. (use a button to open the textfield)
+
 // list of nus faculties
 export const facultyList = [
   "Faculty of Arts and Social Sciences",
@@ -101,15 +104,16 @@ export const interestsDict = {
 // sample personal details for user profile setup. meant to extract from database
 export const sampleProfile = {
   Name: "Hannah Tan",
-  Avatar: "sample_icon.png",
+  Avatar: "/sample_icon.png",
   StudentID: "A1234567B",
   Username: "h_student",
   Password: "h_student_1",
   Faculty: "School of Computing",
-  Major: "Information Systems",
-  "Second Major": "Economics",
-  Minor: "", // or null?
+  Degree: ["Information Systems"],
+  Major: ["Economics"],
+  Minor: ["Statistics"],
   "Special Programme": "RVRC",
+  Bio: "Hi there! Nice to meet you!",
   Interests: ["easy to score", "finance", "machine learning"],
 };
 
@@ -253,7 +257,7 @@ export const formatDate = (dateTime) => {
 export const notifsList = [
   {
     timestamp: currentDay,
-    avatar: "profilepic_2.png",
+    avatar: "/profilepic_2.png",
     author: "admin 1",
     content: "You are not approved for exemption from MA2001.",
     type: "mention",
@@ -262,7 +266,7 @@ export const notifsList = [
   },
   {
     timestamp: nextDay,
-    avatar: "profilepic_1.png",
+    avatar: "/profilepic_1.png",
     author: "admin 2",
     content: "You are missing two core modules: BT2101 and BT2102.",
     type: "mention",
@@ -271,7 +275,7 @@ export const notifsList = [
   },
   {
     timestamp: followingDay,
-    avatar: "profilepic_2.png",
+    avatar: "/profilepic_2.png",
     author: "admin 3",
     content: "",
     type: "approve",
@@ -280,7 +284,7 @@ export const notifsList = [
   },
   {
     timestamp: followingDay,
-    avatar: "profilepic_2.png",
+    avatar: "/profilepic_2.png",
     author: "random_user",
     content: "",
     type: "like",
@@ -289,7 +293,7 @@ export const notifsList = [
   },
   {
     timestamp: followingDay,
-    avatar: "profilepic_2.png",
+    avatar: "/profilepic_2.png",
     author: "random_user",
     content:
       "Amazing post! Really insightful and covered all the necessary details. On that note, I would like to add that the curriculum board has discussed and intended for the new curriculum to be released much earlier.",
