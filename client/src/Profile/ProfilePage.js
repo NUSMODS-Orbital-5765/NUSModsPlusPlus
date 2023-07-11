@@ -7,7 +7,6 @@ import DrawerComponent from "../DrawerComponent";
 import {
   Box,
   Typography,
-  Avatar,
   Tooltip,
   IconButton,
   Tabs,
@@ -19,6 +18,8 @@ import ProfilePictureComponent from "./ProfilePictureComponent";
 import ProfileInfoComponent from "./ProfileInfoComponent";
 import { Link } from "react-router-dom";
 import React, { useState } from "react";
+import MyPostsTab from "./MyPostsTab";
+import LikedPostsTab from "./LikedPostsTab";
 import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
@@ -73,9 +74,6 @@ export const profileTabsList = [
 const ProfilePage = ({ selectedTab }) => {
   // handling the tabs field
   const [currentTab, setCurrentTab] = useState(selectedTab);
-  const handleChangeTab = (event, activeTab) => {
-    setCurrentTab(activeTab);
-  };
 
   // handling public vs private profile
   const [publicProfile, setPublicProfile] = useState(false);
@@ -166,8 +164,7 @@ const ProfilePage = ({ selectedTab }) => {
             sx={{
               marginLeft: "55ch",
             }}
-            value={currentTab}
-            onChange={handleChangeTab}
+            value={selectedTab}
           >
             {profileTabsList.map((item, index) => (
               <Tab
@@ -200,10 +197,10 @@ const ProfilePage = ({ selectedTab }) => {
             ))}
           </Tabs>
         </Box>
-        {currentTab === 0 && <ProfileInfoComponent />}
-        {currentTab === 1 && <ProfileInfoComponent />}
-        {currentTab === 2 && <ProfileInfoComponent />}
-        {currentTab === 3 && <AccountSecurityTab />}
+        {selectedTab === 0 && <ProfileInfoComponent />}
+        {selectedTab === 1 && <MyPostsTab />}
+        {selectedTab === 2 && <LikedPostsTab />}
+        {selectedTab === 3 && <AccountSecurityTab />}
       </Box>
     </div>
   );

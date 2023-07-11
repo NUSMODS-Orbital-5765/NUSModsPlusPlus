@@ -21,8 +21,12 @@ import CreateRoundedIcon from "@mui/icons-material/CreateRounded";
 // list of controls available
 export const avatarItems = [
   { label: "Profile", icon: <SettingsRoundedIcon />, link: "/profile" },
-  { label: "My Posts", icon: <CreateRoundedIcon />, link: "/profile" },
-  { label: "Liked Posts", icon: <FavoriteRoundedIcon />, link: "/profile" },
+  { label: "My Posts", icon: <CreateRoundedIcon />, link: "/profile/my-posts" },
+  {
+    label: "Liked Posts",
+    icon: <FavoriteRoundedIcon />,
+    link: "/profile/liked-posts",
+  },
   { label: "Logout", icon: <LogoutRoundedIcon />, link: "/sign-in" },
 ];
 
