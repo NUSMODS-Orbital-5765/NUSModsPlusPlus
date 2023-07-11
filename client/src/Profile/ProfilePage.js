@@ -137,21 +137,7 @@ const ProfilePage = ({ selectedTab }) => {
               alignItems: "center",
             }}
           >
-            <Tooltip placement="top" title="Change Photo">
-              <Avatar
-                sx={{
-                  width: "20ch",
-                  height: "20ch",
-                  filter: "brightness(100%)",
-                  transition: "filter 0.3s",
-                  "&:hover": {
-                    filter: "brightness(70%)",
-                  },
-                }}
-                alt="Sample Icon"
-                src={sampleProfile["Avatar"]}
-              />
-            </Tooltip>
+            <ProfilePictureComponent />
             <Box
               sx={{
                 marginLeft: "10px",

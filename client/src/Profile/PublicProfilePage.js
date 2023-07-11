@@ -2,9 +2,7 @@ import AppBarComponent from "../AppBar/AppBarComponent";
 import DrawerComponent from "../DrawerComponent";
 import { sampleProfile, samplePosts, formatDate } from "../Constants";
 import { SortAndFilter } from "../Community/CommunityPage";
-import CommunityDefaultPost, {
-  CommunityPostDialog,
-} from "../Community/CommunityDefaultPost";
+import PostsList from "../Community/PostsList";
 import {
   Box,
   Typography,
@@ -67,13 +65,6 @@ export const AboutInfoList = ({ sampleProfile }) => {
       icon: <HomeRoundedIcon />,
     },
   ];
-};
-
-// mapping of posts
-// includes sorting function, taken from Community Page
-export const PostsDisplay = ({ postsList }) => {
-  const samplePost = postsList[0];
-  return <CommunityDefaultPost post={samplePost} />;
 };
 
 // main page component
@@ -161,6 +152,7 @@ const PublicProfilePage = () => {
               borderRadius: "10px",
               margin: "55px",
               marginTop: "-10px",
+              marginBottom: "40px",
               backgroundColor: "#f2f2f2",
               boxShadow: 0,
               flex: "20%",
@@ -224,7 +216,9 @@ const PublicProfilePage = () => {
           </Card>
           <Box sx={{ flex: "60%" }}>
             <SortAndFilter />
-            <PostsDisplay postsList={samplePosts} />
+            <Box sx={{ marginRight: "55px", marginTop: "40px" }}>
+              <PostsList postList={samplePosts} />
+            </Box>
           </Box>
         </Box>
       </Box>
