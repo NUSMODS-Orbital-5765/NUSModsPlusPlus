@@ -1,6 +1,6 @@
 import AppBarComponent from "../AppBar/AppBarComponent";
 import DrawerComponent from "../DrawerComponent";
-import { sampleProfile, samplePosts, formatDate } from "../Constants";
+import { samplePosts } from "../Constants";
 import { SortAndFilter } from "../Community/CommunityPage";
 import PostsList from "../Community/PostsList";
 import {
@@ -68,7 +68,7 @@ export const AboutInfoList = ({ sampleProfile }) => {
 };
 
 // main page component
-const PublicProfilePage = () => {
+const PublicProfilePage = ({ sampleProfile }) => {
   // edit the bio
   const [editableField, setEditableField] = useState(false);
   const [currentBio, setCurrentBio] = useState(sampleProfile.Bio);
@@ -218,6 +218,7 @@ const PublicProfilePage = () => {
             <SortAndFilter />
             <Box sx={{ marginRight: "55px", marginTop: "40px" }}>
               <PostsList postList={samplePosts} />
+              {/* replace with filtered list of posts made by the author */}
             </Box>
           </Box>
         </Box>

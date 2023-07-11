@@ -13,6 +13,8 @@ import {
   Grid,
   Typography,
   Pagination,
+  MenuItem,
+  Select,
 } from "@mui/material";
 import {
   postRecommendations,
@@ -163,29 +165,30 @@ export const SortAndFilter = (props) => {
     <Box sx={{ display: "flex", flexDirection: "row" }}>
       <FormControl>
         <InputLabel variant="standard">Sort By</InputLabel>
-        <NativeSelect
+        <Select
+          sx={{ width: "20ch" }}
+          variant="standard"
           onChange={(e) => {
             setSortValue(e.target.value);
           }}
         >
-          <option value={"none"}>None</option>
-          <option value={"timestamp"}>Latest</option>
-          <option value={"likes"}>Most Popular</option>
-        </NativeSelect>
+          <MenuItem value={"timestamp"}>Latest</MenuItem>
+          <MenuItem value={"likes"}>Most Popular</MenuItem>
+        </Select>
       </FormControl>
       <FormControl sx={{ marginLeft: "20px" }}>
         <InputLabel variant="standard">Filter By</InputLabel>
-        <NativeSelect
+        <Select
+          sx={{ width: "20ch" }}
           variant="standard"
           onChange={(e) => {
             setFilterValue(e.target.value);
           }}
         >
-          <option value={"none"}>None</option>
-          <option value={"study guide"}>Study Guide</option>
-          <option value={"module review"}>Module Review</option>
-          <option value={"notes"}>Notes</option>
-        </NativeSelect>
+          <MenuItem value={"study guide"}>Study Guide</MenuItem>
+          <MenuItem value={"module review"}>Module Review</MenuItem>
+          <MenuItem value={"notes"}>Notes</MenuItem>
+        </Select>
       </FormControl>
     </Box>
   );
