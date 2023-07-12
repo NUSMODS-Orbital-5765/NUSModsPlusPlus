@@ -13,7 +13,7 @@ import {
   Tab,
   Switch,
 } from "@mui/material";
-import { sampleProfile } from "../Constants";
+import { samplePosts, sampleProfile } from "../Constants";
 import ProfilePictureComponent from "./ProfilePictureComponent";
 import ProfileInfoComponent from "./ProfileInfoComponent";
 import { Link } from "react-router-dom";
@@ -198,8 +198,8 @@ const ProfilePage = ({ selectedTab }) => {
           </Tabs>
         </Box>
         {selectedTab === 0 && <ProfileInfoComponent />}
-        {selectedTab === 1 && <MyPostsTab />}
-        {selectedTab === 2 && <LikedPostsTab />}
+        {selectedTab === 1 && <MyPostsTab postList={samplePosts} />}
+        {selectedTab === 2 && <LikedPostsTab postList={samplePosts} />}
         {selectedTab === 3 && <AccountSecurityTab />}
       </Box>
     </div>
