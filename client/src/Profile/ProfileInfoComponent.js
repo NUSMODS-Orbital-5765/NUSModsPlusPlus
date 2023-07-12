@@ -23,6 +23,8 @@ import axios from "axios";
 
 const ProfileInfoComponent = ({ userProfile }) => {
   const [editableDetails, setEditableDetails] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
 
   // just for testing, please replace with actual implementation
   const [profileInfoCopy, setProfileInfoCopy] = useState({
@@ -76,6 +78,18 @@ const ProfileInfoComponent = ({ userProfile }) => {
     const value = event.target.value;
     setProfileInfoCopy({ ...profileInfoCopy, [name]: value });
   };
+
+  const handleMinorInfo = (value) => {
+    setProfileInfoCopy({
+      ...profileInfoCopy,
+      ["minor"]: value,
+    });
+  };
+
+  const submitProfileUpdateCopy = () => {
+    setSubmitSuccess(true);
+    console.log(profileInfoCopy);
+  };
   // end of test implementation //
 
   // getting profile information
@@ -112,8 +126,6 @@ const ProfileInfoComponent = ({ userProfile }) => {
   }, []);
 
   const postUpdateAPI = `${process.env.REACT_APP_API_LINK}/profile/update`;
-  const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [submitError, setSubmitError] = useState(false);
   const submitProfileUpdate = () => {
     axios
       .post(postUpdateAPI, profileInfo, {
@@ -149,6 +161,7 @@ const ProfileInfoComponent = ({ userProfile }) => {
         <Button
           sx={{ marginLeft: "30px" }}
           onClick={handleEditableDetails}
+          color="error"
           variant="contained"
         >
           Edit
@@ -229,7 +242,7 @@ const ProfileInfoComponent = ({ userProfile }) => {
         <Box sx={{ marginBottom: "20px" }}>
           <FormMinorField
             filledMinor={profileInfoCopy.minor}
-            setfn={handleProfileInfoCopy}
+            setfn={handleMinorInfo}
             disabled={!editableDetails}
           />
         </Box>
@@ -245,13 +258,12 @@ const ProfileInfoComponent = ({ userProfile }) => {
         </Box>
       </Box>
       <Button
-        onClick={submitProfileUpdate}
+        onClick={submitProfileUpdateCopy}
         disabled={!isFormComplete}
-        sx={{ marginTop: "20px" }}
+        sx={{ marginTop: "10px" }}
         variant="contained"
-        color="primary"
       >
-        Save Details
+        Save
       </Button>
       <Snackbar
         open={submitSuccess}

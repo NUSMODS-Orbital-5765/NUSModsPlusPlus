@@ -9,6 +9,8 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import {
   FormTextField,
@@ -30,6 +32,9 @@ import axios from "axios";
 const StudentSignUpPage = () => {
   const navigate = useNavigate();
   const [isFormComplete, setIsFormComplete] = useState(false);
+  // submit alert
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
 
   // disable/enable button based on whether criteria for input fields are met
   const handleFormCompletion = (fieldErrors) => {
@@ -49,6 +54,7 @@ const StudentSignUpPage = () => {
     studentId: "",
     username: "",
     password: "",
+    confirmPassword: "",
     email: "",
     faculty: "",
     primaryDegree: "",
@@ -82,10 +88,13 @@ const StudentSignUpPage = () => {
   // submitting register info
   const userRegisterAPI = `${process.env.REACT_APP_API_LINK}/register/user`;
   const handleSubmit = () => {
+    const registerInfoWithoutConfirmPassword = { ...registerInfo };
+    delete registerInfoWithoutConfirmPassword.confirmPassword;
+
     axios
-      .post(userRegisterAPI, registerInfo)
+      .post(userRegisterAPI, registerInfoWithoutConfirmPassword)
       .then((response) => {
-        alert("Register Successfully");
+        setSubmitSuccess(true);
         console.log(response);
         //useNavigate need to be initalise at top
         setTimeout(() => {
@@ -93,9 +102,10 @@ const StudentSignUpPage = () => {
         }, 500);
       })
       .catch((error) => {
+        setSubmitError(true);
         console.log(error);
       });
-    console.log(registerInfo);
+    console.log(registerInfoWithoutConfirmPassword);
   };
 
   // check for errors among the fields
@@ -104,6 +114,7 @@ const StudentSignUpPage = () => {
     studentId: registerInfo.studentId === "",
     username: registerInfo.username === "",
     password: registerInfo.password === "",
+    confirmPassword: registerInfo.confirmPassword === "",
     email: registerInfo.email === "",
     faculty: registerInfo.faculty === "",
     primaryDegree: registerInfo.primaryDegree === "",
@@ -257,6 +268,34 @@ const StudentSignUpPage = () => {
             >
               Sign Up
             </Button>
+            <Snackbar
+              open={submitSuccess}
+              autoHideDuration={3000}
+              onClose={() => setSubmitSuccess(false)}
+            >
+              <Alert
+                onClose={() => setSubmitSuccess(false)}
+                severity="success"
+                variant="filled"
+                sx={{ width: "100%", color: "white" }}
+              >
+                Registered successfully!
+              </Alert>
+            </Snackbar>
+            <Snackbar
+              open={submitError}
+              autoHideDuration={3000}
+              onClose={() => setSubmitError(false)}
+            >
+              <Alert
+                onClose={() => setSubmitError(false)}
+                severity="error"
+                variant="filled"
+                sx={{ width: "100%", color: "white" }}
+              >
+                Registration failed.
+              </Alert>
+            </Snackbar>
           </Box>
         </CardContent>
       </Card>

@@ -202,7 +202,9 @@ const ProfilePage = ({ selectedTab }) => {
         )}
         {selectedTab === 1 && <MyPostsTab postList={samplePosts} />}
         {selectedTab === 2 && <LikedPostsTab postList={samplePosts} />}
-        {selectedTab === 3 && <AccountSecurityTab />}
+        {selectedTab === 3 && (
+          <AccountSecurityTab userProfile={sampleProfile} />
+        )}
       </Box>
     </div>
   );

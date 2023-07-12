@@ -154,7 +154,11 @@ export function FormPasswordField({ defaultText, setfn, disabled }) {
   const handleConfirmPasswordChange = (event) => {
     const value = event.target.value;
     setConfirmPassword(value);
-    setConfirmPasswordError(requiredField !== value);
+    const error = requiredField !== value;
+    setConfirmPasswordError(error);
+    if (!error) {
+      setfn(event);
+    }
   };
 
   return (
