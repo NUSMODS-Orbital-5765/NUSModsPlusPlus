@@ -151,10 +151,10 @@ const ProfilePage = ({ selectedTab }) => {
                   color: "#004d80",
                 }}
               >
-                {sampleProfile["Name"]}
+                {sampleProfile.name}
               </Typography>
               <Typography sx={{ color: "#004d80" }}>
-                Student • {sampleProfile["Degree"]}
+                Student • {sampleProfile.primaryDegree}
               </Typography>
               <PublicProfileSwitch />
             </Box>
@@ -197,7 +197,9 @@ const ProfilePage = ({ selectedTab }) => {
             ))}
           </Tabs>
         </Box>
-        {selectedTab === 0 && <ProfileInfoComponent />}
+        {selectedTab === 0 && (
+          <ProfileInfoComponent userProfile={sampleProfile} />
+        )}
         {selectedTab === 1 && <MyPostsTab postList={samplePosts} />}
         {selectedTab === 2 && <LikedPostsTab postList={samplePosts} />}
         {selectedTab === 3 && <AccountSecurityTab />}

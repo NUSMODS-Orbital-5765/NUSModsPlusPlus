@@ -61,7 +61,7 @@ const HomePage = () => {
                   color: "#004d80",
                 }}
               >
-                Welcome Back, {sampleProfile["Name"]}
+                Welcome Back, {sampleProfile.name}
               </Typography>
               <Typography
                 sx={{
@@ -84,7 +84,7 @@ const HomePage = () => {
             <Avatar
               sx={{ width: "25ch", height: "25ch" }}
               alt="Sample Icon"
-              src={sampleProfile["Avatar"]}
+              src={sampleProfile.avatar}
             />
           </Box>
           <Box

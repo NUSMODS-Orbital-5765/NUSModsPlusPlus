@@ -355,7 +355,7 @@ export function FormFacultyMajorField({
 
 // styling for minor field
 export const FormMinorField = ({ filledMinor, setfn, disabled }) => {
-  const [selectedMinors, setSelectedMinors] = useState([]);
+  const [selectedMinors, setSelectedMinors] = useState(filledMinor);
 
   const handleMinorChange = (event, value) => {
     setSelectedMinors(value);

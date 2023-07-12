@@ -96,7 +96,6 @@ const StudentSignUpPage = () => {
         console.log(error);
       });
     console.log(registerInfo);
-    
   };
 
   // check for errors among the fields
@@ -231,7 +230,7 @@ const StudentSignUpPage = () => {
                 </Box>
               )}
               <Box sx={{ marginBottom: "20px" }}>
-                <FormMinorField setfn={handleMinorInfo} />
+                <FormMinorField filledMinor={[]} setfn={handleMinorInfo} />
               </Box>
               <Box sx={{ marginBottom: "20px" }}>
                 <FormAutocomplete

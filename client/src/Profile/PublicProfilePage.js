@@ -1,6 +1,6 @@
 import AppBarComponent from "../AppBar/AppBarComponent";
 import DrawerComponent from "../DrawerComponent";
-import { samplePosts } from "../Constants";
+import { sampleDayEvents, samplePosts } from "../Constants";
 import { SortAndFilter } from "../Community/CommunityPage";
 import PostsList from "../Community/PostsList";
 import {
@@ -22,46 +22,61 @@ import ImportContactsRoundedIcon from "@mui/icons-material/ImportContactsRounded
 // list of information to map
 // change this to a mapping function which checks profile fields before mapping
 export const AboutInfoList = ({ sampleProfile }) => {
-  const createContent = (fieldName, contentArray, prefix, icon) => {
-    const content = {
-      content: prefix + " " + contentArray[0],
-      icon: icon,
-    };
-
-    if (contentArray.length > 1) {
-      const formattedContent = `${prefix} ${contentArray.join(", ")}`;
-      content.content = formattedContent;
-    }
-
-    return content;
+  // displaying the minor content
+  let minorContent = {
+    content: (
+      <Typography>
+        <span style={{ fontWeight: 700 }}>Minor</span> in{" "}
+        {sampleProfile.minor[0]}
+      </Typography>
+    ),
+    icon: <ImportContactsRoundedIcon />,
   };
+  if (sampleProfile.minor.length > 1) {
+    const formattedContent = (
+      <Typography>
+        <span style={{ fontWeight: 700 }}>Minor</span> in{" "}
+        {sampleProfile.minor.join(", ")}
+      </Typography>
+    );
+    minorContent.content = formattedContent;
+  }
 
-  const degreeContent = createContent(
-    "Degree",
-    sampleProfile["Degree"],
-    "",
-    <AutoStoriesRoundedIcon />
-  );
-  const majorContent = createContent(
-    "Major",
-    sampleProfile["Major"],
-    "Second Major in",
-    <MenuBookRoundedIcon />
-  );
-  const minorContent = createContent(
-    "Minor",
-    sampleProfile["Minor"],
-    "Minor in",
-    <ImportContactsRoundedIcon />
-  );
+  // displaying the degree content
+  let degreeContent = {
+    content: (
+      <Typography>
+        <span style={{ fontWeight: 700 }}>Degree</span> in{" "}
+        {sampleProfile.primaryDegree}
+      </Typography>
+    ),
+    icon: <AutoStoriesRoundedIcon />,
+  };
+  if (sampleProfile.secondDegree) {
+    degreeContent.content = (
+      <Typography>
+        <span style={{ fontWeight: 700 }}>Double Degree</span> in{" "}
+        {sampleProfile.primaryDegree} and {sampleProfile.secondDegree}
+      </Typography>
+    );
+  } else if (sampleProfile.secondMajor) {
+    degreeContent.content = (
+      <Typography>
+        <span style={{ fontWeight: 700 }}>Double Major</span> in{" "}
+        {sampleProfile.primaryDegree} and {sampleProfile.secondMajor}
+      </Typography>
+    );
+  }
 
   return [
-    { content: sampleProfile["Faculty"], icon: <LocationOnRoundedIcon /> },
-    degreeContent,
-    majorContent,
-    minorContent,
     {
-      content: sampleProfile["Special Programme"],
+      content: <Typography>{sampleProfile.faculty}</Typography>,
+      icon: <LocationOnRoundedIcon />,
+    },
+    degreeContent,
+    sampleProfile.minor.length !== 0 && minorContent,
+    sampleProfile.programme && {
+      content: <Typography>{sampleProfile.programme}</Typography>,
       icon: <HomeRoundedIcon />,
     },
   ];
@@ -71,7 +86,7 @@ export const AboutInfoList = ({ sampleProfile }) => {
 const PublicProfilePage = ({ sampleProfile }) => {
   // edit the bio
   const [editableField, setEditableField] = useState(false);
-  const [currentBio, setCurrentBio] = useState(sampleProfile.Bio);
+  const [currentBio, setCurrentBio] = useState(sampleProfile.bio);
 
   const handleEditField = () => {
     setEditableField(true);
@@ -121,7 +136,7 @@ const PublicProfilePage = ({ sampleProfile }) => {
                 height: "20ch",
               }}
               alt="Sample Icon"
-              src="/sample_icon.png"
+              src={sampleProfile.avatar}
             />
             <Box
               sx={{
@@ -138,10 +153,10 @@ const PublicProfilePage = ({ sampleProfile }) => {
                   color: "#004d80",
                 }}
               >
-                {sampleProfile["Name"]}
+                {sampleProfile.name}
               </Typography>
               <Typography sx={{ color: "#004d80" }}>
-                Student • {sampleProfile["Degree"]}
+                Student • {sampleProfile.primaryDegree}
               </Typography>
             </Box>
           </Box>
@@ -205,10 +220,8 @@ const PublicProfilePage = ({ sampleProfile }) => {
                       flexDirection: "row",
                     }}
                   >
-                    {infoItem.icon}
-                    <Typography sx={{ marginLeft: "10px" }}>
-                      {infoItem.content}
-                    </Typography>
+                    <Box sx={{ marginRight: "10px" }}>{infoItem.icon}</Box>
+                    {infoItem.content}
                   </Box>
                 ))}
               </Box>
