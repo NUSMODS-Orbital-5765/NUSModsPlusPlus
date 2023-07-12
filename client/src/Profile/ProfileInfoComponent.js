@@ -1,12 +1,10 @@
 //COMPLETE
-import { Card, CardContent, Typography, Box, Button } from "@mui/material";
+import { Typography, Box, Button } from "@mui/material";
 import { majorList, progsList, sampleProfile } from "../Constants";
 import {
   FormTextField,
   FormAutocomplete,
-  FormPasswordField,
   FormFacultyMajorField,
-  FormInterestsField,
 } from "../FormStyledComponents";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -29,8 +27,13 @@ export const ProfileHeader = (props) => {
   );
 };
 
-const ProfileInfoComponent = () => {
+const ProfileInfoComponent = ({ sampleProfile }) => {
   const [editableDetails, setEditableDetails] = useState(false);
+
+  // just for testing, please delete
+  const [profileInfoCopy, setProfileInfoCopy] = useState(sampleProfile);
+
+  // getting profile information
   const [profileInfo, setProfileInfo] = useState();
   const [isFetch, setIsFetch] = useState(false);
   const handleEditableDetails = () => {
@@ -81,149 +84,85 @@ const ProfileInfoComponent = () => {
   };
 
   return (
-    isFetch && (
-      <Card
+    <Box sx={{ margin: "55px", marginTop: "-20px" }}>
+      <Box
         sx={{
-          borderRadius: "5px",
-          marginLeft: "30px",
-          width: "700px",
-          boxShadow: 1,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
         }}
       >
-        <CardContent>
-          <Box
-            sx={{
-              margin: "10px",
-              marginBottom: "-10px",
-              display: "flex",
-              flexDirection: "row",
-              justifyItems: "center",
-              alignItems: "center",
-            }}
-          >
-            <Typography sx={{ fontSize: "30px", fontWeight: 700 }}>
-              My
-            </Typography>
-            <Typography
-              sx={{
-                marginLeft: "8px",
-                fontSize: "30px",
-                fontWeight: 700,
-                color: "#536DFE",
-              }}
-            >
-              Personal Details
-            </Typography>
-            <Button
-              sx={{ marginLeft: "30px" }}
-              onClick={handleEditableDetails}
-              variant="outlined"
-            >
-              Edit
-            </Button>
-          </Box>
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Box
-              sx={{
-                margin: "10px",
-                marginRight: "20px",
-                display: "flex",
-                flexDirection: "row",
-              }}
-            >
-              <Box
-                component="form"
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  marginBottom: "30px",
-                }}
-              >
-                <ProfileHeader text="General Information" />
-                <FormTextField
-                  disabled={!editableDetails}
-                  label="Name"
-                  name="name"
-                  defaultText={profileInfo.name}
-                  setfn={handleProfileInfo}
-                />
-                <FormTextField
-                  disabled={!editableDetails}
-                  label="StudentID"
-                  name="studentId"
-                  defaultText={profileInfo.studentId}
-                  setfn={handleProfileInfo}
-                />
-                <ProfileHeader text="Account Information" />
-                <FormTextField
-                  disabled={true}
-                  label="Username"
-                  name="username"
-                  defaultText={profileInfo.username}
-                  setfn={handleProfileInfo}
-                />
-                <FormPasswordField
-                  disabled={true}
-                  defaultText={sampleProfile["Password"]}
-                  setfn={handleProfileInfo}
-                />
-              </Box>
-              <Box sx={{ marginLeft: "50px" }}>
-                <ProfileHeader text="Academic Information" />
-                <FormFacultyMajorField
-                  disabled={!editableDetails}
-                  filledFaculty={profileInfo.faculty}
-                  filledMajor={profileInfo.primaryMajor}
-                  setfn={handleProfileInfo}
-                />
-                <FormAutocomplete
-                  disabled={!editableDetails}
-                  label="Second Major"
-                  name="secondaryMajor"
-                  optionsList={majorList}
-                  defaultText={profileInfo.secondaryMajor}
-                  setfn={handleProfileInfo}
-                />
-                <FormAutocomplete
-                  disabled={!editableDetails}
-                  label="Minor"
-                  name="minors"
-                  optionsList={majorList}
-                  defaultText={profileInfo.minors}
-                  setfn={handleProfileInfo}
-                />
-                <FormAutocomplete
-                  disabled={!editableDetails}
-                  name="programme"
-                  label="Special Programme (if any)"
-                  optionsList={progsList}
-                  defaultText={profileInfo.programme}
-                  setfn={handleProfileInfo}
-                />
-              </Box>
-            </Box>
-            <Box
-              sx={{ margin: "10px", display: "flex", flexDirection: "column" }}
-            >
-              <ProfileHeader text="User Preferences" />
-              <FormInterestsField
-                disabled={!editableDetails}
-                setfn={handleProfileInfo}
-                filledInterests={profileInfo.interests}
-              />
-            </Box>
-          </Box>
-          <Button
-            onClick={submitProfileUpdate}
-            sx={{ marginTop: "20px" }}
-            variant="contained"
-            color="primary"
-          >
-            Save
-          </Button>
-        </CardContent>
-      </Card>
-    )
+        <Typography sx={{ fontSize: "35px", fontWeight: 700 }}>
+          Personal Details
+        </Typography>
+        <Button
+          sx={{ marginLeft: "30px" }}
+          onClick={handleEditableDetails}
+          variant="contained"
+        >
+          Edit
+        </Button>
+      </Box>
+      <Box sx={{ display: "flex", flexDirection: "column" }}>
+        <ProfileHeader text="General Information" />
+        <FormTextField
+          disabled={!editableDetails}
+          label="Name"
+          name="name"
+          defaultText={sampleProfile["Name"]}
+          setfn={handleProfileInfo}
+        />
+        <FormTextField
+          disabled={!editableDetails}
+          label="StudentID"
+          name="studentId"
+          defaultText={sampleProfile["Student ID"]}
+          setfn={handleProfileInfo}
+        />
+        <ProfileHeader text="Academic Information" />
+        <FormFacultyMajorField
+          disabled={!editableDetails}
+          filledFaculty={profileInfo.faculty}
+          filledMajor={profileInfo.primaryMajor}
+          setfn={handleProfileInfo}
+        />
+        <FormAutocomplete
+          disabled={!editableDetails}
+          label="Second Major"
+          name="secondaryMajor"
+          optionsList={majorList}
+          defaultText={profileInfo.secondaryMajor}
+          setfn={handleProfileInfo}
+        />
+        <FormAutocomplete
+          disabled={!editableDetails}
+          label="Minor"
+          name="minors"
+          optionsList={majorList}
+          defaultText={profileInfo.minors}
+          setfn={handleProfileInfo}
+        />
+        <FormAutocomplete
+          disabled={!editableDetails}
+          name="programme"
+          label="Special Programme (if any)"
+          optionsList={progsList}
+          defaultText={profileInfo.programme}
+          setfn={handleProfileInfo}
+        />
+      </Box>
+      <Button
+        onClick={submitProfileUpdate}
+        sx={{ marginTop: "20px" }}
+        variant="contained"
+        color="primary"
+      >
+        Save
+      </Button>
+    </Box>
   );
 };
 export default ProfileInfoComponent;
+
+// isFetch && ....// rest of code
