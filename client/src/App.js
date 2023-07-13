@@ -9,6 +9,8 @@ import TasksPlannerPage from "./Planner/TasksPlannerPage";
 import GPACalculatorPage from "./GPACalculator/GPACalculatorPage";
 import CommunityPage from "./Community/CommunityPage";
 import ModulesPage from "./ModulesPage";
+import AdminHomePage from "./Admin/AdminHomePage";
+import AdminProfilePage from "./Admin/AdminProfilePage";
 import AdminSignUpPage from "./SignUp/AdminSignUpPage";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
