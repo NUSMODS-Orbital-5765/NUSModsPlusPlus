@@ -137,7 +137,7 @@ export const DefaultNotif = (props) => {
               variant="h1"
               sx={{
                 marginTop: "5px",
-                color: "#19a0ff",
+                color: "#1a90ff",
                 textTransform: "none",
                 fontWeight: 500,
                 fontSize: "14px",

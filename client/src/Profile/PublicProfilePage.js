@@ -116,7 +116,7 @@ const PublicProfilePage = ({ sampleProfile }) => {
             marginTop: "20px",
             borderRadius: "10px",
             background: `
-      linear-gradient(to bottom,  #e7f2ff 80%, #19a0ff 20%),
+      linear-gradient(to bottom,  #e7f2ff 80%, #1a90ff 20%),
       #e7f2ff 
     `,
           }}

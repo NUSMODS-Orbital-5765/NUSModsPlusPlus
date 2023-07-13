@@ -55,7 +55,7 @@ const CommunityPostComments = (props) => {
                 fontSize: "16px",
                 fontWeight: 500,
                 marginLeft: "30px",
-                color: "#19a0ff",
+                color: "#1a90ff",
               }}
             >
               {formatDate(new Date(comment.dateCreated))}
@@ -64,7 +64,7 @@ const CommunityPostComments = (props) => {
           <Box
             sx={{
               marginLeft: "20px",
-              borderLeft: "3px solid #19a0ff",
+              borderLeft: "3px solid #1a90ff",
               paddingLeft: "28px",
             }}
           >
