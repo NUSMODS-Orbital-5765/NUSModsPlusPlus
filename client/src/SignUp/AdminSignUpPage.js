@@ -1,5 +1,13 @@
 // sign up page for admin
-import { Typography, Box, Button, Card, CardContent } from "@mui/material";
+import {
+  Typography,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import { LogoComponent } from "../StyledComponents";
 import {
   FormHeader,
@@ -211,6 +219,34 @@ const AdminSignUpPage = () => {
             >
               Sign Up
             </Button>
+            <Snackbar
+              open={submitSuccess}
+              autoHideDuration={3000}
+              onClose={() => setSubmitSuccess(false)}
+            >
+              <Alert
+                onClose={() => setSubmitSuccess(false)}
+                severity="success"
+                variant="filled"
+                sx={{ width: "100%", color: "white" }}
+              >
+                Registered successfully!
+              </Alert>
+            </Snackbar>
+            <Snackbar
+              open={submitError}
+              autoHideDuration={3000}
+              onClose={() => setSubmitError(false)}
+            >
+              <Alert
+                onClose={() => setSubmitError(false)}
+                severity="error"
+                variant="filled"
+                sx={{ width: "100%", color: "white" }}
+              >
+                Registration failed.
+              </Alert>
+            </Snackbar>
           </Box>
         </CardContent>
       </Card>
