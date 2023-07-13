@@ -103,18 +103,19 @@ export const interestsDict = {
 
 // sample personal details for user profile setup. meant to extract from database
 export const sampleProfile = {
-  Name: "Hannah Tan",
-  Avatar: "/sample_icon.png",
-  StudentID: "A1234567B",
-  Username: "h_student",
-  Password: "h_student_1",
-  Faculty: "School of Computing",
-  Degree: ["Information Systems"],
-  Major: ["Economics"],
-  Minor: ["Statistics"],
-  "Special Programme": "RVRC",
-  Bio: "Hi there! Nice to meet you!",
-  Interests: ["easy to score", "finance", "machine learning"],
+  name: "Hannah Tan",
+  avatar: "/sample_icon.png",
+  studentId: "12345678",
+  username: "hannah_tan",
+  password: "hannah123",
+  email: "hannah@gmail.com",
+  faculty: "School of Computing",
+  primaryDegree: "Information Systems",
+  secondDegree: "",
+  secondMajor: "Economics",
+  minor: ["Geography", "History"],
+  programme: "RVRC",
+  bio: "Hi there! Nice to meet you!",
 };
 
 // samplePosts list should be updated when a new post is uploaded.

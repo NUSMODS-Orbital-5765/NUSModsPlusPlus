@@ -1,41 +1,104 @@
 //COMPLETE
-import { Card, CardContent, Typography, Box, Button } from "@mui/material";
+import {
+  Typography,
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import { majorList, progsList, sampleProfile } from "../Constants";
 import {
+  FormHeader,
+  FormMinorField,
   FormTextField,
   FormAutocomplete,
-  FormPasswordField,
   FormFacultyMajorField,
-  FormInterestsField,
 } from "../FormStyledComponents";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-// styling for headers
-export const ProfileHeader = (props) => {
-  const { text } = props;
-  return (
-    <Typography
-      sx={{
-        marginTop: "30px",
-        marginBottom: "20px",
-        color: "text.secondary",
-        fontWeight: 700,
-        textTransform: "uppercase",
-      }}
-    >
-      {text}
-    </Typography>
-  );
-};
-
-const ProfileInfoComponent = () => {
+const ProfileInfoComponent = ({ userProfile }) => {
   const [editableDetails, setEditableDetails] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
+
+  // just for testing, please replace with actual implementation
+  const [profileInfoCopy, setProfileInfoCopy] = useState({
+    name: "Hannah",
+    studentId: "12345678",
+    username: "hannah_tan",
+    password: "hannah123",
+    email: "hannah@gmail.com",
+    faculty: "School of Computing",
+    primaryDegree: "Information Systems",
+    secondDegree: "",
+    secondMajor: "Economics",
+    minor: ["Geography", "History"],
+    programme: "RVRC",
+  });
+
+  let defaultAcademicPlan = "Single Degree";
+  if (profileInfoCopy.secondDegree) {
+    defaultAcademicPlan = "Double Degree";
+  } else if (profileInfoCopy.secondMajor) {
+    defaultAcademicPlan = "Double Major";
+  }
+  const [academicPlan, setAcademicPlan] = useState(defaultAcademicPlan);
+
+  const handleAcademicPlanChange = (event) => {
+    setAcademicPlan(event.target.value);
+  };
+
+  const [isFormComplete, setIsFormComplete] = useState(false);
+  const handleFormCompletion = (fieldErrors) => {
+    const isComplete = Object.values(fieldErrors).every((error) => !error);
+    setIsFormComplete(isComplete);
+  };
+
+  const fieldErrors = {
+    name: profileInfoCopy.name === "",
+    studentId: profileInfoCopy.studentId === "",
+    username: profileInfoCopy.username === "",
+    password: profileInfoCopy.password === "",
+    email: profileInfoCopy.email === "",
+    faculty: profileInfoCopy.faculty === "",
+    primaryDegree: profileInfoCopy.primaryDegree === "",
+  };
+
+  useEffect(() => {
+    handleFormCompletion(fieldErrors);
+  }, [profileInfoCopy]);
+
+  const handleProfileInfoCopy = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    setProfileInfoCopy({ ...profileInfoCopy, [name]: value });
+  };
+
+  const handleMinorInfo = (value) => {
+    setProfileInfoCopy({
+      ...profileInfoCopy,
+      ["minor"]: value,
+    });
+  };
+
+  const submitProfileUpdateCopy = () => {
+    setSubmitSuccess(true);
+    console.log(profileInfoCopy);
+  };
+  // end of test implementation //
+
+  // getting profile information
   const [profileInfo, setProfileInfo] = useState();
   const [isFetch, setIsFetch] = useState(false);
   const handleEditableDetails = () => {
     setEditableDetails(!editableDetails);
   };
+
   const handleProfileInfo = (evt) => {
     const name = evt.target.name;
     const value = evt.target.value;
@@ -44,6 +107,7 @@ const ProfileInfoComponent = () => {
       [name]: value,
     });
   };
+
   useEffect(() => {
     const userId = localStorage.getItem("userId");
     const GETprofileURL = process.env.REACT_APP_API_LINK + "/profile/get";
@@ -70,160 +134,166 @@ const ProfileInfoComponent = () => {
         },
       })
       .then((response) => {
-        alert("Profile Update Successfully");
+        setSubmitSuccess(true);
         console.log(response);
         //useNavigate need to be initalise at top
       })
       .catch((error) => {
-        alert("Fail to Update");
+        setSubmitError(true);
         console.log(error);
       });
   };
 
   return (
-    isFetch && (
-      <Card
+    // nam, please put back this line isFetch && (
+    <Box sx={{ margin: "55px", marginTop: "-20px" }}>
+      <Box
         sx={{
-          borderRadius: "5px",
-          marginLeft: "30px",
-          width: "700px",
-          boxShadow: 1,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
         }}
       >
-        <CardContent>
-          <Box
-            sx={{
-              margin: "10px",
-              marginBottom: "-10px",
-              display: "flex",
-              flexDirection: "row",
-              justifyItems: "center",
-              alignItems: "center",
-            }}
-          >
-            <Typography sx={{ fontSize: "30px", fontWeight: 700 }}>
-              My
-            </Typography>
-            <Typography
-              sx={{
-                marginLeft: "8px",
-                fontSize: "30px",
-                fontWeight: 700,
-                color: "#536DFE",
-              }}
+        <Typography sx={{ fontSize: "35px", fontWeight: 700 }}>
+          Personal Details
+        </Typography>
+        <Button
+          sx={{ marginLeft: "30px" }}
+          onClick={handleEditableDetails}
+          color="error"
+          variant="contained"
+        >
+          Edit
+        </Button>
+      </Box>
+      <Box sx={{ display: "flex", flexDirection: "column" }}>
+        <FormHeader text="General Information" />
+        <Box sx={{ marginBottom: "20px" }}>
+          <FormTextField
+            disabled={!editableDetails}
+            label="Name"
+            name="name"
+            defaultText={profileInfoCopy.name}
+            setfn={handleProfileInfoCopy}
+          />
+        </Box>
+        <Box sx={{ marginBottom: "20px" }}>
+          <FormTextField
+            disabled={!editableDetails}
+            label="StudentID"
+            name="studentId"
+            defaultText={profileInfoCopy.studentId}
+            setfn={handleProfileInfoCopy}
+          />
+        </Box>
+        <FormHeader text="Academic Information" />
+        <Box sx={{ marginBottom: "20px" }}>
+          <FormFacultyMajorField
+            disabled={!editableDetails}
+            filledFaculty={profileInfoCopy.faculty}
+            filledMajor={profileInfoCopy.primaryDegree}
+            setfn={handleProfileInfoCopy}
+          />
+        </Box>
+        <Box sx={{ marginBottom: "20px" }}>
+          <FormControl fullWidth>
+            <InputLabel id="academic-plan">Academic Plan</InputLabel>
+            <Select
+              disabled={!editableDetails}
+              label="Academic Plan"
+              value={academicPlan}
+              onChange={handleAcademicPlanChange}
             >
-              Personal Details
-            </Typography>
-            <Button
-              sx={{ marginLeft: "30px" }}
-              onClick={handleEditableDetails}
-              variant="outlined"
-            >
-              Edit
-            </Button>
+              <MenuItem value={"Single Degree"}>Single Degree</MenuItem>
+              <MenuItem value={"Double Degree"}>Double Degree</MenuItem>
+              <MenuItem value={"Double Major"}>Double Major</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+        {academicPlan === "Double Degree" && (
+          <Box sx={{ marginBottom: "20px" }}>
+            <FormAutocomplete
+              disabled={!editableDetails}
+              optionsList={majorList}
+              defaultText={
+                profileInfoCopy.secondDegree ? profileInfoCopy.secondDegree : ""
+              }
+              label="Second Degree"
+              name="secondDegree"
+              setfn={handleProfileInfoCopy}
+            />
           </Box>
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Box
-              sx={{
-                margin: "10px",
-                marginRight: "20px",
-                display: "flex",
-                flexDirection: "row",
-              }}
-            >
-              <Box
-                component="form"
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  marginBottom: "30px",
-                }}
-              >
-                <ProfileHeader text="General Information" />
-                <FormTextField
-                  disabled={!editableDetails}
-                  label="Name"
-                  name="name"
-                  defaultText={profileInfo.name}
-                  setfn={handleProfileInfo}
-                />
-                <FormTextField
-                  disabled={!editableDetails}
-                  label="StudentID"
-                  name="studentId"
-                  defaultText={profileInfo.studentId}
-                  setfn={handleProfileInfo}
-                />
-                <ProfileHeader text="Account Information" />
-                <FormTextField
-                  disabled={true}
-                  label="Username"
-                  name="username"
-                  defaultText={profileInfo.username}
-                  setfn={handleProfileInfo}
-                />
-                <FormPasswordField
-                  disabled={true}
-                  defaultText={sampleProfile["Password"]}
-                  setfn={handleProfileInfo}
-                />
-              </Box>
-              <Box sx={{ marginLeft: "50px" }}>
-                <ProfileHeader text="Academic Information" />
-                <FormFacultyMajorField
-                  disabled={!editableDetails}
-                  filledFaculty={profileInfo.faculty}
-                  filledMajor={profileInfo.primaryMajor}
-                  setfn={handleProfileInfo}
-                />
-                <FormAutocomplete
-                  disabled={!editableDetails}
-                  label="Second Major"
-                  name="secondaryMajor"
-                  optionsList={majorList}
-                  defaultText={profileInfo.secondaryMajor}
-                  setfn={handleProfileInfo}
-                />
-                <FormAutocomplete
-                  disabled={!editableDetails}
-                  label="Minor"
-                  name="minors"
-                  optionsList={majorList}
-                  defaultText={profileInfo.minors}
-                  setfn={handleProfileInfo}
-                />
-                <FormAutocomplete
-                  disabled={!editableDetails}
-                  name="programme"
-                  label="Special Programme (if any)"
-                  optionsList={progsList}
-                  defaultText={profileInfo.programme}
-                  setfn={handleProfileInfo}
-                />
-              </Box>
-            </Box>
-            <Box
-              sx={{ margin: "10px", display: "flex", flexDirection: "column" }}
-            >
-              <ProfileHeader text="User Preferences" />
-              <FormInterestsField
-                disabled={!editableDetails}
-                setfn={handleProfileInfo}
-                filledInterests={profileInfo.interests}
-              />
-            </Box>
+        )}
+        {academicPlan === "Double Major" && (
+          <Box sx={{ marginBottom: "20px" }}>
+            <FormAutocomplete
+              disabled={!editableDetails}
+              optionsList={majorList}
+              defaultText={
+                profileInfoCopy.secondMajor ? profileInfoCopy.secondMajor : ""
+              }
+              label="Second Major"
+              name="secondMajor"
+              setfn={handleProfileInfoCopy}
+            />
           </Box>
-          <Button
-            onClick={submitProfileUpdate}
-            sx={{ marginTop: "20px" }}
-            variant="contained"
-            color="primary"
-          >
-            Save
-          </Button>
-        </CardContent>
-      </Card>
-    )
+        )}
+        <Box sx={{ marginBottom: "20px" }}>
+          <FormMinorField
+            filledMinor={profileInfoCopy.minor}
+            setfn={handleMinorInfo}
+            disabled={!editableDetails}
+          />
+        </Box>
+        <Box sx={{ marginBottom: "20px" }}>
+          <FormAutocomplete
+            disabled={!editableDetails}
+            name="programme"
+            label="Special Programme (if any)"
+            optionsList={progsList}
+            defaultText={profileInfoCopy.programme}
+            setfn={handleProfileInfoCopy}
+          />
+        </Box>
+      </Box>
+      <Button
+        onClick={submitProfileUpdateCopy}
+        disabled={!isFormComplete}
+        sx={{ marginTop: "10px" }}
+        variant="contained"
+      >
+        Save
+      </Button>
+      <Snackbar
+        open={submitSuccess}
+        autoHideDuration={3000}
+        onClose={() => setSubmitSuccess(false)}
+      >
+        <Alert
+          onClose={() => setSubmitSuccess(false)}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%", color: "white" }}
+        >
+          Personal details updated successfully!
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={submitError}
+        autoHideDuration={3000}
+        onClose={() => setSubmitError(false)}
+      >
+        <Alert
+          onClose={() => setSubmitError(false)}
+          severity="error"
+          variant="filled"
+          sx={{ width: "100%", color: "white" }}
+        >
+          Failed to update personal details.
+        </Alert>
+      </Snackbar>
+    </Box>
   );
 };
 export default ProfileInfoComponent;

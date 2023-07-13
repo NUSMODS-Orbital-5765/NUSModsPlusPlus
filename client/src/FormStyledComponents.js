@@ -154,7 +154,11 @@ export function FormPasswordField({ defaultText, setfn, disabled }) {
   const handleConfirmPasswordChange = (event) => {
     const value = event.target.value;
     setConfirmPassword(value);
-    setConfirmPasswordError(requiredField !== value);
+    const error = requiredField !== value;
+    setConfirmPasswordError(error);
+    if (!error) {
+      setfn(event);
+    }
   };
 
   return (
@@ -355,7 +359,7 @@ export function FormFacultyMajorField({
 
 // styling for minor field
 export const FormMinorField = ({ filledMinor, setfn, disabled }) => {
-  const [selectedMinors, setSelectedMinors] = useState([]);
+  const [selectedMinors, setSelectedMinors] = useState(filledMinor);
 
   const handleMinorChange = (event, value) => {
     setSelectedMinors(value);

@@ -13,6 +13,8 @@ import {
   Grid,
   Typography,
   Pagination,
+  MenuItem,
+  Select,
 } from "@mui/material";
 import {
   postRecommendations,
@@ -116,11 +118,11 @@ export const PostsGrid = ({ postList }) => {
 
 // row of posts rather than the usual grid
 // sort the posts before mapping as a postList
-const PostsRow = ({ postList, title }) => {
+const PostsRow = ({ postList }) => {
   return (
     <Box sx={{ marginLeft: "55px", marginTop: "20px" }}>
       <Typography sx={{ fontSize: "40px", fontWeight: 700 }}>
-        {title}
+        Top Posts
       </Typography>
       <Box
         sx={{
@@ -163,29 +165,30 @@ export const SortAndFilter = (props) => {
     <Box sx={{ display: "flex", flexDirection: "row" }}>
       <FormControl>
         <InputLabel variant="standard">Sort By</InputLabel>
-        <NativeSelect
+        <Select
+          sx={{ width: "20ch" }}
+          variant="standard"
           onChange={(e) => {
             setSortValue(e.target.value);
           }}
         >
-          <option value={"none"}>None</option>
-          <option value={"timestamp"}>Latest</option>
-          <option value={"likes"}>Most Popular</option>
-        </NativeSelect>
+          <MenuItem value={"timestamp"}>Latest</MenuItem>
+          <MenuItem value={"likes"}>Most Popular</MenuItem>
+        </Select>
       </FormControl>
       <FormControl sx={{ marginLeft: "20px" }}>
         <InputLabel variant="standard">Filter By</InputLabel>
-        <NativeSelect
+        <Select
+          sx={{ width: "20ch" }}
           variant="standard"
           onChange={(e) => {
             setFilterValue(e.target.value);
           }}
         >
-          <option value={"none"}>None</option>
-          <option value={"study guide"}>Study Guide</option>
-          <option value={"module review"}>Module Review</option>
-          <option value={"notes"}>Notes</option>
-        </NativeSelect>
+          <MenuItem value={"study guide"}>Study Guide</MenuItem>
+          <MenuItem value={"module review"}>Module Review</MenuItem>
+          <MenuItem value={"notes"}>Notes</MenuItem>
+        </Select>
       </FormControl>
     </Box>
   );
@@ -265,12 +268,6 @@ const CommunityPage = () => {
             alignItems: "center",
           }}
         >
-          <SortAndFilter />
-          {(!postReceived || postList == undefined) && (
-            <Box sx={{ marginTop: "100px", marginBottom: "150px" }}>
-              <NoPostsPlaceholder />
-            </Box>
-          )}
           <SearchBar
             label="Search post titles or tags..."
             searchRecommendations={postRecommendations} // to keep a list of all post tags/ post titles. search component is autocomplete
@@ -283,13 +280,16 @@ const CommunityPage = () => {
             />
           </Box>
         </Box>
-        <PostsRow postList={topPostList} title="Top Posts" />
-        {(!postReceived || postList == undefined) && (
+        {!postReceived || postList == undefined ? (
           <Box sx={{ marginTop: "100px", marginBottom: "150px" }}>
             <NoPostsPlaceholder />
           </Box>
+        ) : (
+          <PostsRow postList={topPostList} />
         )}
         {postReceived && <PostsGrid postList={postList} />}
+        {/* just testing */}
+        <PostsGrid postList={samplePosts} />
         <Box
           sx={{
             marginBottom: "5ch",

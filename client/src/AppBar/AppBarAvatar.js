@@ -21,8 +21,12 @@ import CreateRoundedIcon from "@mui/icons-material/CreateRounded";
 // list of controls available
 export const avatarItems = [
   { label: "Profile", icon: <SettingsRoundedIcon />, link: "/profile" },
-  { label: "My Posts", icon: <CreateRoundedIcon />, link: "/profile" },
-  { label: "Liked Posts", icon: <FavoriteRoundedIcon />, link: "/profile" },
+  { label: "My Posts", icon: <CreateRoundedIcon />, link: "/profile/my-posts" },
+  {
+    label: "Liked Posts",
+    icon: <FavoriteRoundedIcon />,
+    link: "/profile/liked-posts",
+  },
   { label: "Logout", icon: <LogoutRoundedIcon />, link: "/sign-in" },
 ];
 
@@ -51,7 +55,7 @@ const AppBarAvatar = () => {
           <Avatar
             sx={{ width: 50, height: 50 }}
             alt="Sample Icon"
-            src={sampleProfile["Avatar"]}
+            src={sampleProfile.avatar}
           />
         </Badge>
       </IconButton>
@@ -71,18 +75,15 @@ const AppBarAvatar = () => {
             justifyItems: "center",
           }}
         >
-          <Avatar
-            sx={{ width: 70, height: 70 }}
-            src={sampleProfile["Avatar"]}
-          />
+          <Avatar sx={{ width: 70, height: 70 }} src={sampleProfile.avatar} />
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <Typography sx={{ fontSize: "20px", fontWeight: 600 }}>
-              {sampleProfile["Name"]}
+              {sampleProfile.name}
             </Typography>
             <Typography color="text.secondary">
               Signed in as{" "}
               <span style={{ textDecoration: "underline" }}>
-                {sampleProfile["Username"]}
+                {sampleProfile.username}
               </span>
             </Typography>
           </Box>

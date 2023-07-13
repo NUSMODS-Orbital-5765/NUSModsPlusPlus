@@ -7,18 +7,19 @@ import DrawerComponent from "../DrawerComponent";
 import {
   Box,
   Typography,
-  Avatar,
   Tooltip,
   IconButton,
   Tabs,
   Tab,
   Switch,
 } from "@mui/material";
-import { sampleProfile } from "../Constants";
+import { samplePosts, sampleProfile } from "../Constants";
 import ProfilePictureComponent from "./ProfilePictureComponent";
 import ProfileInfoComponent from "./ProfileInfoComponent";
 import { Link } from "react-router-dom";
 import React, { useState } from "react";
+import MyPostsTab from "./MyPostsTab";
+import LikedPostsTab from "./LikedPostsTab";
 import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
@@ -73,9 +74,6 @@ export const profileTabsList = [
 const ProfilePage = ({ selectedTab }) => {
   // handling the tabs field
   const [currentTab, setCurrentTab] = useState(selectedTab);
-  const handleChangeTab = (event, activeTab) => {
-    setCurrentTab(activeTab);
-  };
 
   // handling public vs private profile
   const [publicProfile, setPublicProfile] = useState(false);
@@ -137,21 +135,7 @@ const ProfilePage = ({ selectedTab }) => {
               alignItems: "center",
             }}
           >
-            <Tooltip placement="top" title="Change Photo">
-              <Avatar
-                sx={{
-                  width: "20ch",
-                  height: "20ch",
-                  filter: "brightness(100%)",
-                  transition: "filter 0.3s",
-                  "&:hover": {
-                    filter: "brightness(70%)",
-                  },
-                }}
-                alt="Sample Icon"
-                src={sampleProfile["Avatar"]}
-              />
-            </Tooltip>
+            <ProfilePictureComponent />
             <Box
               sx={{
                 marginLeft: "10px",
@@ -167,10 +151,10 @@ const ProfilePage = ({ selectedTab }) => {
                   color: "#004d80",
                 }}
               >
-                {sampleProfile["Name"]}
+                {sampleProfile.name}
               </Typography>
               <Typography sx={{ color: "#004d80" }}>
-                Student • {sampleProfile["Degree"]}
+                Student • {sampleProfile.primaryDegree}
               </Typography>
               <PublicProfileSwitch />
             </Box>
@@ -180,8 +164,7 @@ const ProfilePage = ({ selectedTab }) => {
             sx={{
               marginLeft: "55ch",
             }}
-            value={currentTab}
-            onChange={handleChangeTab}
+            value={selectedTab}
           >
             {profileTabsList.map((item, index) => (
               <Tab
@@ -214,10 +197,14 @@ const ProfilePage = ({ selectedTab }) => {
             ))}
           </Tabs>
         </Box>
-        {currentTab === 0 && <ProfileInfoComponent />}
-        {currentTab === 1 && <ProfileInfoComponent />}
-        {currentTab === 2 && <ProfileInfoComponent />}
-        {currentTab === 3 && <AccountSecurityTab />}
+        {selectedTab === 0 && (
+          <ProfileInfoComponent userProfile={sampleProfile} />
+        )}
+        {selectedTab === 1 && <MyPostsTab postList={samplePosts} />}
+        {selectedTab === 2 && <LikedPostsTab postList={samplePosts} />}
+        {selectedTab === 3 && (
+          <AccountSecurityTab userProfile={sampleProfile} />
+        )}
       </Box>
     </div>
   );

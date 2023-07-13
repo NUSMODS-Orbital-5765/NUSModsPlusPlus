@@ -9,12 +9,15 @@ import TasksPlannerPage from "./Planner/TasksPlannerPage";
 import GPACalculatorPage from "./GPACalculator/GPACalculatorPage";
 import CommunityPage from "./Community/CommunityPage";
 import ModulesPage from "./ModulesPage";
+import AdminHomePage from "./Admin/AdminHomePage";
+import AdminProfilePage from "./Admin/AdminProfilePage";
 import AdminSignUpPage from "./SignUp/AdminSignUpPage";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import PublicProfilePage from "./Profile/PublicProfilePage";
+import { sampleProfile } from "./Constants";
 
 const App = () => {
   return (
@@ -39,7 +42,10 @@ const App = () => {
           path="/profile/account"
           element={<ProfilePage selectedTab={3} />}
         />
-        <Route path="/profile/public" element={<PublicProfilePage />} />
+        <Route
+          path="/profile/public"
+          element={<PublicProfilePage sampleProfile={sampleProfile} />}
+        />
         <Route path="/calculator" element={<GPACalculatorPage />} />
         <Route path="/community" element={<CommunityPage />} />
       </Routes>
