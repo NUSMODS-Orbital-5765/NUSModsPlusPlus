@@ -3,11 +3,8 @@
 // add admin sign-in feature
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import {
   Box,
-  Card,
-  CardContent,
   Button,
   TextField,
   Typography,
@@ -22,14 +19,14 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
-import { LogoComponent } from "./StyledComponents";
+import { LogoComponent, WelcomeCarousel } from "./StyledComponents";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const SignInPage = () => {
+// sign up dialog
+export const SignUpDialog = () => {
   // navigation to sign up page for new account
   const navigate = useNavigate();
 
@@ -43,16 +40,80 @@ const SignInPage = () => {
     setOpenDialog(false);
   };
 
-  const accessStudentSignUp = () => {
+  // links to respective sign up pages
+  const goToSignUp = () => {
+    console.log(selectedStatus);
     setOpenDialog(false);
-    navigate("/student/sign-up-step-one");
+    selectedStatus === "student"
+      ? navigate("/student/sign-up")
+      : navigate("/admin/sign-up");
   };
 
-  const accessAdminSignUp = () => {
-    setOpenDialog(false);
-    navigate("/admin/sign-up");
+  // log the correct user status
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const handleSelectStatus = (event) => {
+    setSelectedStatus(event.target.value);
   };
 
+  return (
+    <div>
+      <Button
+        color="success"
+        sx={{ marginLeft: "10px", color: "white" }}
+        variant="contained"
+        onClick={handleOpenDialog}
+      >
+        Get Started.
+      </Button>
+      <Dialog
+        sx={{ borderRadius: "10px" }}
+        open={openDialog}
+        onClose={handleCloseDialog}
+      >
+        <DialogTitle sx={{ margin: "10px", fontSize: "40px", fontWeight: 700 }}>
+          Join the community today.
+        </DialogTitle>
+        <DialogContent sx={{ margin: "10px", marginTop: "-10px" }}>
+          <Typography sx={{ marginBottom: "10px" }}>
+            Please select an option.
+          </Typography>
+          <FormControl fullWidth>
+            <InputLabel>I'm signing up as a...</InputLabel>
+            <Select
+              fullWidth
+              required
+              name="status"
+              label="I'm signing up as a..."
+              onChange={handleSelectStatus}
+            >
+              <MenuItem value={"student"}>Student</MenuItem>
+              <MenuItem value={"admin"}>Administrator</MenuItem>
+            </Select>
+          </FormControl>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "flex-end",
+              marginTop: "20px",
+            }}
+          >
+            <Button
+              onClick={goToSignUp}
+              disabled={selectedStatus === ""}
+              variant="contained"
+            >
+              Go
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
+
+const SignInPage = () => {
+  const navigate = useNavigate();
   //settings for toggling password visibility
   const [showPassword, setShowPassword] = useState(true);
   const handleTogglePassword = () => {
@@ -109,6 +170,7 @@ const SignInPage = () => {
         alert("Login Successfully");
         console.log(data);
         localStorage.clear();
+        localStorage.setItem("permission", loginInfo.status)
         localStorage.setItem("user-token", token);
         localStorage.setItem("username", data.username);
         localStorage.setItem("userId", data.userId);
@@ -126,31 +188,43 @@ const SignInPage = () => {
   return (
     <Box
       sx={{
-        margin: "-8px",
+        margin: "-10px",
         display: "flex",
-        flexDirection: "column",
+        flexDirection: "row",
         alignItems: "center",
-        backgroundImage: `url(${process.env.PUBLIC_URL}/signin_background.png)`,
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "center",
-        height: "110vh",
       }}
     >
-      <LogoComponent />
       <Box
         sx={{
-          justifyItems: "center",
-          alignItems: "center",
-          marginTop: "20px",
+          width: "40%",
+          height: "100vh",
+        }}
+      >
+        <WelcomeCarousel />
+      </Box>
+      <Box
+        sx={{
+          height: "100vh",
+          display: "flex",
+          flexDirection: "column",
           width: "60%",
         }}
       >
-        <Card sx={{ borderRadius: "10px", boxShadow: 1 }}>
-          <CardContent sx={{ margin: "20px" }}>
-            <Typography sx={{ fontWeight: "700" }} variant="h3">
-              Hello There!
-            </Typography>
+        <LogoComponent width="50%" />
+        <Box sx={{ margin: "50px" }}>
+          <Typography
+            sx={{ marginBottom: "10px", fontWeight: "700", fontSize: "40px" }}
+          >
+            Welcome Back!
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyItems: "center",
+            }}
+          >
             <Typography
               color="text.secondary"
               sx={{
@@ -159,133 +233,78 @@ const SignInPage = () => {
               }}
             >
               Are you new here?
-              <Button
-                color="success"
-                sx={{ marginLeft: "10px", color: "white" }}
-                variant="contained"
-                onClick={handleOpenDialog}
-              >
-                Get Started.
-              </Button>
-              <Dialog
-                minWidth="md"
-                sx={{ borderRadius: "10px" }}
-                open={openDialog}
-                onClose={handleCloseDialog}
-              >
-                <DialogTitle>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Typography sx={{ fontSize: "30px", fontWeight: 700 }}>
-                      I am a...
-                    </Typography>
-                    <IconButton color="error" onClick={handleCloseDialog}>
-                      <CloseRoundedIcon sx={{ fontSize: "30px" }} />
-                    </IconButton>
-                  </Box>
-                </DialogTitle>
-                <DialogContent>
-                  <Box
-                    sx={{
-                      width: "50ch",
-                      display: "flex",
-                      flexDirection: "column",
-                    }}
-                  >
-                    <Button onClick={accessStudentSignUp} variant="contained">
-                      Student
-                    </Button>
-                    <Button
-                      onClick={accessAdminSignUp}
-                      sx={{ marginTop: "20px" }}
-                      variant="outlined"
-                    >
-                      Administrator
-                    </Button>
-                  </Box>
-                </DialogContent>
-              </Dialog>
             </Typography>
-            <FormControl sx={{ marginTop: "20px" }} fullWidth>
-              <InputLabel>I am a...</InputLabel>
-              <Select
-                name="status"
-                label="I am a..."
-                onChange={handleLoginInfo}
-              >
-                <MenuItem value={"student"}>Student</MenuItem>
-                <MenuItem value={"admin"}>Administrator</MenuItem>
-              </Select>
-            </FormControl>
-            <Box sx={{ alignItems: "center" }}>
-              <TextField
-                sx={{ marginTop: "20px", width: "100%" }}
-                label="Username"
-                variant="outlined"
-                name="username"
-                onChange={handleLoginInfo}
-              ></TextField>
-              <TextField
-                sx={{ marginTop: "20px", width: "100%" }}
-                label="Password"
-                name="password"
-                variant="outlined"
-                type={showPassword ? "text" : "password"}
-                onChange={handleLoginInfo}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleTogglePassword}
-                      >
-                        {showPassword ? (
-                          <VisibilityRoundedIcon />
-                        ) : (
-                          <VisibilityOffRoundedIcon />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              ></TextField>
-              <Box
-                sx={{
-                  marginTop: "20px",
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography sx={{ fontSize: "17px" }} color="text.secondary">
-                  <Link component={Link} to="/student/sign-up-step-one">
-                    Forgot Password?
-                  </Link>
-                </Typography>
-                <Box sx={{ display: "flex", flexDirection: "row" }}>
-                  <FormControlLabel
-                    control={<Checkbox />}
-                    label="Remember Me" // haven't included the "remember me" info
-                  />
-                  <Button
-                    variant="contained"
-                    id="login-btn"
-                    disabled={!allowLogin}
-                    onClick={submitLoginForm}
-                  >
-                    Login
-                  </Button>
-                </Box>
+            <SignUpDialog />
+          </Box>
+          <FormControl sx={{ marginTop: "20px" }} fullWidth>
+            <InputLabel>I am a...</InputLabel>
+            <Select name="status" label="I am a..." onChange={handleLoginInfo}>
+              <MenuItem value={"student"}>Student</MenuItem>
+              <MenuItem value={"admin"}>Administrator</MenuItem>
+            </Select>
+          </FormControl>
+          <Box sx={{ alignItems: "center" }}>
+            <TextField
+              sx={{ marginTop: "20px", width: "100%" }}
+              label="Username"
+              variant="outlined"
+              name="username"
+              onChange={handleLoginInfo}
+            ></TextField>
+            <TextField
+              sx={{ marginTop: "20px", width: "100%" }}
+              label="Password"
+              name="password"
+              variant="outlined"
+              type={showPassword ? "text" : "password"}
+              onChange={handleLoginInfo}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleTogglePassword}
+                    >
+                      {showPassword ? (
+                        <VisibilityRoundedIcon />
+                      ) : (
+                        <VisibilityOffRoundedIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            ></TextField>
+            <Box
+              sx={{
+                marginTop: "20px",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography sx={{ fontSize: "17px" }} color="text.secondary">
+                <Link component={Link} to="/student/sign-up">
+                  Forgot Password?
+                </Link>
+              </Typography>
+              <Box sx={{ display: "flex", flexDirection: "row" }}>
+                <FormControlLabel
+                  control={<Checkbox />}
+                  label="Remember Me" // haven't included the "remember me" info
+                />
+                <Button
+                  variant="contained"
+                  id="login-btn"
+                  disabled={!allowLogin}
+                  onClick={submitLoginForm}
+                >
+                  Login
+                </Button>
               </Box>
             </Box>
-          </CardContent>
-        </Card>
+          </Box>
+        </Box>
       </Box>
     </Box>
   );
