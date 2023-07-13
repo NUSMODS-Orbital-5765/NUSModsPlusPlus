@@ -2,7 +2,7 @@
 import { Drawer, Typography, Divider, Tabs, Tab } from "@mui/material";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { combinedItems, SectionHeader } from "./Home/HomePageStyledComponents";
+import { SectionHeader } from "./Home/HomePageStyledComponents";
 
 // main menu
 const DrawerComponent = ({ defaultTab, tabsList }) => {
@@ -89,7 +89,7 @@ const DrawerComponent = ({ defaultTab, tabsList }) => {
         }}
       />
       <Divider light />
-      {mapMenuTabs(combinedItems)}
+      {mapMenuTabs(tabsList)}
     </Drawer>
   );
 };

@@ -48,6 +48,7 @@ const App = () => {
         />
         <Route path="/calculator" element={<GPACalculatorPage />} />
         <Route path="/community" element={<CommunityPage />} />
+        <Route path="/admin" element={<AdminHomePage />} />
       </Routes>
     </LocalizationProvider>
   );

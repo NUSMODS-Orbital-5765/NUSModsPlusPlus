@@ -26,6 +26,7 @@ import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import CreateRoundedIcon from "@mui/icons-material/CreateRounded";
 import LockRoundedIcon from "@mui/icons-material/LockRounded";
 import AccountSecurityTab from "./AccountSecurityTab";
+import { combinedItems } from "../Home/HomePageStyledComponents";
 
 // button for viewing public profile
 export const PublicProfileButton = ({ disabledCondition }) => {
@@ -109,7 +110,7 @@ const ProfilePage = ({ selectedTab }) => {
   return (
     <div className="homepage">
       <AppBarComponent />
-      <DrawerComponent defaultTab={8} />
+      <DrawerComponent defaultTab={8} tabsList={combinedItems} />
       <Box
         className="remainingViewport"
         sx={{ display: "flex", flexDirection: "column" }}

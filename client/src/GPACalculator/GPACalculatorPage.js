@@ -8,6 +8,7 @@ import { Card, CardContent, Box, Typography } from "@mui/material";
 import { PageHeader } from "../StyledComponents";
 import GPACalculatorTabs from "./GPACalculatorTabs";
 import { GPACalculatorViewList } from "../Constants";
+import { combinedItems } from "../Home/HomePageStyledComponents";
 
 // calculation of yearly cumulative GPA
 export const YearCumulativeGPA = () => {
@@ -31,7 +32,7 @@ const GPACalculatorPage = () => {
   return (
     <div className="homepage">
       <AppBarComponent />
-      <DrawerComponent defaultTab={4} />
+      <DrawerComponent defaultTab={4} tabsList={combinedItems} />
       <Box
         className="remainingViewport"
         sx={{

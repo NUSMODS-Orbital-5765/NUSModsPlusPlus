@@ -9,13 +9,14 @@ import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
 import { PageHeader, PageHeaderNoSubtitle } from "../StyledComponents";
 import AddNewEvent from "./AddNewEvent";
 import { Link } from "react-router-dom";
+import { combinedItems } from "../Home/HomePageStyledComponents";
 
 // main component
 const EventsPlannerPage = () => {
   return (
     <div className="homepage">
       <AppBarComponent />
-      <DrawerComponent defaultTab={2} />
+      <DrawerComponent defaultTab={2} tabsList={combinedItems} />
       <Box
         className="remainingViewport"
         sx={{

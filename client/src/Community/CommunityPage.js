@@ -24,6 +24,7 @@ import {
 import { PageHeader, BackToTop, SearchBar } from "../StyledComponents";
 import React, { useEffect, useState } from "react";
 import HeartBrokenRoundedIcon from "@mui/icons-material/HeartBrokenRounded";
+import { combinedItems } from "../Home/HomePageStyledComponents";
 
 // page header (which contains upload post)
 export const CommunityHeader = () => {
@@ -250,7 +251,7 @@ const CommunityPage = () => {
   return (
     <div className="homepage">
       <AppBarComponent />
-      <DrawerComponent defaultTab={5} />
+      <DrawerComponent defaultTab={5} tabsList={combinedItems} />
       <Box
         className="remainingViewport"
         sx={{

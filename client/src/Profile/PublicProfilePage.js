@@ -18,6 +18,7 @@ import AutoStoriesRoundedIcon from "@mui/icons-material/AutoStoriesRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
 import ImportContactsRoundedIcon from "@mui/icons-material/ImportContactsRounded";
+import { combinedItems } from "../Home/HomePageStyledComponents";
 
 // list of information to map
 // change this to a mapping function which checks profile fields before mapping
@@ -105,7 +106,7 @@ const PublicProfilePage = ({ sampleProfile }) => {
   return (
     <div className="homepage">
       <AppBarComponent />
-      <DrawerComponent defaultTab={8} />
+      <DrawerComponent defaultTab={8} tabsList={combinedItems} />
       <Box
         className="remainingViewport"
         sx={{ display: "flex", flexDirection: "column" }}
