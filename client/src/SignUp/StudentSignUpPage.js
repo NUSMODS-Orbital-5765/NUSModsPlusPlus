@@ -96,7 +96,6 @@ const StudentSignUpPage = () => {
         console.log(error);
       });
     console.log(registerInfo);
-    
   };
 
   // check for errors among the fields
@@ -164,12 +163,14 @@ const StudentSignUpPage = () => {
                   setfn={handleRegisterInfo}
                 />
               </Box>
-              <FormTextField
-                name="studentId"
-                label="StudentID"
-                defaultText=""
-                setfn={handleRegisterInfo}
-              />
+              <Box sx={{ marginBottom: "20px" }}>
+                <FormTextField
+                  name="studentId"
+                  label="StudentID"
+                  defaultText=""
+                  setfn={handleRegisterInfo}
+                />
+              </Box>
               <FormHeader text="Account Information" />
               <Box sx={{ marginBottom: "20px" }}>
                 <FormUsernameField defaultText="" setfn={handleRegisterInfo} />

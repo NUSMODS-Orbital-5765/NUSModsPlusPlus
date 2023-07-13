@@ -1,19 +1,25 @@
 // sign up page for admin
-import { Typography, Box, Button } from "@mui/material";
+import { Typography, Box, Button, Card, CardContent } from "@mui/material";
 import { LogoComponent } from "../StyledComponents";
-import { WelcomeCarousel } from "../StyledComponents";
 import {
+  FormHeader,
   FormUsernameField,
   FormEmailField,
   FormPasswordField,
   FormTextField,
+  FormAutocomplete,
 } from "../FormStyledComponents";
+import { facultyList, progsList } from "../Constants";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+
 // admin sign up component
 const AdminSignUpPage = () => {
   const navigate = useNavigate();
+  // show success/error alert
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
 
   // storing the inputs for account registration
   const [registerInfo, setRegisterInfo] = useState({
@@ -21,20 +27,20 @@ const AdminSignUpPage = () => {
     staffId: "",
     username: "",
     password: "",
+    confirmPassword: "",
     email: "",
-    faculty: "",
+    department: "",
     position: "",
     code: "",
   });
 
-
-
-
-
   const fieldErrors = [
     registerInfo.username === "",
     registerInfo.password === "",
+    registerInfo.confirmPassword === "",
     registerInfo.email === "",
+    registerInfo.department === "",
+    registerInfo.code === "",
   ];
 
   const handleRegisterInfo = (evt) => {
@@ -60,10 +66,12 @@ const AdminSignUpPage = () => {
   const adminRegisterAPI = `${process.env.REACT_APP_API_LINK}/register/admin`;
   // submitting sign-up admin information
   const handleSubmit = () => {
+    const registerInfoWithoutConfirmPassword = { ...registerInfo };
+    delete registerInfoWithoutConfirmPassword.confirmPassword;
     axios
-      .post(adminRegisterAPI, registerInfo)
+      .post(adminRegisterAPI, registerInfoWithoutConfirmPassword)
       .then((response) => {
-        alert("Register Admin Successfully");
+        setSubmitSuccess(true);
         console.log(response);
         //useNavigate need to be initalise at top
         setTimeout(() => {
@@ -71,6 +79,7 @@ const AdminSignUpPage = () => {
         }, 500);
       })
       .catch((error) => {
+        setSubmitError(true);
         console.log(error);
       });
     console.log(registerInfo);
@@ -79,36 +88,50 @@ const AdminSignUpPage = () => {
   return (
     <Box
       sx={{
-        margin: "-10px",
         display: "flex",
-        flexDirection: "row",
+        flexDirection: "column",
         alignItems: "center",
+        backgroundColor: "white",
+        minHeight: "100vh",
       }}
     >
-      <Box
-        sx={{
-          width: "40%",
-          height: "100vh",
-        }}
-      >
-        <WelcomeCarousel />
+      <Box sx={{ marginTop: "-50px", marginBottom: "20px" }}>
+        <LogoComponent width="30%" />
       </Box>
-      <Box
+      <Card
         sx={{
-          height: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          width: "60%",
+          borderRadius: "10px",
+          marginTop: "-30px",
+          marginBottom: "50px",
+          minWidth: "150ch",
+          boxShadow: 0,
         }}
       >
-        <LogoComponent width="50%" />
-        <Box sx={{ margin: "50px" }}>
+        <CardContent sx={{ margin: "20px" }}>
           <Typography
-            sx={{ marginBottom: "20px", fontWeight: "700", fontSize: "40px" }}
+            sx={{ marginBottom: "20px", fontWeight: "700", fontSize: "50px" }}
           >
-            Welcome! Let's get you started.
+            Welcome! Let's get you settled.
           </Typography>
-          <Box sx={{ marginBottom: "20px" }}>
+          <Box
+            sx={{
+              marginTop: "-20px",
+              display: "flex",
+              flexDirection: "row",
+            }}
+          >
+            <Box
+              sx={{
+                width: "50%",
+                margin: "20px",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <Box sx={{ marginTop: "-10px" }}>
+                <FormHeader text="General Information" />
+              </Box>
+              <Box sx={{ marginBottom: "20px" }}>
                 <FormTextField
                   name="name"
                   label="Name"
@@ -116,50 +139,66 @@ const AdminSignUpPage = () => {
                   setfn={handleRegisterInfo}
                 />
               </Box>
-            <Box sx={{ marginBottom: "20px" }}>
-              <FormTextField
-                name="staffId"
-                label="Staff ID"
-                defaultText=""
-                setfn={handleRegisterInfo}
-              />
-            </Box>
-          <Box sx={{ marginBottom: "20px" }}>
-            <FormUsernameField setfn={handleRegisterInfo} />
-          </Box>
-          <Box sx={{ marginBottom: "20px" }}>
-            <FormPasswordField setfn={handleRegisterInfo} />
-          </Box>
-          <Box sx={{ marginBottom: "20px" }}>
-            <FormEmailField setfn={handleRegisterInfo} />
-          </Box>
-          <Box sx={{ marginBottom: "20px" }}>
-            <FormTextField
-                  name="faculty"
-                  label="Faculty"
+              <Box sx={{ marginBottom: "20px" }}>
+                <FormTextField
+                  name="staffId"
+                  label="Staff ID"
                   defaultText=""
                   setfn={handleRegisterInfo}
-              />
-          </Box>
-          <Box sx={{ marginBottom: "20px" }}>
-            <FormTextField
+                />
+              </Box>
+              <FormHeader text="Account Information" />
+              <Box sx={{ marginBottom: "20px" }}>
+                <FormUsernameField setfn={handleRegisterInfo} />
+              </Box>
+              <Box sx={{ marginBottom: "20px" }}>
+                <FormPasswordField setfn={handleRegisterInfo} />
+              </Box>
+              <Box sx={{ marginBottom: "20px" }}>
+                <FormEmailField setfn={handleRegisterInfo} />
+              </Box>
+            </Box>
+            <Box
+              sx={{
+                width: "50%",
+                margin: "20px",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <Box sx={{ marginTop: "-10px" }}>
+                <FormHeader text="Staff Information" />
+              </Box>
+              <Box sx={{ marginBottom: "20px" }}>
+                <FormAutocomplete
+                  optionsList={[...facultyList, ...progsList]}
+                  name="department"
+                  label="Department"
+                  defaultText=""
+                  setfn={handleRegisterInfo}
+                />
+              </Box>
+              <Box sx={{ marginBottom: "20px" }}>
+                <FormTextField
                   name="position"
                   label="Position"
                   defaultText=""
                   setfn={handleRegisterInfo}
-              />
-          </Box>
-          <Box sx={{ marginBottom: "20px" }}>
-            <FormTextField
+                />
+              </Box>
+              <Box sx={{ marginBottom: "20px" }}>
+                <FormTextField
                   name="code"
                   label="Secret Code"
                   defaultText=""
                   setfn={handleRegisterInfo}
-              />
+                />
+              </Box>
+            </Box>
           </Box>
-          
           <Box
             sx={{
+              marginRight: "20px",
               display: "flex",
               justifyContent: "flex-end",
               alignItems: "flex-end",
@@ -173,8 +212,8 @@ const AdminSignUpPage = () => {
               Sign Up
             </Button>
           </Box>
-        </Box>
-      </Box>
+        </CardContent>
+      </Card>
     </Box>
   );
 };
