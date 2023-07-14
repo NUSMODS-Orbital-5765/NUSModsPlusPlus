@@ -205,8 +205,6 @@ const CommunityPage = () => {
 
   const postSearchAPI = `${process.env.REACT_APP_API_LINK}/post/search`;
   const postGetTopAPI = `${process.env.REACT_APP_API_LINK}/post/top`;
-
-  const postGetAPI = `${process.env.REACT_APP_API_LINK}/post/get`;
   const postGetDetail = {
     page: 1,
     sortValue: sortValue,
@@ -214,7 +212,7 @@ const CommunityPage = () => {
   };
 
   useEffect(() => {
-    axios.get(postGetAPI, postGetDetail);
+    axios.post(postSearchAPI, postGetDetail);
   });
 
   useEffect(() => {
@@ -236,7 +234,7 @@ const CommunityPage = () => {
     // Default of getting top post in last week, open further for day, month, year and all-time
     axios
       .post(postGetTopAPI, {
-        timePeriod: 7 * 24 * 60 * 60 * 1000,
+        timePeriod: 7 * 24 * 60 * 60 * 1000 * 1000,
       })
       .then((res) => {
         console.log(res.data.topPostList);
@@ -288,8 +286,7 @@ const CommunityPage = () => {
           <PostsRow postList={topPostList} />
         )}
         {postReceived && <PostsGrid postList={postList} />}
-        {/* just testing */}
-        <PostsGrid postList={samplePosts} />
+        
         <Box
           sx={{
             marginBottom: "5ch",
