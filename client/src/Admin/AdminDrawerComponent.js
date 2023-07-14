@@ -15,7 +15,7 @@ const AdminDrawerComponent = ({ defaultTab }) => {
     {
       text: "Home",
       icon: <HomeRoundedIcon sx={{ fontSize: "30px" }} />,
-      link: "/",
+      link: "/admin",
     },
     {
       text: "Students",

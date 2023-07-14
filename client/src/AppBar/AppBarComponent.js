@@ -3,7 +3,8 @@ import { AppBar, Toolbar, Box } from "@mui/material";
 import React from "react";
 import { SearchBar } from "../StyledComponents";
 import AppBarNotifs from "./AppBarNotifs";
-import AppBarAvatar from "./AppBarAvatar";
+import AppBarAvatar, { avatarItems } from "./AppBarAvatar";
+import { sampleProfile } from "../Constants";
 import {
   SearchBarScroll,
   siteRecommendations,
@@ -39,7 +40,7 @@ function AppBarComponent(props) {
             />
           </Box>
           <AppBarNotifs />
-          <AppBarAvatar />
+          <AppBarAvatar userProfile={sampleProfile} avatarItems={avatarItems} />
         </Toolbar>
       </AppBar>
     </SearchBarScroll>

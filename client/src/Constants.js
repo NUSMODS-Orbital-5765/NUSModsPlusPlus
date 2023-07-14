@@ -1,8 +1,7 @@
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, addDays } from "date-fns";
 import { red, orange, yellow } from "@mui/material/colors";
-
-// iMPORTANT I REALISED THERE IS SUCH THING AS A DOUBLE DEGREE
-// get them to choose plan, add: degree, major, minor. (use a button to open the textfield)
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 
 // list of nus faculties
 export const facultyList = [
@@ -120,29 +119,28 @@ export const sampleProfile = {
 
 // samplePosts list should be updated when a new post is uploaded.
 // posts should take note of the time and author upon upload.
-export const currentDay = new Date();
-export const nextDay = new Date();
-nextDay.setDate(currentDay.getDate() + 1);
-export const followingDay = new Date();
-followingDay.setDate(nextDay.getDate() + 1);
+export const today = new Date();
+const yesterday = addDays(today, -1);
+const twoDaysAgo = addDays(today, -2);
+const tomorrow = addDays(today, 1);
 
 // each post should have a list of comments, but i'm just using one comment list for each post for simplicity
 export const sampleComments = [
   {
-    timestamp: currentDay,
+    timestamp: today,
     content:
       "Curabitur lacinia commodo metus, sed varius felis scelerisque eu. In sit amet nibh sem. Vivamus nec aliquam sapien, eu semper dolor. Duis rhoncus vulputate cursus. In vel gravida orci, et dapibus nunc. Praesent eu erat porta, varius tellus in, vulputate mi. Pellentesque dapibus turpis velit, vitae convallis nisi porttitor sit amet. Cras a posuere metus, pharetra facilisis justo.",
     author: "ryan123",
     avatar: "profilepic_1.png",
   },
   {
-    timestamp: nextDay,
+    timestamp: yesterday,
     content: "Nullam egestas at ex nec fermentum. Cras a tellus quis.",
     author: "nam1nam",
     avatar: "profilepic_1.png",
   },
   {
-    timestamp: followingDay,
+    timestamp: twoDaysAgo,
     content:
       "Duis tincidunt nec est id efficitur. Ut porttitor fermentum dictum.",
     author: "joannee",
@@ -152,7 +150,7 @@ export const sampleComments = [
 
 export const samplePosts = [
   {
-    dateCreated: currentDay, // it's not in the form, but should record time and date of upload once button is pressed
+    dateCreated: today, // it's not in the form, but should record time and date of upload once button is pressed
     title: "Recent changes to the MA2001 curriculum",
     category: "Study Guide",
     related_major: "Mathematics",
@@ -166,7 +164,7 @@ export const samplePosts = [
     comments: 5,
   },
   {
-    dateCreated: nextDay,
+    dateCreated: yesterday,
     title: "Mindmaps that I used for EC1101E revision",
     category: "Notes",
     related_major: "Economics",
@@ -180,7 +178,7 @@ export const samplePosts = [
     comments: 1,
   },
   {
-    dateCreated: followingDay,
+    dateCreated: twoDaysAgo,
     title: "Why is CS2040 so hard??",
     category: "Module Review",
     related_major: "Computer Science",
@@ -194,7 +192,7 @@ export const samplePosts = [
     comments: 3,
   },
   {
-    dateCreated: followingDay,
+    dateCreated: twoDaysAgo,
     title: "Why is CS2040 so hard??",
     category: "Module Review",
     related_major: "Computer Science",
@@ -208,7 +206,7 @@ export const samplePosts = [
     comments: 3,
   },
   {
-    dateCreated: followingDay,
+    dateCreated: twoDaysAgo,
     title: "Why is CS2040 so hard??",
     category: "Module Review",
     related_major: "Computer Science",
@@ -222,7 +220,7 @@ export const samplePosts = [
     comments: 3,
   },
   {
-    dateCreated: nextDay,
+    dateCreated: yesterday,
     title: "Mindmaps that I used for EC1101E revision",
     category: "Notes",
     related_major: "Economics",
@@ -257,7 +255,7 @@ export const formatDate = (dateTime) => {
 // sample notifs list
 export const notifsList = [
   {
-    timestamp: currentDay,
+    timestamp: today,
     avatar: "/profilepic_2.png",
     author: "admin 1",
     content: "You are not approved for exemption from MA2001.",
@@ -266,7 +264,7 @@ export const notifsList = [
     readStatus: false,
   },
   {
-    timestamp: nextDay,
+    timestamp: twoDaysAgo,
     avatar: "/profilepic_1.png",
     author: "admin 2",
     content: "You are missing two core modules: BT2101 and BT2102.",
@@ -275,7 +273,7 @@ export const notifsList = [
     readStatus: false,
   },
   {
-    timestamp: followingDay,
+    timestamp: yesterday,
     avatar: "/profilepic_2.png",
     author: "admin 3",
     content: "",
@@ -284,7 +282,7 @@ export const notifsList = [
     readStatus: false,
   },
   {
-    timestamp: followingDay,
+    timestamp: twoDaysAgo,
     avatar: "/profilepic_2.png",
     author: "random_user",
     content: "",
@@ -293,7 +291,7 @@ export const notifsList = [
     readStatus: false,
   },
   {
-    timestamp: followingDay,
+    timestamp: yesterday,
     avatar: "/profilepic_2.png",
     author: "random_user",
     content:
@@ -305,10 +303,12 @@ export const notifsList = [
 ];
 
 // notifsList with id
-export const notifsListWithId = notifsList.map((notif, index) => ({
-  ...notif,
-  id: index,
-}));
+export const notifsListWithId = (notifsList) => {
+  return notifsList.map((notif, index) => ({
+    ...notif,
+    id: index,
+  }));
+};
 
 // list of possible views
 export const GPACalculatorViewList = ["By Year", "Overall GPA"];
@@ -645,4 +645,116 @@ export const quotesList = [
   "Difficulties increase the nearer we get to the goal. —Johann Wolfgang von Goethe",
   "Whatever you think, be sure it is what you think; whatever you want, be sure that is what you want; whatever you feel, be sure that is what you feel.—T.S. Eliot",
   "Let us live so that when we come to die even the undertaker will be sorry. - Mark Twain",
+];
+
+// shortcuts for searchbar for admin user interface
+export const adminRecommendations = [
+  { option: "back to home", link: "/admin" },
+  { option: "view module plans", link: "/admin/students" },
+  { option: "edit profile", link: "/admin/profile" },
+  { option: "change username", link: "/admin/profile/account" },
+  { option: "change password", link: "/admin/profile/account" },
+  { option: "change email", link: "/admin/profile/account" },
+  { option: "logout", link: "/sign-in" },
+];
+
+// list of student profiles to be mapped to admin notifications
+export const sampleStudentsList = [
+  {
+    name: "Hannah Tan",
+    avatar: "/sample_icon.png",
+    studentId: "e2244668",
+    username: "hannah_tan",
+    password: "hannah123",
+    email: "hannah@gmail.com",
+    faculty: "School of Computing",
+    primaryDegree: "Information Systems",
+    secondDegree: "",
+    secondMajor: "Economics",
+    minor: ["Geography", "History"],
+    programme: "RVRC",
+    bio: "Hi there! Nice to meet you!",
+  },
+  {
+    name: "Ryan Wong",
+    avatar: "/profilepic_1.png",
+    studentId: "e5557777",
+    username: "ryan123",
+    password: "ryan123",
+    email: "ryan_wong@gmail.com",
+    faculty: "School of Business",
+    primaryDegree: "Business Administration",
+    secondDegree: "Economics",
+    secondMajor: "",
+    minor: ["Statistics", "Mathematics"],
+    programme: "NUS College",
+    bio: "Hello! :)",
+  },
+  {
+    name: "Nguyen Xuan Nam",
+    avatar: "/profilepic_1.png",
+    studentId: "e1234567",
+    username: "nam1nam",
+    password: "nam123",
+    email: "namnam@gmail.com",
+    faculty: "Faculty of Science",
+    primaryDegree: "Data Science and Analytics",
+    secondDegree: "",
+    secondMajor: "Computer Science",
+    minor: ["Mathematics"],
+    programme: "",
+    bio: "Hi! My name is Nam",
+  },
+];
+// list of notifications to be mapped for admin user interface
+export const adminNotifsList = [
+  {
+    student: sampleStudentsList[0],
+    content: "You are missing modules MA2001 and MA1521.",
+    type: "mention",
+    timestamp: today,
+  },
+  {
+    student: sampleStudentsList[1],
+    content: "",
+    type: "approve",
+    timestamp: yesterday,
+  },
+  {
+    student: sampleStudentsList[1],
+    content: "Your plan looks great! Well done!",
+    type: "mention",
+    timestamp: yesterday,
+  },
+  {
+    student: sampleStudentsList[2],
+    content: "",
+    type: "approve",
+    timestamp: twoDaysAgo,
+  },
+  {
+    student: sampleStudentsList[0],
+    content:
+      "You are missing some Economics core modules. Please refer to the second major requirements here: https://fass.nus.edu.sg/ecs/academic-year-2021-22-and-after-2/",
+    type: "mention",
+    timestamp: twoDaysAgo,
+  },
+];
+
+// sample admin profile
+export const adminSampleProfile = {
+  name: "Admin 1",
+  avatar: "/sample-admin-icon.png",
+  staffId: "s1234567",
+  username: "admin_1",
+  password: "admin_password!",
+  email: "admin1@gmail.com",
+  department: "School of Computing",
+  position: "Faculty Administrator",
+};
+
+// admin user items to be mapped to admin app bar
+export const adminAvatarItems = [
+  { label: "Profile", icon: <SettingsRoundedIcon />, link: "/profile" },
+  { label: "Logout", icon: <LogoutRoundedIcon />, link: "/sign-in" },
 ];
