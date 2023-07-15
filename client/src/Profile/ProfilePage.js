@@ -1,7 +1,5 @@
 //COMPLETE
 // remember to add the icon component
-// remember to change the border radius for the inbox tabs so that they look round.
-// no need to set different urls for the different tabs since they are all view only anyways
 import AppBarComponent from "../AppBar/AppBarComponent";
 import DrawerComponent from "../DrawerComponent";
 import {

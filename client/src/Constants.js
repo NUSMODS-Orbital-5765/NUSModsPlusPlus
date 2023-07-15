@@ -1,4 +1,4 @@
-import { formatDistanceToNow, addDays } from "date-fns";
+import { formatDistanceToNow, addDays, format } from "date-fns";
 import { red, orange, yellow } from "@mui/material/colors";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
@@ -671,7 +671,7 @@ export const sampleStudentsList = [
     primaryDegree: "Information Systems",
     secondDegree: "",
     secondMajor: "Economics",
-    minor: ["Geography", "History"],
+    minor: ["Geography", "History", "Statistics"],
     programme: "RVRC",
     bio: "Hi there! Nice to meet you!",
   },
@@ -706,6 +706,34 @@ export const sampleStudentsList = [
     bio: "Hi! My name is Nam",
   },
 ];
+
+// function to check if the module plans have been approved
+export const sampleStudentsModules = [
+  {
+    studentId: "e1234567",
+    planStatus: "approved",
+    modules: {},
+  },
+  {
+    studentId: "e5557777",
+    planStatus: "not approved",
+    modules: {},
+  },
+  {
+    studentId: "e2244668",
+    planStatus: "no plan",
+    modules: {},
+  },
+];
+
+export function checkPlanStatus(studentProfile) {
+  const matchingPlan = sampleStudentsModules.find(
+    (module) => module.studentId === studentProfile.studentId
+  );
+
+  return matchingPlan ? matchingPlan.planStatus : "no plan";
+}
+
 // list of notifications to be mapped for admin user interface
 export const adminNotifsList = [
   {
@@ -758,3 +786,40 @@ export const adminAvatarItems = [
   { label: "Profile", icon: <SettingsRoundedIcon />, link: "/profile" },
   { label: "Logout", icon: <LogoutRoundedIcon />, link: "/sign-in" },
 ];
+
+// today's date and time
+const currentDate = new Date();
+export const currentDateAndTimeDisplay = format(
+  currentDate,
+  "EEEE, d MMMM, h:mm a"
+);
+
+// get major color based on faculty, if not necessary i will delete this.
+const majorColorLookup = {};
+for (const faculty in majorDict) {
+  const majors = majorDict[faculty];
+  for (const major of majors) {
+    majorColorLookup[major] = getMajorColorByFaculty(faculty);
+  }
+}
+
+function getMajorColorByFaculty(faculty) {
+  switch (faculty) {
+    case "Faculty of Arts and Social Sciences":
+      return "error";
+    case "Faculty of Science":
+      return "success";
+    case "School of Business":
+      return "default";
+    case "School of Computing":
+      return "primary";
+    case "College of Design and Engineering":
+      return "warning";
+    default:
+      return "white";
+  }
+}
+
+export function getMajorColor(major) {
+  return majorColorLookup[major] || "white";
+}

@@ -64,13 +64,15 @@ export const CommunityHeader = () => {
             flexDirection: "row",
           }}
         >
-          <Typography sx={{ marginRight: "20px", color: "#004d80" }}>
+          <Typography
+            sx={{ marginRight: "20px", color: "#004d80", fontSize: "17px" }}
+          >
             Make your first post today.
           </Typography>
           <UploadPost />
         </Box>
       </Box>
-      <img style={{ margin: "20px", width: "30%" }} src="/learning_icon.png" />
+      <img style={{ width: "35%" }} src="/learning_icon.png" />
     </Box>
   );
 };

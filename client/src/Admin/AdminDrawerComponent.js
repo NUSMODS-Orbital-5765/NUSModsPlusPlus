@@ -20,7 +20,7 @@ const AdminDrawerComponent = ({ defaultTab }) => {
     {
       text: "Students",
       icon: <FaceRoundedIcon sx={{ fontSize: "30px" }} />,
-      link: "/planner-events",
+      link: "/admin/students",
     }
   );
 

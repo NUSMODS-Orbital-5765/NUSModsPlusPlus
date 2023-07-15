@@ -10,6 +10,7 @@ import GPACalculatorPage from "./GPACalculator/GPACalculatorPage";
 import CommunityPage from "./Community/CommunityPage";
 import ModulesPage from "./ModulesPage";
 import AdminHomePage from "./Admin/AdminHomePage";
+import AdminStudentsPage from "./Admin/AdminStudentsPage";
 import AdminProfilePage from "./Admin/AdminProfilePage";
 import AdminSignUpPage from "./SignUp/AdminSignUpPage";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -49,6 +50,7 @@ const App = () => {
         <Route path="/calculator" element={<GPACalculatorPage />} />
         <Route path="/community" element={<CommunityPage />} />
         <Route path="/admin" element={<AdminHomePage />} />
+        <Route path="/admin/students" element={<AdminStudentsPage />} />
       </Routes>
     </LocalizationProvider>
   );
