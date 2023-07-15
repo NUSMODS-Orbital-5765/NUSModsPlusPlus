@@ -22,23 +22,6 @@ import { facultyList, majorDict, interestsDict, majorList } from "./Constants";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 
-// TO DELETE
-// styling for stepper component
-export const SignUpStepper = ({ activeStep }) => {
-  const steps = ["Setting Up...", "Almost There...", "One Last Thing..."];
-  return (
-    <Box sx={{ width: "100%" }}>
-      <Stepper activeStep={activeStep} alternativeLabel>
-        {steps.map((label, index) => (
-          <Step key={index}>
-            <StepLabel>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
-    </Box>
-  );
-};
-
 // COMPLETE
 // styling for form headers
 export const FormHeader = (props) => {

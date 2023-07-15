@@ -92,6 +92,7 @@ export const majorList = Array.from(new Set(Object.values(majorDict).flat()));
 
 // list of special programmes available (tbc, include scholarships)
 export const progsList = ["SEP", "NOC", "UTCP", "RVRC", "NUS College"];
+export const acadPlanList = ["Single Degree", "Double Degree", "Double Major"];
 
 export const interestsDict = {
   "module related": ["easy to score", "light workload"],
@@ -671,9 +672,8 @@ export const sampleStudentsList = [
     primaryDegree: "Information Systems",
     secondDegree: "",
     secondMajor: "Economics",
-    minor: ["Geography", "History", "Statistics"],
+    minor: ["Geography", "History", "Statistics", "Mathematics"],
     programme: "RVRC",
-    bio: "Hi there! Nice to meet you!",
   },
   {
     name: "Ryan Wong",
@@ -688,7 +688,6 @@ export const sampleStudentsList = [
     secondMajor: "",
     minor: ["Statistics", "Mathematics"],
     programme: "NUS College",
-    bio: "Hello! :)",
   },
   {
     name: "Nguyen Xuan Nam",
@@ -703,7 +702,6 @@ export const sampleStudentsList = [
     secondMajor: "Computer Science",
     minor: ["Mathematics"],
     programme: "",
-    bio: "Hi! My name is Nam",
   },
 ];
 
@@ -716,7 +714,7 @@ export const sampleStudentsModules = [
   },
   {
     studentId: "e5557777",
-    planStatus: "not approved",
+    planStatus: "rejected",
     modules: {},
   },
   {
