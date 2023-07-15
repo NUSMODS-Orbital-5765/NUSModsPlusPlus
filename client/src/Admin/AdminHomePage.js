@@ -1,9 +1,5 @@
 import { Link } from "react-router-dom";
-import {
-  adminSampleProfile,
-  sampleStudentsList,
-  getMajorColor,
-} from "../Constants";
+import { adminSampleProfile, sampleStudentsList } from "./AdminConstants";
 import AdminAppBar from "./AdminAppBar";
 import AdminDrawerComponent from "./AdminDrawerComponent";
 import {
@@ -13,15 +9,16 @@ import {
   Button,
   Card,
   CardContent,
-  List,
-  ListItemButton,
-  Chip,
 } from "@mui/material";
+import StudentDataGrid from "./StudentDataGrid";
+import React, { useState } from "react";
 
 // styling for recently viewed component
-export const RecentlyViewed = ({ viewedProfiles }) => {
-  const handleClickProfile = () => {
-    console.log("hello");
+export const RecentlyViewedProfiles = ({ viewedProfiles }) => {
+  // for clearing all profiles
+  const [currentProfiles, setCurrentProfiles] = useState(viewedProfiles);
+  const handleClearProfiles = () => {
+    setCurrentProfiles([]);
   };
   return (
     <div>
@@ -41,6 +38,7 @@ export const RecentlyViewed = ({ viewedProfiles }) => {
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "space-between",
+              marginBottom: "20px",
             }}
           >
             <Typography
@@ -51,60 +49,67 @@ export const RecentlyViewed = ({ viewedProfiles }) => {
             >
               Recently Viewed
             </Typography>
-            <Button color="error" variant="contained">
+            <Button
+              onClick={handleClearProfiles}
+              color="error"
+              variant="contained"
+            >
               Clear All
             </Button>
           </Box>
-          <List sx={{ marginBottom: "-30px" }}>
-            {viewedProfiles.map((profile, index) => (
-              <ListItemButton
-                sx={{
-                  marginBottom: "10px",
-                  borderRadius: "10px",
-                  display: "flex",
-                  flexDirection: "row",
-                }}
-                onClick={handleClickProfile}
-              >
-                <Avatar
-                  sx={{ width: "50px", height: "50px" }}
-                  src={profile.avatar}
-                />
-                <Box
-                  sx={{
-                    width: "15%",
-                    marginLeft: "10px",
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <Typography sx={{ fontWeight: 700 }}>
-                    {profile.name}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      color: "text.secondary",
-                      fontSize: "14px",
-                      fontWeight: 400,
-                    }}
-                  >
-                    {profile.studentId}
-                  </Typography>
-                </Box>
-                <Chip
-                  sx={{
-                    marginLeft: "30px",
-                    textTransform: "uppercase",
-                    padding: "10px",
-                  }}
-                  size="large"
-                  color={getMajorColor(profile.primaryDegree)}
-                  variant="outlined"
-                  label={profile.primaryDegree}
-                />
-              </ListItemButton>
-            ))}
-          </List>
+          <StudentDataGrid color={false} studentList={currentProfiles} />
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+// styling for flagged component
+const FlaggedProfiles = ({ flaggedProfiles }) => {
+  // for clearing all profiles
+  const [currentProfiles, setCurrentProfiles] = useState(flaggedProfiles);
+  const handleClearProfiles = () => {
+    setCurrentProfiles([]);
+  };
+
+  return (
+    <div>
+      <Card
+        sx={{
+          margin: "55px",
+          marginTop: "-10px",
+          borderRadius: "10px",
+          border: "1px solid #f2f2f2",
+          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <CardContent sx={{ margin: "10px" }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: "20px",
+            }}
+          >
+            <Typography
+              sx={{
+                fontSize: "35px",
+                fontWeight: "700",
+              }}
+            >
+              Flagged
+            </Typography>
+            <Button
+              onClick={handleClearProfiles}
+              color="error"
+              variant="contained"
+            >
+              Clear All
+            </Button>
+          </Box>
+          <StudentDataGrid color={true} studentList={currentProfiles} />
         </CardContent>
       </Card>
     </div>
@@ -175,7 +180,8 @@ const AdminHomePage = () => {
             src={adminSampleProfile.avatar}
           />
         </Box>
-        <RecentlyViewed viewedProfiles={sampleStudentsList} />
+        <RecentlyViewedProfiles viewedProfiles={sampleStudentsList} />
+        <FlaggedProfiles flaggedProfiles={sampleStudentsList} />
       </Box>
     </div>
   );
