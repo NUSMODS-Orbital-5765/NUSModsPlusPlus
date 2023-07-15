@@ -1,12 +1,7 @@
 // Flag icon rendering not complete
 import { Box, Button, Typography } from "@mui/material";
-import {
-  adminSampleProfile,
-  facultyList,
-  progsList,
-  acadPlanList,
-  sampleStudentsList,
-} from "../Constants";
+import { facultyList, progsList, acadPlanList } from "../Constants";
+import { adminSampleProfile, sampleStudentsList } from "./AdminConstants";
 import AdminAppBar from "./AdminAppBar";
 import AdminDrawerComponent from "./AdminDrawerComponent";
 import React, { useState, useEffect } from "react";

@@ -12,7 +12,8 @@ import {
 } from "@mui/material";
 import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
 import React, { useState } from "react";
-import { formatDate, adminNotifsList } from "../Constants";
+import { formatDate } from "../Constants";
+import { adminNotifsList } from "./AdminConstants";
 import { NotifCount } from "../AppBar/AppBarNotifs";
 import { red } from "@mui/material/colors";
 import { startOfDay, endOfDay } from "date-fns";

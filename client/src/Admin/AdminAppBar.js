@@ -4,13 +4,13 @@ import { SearchBar } from "../StyledComponents";
 import AdminAppBarNotifs from "./AdminAppBarNotifs";
 import AppBarAvatar from "../AppBar/AppBarAvatar";
 import { SearchBarScroll } from "../Home/HomePageStyledComponents";
+import { notifsListWithId } from "../Constants";
 import {
   adminRecommendations,
   adminSampleProfile,
   adminNotifsList,
-  notifsListWithId,
   adminAvatarItems,
-} from "../Constants";
+} from "./AdminConstants";
 
 // i'm not sure why it doesn't work when i try to pass in props, so i'm just gonna leave it as it is
 const AdminAppBar = (props) => {

@@ -10,16 +10,15 @@ import {
   Tooltip,
   Dialog,
   DialogContent,
-  DialogActions,
-  Button,
   Fab,
 } from "@mui/material";
-import { checkPlanStatus } from "../Constants";
+import { checkPlanStatus } from "./AdminConstants";
 import FlagRoundedIcon from "@mui/icons-material/FlagRounded";
 import { grey, orange } from "@mui/material/colors";
 import React, { useState } from "react";
 import { PublicProfileView } from "../Profile/PublicProfilePage";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import { SlideUpTransition } from "../StyledComponents";
 
 // for the "approved", "no plan", "flagged", "rejected" plan status
 const getStatusColor = (status) => {
@@ -78,160 +77,8 @@ const getStatusColor = (status) => {
   }
 };
 
-// styling the columns of the datagrid
-const columns = [
-  {
-    field: "studentId",
-    headerName: "Student ID",
-    headerClassName: "custom-datagrid-header",
-    flex: 0.8,
-    renderCell: (params) => <Typography>{params.value}</Typography>,
-  },
-  {
-    field: "profile",
-    headerName: "Profile",
-    flex: 1.5,
-    headerClassName: "custom-datagrid-header",
-    renderCell: (params) => (
-      <Box
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyItems: "flex-start",
-          overflowX: "auto",
-        }}
-      >
-        <Avatar
-          sx={{ width: "40%", height: "40%" }}
-          src={params.row.avatar}
-          alt="Avatar"
-        />
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <Typography
-            sx={{
-              fontWeight: 600,
-              whiteSpace: "normal",
-              wordWrap: "break-word",
-            }}
-          >
-            {params.row.name}
-          </Typography>
-          <Typography
-            sx={{
-              fontSize: "15px",
-              color: "text.secondary",
-              whiteSpace: "normal",
-              wordWrap: "break-word",
-            }}
-          >
-            {params.row.username}
-          </Typography>
-        </Box>
-      </Box>
-    ),
-    valueGetter: (params) =>
-      `${params.row.avatar} ${params.row.name} ${params.row.username}`,
-  },
-  {
-    field: "primaryDegree",
-    headerName: "Degree",
-    headerClassName: "custom-datagrid-header",
-    flex: 1.1,
-    renderCell: (params) => (
-      <Typography sx={{ whiteSpace: "normal", wordWrap: "break-word" }}>
-        {params.value}
-      </Typography>
-    ),
-  },
-  {
-    field: "secondDegree",
-    headerName: "2nd Deg.",
-    headerClassName: "custom-datagrid-header",
-    flex: 1.1,
-    renderCell: (params) => (
-      <Typography sx={{ whiteSpace: "normal", wordWrap: "break-word" }}>
-        {params.value}
-      </Typography>
-    ),
-  },
-  {
-    field: "secondMajor",
-    headerName: "2nd Maj.",
-    headerClassName: "custom-datagrid-header",
-    flex: 1.1,
-    renderCell: (params) => (
-      <Typography sx={{ whiteSpace: "normal", wordWrap: "break-word" }}>
-        {params.value}
-      </Typography>
-    ),
-  },
-  {
-    field: "minor",
-    headerName: "Minors",
-    headerClassName: "custom-datagrid-header",
-    flex: 1.1,
-    renderCell: (params) => (
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "7px" }}>
-        {params.value.map((minor, index) => (
-          <Chip
-            variant="filled"
-            sx={{
-              fontSize: "15px",
-              padding: "2px",
-              borderRadius: "5px",
-              height: "auto",
-              "& .MuiChip-label": {
-                display: "block",
-                whiteSpace: "normal",
-              },
-            }}
-            key={index}
-            label={minor}
-          />
-        ))}
-      </div>
-    ),
-  },
-  {
-    field: "programme",
-    headerName: "Prog.",
-    headerClassName: "custom-datagrid-header",
-    flex: 0.7,
-    renderCell: (params) => (
-      <Typography sx={{ whiteSpace: "normal", wordWrap: "break-word" }}>
-        {params.value}
-      </Typography>
-    ),
-  },
-  {
-    field: "status",
-    headerName: "Status",
-    headerClassName: "custom-datagrid-header",
-    flex: 1,
-    renderCell: (params) => getStatusColor(checkPlanStatus(params.row)),
-  },
-  {
-    field: "flag",
-    headerName: "Flag",
-    headerClassName: "custom-datagrid-header",
-    flex: 0.5,
-    sortable: false,
-    filterable: false,
-    renderCell: (params) => (
-      <Box sx={{ display: "flex", flexDirection: "row" }}>
-        <Tooltip title="Flag student" placement="top">
-          <IconButton>
-            <FlagRoundedIcon color="primary" sx={{ fontSize: "25px" }} />
-          </IconButton>
-        </Tooltip>
-      </Box>
-    ),
-  },
-];
-
 // display of how student profiles will be mapped
-const StudentDataGrid = ({ studentList }) => {
+const StudentDataGrid = ({ studentList, color }) => {
   // open dialog when the user clicks on a row
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -248,6 +95,158 @@ const StudentDataGrid = ({ studentList }) => {
   const handleActionButtonClick = () => {
     console.log("hello!");
   };
+
+  // styling the columns of the datagrid
+  const columns = [
+    {
+      field: "studentId",
+      headerName: "Student ID",
+      headerClassName: color ? "custom-datagrid-header" : "",
+      flex: 0.8,
+      renderCell: (params) => <Typography>{params.value}</Typography>,
+    },
+    {
+      field: "profile",
+      headerName: "Profile",
+      flex: 1.5,
+      headerClassName: color ? "custom-datagrid-header" : "",
+      renderCell: (params) => (
+        <Box
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyItems: "flex-start",
+            overflowX: "auto",
+          }}
+        >
+          <Avatar
+            sx={{ width: "40%", height: "40%" }}
+            src={params.row.avatar}
+            alt="Avatar"
+          />
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography
+              sx={{
+                fontWeight: 600,
+                whiteSpace: "normal",
+                wordWrap: "break-word",
+              }}
+            >
+              {params.row.name}
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: "15px",
+                color: "text.secondary",
+                whiteSpace: "normal",
+                wordWrap: "break-word",
+              }}
+            >
+              {params.row.username}
+            </Typography>
+          </Box>
+        </Box>
+      ),
+      valueGetter: (params) =>
+        `${params.row.avatar} ${params.row.name} ${params.row.username}`,
+    },
+    {
+      field: "primaryDegree",
+      headerName: "Degree",
+      headerClassName: color ? "custom-datagrid-header" : "",
+      flex: 1.1,
+      renderCell: (params) => (
+        <Typography sx={{ whiteSpace: "normal", wordWrap: "break-word" }}>
+          {params.value}
+        </Typography>
+      ),
+    },
+    {
+      field: "secondDegree",
+      headerName: "2nd Deg.",
+      headerClassName: color ? "custom-datagrid-header" : "",
+      flex: 1.1,
+      renderCell: (params) => (
+        <Typography sx={{ whiteSpace: "normal", wordWrap: "break-word" }}>
+          {params.value}
+        </Typography>
+      ),
+    },
+    {
+      field: "secondMajor",
+      headerName: "2nd Maj.",
+      headerClassName: color ? "custom-datagrid-header" : "",
+      flex: 1.1,
+      renderCell: (params) => (
+        <Typography sx={{ whiteSpace: "normal", wordWrap: "break-word" }}>
+          {params.value}
+        </Typography>
+      ),
+    },
+    {
+      field: "minor",
+      headerName: "Minors",
+      headerClassName: color ? "custom-datagrid-header" : "",
+      flex: 1.1,
+      renderCell: (params) => (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "7px" }}>
+          {params.value.map((minor, index) => (
+            <Chip
+              variant="filled"
+              sx={{
+                fontSize: "15px",
+                padding: "2px",
+                borderRadius: "5px",
+                height: "auto",
+                "& .MuiChip-label": {
+                  display: "block",
+                  whiteSpace: "normal",
+                },
+              }}
+              key={index}
+              label={minor}
+            />
+          ))}
+        </div>
+      ),
+    },
+    {
+      field: "programme",
+      headerName: "Prog.",
+      headerClassName: color ? "custom-datagrid-header" : "",
+      flex: 0.7,
+      renderCell: (params) => (
+        <Typography sx={{ whiteSpace: "normal", wordWrap: "break-word" }}>
+          {params.value}
+        </Typography>
+      ),
+    },
+    {
+      field: "status",
+      headerName: "Status",
+      headerClassName: color ? "custom-datagrid-header" : "",
+      flex: 1,
+      renderCell: (params) => getStatusColor(checkPlanStatus(params.row)),
+    },
+    {
+      field: "flag",
+      headerName: "Flag",
+      headerClassName: color ? "custom-datagrid-header" : "",
+      flex: 0.5,
+      sortable: false,
+      filterable: false,
+      renderCell: (params) => (
+        <Box sx={{ display: "flex", flexDirection: "row" }}>
+          <Tooltip title="Flag student" placement="top">
+            <IconButton>
+              <FlagRoundedIcon color="primary" sx={{ fontSize: "25px" }} />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      ),
+    },
+  ];
 
   // sets id column of datagrid as student id
   const getRowId = (row) => row.studentId;
@@ -280,7 +279,8 @@ const StudentDataGrid = ({ studentList }) => {
         sx={{
           fontSize: "16px",
           borderRadius: "5px",
-          minHeight: "400px",
+          minHeight: "200px",
+          backgroundColor: "white",
         }}
         autoHeight
         rows={studentList}
@@ -306,24 +306,31 @@ export const StudentProfileView = ({
   handleCloseDialog,
 }) => {
   return (
-    <Dialog fullScreen open={openDialog} onClose={handleCloseDialog}>
+    <Dialog
+      fullScreen
+      open={openDialog}
+      onClose={handleCloseDialog}
+      TransitionComponent={SlideUpTransition}
+    >
       <DialogContent>
         <PublicProfileView sampleProfile={studentProfile} />
-        <Fab
-          color="error"
-          onClick={handleCloseDialog}
-          sx={{
-            position: "fixed",
-            bottom: "2rem",
-            right: "2rem",
-            transition: "transform 0.2s ease",
-            "&:hover": {
-              transform: "scale(1.1)",
-            },
-          }}
-        >
-          <CloseRoundedIcon />
-        </Fab>
+        <Tooltip title="Close" placement="top">
+          <Fab
+            color="error"
+            onClick={handleCloseDialog}
+            sx={{
+              position: "fixed",
+              bottom: "2rem",
+              right: "2rem",
+              transition: "transform 0.2s ease",
+              "&:hover": {
+                transform: "scale(1.1)",
+              },
+            }}
+          >
+            <CloseRoundedIcon />
+          </Fab>
+        </Tooltip>
       </DialogContent>
     </Dialog>
   );
