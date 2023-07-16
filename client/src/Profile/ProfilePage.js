@@ -1,7 +1,5 @@
 //COMPLETE
 // remember to add the icon component
-// remember to change the border radius for the inbox tabs so that they look round.
-// no need to set different urls for the different tabs since they are all view only anyways
 import AppBarComponent from "../AppBar/AppBarComponent";
 import DrawerComponent from "../DrawerComponent";
 import {
@@ -26,9 +24,10 @@ import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import CreateRoundedIcon from "@mui/icons-material/CreateRounded";
 import LockRoundedIcon from "@mui/icons-material/LockRounded";
 import AccountSecurityTab from "./AccountSecurityTab";
+import { combinedItems } from "../Home/HomePageStyledComponents";
 
 // button for viewing public profile
-export const PublicProfileButton = ({ disabledCondition }) => {
+export const PublicProfileButton = ({ disabledCondition, link }) => {
   return (
     <Tooltip title={<span>View Public Profile</span>} placement="top">
       <IconButton
@@ -40,7 +39,7 @@ export const PublicProfileButton = ({ disabledCondition }) => {
           },
         }}
         component={Link}
-        to={"/profile/public"}
+        to={link}
         disabled={disabledCondition}
       >
         <NavigateNextRoundedIcon
@@ -109,10 +108,10 @@ const ProfilePage = ({ selectedTab }) => {
   return (
     <div className="homepage">
       <AppBarComponent />
-      <DrawerComponent defaultTab={8} />
+      <DrawerComponent defaultTab={8} tabsList={combinedItems} />
       <Box
         className="remainingViewport"
-        sx={{ display: "flex", flexDirection: "column" }}
+        sx={{ display: "flex", flexDirection: "column", position: "relative" }}
       >
         <Box
           sx={{
@@ -124,6 +123,7 @@ const ProfilePage = ({ selectedTab }) => {
       #e7f2ff 
     `,
             boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.1)",
+            position: "relative",
           }}
         >
           <Box
@@ -135,7 +135,7 @@ const ProfilePage = ({ selectedTab }) => {
               alignItems: "center",
             }}
           >
-            <ProfilePictureComponent />
+            <ProfilePictureComponent sampleIcon={"/sample_icon.png"} />
             <Box
               sx={{
                 marginLeft: "10px",
@@ -158,44 +158,58 @@ const ProfilePage = ({ selectedTab }) => {
               </Typography>
               <PublicProfileSwitch />
             </Box>
-            <PublicProfileButton disabledCondition={!publicProfile} />
+            <PublicProfileButton
+              disabledCondition={!publicProfile}
+              link={"/profile/public"}
+            />
           </Box>
-          <Tabs
+          <Box
             sx={{
-              marginLeft: "55ch",
+              position: "absolute",
+              bottom: "0",
+              right: "5px",
+              borderTopLeftRadius: "10px",
+              display: "flex",
+              flexDirection: "row",
             }}
-            value={selectedTab}
           >
-            {profileTabsList.map((item, index) => (
-              <Tab
-                sx={{ borderRadius: "10px 10px 0 0" }}
-                component={Link}
-                to={item.link}
-                key={index}
-                label={
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyItems: "center",
-                    }}
-                  >
-                    {item.icon}
-                    <Typography
+            <Tabs
+              sx={{
+                marginLeft: "55ch",
+              }}
+              value={selectedTab}
+            >
+              {profileTabsList.map((item, index) => (
+                <Tab
+                  sx={{ borderRadius: "10px 10px 0 0" }}
+                  component={Link}
+                  to={item.link}
+                  key={index}
+                  label={
+                    <Box
                       sx={{
-                        marginLeft: "10px",
-                        fontSize: "15px",
-                        fontWeight: 500,
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyItems: "center",
                       }}
                     >
-                      {item.label}
-                    </Typography>
-                  </Box>
-                }
-              />
-            ))}
-          </Tabs>
+                      {item.icon}
+                      <Typography
+                        sx={{
+                          marginLeft: "10px",
+                          fontSize: "15px",
+                          fontWeight: 500,
+                        }}
+                      >
+                        {item.label}
+                      </Typography>
+                    </Box>
+                  }
+                />
+              ))}
+            </Tabs>
+          </Box>
         </Box>
         {selectedTab === 0 && (
           <ProfileInfoComponent userProfile={sampleProfile} />

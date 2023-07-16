@@ -14,7 +14,7 @@ import {
   Tab,
   Button,
 } from "@mui/material";
-import { notifsListWithId } from "../Constants";
+import { notifsList, notifsListWithId } from "../Constants";
 import { formatDate } from "../Constants";
 import { red } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
@@ -137,7 +137,7 @@ export const DefaultNotif = (props) => {
               variant="h1"
               sx={{
                 marginTop: "5px",
-                color: "#19a0ff",
+                color: "#1a90ff",
                 textTransform: "none",
                 fontWeight: 500,
                 fontSize: "14px",
@@ -193,7 +193,9 @@ const AppBarNotifs = () => {
   };
 
   // handling read notifs status
-  const [currentNotifs, setCurrentNotifs] = useState(notifsListWithId);
+  const [currentNotifs, setCurrentNotifs] = useState(
+    notifsListWithId(notifsList)
+  );
 
   // update the read state of each notification
   const handleReadNotif = (id) => {

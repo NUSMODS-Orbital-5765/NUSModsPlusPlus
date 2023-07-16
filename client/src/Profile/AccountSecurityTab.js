@@ -47,6 +47,7 @@ const AccountSecurityTab = ({ userProfile }) => {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState(false);
   const submitAccountInfo = () => {
+    setEditableDetails(false);
     setSubmitSuccess(true);
     const accountInfoWithoutConfirmPassword = { ...accountInfo };
     delete accountInfoWithoutConfirmPassword.confirmPassword;

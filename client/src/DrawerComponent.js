@@ -2,11 +2,10 @@
 import { Drawer, Typography, Divider, Tabs, Tab } from "@mui/material";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { combinedItems, SectionHeader } from "./Home/HomePageStyledComponents";
+import { SectionHeader } from "./Home/HomePageStyledComponents";
 
 // main menu
-function DrawerComponent(props) {
-  const { defaultTab } = props;
+const DrawerComponent = ({ defaultTab, tabsList }) => {
   const [selectedTab, setSelectedTab] = useState(defaultTab);
 
   const handleSelectTab = (event, value) => {
@@ -90,9 +89,9 @@ function DrawerComponent(props) {
         }}
       />
       <Divider light />
-      {mapMenuTabs(combinedItems)}
+      {mapMenuTabs(tabsList)}
     </Drawer>
   );
-}
+};
 
 export default DrawerComponent;

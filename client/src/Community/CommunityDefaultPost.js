@@ -97,7 +97,7 @@ export const CommunityPostDialog = (props) => {
           >
             <Typography
               sx={{
-                color: "#19a0ff",
+                color: "#1a90ff",
                 fontWeight: 600,
                 textTransform: "uppercase",
               }}
@@ -280,7 +280,7 @@ const CommunityDefaultPost = (props) => {
           >
             <Typography
               sx={{
-                color: "#19a0ff",
+                color: "#1a90ff",
                 fontWeight: 600,
                 fontSize: "14px",
                 textTransform: "uppercase",

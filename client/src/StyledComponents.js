@@ -156,11 +156,8 @@ export const BackToTop = () => {
 
 // styling for a default search bar
 // needs logic for displaying searches
-export const SearchBar = (props) => {
+export const SearchBar = ({ label, searchRecommendations, width }) => {
   const navigate = useNavigate();
-  const label = props.label;
-  const searchRecommendations = props.searchRecommendations;
-  const width = props.width;
 
   // navigate to the respective page
   const handleKeyDown = (event) => {

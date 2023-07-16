@@ -44,11 +44,13 @@ const AdminSignUpPage = () => {
 
   const fieldErrors = [
     registerInfo.username === "",
+    registerInfo.staffId === "",
     registerInfo.password === "",
     registerInfo.confirmPassword === "",
     registerInfo.email === "",
     registerInfo.department === "",
-    registerInfo.code === "",
+    registerInfo.position === "",
+    registerInfo.code !== "adminuser123", // to check that the person is indeed an admin? just use this as a constant for all profiles
   ];
 
   const handleRegisterInfo = (evt) => {
@@ -74,10 +76,11 @@ const AdminSignUpPage = () => {
   const adminRegisterAPI = `${process.env.REACT_APP_API_LINK}/register/admin`;
   // submitting sign-up admin information
   const handleSubmit = () => {
-    const registerInfoWithoutConfirmPassword = { ...registerInfo };
-    delete registerInfoWithoutConfirmPassword.confirmPassword;
+    const registerInfoOnly = { ...registerInfo };
+    delete registerInfoOnly.confirmPassword;
+    delete registerInfoOnly.code;
     axios
-      .post(adminRegisterAPI, registerInfoWithoutConfirmPassword)
+      .post(adminRegisterAPI, registerInfoOnly)
       .then((response) => {
         setSubmitSuccess(true);
         console.log(response);

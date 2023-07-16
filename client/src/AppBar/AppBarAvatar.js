@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { sampleProfile } from "../Constants";
 import React, { useState } from "react";
 import {
   Avatar,
@@ -30,7 +29,7 @@ export const avatarItems = [
   { label: "Logout", icon: <LogoutRoundedIcon />, link: "/sign-in" },
 ];
 
-const AppBarAvatar = () => {
+const AppBarAvatar = ({ userProfile, avatarItems }) => {
   // opening the menu
   const [anchorEl, setAnchorEl] = useState(null);
   const handleOpenMenu = (event) => {
@@ -55,7 +54,7 @@ const AppBarAvatar = () => {
           <Avatar
             sx={{ width: 50, height: 50 }}
             alt="Sample Icon"
-            src={sampleProfile.avatar}
+            src={userProfile.avatar}
           />
         </Badge>
       </IconButton>
@@ -75,15 +74,15 @@ const AppBarAvatar = () => {
             justifyItems: "center",
           }}
         >
-          <Avatar sx={{ width: 70, height: 70 }} src={sampleProfile.avatar} />
+          <Avatar sx={{ width: 70, height: 70 }} src={userProfile.avatar} />
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <Typography sx={{ fontSize: "20px", fontWeight: 600 }}>
-              {sampleProfile.name}
+              {userProfile.name}
             </Typography>
             <Typography color="text.secondary">
               Signed in as{" "}
               <span style={{ textDecoration: "underline" }}>
-                {sampleProfile.username}
+                {userProfile.username}
               </span>
             </Typography>
           </Box>

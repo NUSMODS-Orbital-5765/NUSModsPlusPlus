@@ -24,6 +24,7 @@ import {
 import { PageHeader, BackToTop, SearchBar } from "../StyledComponents";
 import React, { useEffect, useState } from "react";
 import HeartBrokenRoundedIcon from "@mui/icons-material/HeartBrokenRounded";
+import { combinedItems } from "../Home/HomePageStyledComponents";
 
 // page header (which contains upload post)
 export const CommunityHeader = () => {
@@ -63,13 +64,15 @@ export const CommunityHeader = () => {
             flexDirection: "row",
           }}
         >
-          <Typography sx={{ marginRight: "20px", color: "#004d80" }}>
+          <Typography
+            sx={{ marginRight: "20px", color: "#004d80", fontSize: "17px" }}
+          >
             Make your first post today.
           </Typography>
           <UploadPost />
         </Box>
       </Box>
-      <img style={{ margin: "20px", width: "30%" }} src="/learning_icon.png" />
+      <img style={{ width: "35%" }} src="/learning_icon.png" />
     </Box>
   );
 };
@@ -248,7 +251,7 @@ const CommunityPage = () => {
   return (
     <div className="homepage">
       <AppBarComponent />
-      <DrawerComponent defaultTab={5} />
+      <DrawerComponent defaultTab={5} tabsList={combinedItems} />
       <Box
         className="remainingViewport"
         sx={{

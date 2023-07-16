@@ -3,9 +3,9 @@ import { Tooltip, Snackbar, Input, Alert } from "@mui/material";
 import React, { useState } from "react";
 
 // profile picture section with upload feature
-export const ProfilePictureComponent = () => {
+export const ProfilePictureComponent = ({ sampleIcon }) => {
   const [selectedFile, setSelectedFile] = useState(null);
-  const [previewURL, setPreviewURL] = useState("/sample_icon.png");
+  const [previewURL, setPreviewURL] = useState(sampleIcon);
   const [openDialog, setOpenDialog] = useState(false);
 
   const validateFileType = (file) => {
@@ -62,6 +62,7 @@ export const ProfilePictureComponent = () => {
               height: "30ch",
               borderRadius: "50%",
               overflow: "hidden",
+              position: "relative",
             }}
           >
             <img
@@ -73,6 +74,24 @@ export const ProfilePictureComponent = () => {
                 objectFit: "cover",
               }}
             />
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                backgroundColor: "rgba(0, 0, 0, 0.3)",
+                opacity: 0,
+                transition: "opacity 0.2s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.opacity = "1";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.opacity = "0";
+              }}
+            ></div>
           </div>
         </Tooltip>
       </label>

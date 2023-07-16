@@ -16,6 +16,7 @@ import { sampleProfile, quotesList } from "../Constants";
 import React, { useState } from "react";
 import HomePageProgressBar from "./HomePageProgressBar";
 import HomePageRecommendedPosts from "./HomePageRecommendedPosts";
+import { combinedItems } from "./HomePageStyledComponents";
 
 const HomePage = () => {
   // testing out the quotes for new UI
@@ -32,7 +33,7 @@ const HomePage = () => {
     <div className="homepage">
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <AppBarComponent />
-        <DrawerComponent defaultTab={1} />
+        <DrawerComponent defaultTab={1} tabsList={combinedItems} />
         <Box
           className="remainingViewport"
           sx={{
