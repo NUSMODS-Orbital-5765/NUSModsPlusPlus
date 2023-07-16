@@ -132,14 +132,6 @@ export const AdminDefaultNotif = (props) => {
             </Typography>
           </Box>
         )}
-        <Box
-          sx={{
-            marginLeft: "80px",
-            marginTop: "10px",
-            display: "flex",
-            flexDirection: "row",
-          }}
-        ></Box>
       </Box>
       <Divider sx={{ marginLeft: "-20px", marginRight: "-20px" }} />
     </div>
@@ -174,96 +166,94 @@ const AdminAppBarNotifs = ({ notifsList }) => {
 
   return (
     <div>
-      <Box sx={{ marginLeft: "55ch" }}>
-        <Badge
-          overlap="circular"
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
-          variant="dot"
-          color="error"
-        >
-          <IconButton sx={{ color: "black" }} onClick={handleOpenNotifs}>
-            <EmailRoundedIcon sx={{ fontSize: "30px" }} />
-          </IconButton>
-        </Badge>
-        <Drawer
-          sx={{
+      <Badge
+        overlap="circular"
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        variant="dot"
+        color="error"
+      >
+        <IconButton sx={{ color: "black" }} onClick={handleOpenNotifs}>
+          <EmailRoundedIcon sx={{ fontSize: "30px" }} />
+        </IconButton>
+      </Badge>
+      <Drawer
+        sx={{
+          width: 400,
+          flexShrink: 0,
+          "& .MuiDrawer-paper": {
             width: 400,
-            flexShrink: 0,
-            "& .MuiDrawer-paper": {
-              width: 400,
-              boxSizing: "border-box",
-            },
-          }}
-          anchor="right"
-          open={openDrawer}
-          onClose={handleCloseNotifs}
-        >
-          <Box sx={{ margin: "20px" }}>
-            <Typography sx={{ fontSize: "30px", fontWeight: 600 }}>
-              Recent Activity
-            </Typography>
-            <Tabs value={currentTab} onChange={handleChangeTab}>
-              <Tab
-                label={
-                  <NotifCount
-                    label="Today"
-                    unreadCount={
-                      notifsList.filter((notif) => checkToday(notif.timestamp))
-                        .length
-                    }
-                    labelColor="#1a90ff"
-                  />
-                }
-              />
-              <Tab
-                label={
-                  <NotifCount
-                    label="Previous"
-                    unreadCount={
-                      notifsList.filter((notif) => !checkToday(notif.timestamp))
-                        .length
-                    }
-                    labelColor={red[500]}
-                  />
-                }
-              />
-            </Tabs>
-            <Divider
-              sx={{ margin: "-20px", marginBottom: "-30px", marginTop: "0px" }}
+            boxSizing: "border-box",
+          },
+        }}
+        anchor="right"
+        open={openDrawer}
+        onClose={handleCloseNotifs}
+      >
+        <Box sx={{ margin: "20px" }}>
+          <Typography sx={{ fontSize: "30px", fontWeight: 600 }}>
+            Recent Activity
+          </Typography>
+          <Tabs value={currentTab} onChange={handleChangeTab}>
+            <Tab
+              label={
+                <NotifCount
+                  label="Today"
+                  unreadCount={
+                    notifsList.filter((notif) => checkToday(notif.timestamp))
+                      .length
+                  }
+                  labelColor="#1a90ff"
+                />
+              }
             />
-          </Box>
-          {currentTab === 0 && (
-            <List>
-              {notifsList
-                .filter((notif) => checkToday(notif.timestamp))
-                .map((notif, index) => (
-                  <AdminDefaultNotif
-                    key={index}
-                    student={notif.student}
-                    content={notif.content}
-                    type={notif.type}
-                    timestamp={notif.timestamp}
-                  />
-                ))}
-            </List>
-          )}
-          {currentTab === 1 && (
-            <List>
-              {notifsList
-                .filter((notif) => !checkToday(notif.timestamp))
-                .map((notif, index) => (
-                  <AdminDefaultNotif
-                    key={index}
-                    student={notif.student}
-                    content={notif.content}
-                    type={notif.type}
-                    timestamp={notif.timestamp}
-                  />
-                ))}
-            </List>
-          )}
-        </Drawer>
-      </Box>
+            <Tab
+              label={
+                <NotifCount
+                  label="Previous"
+                  unreadCount={
+                    notifsList.filter((notif) => !checkToday(notif.timestamp))
+                      .length
+                  }
+                  labelColor={red[500]}
+                />
+              }
+            />
+          </Tabs>
+          <Divider
+            sx={{ margin: "-20px", marginBottom: "-30px", marginTop: "0px" }}
+          />
+        </Box>
+        {currentTab === 0 && (
+          <List>
+            {notifsList
+              .filter((notif) => checkToday(notif.timestamp))
+              .map((notif, index) => (
+                <AdminDefaultNotif
+                  key={index}
+                  student={notif.student}
+                  content={notif.content}
+                  type={notif.type}
+                  timestamp={notif.timestamp}
+                />
+              ))}
+          </List>
+        )}
+        {currentTab === 1 && (
+          <List>
+            {notifsList
+              .filter((notif) => !checkToday(notif.timestamp))
+              .map((notif, index) => (
+                <AdminDefaultNotif
+                  key={index}
+                  student={notif.student}
+                  content={notif.content}
+                  type={notif.type}
+                  timestamp={notif.timestamp}
+                />
+              ))}
+          </List>
+        )}
+      </Drawer>
     </div>
   );
 };

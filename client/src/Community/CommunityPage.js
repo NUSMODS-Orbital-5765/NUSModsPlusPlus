@@ -289,20 +289,19 @@ const CommunityPage = () => {
           <PostsRow postList={topPostList} />
         )}
         {postReceived && <PostsGrid postList={postList} />}
-        
+
         <Box
           sx={{
             marginBottom: "5ch",
             display: "flex",
-            flexDirection: "row",
             alignItems: "center",
             justifyItems: "center",
             justifyContent: "center",
           }}
         >
-          <BackToTop />
-          <Pagination sx={{ marginLeft: "50px" }} count={10} color="primary" />
+          <Pagination count={10} color="primary" />
         </Box>
+        <BackToTop />
       </Box>
     </div>
   );

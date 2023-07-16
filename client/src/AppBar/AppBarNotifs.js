@@ -211,7 +211,7 @@ const AppBarNotifs = () => {
 
   // display badge if have unread notifications, otherwise no badge if all read
   return (
-    <Box sx={{ marginLeft: "55ch" }}>
+    <Box>
       {currentNotifs.filter((notif) => notif.readStatus === false).length ===
       0 ? (
         <IconButton sx={{ color: "black" }} onClick={handleOpenNotifs}>

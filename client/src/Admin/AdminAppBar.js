@@ -32,6 +32,7 @@ const AdminAppBar = (props) => {
             sx={{
               display: "flex",
               flexDirection: "row",
+              alignItems: "center",
               justifyContent: "space-between",
             }}
           >
@@ -40,12 +41,25 @@ const AdminAppBar = (props) => {
               width="70ch"
               searchRecommendations={adminRecommendations}
             />
+            <Box
+              sx={{
+                marginLeft: "50ch",
+                marginTop: "20px",
+                display: "flex",
+                alignItems: "center",
+                justifyItems: "center",
+                justifyContent: "flex-end",
+              }}
+            >
+              <AdminAppBarNotifs
+                notifsList={notifsListWithId(adminNotifsList)}
+              />
+              <AppBarAvatar
+                userProfile={adminSampleProfile}
+                avatarItems={adminAvatarItems}
+              />
+            </Box>
           </Box>
-          <AdminAppBarNotifs notifsList={notifsListWithId(adminNotifsList)} />
-          <AppBarAvatar
-            userProfile={adminSampleProfile}
-            avatarItems={adminAvatarItems}
-          />
         </Toolbar>
       </AppBar>
     </SearchBarScroll>

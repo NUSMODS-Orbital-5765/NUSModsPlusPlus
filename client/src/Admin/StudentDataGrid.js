@@ -314,21 +314,21 @@ export const StudentProfileView = ({
     >
       <DialogContent>
         <PublicProfileView sampleProfile={studentProfile} />
-        <Tooltip title="Close" placement="top">
+        <Tooltip title="Close" placement="bottom">
           <Fab
             color="error"
             onClick={handleCloseDialog}
             sx={{
               position: "fixed",
-              bottom: "2rem",
-              right: "2rem",
+              top: "3rem",
+              right: "3rem",
               transition: "transform 0.2s ease",
               "&:hover": {
-                transform: "scale(1.1)",
+                transform: "scale(1.2)",
               },
             }}
           >
-            <CloseRoundedIcon />
+            <CloseRoundedIcon sx={{ fontSize: "30px", fontWeight: 600 }} />
           </Fab>
         </Tooltip>
       </DialogContent>

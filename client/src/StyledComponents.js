@@ -10,9 +10,11 @@ import {
   Autocomplete,
   IconButton,
   LinearProgress,
+  Button,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded"; // for back to top button
+import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
 import NavigateBeforeRoundedIcon from "@mui/icons-material/NavigateBeforeRounded";
@@ -136,19 +138,25 @@ export const BackToTop = () => {
   return (
     <div>
       {isVisible && (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignContent: "center",
-          }}
-        >
-          <Tooltip title="Back to Top" placement="top">
-            <Fab color="primary" onClick={scrollToTop}>
-              <ArrowUpwardRoundedIcon sx={{ fontSize: "30px" }} />
-            </Fab>
-          </Tooltip>
-        </Box>
+        <Tooltip title="Back to Top" placement="top">
+          <Fab
+            color="primary"
+            onClick={scrollToTop}
+            sx={{
+              position: "fixed",
+              bottom: "3rem",
+              right: "3rem",
+              transition: "transform 0.2s ease",
+              "&:hover": {
+                transform: "scale(1.2)",
+              },
+            }}
+          >
+            <ArrowUpwardRoundedIcon
+              sx={{ fontSize: "30px", fontWeight: 600 }}
+            />
+          </Fab>
+        </Tooltip>
       )}
     </div>
   );
@@ -160,16 +168,28 @@ export const SearchBar = ({ label, searchRecommendations, width }) => {
   const navigate = useNavigate();
 
   // navigate to the respective page
-  const handleKeyDown = (event) => {
+  const handleKeyDown = (selectedOption) => {
+    const matchedOption = searchRecommendations.find(
+      (option) => option.option === selectedOption
+    );
+    if (matchedOption) {
+      navigate(matchedOption.link);
+    }
+  };
+
+  // handle case where keyboard enter key is pressed
+  const handleEnterKeyPress = (event) => {
     if (event.key === "Enter") {
       const selectedOption = event.target.value;
-      const matchedOption = searchRecommendations.find(
-        (option) => option.option === selectedOption
-      );
-      if (matchedOption) {
-        navigate(matchedOption.link);
-      }
+      handleKeyDown(selectedOption);
     }
+  };
+
+  // handle case where arrow button is clicked
+  const handleArrowButtonPress = () => {
+    const inputElement = document.getElementById("search-input");
+    const selectedOption = inputElement.value;
+    handleKeyDown(selectedOption);
   };
 
   return (
@@ -185,6 +205,7 @@ export const SearchBar = ({ label, searchRecommendations, width }) => {
         sx={{ marginTop: "20px", marginRight: "10px", color: "text.primary" }}
       />
       <Autocomplete
+        id="search-input"
         freeSolo
         options={searchRecommendations}
         getOptionLabel={(option) => option.option}
@@ -195,10 +216,31 @@ export const SearchBar = ({ label, searchRecommendations, width }) => {
             label={label}
             margin="normal"
             variant="standard"
-            onKeyDown={handleKeyDown}
+            onKeyDown={handleEnterKeyPress}
           />
         )}
       />
+      <Tooltip title="Search" placement="top">
+        <IconButton
+          sx={{
+            marginTop: "20px",
+            marginLeft: "10px",
+            "&:hover": {
+              backgroundColor: "transparent",
+              transform: "translateX(5px)",
+              transition: "transform 0.1s",
+            },
+          }}
+          onClick={handleArrowButtonPress}
+        >
+          <ArrowForwardRoundedIcon
+            color="primary"
+            sx={{
+              fontSize: "30px",
+            }}
+          />
+        </IconButton>
+      </Tooltip>
     </Box>
   );
 };

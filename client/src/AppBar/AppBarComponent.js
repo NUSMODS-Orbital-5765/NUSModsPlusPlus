@@ -38,9 +38,23 @@ function AppBarComponent(props) {
               width="70ch"
               searchRecommendations={siteRecommendations}
             />
+            <Box
+              sx={{
+                marginLeft: "50ch",
+                marginTop: "20px",
+                display: "flex",
+                alignItems: "center",
+                justifyItems: "center",
+                justifyContent: "flex-end",
+              }}
+            >
+              <AppBarNotifs />
+              <AppBarAvatar
+                userProfile={sampleProfile}
+                avatarItems={avatarItems}
+              />
+            </Box>
           </Box>
-          <AppBarNotifs />
-          <AppBarAvatar userProfile={sampleProfile} avatarItems={avatarItems} />
         </Toolbar>
       </AppBar>
     </SearchBarScroll>
