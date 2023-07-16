@@ -1,24 +1,19 @@
-import AppBarComponent from "./AppBar/AppBarComponent";
-import DrawerComponent from "./DrawerComponent";
+import AppBarComponent from "../AppBar/AppBarComponent";
+import DrawerComponent from "../DrawerComponent";
 import {
   Box,
   Typography,
-  Card,
-  CardContent,
   Button,
-  Chip,
   Tooltip,
   SpeedDial,
   SpeedDialAction,
   SpeedDialIcon,
 } from "@mui/material";
-import MoreVertRoundedIcon from "@mui/icons-material/MoreVertRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import CheckBoxRoundedIcon from "@mui/icons-material/CheckBoxRounded";
 import React, { useState } from "react";
-import { grey } from "@mui/material/colors";
-import { sampleProfile } from "./Constants";
+import ModulesDisplay from "./ModulesDisplay";
 
 // styling for speed dial
 export const MoreActionsSpeedDial = () => {
@@ -110,69 +105,6 @@ export const ModulesPageHeader = () => {
   );
 };
 
-// graduation requirements component
-export const OverallModulePlan = ({ sampleProfile }) => {
-  return (
-    <Card
-      sx={{
-        borderRadius: "10px",
-        backgroundColor: "#f2f2f2",
-        boxShadow: 0,
-      }}
-    >
-      <CardContent
-        sx={{
-          margin: "10px",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            position: "relative",
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyItems: "center",
-            }}
-          >
-            <Typography sx={{ fontSize: "35px", fontWeight: 700 }}>
-              Graduation Requirements
-            </Typography>
-            <Chip
-              sx={{
-                marginLeft: "30px",
-                textTransform: "uppercase",
-                fontWeight: 600,
-                color: "white",
-              }}
-              label="Default"
-              color="success"
-              variant="filled"
-            />
-          </Box>
-          <Box sx={{ position: "absolute", top: 0, right: 0 }}>
-            <MoreActionsSpeedDial />
-          </Box>
-        </Box>
-        <Typography sx={{ marginTop: "10px" }}>
-          <span style={{ fontWeight: 700 }}>Double Major </span> in Information
-          Systems <span style={{ fontWeight: 700 }}>and </span> Economics
-        </Typography>
-        <Typography sx={{ marginTop: "10px" }}>
-          <span style={{ fontWeight: 700 }}>Minor </span> in Statistics
-        </Typography>
-      </CardContent>
-    </Card>
-  );
-};
-
 // main page component
 const ModulesPage = () => {
   return (
@@ -182,40 +114,8 @@ const ModulesPage = () => {
       <Box className="remainingViewport">
         <ModulesPageHeader />
         <Box sx={{ margin: "55px", marginTop: "-10px" }}>
-          <OverallModulePlan sampleProfile={sampleProfile} />
+          <ModulesDisplay />
         </Box>
-        <Box
-          sx={{
-            marginLeft: "55px",
-            marginTop: "-25px",
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyItems: "center",
-          }}
-        >
-          <Typography
-            sx={{
-              fontSize: "35px",
-              fontWeight: 700,
-            }}
-          >
-            Plans By Semester
-          </Typography>
-        </Box>
-        <Card
-          sx={{
-            margin: "55px",
-            marginTop: "-30px",
-            boxShadow: 0,
-          }}
-        >
-          <CardContent>
-            <Typography sx={{ fontSize: "35px", fontWeight: 700 }}>
-              Hello
-            </Typography>
-          </CardContent>
-        </Card>
       </Box>
     </div>
   );

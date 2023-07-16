@@ -113,6 +113,30 @@ export const sampleProfile = {
   Interests: ["easy to score", "finance", "machine learning"],
 };
 
+export const sampleAcademicPlan = {
+  faculty: "Faculty of Science",
+  primaryDegree: "Data Science and Analytics",
+  secondDegree: "",
+  secondMajor: "Computer Science",
+  minor: ["Mathematics"],
+  programme: "",
+};
+
+export const sampleAcademicRequirements = [
+  {
+    name: "commonModules",
+    modules: ["HSI1000", "HSS1000", "HSA1000", "HSH1000", "DTK1234"],
+  },
+  {
+    name: "primaryDegreeModules",
+    modules: ["MA2002", "CS2040", "ST2131", "MA2001", "MA2104", "CS2030"],
+  },
+  {
+    name: "secondMajorModules",
+    modules: ["CS1231S", "CS3243", "CS2103T"],
+  },
+];
+
 // samplePosts list should be updated when a new post is uploaded.
 // posts should take note of the time and author upon upload.
 export const currentDay = new Date();

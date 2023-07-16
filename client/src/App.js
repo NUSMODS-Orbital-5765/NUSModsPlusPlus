@@ -8,7 +8,7 @@ import EventsPlannerPage from "./Planner/EventsPlannerPage";
 import TasksPlannerPage from "./Planner/TasksPlannerPage";
 import GPACalculatorPage from "./GPACalculator/GPACalculatorPage";
 import CommunityPage from "./Community/CommunityPage";
-import ModulesPage from "./ModulesPage";
+import ModulesPage from "./Modules/ModulesPage";
 import AdminSignUpPage from "./SignUp/AdminSignUpPage";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
