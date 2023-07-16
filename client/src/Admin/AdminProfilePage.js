@@ -34,7 +34,7 @@ const AdminProfilePage = ({ selectedTab }) => {
       <AdminDrawerComponent defaultTab={5} />
       <Box
         className="remainingViewport"
-        sx={{ display: "flex", flexDirection: "column" }}
+        sx={{ display: "flex", flexDirection: "column", position: "relative" }}
       >
         <Box
           sx={{
@@ -46,6 +46,7 @@ const AdminProfilePage = ({ selectedTab }) => {
       #e7f2ff 
     `,
             boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.1)",
+            position: "relative",
           }}
         >
           <Box
@@ -107,42 +108,53 @@ const AdminProfilePage = ({ selectedTab }) => {
             </Box>
             <PublicProfileButton link={"/admin/profile/public"} />
           </Box>
-          <Tabs
+          <Box
             sx={{
-              marginLeft: "55ch",
+              position: "absolute",
+              bottom: "0",
+              right: "5px",
+              borderTopLeftRadius: "10px",
+              display: "flex",
+              flexDirection: "row",
             }}
-            value={selectedTab}
           >
-            {adminProfileTabsList.map((item, index) => (
-              <Tab
-                sx={{ borderRadius: "10px 10px 0 0" }}
-                component={Link}
-                to={item.link}
-                key={index}
-                label={
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyItems: "center",
-                    }}
-                  >
-                    {item.icon}
-                    <Typography
+            <Tabs
+              sx={{
+                marginLeft: "55ch",
+              }}
+              value={selectedTab}
+            >
+              {adminProfileTabsList.map((item, index) => (
+                <Tab
+                  sx={{ borderRadius: "10px 10px 0 0" }}
+                  component={Link}
+                  to={item.link}
+                  key={index}
+                  label={
+                    <Box
                       sx={{
-                        marginLeft: "10px",
-                        fontSize: "15px",
-                        fontWeight: 500,
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyItems: "center",
                       }}
                     >
-                      {item.label}
-                    </Typography>
-                  </Box>
-                }
-              />
-            ))}
-          </Tabs>
+                      {item.icon}
+                      <Typography
+                        sx={{
+                          marginLeft: "10px",
+                          fontSize: "15px",
+                          fontWeight: 500,
+                        }}
+                      >
+                        {item.label}
+                      </Typography>
+                    </Box>
+                  }
+                />
+              ))}
+            </Tabs>
+          </Box>
         </Box>
         {selectedTab === 0 && (
           <AdminProfileInfoComponent userProfile={adminSampleProfile} />
