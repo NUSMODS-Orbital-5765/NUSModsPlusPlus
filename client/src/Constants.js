@@ -113,7 +113,6 @@ export const sampleProfile = {
   secondMajor: "Economics",
   minor: ["Geography", "History"],
   programme: "RVRC",
-  bio: "Hi there! Nice to meet you!",
 };
 
 // samplePosts list should be updated when a new post is uploaded.

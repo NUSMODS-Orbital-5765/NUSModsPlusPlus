@@ -27,7 +27,7 @@ import AccountSecurityTab from "./AccountSecurityTab";
 import { combinedItems } from "../Home/HomePageStyledComponents";
 
 // button for viewing public profile
-export const PublicProfileButton = ({ disabledCondition }) => {
+export const PublicProfileButton = ({ disabledCondition, link }) => {
   return (
     <Tooltip title={<span>View Public Profile</span>} placement="top">
       <IconButton
@@ -39,7 +39,7 @@ export const PublicProfileButton = ({ disabledCondition }) => {
           },
         }}
         component={Link}
-        to={"/profile/public"}
+        to={link}
         disabled={disabledCondition}
       >
         <NavigateNextRoundedIcon
@@ -134,7 +134,7 @@ const ProfilePage = ({ selectedTab }) => {
               alignItems: "center",
             }}
           >
-            <ProfilePictureComponent />
+            <ProfilePictureComponent sampleIcon={"/sample_icon.png"} />
             <Box
               sx={{
                 marginLeft: "10px",
@@ -157,7 +157,10 @@ const ProfilePage = ({ selectedTab }) => {
               </Typography>
               <PublicProfileSwitch />
             </Box>
-            <PublicProfileButton disabledCondition={!publicProfile} />
+            <PublicProfileButton
+              disabledCondition={!publicProfile}
+              link={"/profile/public"}
+            />
           </Box>
           <Tabs
             sx={{

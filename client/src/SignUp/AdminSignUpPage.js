@@ -44,6 +44,7 @@ const AdminSignUpPage = () => {
 
   const fieldErrors = [
     registerInfo.username === "",
+    registerInfo.staffId === "",
     registerInfo.password === "",
     registerInfo.confirmPassword === "",
     registerInfo.email === "",

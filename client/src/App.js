@@ -24,12 +24,16 @@ const App = () => {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/planner-events" element={<EventsPlannerPage />} />
-        <Route path="/planner-tasks" element={<TasksPlannerPage />} />
+        {/* user authentication pages */}
         <Route path="/sign-in" element={<SignInPage />} />
         <Route path="/student/sign-up" element={<StudentSignUpPage />} />
         <Route path="/admin/sign-up" element={<AdminSignUpPage />} />
+
+        {/* student pages */}
+        <Route path="/" element={<HomePage />} />
+        <Route path="/planner-events" element={<EventsPlannerPage />} />
+        <Route path="/planner-tasks" element={<TasksPlannerPage />} />
+
         <Route path="/profile" element={<ProfilePage selectedTab={0} />} />
         <Route
           path="/profile/my-posts"
@@ -49,14 +53,24 @@ const App = () => {
         />
         <Route path="/calculator" element={<GPACalculatorPage />} />
         <Route path="/community" element={<CommunityPage />} />
+
+        {/*admin pages */}
         <Route path="/admin" element={<AdminHomePage />} />
         <Route path="/admin/students" element={<AdminStudentsPage />} />
+        <Route
+          path="/admin/profile"
+          element={<AdminProfilePage selectedTab={0} />}
+        />
+        <Route
+          path="/admin/profile/account"
+          element={<AdminProfilePage selectedTab={1} />}
+        />
       </Routes>
     </LocalizationProvider>
   );
 };
 
-/* replacing the previous profile page access url
+/* replacing the previous profile page access url (protected route)
 <Route
           path="/profile"
           element={

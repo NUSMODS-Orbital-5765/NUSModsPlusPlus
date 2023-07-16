@@ -137,7 +137,7 @@ export const adminSampleProfile = {
 
 // admin user items to be mapped to admin app bar
 export const adminAvatarItems = [
-  { label: "Profile", icon: <SettingsRoundedIcon />, link: "/profile" },
+  { label: "Profile", icon: <SettingsRoundedIcon />, link: "/admin/profile" },
   { label: "Logout", icon: <LogoutRoundedIcon />, link: "/sign-in" },
 ];
 

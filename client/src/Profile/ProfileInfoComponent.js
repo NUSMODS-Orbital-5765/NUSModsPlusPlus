@@ -27,19 +27,7 @@ const ProfileInfoComponent = ({ userProfile }) => {
   const [submitError, setSubmitError] = useState(false);
 
   // just for testing, please replace with actual implementation
-  const [profileInfoCopy, setProfileInfoCopy] = useState({
-    name: "Hannah",
-    studentId: "12345678",
-    username: "hannah_tan",
-    password: "hannah123",
-    email: "hannah@gmail.com",
-    faculty: "School of Computing",
-    primaryDegree: "Information Systems",
-    secondDegree: "",
-    secondMajor: "Economics",
-    minor: ["Geography", "History"],
-    programme: "RVRC",
-  });
+  const [profileInfoCopy, setProfileInfoCopy] = useState(userProfile);
 
   let defaultAcademicPlan = "Single Degree";
   if (profileInfoCopy.secondDegree) {
@@ -62,9 +50,6 @@ const ProfileInfoComponent = ({ userProfile }) => {
   const fieldErrors = {
     name: profileInfoCopy.name === "",
     studentId: profileInfoCopy.studentId === "",
-    username: profileInfoCopy.username === "",
-    password: profileInfoCopy.password === "",
-    email: profileInfoCopy.email === "",
     faculty: profileInfoCopy.faculty === "",
     primaryDegree: profileInfoCopy.primaryDegree === "",
   };
@@ -87,6 +72,7 @@ const ProfileInfoComponent = ({ userProfile }) => {
   };
 
   const submitProfileUpdateCopy = () => {
+    setEditableDetails(false);
     setSubmitSuccess(true);
     console.log(profileInfoCopy);
   };

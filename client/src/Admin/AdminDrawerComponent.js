@@ -29,7 +29,7 @@ const AdminDrawerComponent = ({ defaultTab }) => {
     {
       text: "Profile",
       icon: <SettingsRoundedIcon sx={{ fontSize: "30px" }} />,
-      link: "/profile",
+      link: "/admin/profile",
     },
     {
       text: "Logout",
