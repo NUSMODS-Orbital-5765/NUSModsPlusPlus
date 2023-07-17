@@ -10,6 +10,14 @@ export const emptyAcademicInfo = {
   programme: "",
 };
 
+// styling for a default plan layout
+export const emptyPlanLayout = {
+  "Year 1": { "Semester 1": [], "Semester 2": [] },
+  "Year 2": { "Semester 1": [], "Semester 2": [] },
+  "Year 3": { "Semester 1": [], "Semester 2": [] },
+  "Year 4": { "Semester 1": [], "Semester 2": [] },
+};
+
 export const sampleAcademicPlan = {
   faculty: "Faculty of Science",
   primaryDegree: "Data Science and Analytics",

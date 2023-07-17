@@ -20,8 +20,10 @@ import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
 import React, { useState } from "react";
 
+// styling for deletable box (can be moved back to original location. otherwise cannot undo)
+
 // semester module plans
-const SemesterModulePlans = ({ movedModules }) => {
+const SemesterModulePlans = ({ movedModules, isComplete }) => {
   // request approval
   const [requestSuccess, setRequestSuccess] = useState(false);
   const handleRequestSuccess = () => {
@@ -98,6 +100,19 @@ const SemesterModulePlans = ({ movedModules }) => {
             <Typography sx={{ fontSize: "35px", fontWeight: 700 }}>
               Semester Module Plans
             </Typography>
+            {isComplete && (
+              <Chip
+                variant="outlined"
+                color="success"
+                label="Complete"
+                sx={{
+                  fontWeight: 600,
+                  marginLeft: "30px",
+                  marginRight: "-20px",
+                  textTransform: "uppercase",
+                }}
+              />
+            )}
             <Chip
               variant="filled"
               color="error"
