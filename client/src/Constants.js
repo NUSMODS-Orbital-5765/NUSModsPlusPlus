@@ -118,22 +118,81 @@ export const sampleAcademicPlan = {
   primaryDegree: "Data Science and Analytics",
   secondDegree: "",
   secondMajor: "Computer Science",
-  minor: ["Mathematics"],
+  minor: [],
   programme: "",
 };
 
 export const sampleAcademicRequirements = [
   {
     name: "commonModules",
-    modules: ["HSI1000", "HSS1000", "HSA1000", "HSH1000", "DTK1234"],
+    modules: [
+      {
+        code: "HSI1000",
+        name: "How Science Works, Why Science Works",
+      },
+      {
+        code: "HSS1000",
+        name: "Understanding Social Complexity",
+      },
+      {
+        code: "HSA1000",
+        name: "Asian Interconnections",
+      },
+      {
+        code: "HSH1000",
+        name: "The Human Condition",
+      },
+      {
+        code: "DTK1234",
+        name: "Design Thinking",
+      },
+    ],
   },
   {
     name: "primaryDegreeModules",
-    modules: ["MA2002", "CS2040", "ST2131", "MA2001", "MA2104", "CS2030"],
+    modules: [
+      {
+        code: "MA2002",
+        name: "Calculus",
+      },
+      {
+        code: "CS2040",
+        name: "Data Structures and Algorithms",
+      },
+      {
+        code: "ST2131",
+        name: "Probability",
+      },
+      {
+        code: "MA2001",
+        name: "Linear Algebra I",
+      },
+      {
+        code: "MA2104",
+        name: "Multivariable Calculus",
+      },
+      {
+        code: "CS2030",
+        name: "Programming Methodology II",
+      },
+    ],
   },
   {
     name: "secondMajorModules",
-    modules: ["CS1231S", "CS3243", "CS2103T"],
+    modules: [
+      {
+        code: "CS1231S",
+        name: "Discrete Structures",
+      },
+      {
+        code: "CS3243",
+        name: "Introduction to Artificial Intelligence",
+      },
+      {
+        code: "CS2103T",
+        name: "Software Engineering",
+      },
+    ],
   },
 ];
 

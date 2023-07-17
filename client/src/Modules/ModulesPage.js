@@ -8,6 +8,8 @@ import {
   SpeedDial,
   SpeedDialAction,
   SpeedDialIcon,
+  Tabs,
+  Tab,
 } from "@mui/material";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
@@ -107,13 +109,23 @@ export const ModulesPageHeader = () => {
 
 // main page component
 const ModulesPage = () => {
+  const [currentTab, setCurrentTab] = useState(0);
+  const handleChangeTab = (event, activeTab) => {
+    setCurrentTab(activeTab);
+  };
+
   return (
     <div className="homepage">
       <DrawerComponent defaultTab={3} />
       <AppBarComponent />
       <Box className="remainingViewport">
         <ModulesPageHeader />
-        <Box sx={{ margin: "55px", marginTop: "-10px" }}>
+        <Box sx={{ margin: "55px", marginTop: "-20px" }}>
+          <Tabs value={currentTab} onChange={handleChangeTab}>
+            <Tab label="Default Plan" />
+            <Tab label="Draft Plan 1" />
+            <Tab label="Draft Plan 2" />
+          </Tabs>
           <ModulesDisplay />
         </Box>
       </Box>
