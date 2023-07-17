@@ -10,23 +10,78 @@ import {
   Tab,
   Tooltip,
   Divider,
+  Dialog,
+  DialogContent,
+  DialogActions,
+  Snackbar,
+  Alert,
 } from "@mui/material";
+import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
-import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
+import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
+import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import React, { useState } from "react";
-import { sampleAcademicRequirements } from "../Constants";
+import { sampleAcademicPlan, sampleAcademicRequirements } from "../Constants";
 import { grey, red } from "@mui/material/colors";
+import { SlideUpTransition } from "../StyledComponents";
 
 // semester module plans
 export const SemesterModulePlans = () => {
+  // slide in alert dialog
+  const [openDialog, setOpenDialog] = useState(false);
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+  const handleResetPlan = () => {
+    setOpenDialog(false);
+  };
+
+  const ResetPlanWarningDialog = () => {
+    return (
+      <Dialog
+        open={openDialog}
+        TransitionComponent={SlideUpTransition}
+        fullWidth
+        maxWidth="md"
+        borderRadius="10px"
+      >
+        <DialogContent sx={{ margin: "10px" }}>
+          <Typography sx={{ fontSize: "30px", fontWeight: 600 }}>
+            Are your sure you want to reset your plan?
+          </Typography>
+          <Typography>
+            This will delete all semester/year plans made so far.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" color="primary" onClick={handleResetPlan}>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  };
+
+  // request approval
+  const [requestSuccess, setRequestSuccess] = useState(false);
+  const handleRequestSuccess = () => {
+    setRequestSuccess(true);
+  };
+
+  // perform validation
+  const [validateSuccess, setValidateSuccess] = useState(false);
+  const [validateError, setValidateError] = useState(false);
+
+  // handle tabs system for different years
   const [currentTab, setCurrentTab] = useState(0);
+  const tabsList = ["Year 1", "Year 2", "Year 3", "Year 4"];
   const handleChangeTab = (event, activeTab) => {
     setCurrentTab(activeTab);
   };
-
-  // list of tabs to be mapped
-  const tabsList = ["Year 1", "Year 2", "Year 3", "Year 4"];
 
   return (
     <Card
@@ -68,7 +123,34 @@ export const SemesterModulePlans = () => {
               }}
             />
           </Box>
-          <Button variant="contained">Request Approval</Button>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyItems: "center",
+            }}
+          >
+            <Tooltip title="Validate Plan" placement="top">
+              <IconButton>
+                <DoneAllRoundedIcon sx={{ fontSize: "30px" }} color="error" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Use Recommended Plan" placement="top">
+              <IconButton>
+                <AutoAwesomeRoundedIcon
+                  sx={{ fontSize: "30px" }}
+                  color="primary"
+                />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title="Request Approval" placement="top">
+              <IconButton>
+                <ThumbUpRoundedIcon sx={{ fontSize: "30px" }} color="success" />
+              </IconButton>
+            </Tooltip>
+          </Box>
         </Box>
         <Tabs value={currentTab} onChange={handleChangeTab}>
           {tabsList.map((tab, index) => (
@@ -83,7 +165,7 @@ export const SemesterModulePlans = () => {
   );
 };
 
-// check grad requirements
+// check grad requirements to be mapped into module sections
 export function CheckGradRequirements(academicPlan) {
   let basicRequirements = ["commonModules", "primaryDegreeModules"];
   if (academicPlan.secondDegree) {
@@ -212,7 +294,7 @@ export const ModuleSection = ({ requirement }) => {
 };
 
 // graduation requirements component
-export const GradRequirements = () => {
+export const GradRequirements = ({ academicPlan }) => {
   // expand more button
   const [openDialog, setOpenDialog] = useState(false);
   const handleOpenDialog = () => {
@@ -318,9 +400,13 @@ export const GradRequirements = () => {
 
 // combination of semester and grad requirement designs
 const ModulesDisplay = () => {
+  // handle the modules that have been moved/have not been moved
+  const [remainingModules, setRemainingModules] = useState([]);
+  const [movedModules, setMovedModules] = useState([]);
+
   return (
     <div>
-      <GradRequirements />
+      <GradRequirements academicPlan={sampleAcademicPlan} />
       <Box sx={{ marginTop: "45px" }}>
         <SemesterModulePlans />
       </Box>
