@@ -15,7 +15,7 @@ export const sampleAcademicPlan = {
   primaryDegree: "Data Science and Analytics",
   secondDegree: "",
   secondMajor: "Computer Science",
-  minor: [],
+  minor: ["Mathematics"],
   programme: "",
 };
 
@@ -101,16 +101,12 @@ export const sampleAcademicRequirements = [
     name: "minorModules",
     modules: [
       {
-        code: "CS1231S",
-        name: "Discrete Structures",
+        code: "MA2108",
+        name: "Mathematical Analysis I",
       },
       {
-        code: "CS3243",
-        name: "Introduction to Artificial Intelligence",
-      },
-      {
-        code: "CS2103T",
-        name: "Software Engineering",
+        code: "MA2116",
+        name: "Probability",
       },
     ],
   },

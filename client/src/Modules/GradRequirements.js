@@ -17,23 +17,40 @@ import {
 } from "./ModuleConstants";
 import { grey, red } from "@mui/material/colors";
 
+// get different colors for different module categories
+export function getModuleColors(cat) {
+  if (cat === "commonModules") {
+    return "#1a90ff";
+  } else if (cat === "primaryDegreeModules") {
+    return red[500];
+  } else if (cat === "secondDegreeModules" || cat === "secondMajorModules") {
+    return "#44b700";
+  } else if (cat === "minorModules") {
+    return grey[500];
+  } else {
+    return "black";
+  }
+}
+
+// function for rewriting the module section header
+export function getSectionHeader(req, academicPlan) {
+  if (req === "commonModules") {
+    return "Common Modules";
+  } else if (req === "primaryDegreeModules") {
+    return "Degree in " + academicPlan.primaryDegree.toString();
+  } else if (req === "secondDegreeModules") {
+    return "Second Degree in " + academicPlan.secondDegree.toString();
+  } else if (req === "secondMajorModules") {
+    return "Second Major in " + academicPlan.secondMajor.toString();
+  } else if (req === "minorModules") {
+    return (
+      "Minor in " + academicPlan.minor.map((item) => item.toString()).join(",")
+    );
+  }
+}
+
 // styling for module box and module section
 export const ModuleBox = ({ module, category, handleSelectModule }) => {
-  // get different colors for different module categories
-  function getModuleColors(cat) {
-    if (cat === "commonModules") {
-      return "#1a90ff";
-    } else if (cat === "primaryDegreeModules") {
-      return red[500];
-    } else if (cat === "secondDegreeModules" || cat === "secondMajorModules") {
-      return "#44b700";
-    } else if (cat === "minorModules") {
-      return grey[500];
-    } else {
-      return "black";
-    }
-  }
-
   const [clicked, setClicked] = useState(false);
   const toggleClick = () => {
     setClicked(!clicked);
@@ -82,27 +99,7 @@ export const ModuleBox = ({ module, category, handleSelectModule }) => {
 };
 
 // white card containing the module boxes, organised by grad requirement
-export const ModuleSection = ({ requirement }) => {
-  // expand more button
-  const [expandMore, setExpandMore] = useState(false);
-  const handleExpandMore = () => {
-    setExpandMore(true);
-  };
-
-  // function for rewriting the module section header
-  function getSectionHeader(req) {
-    if (req === "commonModules") {
-      return "Common";
-    } else if (req === "primaryDegreeModules") {
-      return "Primary Degree";
-    } else if (req === "secondDegreeModules") {
-      return "Second Degree";
-    } else if (req === "secondMajorModules") {
-      return "Second Major";
-    } else if (req === "minorModules") {
-      return "Minor";
-    }
-  }
+export const ModuleSection = ({ requirement, academicPlan }) => {
   return (
     <Card
       sx={{
@@ -114,17 +111,18 @@ export const ModuleSection = ({ requirement }) => {
         alignItems: "center",
         justifyItems: "center",
         boxShadow: 0,
+        minWidth: "300px",
       }}
     >
       <CardContent sx={{ margin: "20px", marginTop: "0px" }}>
         <Typography
           sx={{
             marginBottom: "20px",
-            fontSize: "30px",
+            fontSize: "25px",
             fontWeight: 700,
           }}
         >
-          {getSectionHeader(requirement.name)}
+          {getSectionHeader(requirement.name, academicPlan)}
         </Typography>
         {requirement.modules.map((module, index) => (
           <ModuleBox module={module} category={requirement.name} key={index} />
@@ -213,7 +211,11 @@ const GradRequirements = ({ academicPlan, type }) => {
             sx={{ overflowX: "auto", display: "flex", flexDirection: "row" }}
           >
             {sampleAcademicRequirements.map((requirement, index) => (
-              <ModuleSection requirement={requirement} key={index} />
+              <ModuleSection
+                academicPlan={academicPlan}
+                requirement={requirement}
+                key={index}
+              />
             ))}
           </Box>
         </CardContent>

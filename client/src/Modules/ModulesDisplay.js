@@ -12,7 +12,7 @@ const ModulesDisplay = () => {
 
   return (
     <div>
-      <GradRequirements academicPlan={sampleAcademicPlan} />
+      <GradRequirements academicPlan={sampleAcademicPlan} type="default" />
       <Box sx={{ marginTop: "45px" }}>
         <SemesterModulePlans />
       </Box>
