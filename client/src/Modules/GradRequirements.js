@@ -7,11 +7,12 @@ import {
   Chip,
   IconButton,
   Tooltip,
+  Alert,
 } from "@mui/material";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
-import React, { useState } from "react";
+import DriveFileMoveRoundedIcon from "@mui/icons-material/DriveFileMoveRounded";
+import React, { useState, useEffect } from "react";
 import {
-  sampleAcademicRequirements,
   getRequiredModules,
   FormatAcademicPlanDetails,
 } from "./ModuleConstants";
@@ -49,93 +50,139 @@ export function getSectionHeader(req, academicPlan) {
   }
 }
 
-// styling for module box and module section
-export const ModuleBox = ({ module, category, handleSelectModule }) => {
-  const [clicked, setClicked] = useState(false);
-  const toggleClick = () => {
-    setClicked(!clicked);
-  };
-
-  return (
-    <Box
-      id={module.code}
-      sx={{ borderRadius: "10px", marginTop: "10px", marginBottom: "20px" }}
-    >
-      <Button
-        sx={{ color: getModuleColors(category), opacity: clicked ? 0.5 : 1 }}
-        onClick={toggleClick}
-        component={Card}
-      >
-        <CardContent
-          sx={{
-            width: "200px",
-            margin: "-10px",
-            backgroundColor: getModuleColors(category),
-          }}
-        >
-          <Typography
-            sx={{
-              fontSize: "20px",
-              fontWeight: 600,
-              color: "white",
-            }}
-          >
-            {module.code}
-          </Typography>
-          <Typography
-            sx={{
-              marginTop: "10px",
-              fontSize: "15px",
-              textTransform: "none",
-              color: "white",
-            }}
-          >
-            {module.name}
-          </Typography>
-        </CardContent>
-      </Button>
-    </Box>
-  );
-};
-
-// white card containing the module boxes, organised by grad requirement
-export const ModuleSection = ({ requirement, academicPlan }) => {
-  return (
-    <Card
-      sx={{
-        borderRadius: "10px",
-        backgroundColor: "white",
-        margin: "20px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyItems: "center",
-        boxShadow: 0,
-        minWidth: "300px",
-      }}
-    >
-      <CardContent sx={{ margin: "20px", marginTop: "0px" }}>
-        <Typography
-          sx={{
-            marginBottom: "20px",
-            fontSize: "25px",
-            fontWeight: 700,
-          }}
-        >
-          {getSectionHeader(requirement.name, academicPlan)}
-        </Typography>
-        {requirement.modules.map((module, index) => (
-          <ModuleBox module={module} category={requirement.name} key={index} />
-        ))}
-      </CardContent>
-    </Card>
-  );
-};
-
 // graduation requirements component
 const GradRequirements = ({ academicPlan, type }) => {
   // placeholder line to get the academic requirements from academic plan.
-  const requiredModulesDict = getRequiredModules(academicPlan);
+  const [requiredModulesDict, setRequiredModulesDict] = useState(
+    getRequiredModules(academicPlan)
+  );
+  const [selectedModules, setSelectedModules] = useState([]);
+
+  const handleSelectModule = (module) => {
+    setSelectedModules((prevSelectedModules) => [
+      ...prevSelectedModules,
+      module,
+    ]);
+  };
+
+  const handleDeselectModule = (module) => {
+    setSelectedModules((prevSelectedModules) =>
+      prevSelectedModules.filter((selectedModule) => selectedModule !== module)
+    );
+  };
+
+  // handle deletion of modules here and logging modules somewhere else
+  const handleMoveModules = () => {
+    console.log(selectedModules);
+
+    const updatedModulesDict = requiredModulesDict.map((requirement) => {
+      // check each requirement within and check if the modules within are inside selectedModules array
+      const updatedModules = requirement.modules.filter(
+        (module) => !selectedModules.includes(module)
+      );
+      return {
+        ...requirement,
+        modules: updatedModules,
+      };
+    });
+
+    setRequiredModulesDict(updatedModulesDict);
+    setSelectedModules([]);
+  };
+
+  // styling for module box
+  const ModuleBox = ({ module, category }) => {
+    const isSelected = selectedModules.includes(module);
+
+    return (
+      <Box id={module.code} sx={{ marginTop: "10px", marginBottom: "20px" }}>
+        <Button
+          sx={{
+            borderRadius: "10px",
+            color: getModuleColors(category),
+            opacity: isSelected ? 0.5 : 1,
+          }}
+          onClick={
+            isSelected
+              ? () => handleDeselectModule(module)
+              : () => handleSelectModule(module)
+          }
+          component={Card}
+        >
+          <CardContent
+            sx={{
+              width: "200px",
+              margin: "-10px",
+              backgroundColor: getModuleColors(category),
+            }}
+          >
+            <Typography
+              sx={{
+                fontSize: "20px",
+                fontWeight: 600,
+                color: "white",
+              }}
+            >
+              {module.code}
+            </Typography>
+            <Typography
+              sx={{
+                marginTop: "10px",
+                fontSize: "15px",
+                textTransform: "none",
+                color: "white",
+              }}
+            >
+              {module.name}
+            </Typography>
+          </CardContent>
+        </Button>
+      </Box>
+    );
+  };
+
+  // styling for the required modules area
+  const RequiredModules = () => {
+    return (
+      <Box sx={{ overflowX: "auto", display: "flex", flexDirection: "row" }}>
+        {requiredModulesDict.map((requirement, index) => (
+          <Card
+            key={index}
+            sx={{
+              borderRadius: "10px",
+              backgroundColor: "white",
+              margin: "20px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyItems: "center",
+              boxShadow: 0,
+              minWidth: "280px",
+            }}
+          >
+            <CardContent sx={{ margin: "20px", marginTop: "0px" }}>
+              <Typography
+                sx={{
+                  marginBottom: "20px",
+                  fontSize: "25px",
+                  fontWeight: 700,
+                }}
+              >
+                {getSectionHeader(requirement.name, academicPlan)}
+              </Typography>
+              {requirement.modules.map((module, index) => (
+                <ModuleBox
+                  module={module}
+                  category={requirement.name}
+                  key={index}
+                />
+              ))}
+            </CardContent>
+          </Card>
+        ))}
+      </Box>
+    );
+  };
 
   return (
     <div>
@@ -207,16 +254,40 @@ const GradRequirements = ({ academicPlan, type }) => {
           <Box sx={{ marginTop: "10px" }}>
             <FormatAcademicPlanDetails academicPlan={academicPlan} />
           </Box>
+          {selectedModules.length !== 0 && (
+            <Alert
+              action={
+                <Tooltip title="Add to Semester Plan" placement="top">
+                  <IconButton color="primary" onClick={handleMoveModules}>
+                    <DriveFileMoveRoundedIcon sx={{ fontSize: "30px" }} />
+                  </IconButton>
+                </Tooltip>
+              }
+              sx={{
+                borderRadius: "10px",
+                marginTop: "20px",
+                backgroundColor: "#e7f2ff",
+                color: "#1a90ff",
+                fontSize: "15px",
+                display: "flex",
+                alignItems: "center",
+              }}
+              severity="info"
+              variant="filled"
+            >
+              You have selected{" "}
+              <span style={{ fontWeight: 700 }}>{selectedModules.length}</span>{" "}
+              modules.
+            </Alert>
+          )}
           <Box
-            sx={{ overflowX: "auto", display: "flex", flexDirection: "row" }}
+            sx={{
+              marginLeft: "-20px",
+              marginRight: "-20px",
+              marginTop: "10px",
+            }}
           >
-            {sampleAcademicRequirements.map((requirement, index) => (
-              <ModuleSection
-                academicPlan={academicPlan}
-                requirement={requirement}
-                key={index}
-              />
-            ))}
+            <RequiredModules />
           </Box>
         </CardContent>
       </Card>

@@ -167,5 +167,5 @@ export const FormatAcademicPlanDetails = ({ academicPlan }) => {
     );
   }
 
-  return <Typography>{degreeContent}</Typography>;
+  return <Typography sx={{ fontSize: "17px" }}>{degreeContent}</Typography>;
 };

@@ -19,12 +19,6 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
 import React, { useState } from "react";
-import {
-  sampleAcademicPlan,
-  sampleAcademicRequirements,
-} from "./ModuleConstants";
-import { grey, red } from "@mui/material/colors";
-import { SlideUpTransition } from "../StyledComponents";
 
 // semester module plans
 const SemesterModulePlans = () => {
