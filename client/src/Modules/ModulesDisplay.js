@@ -26,46 +26,15 @@ import { sampleAcademicPlan, sampleAcademicRequirements } from "../Constants";
 import { grey, red } from "@mui/material/colors";
 import { SlideUpTransition } from "../StyledComponents";
 
+// placeholder function for getting academic requirements
+// i assume the plan that we get when we enter a sample academic plan is in this format..hahaha
+export function CheckGradRequirements(academicPlan) {
+  return sampleAcademicRequirements;
+}
+
 // semester module plans
+// TODO: insert dialog for getting a plan recommendation
 export const SemesterModulePlans = () => {
-  // slide in alert dialog
-  const [openDialog, setOpenDialog] = useState(false);
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
-  };
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-  };
-  const handleResetPlan = () => {
-    setOpenDialog(false);
-  };
-
-  const ResetPlanWarningDialog = () => {
-    return (
-      <Dialog
-        open={openDialog}
-        TransitionComponent={SlideUpTransition}
-        fullWidth
-        maxWidth="md"
-        borderRadius="10px"
-      >
-        <DialogContent sx={{ margin: "10px" }}>
-          <Typography sx={{ fontSize: "30px", fontWeight: 600 }}>
-            Are your sure you want to reset your plan?
-          </Typography>
-          <Typography>
-            This will delete all semester/year plans made so far.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button variant="contained" color="primary" onClick={handleResetPlan}>
-            Yes
-          </Button>
-        </DialogActions>
-      </Dialog>
-    );
-  };
-
   // request approval
   const [requestSuccess, setRequestSuccess] = useState(false);
   const handleRequestSuccess = () => {
@@ -75,6 +44,9 @@ export const SemesterModulePlans = () => {
   // perform validation
   const [validateSuccess, setValidateSuccess] = useState(false);
   const [validateError, setValidateError] = useState(false);
+  const handleValidatePlan = () => {
+    setValidateSuccess(true);
+  };
 
   // handle tabs system for different years
   const [currentTab, setCurrentTab] = useState(0);
@@ -132,7 +104,7 @@ export const SemesterModulePlans = () => {
             }}
           >
             <Tooltip title="Validate Plan" placement="top">
-              <IconButton>
+              <IconButton onClick={handleValidatePlan}>
                 <DoneAllRoundedIcon sx={{ fontSize: "30px" }} color="error" />
               </IconButton>
             </Tooltip>
@@ -146,7 +118,7 @@ export const SemesterModulePlans = () => {
             </Tooltip>
 
             <Tooltip title="Request Approval" placement="top">
-              <IconButton>
+              <IconButton onClick={handleRequestSuccess}>
                 <ThumbUpRoundedIcon sx={{ fontSize: "30px" }} color="success" />
               </IconButton>
             </Tooltip>
@@ -160,21 +132,52 @@ export const SemesterModulePlans = () => {
             ></Tab>
           ))}
         </Tabs>
+        {/* snackbars and alerts that need to be shown accordingly */}
+        <Snackbar
+          open={validateSuccess}
+          autoHideDuration={3000}
+          onClose={() => setValidateSuccess(false)}
+        >
+          <Alert
+            onClose={() => setValidateSuccess(false)}
+            variant="filled"
+            sx={{ color: "white" }}
+            severity="success"
+          >
+            Your plan looks good!
+          </Alert>
+        </Snackbar>
+        <Snackbar
+          open={validateError}
+          autoHideDuration={3000}
+          onClose={() => setValidateError(false)}
+        >
+          <Alert
+            onClose={() => setValidateError(false)}
+            variant="filled"
+            severity="error"
+          >
+            Please address the following issues:
+          </Alert>
+        </Snackbar>
+        <Snackbar
+          open={requestSuccess}
+          autoHideDuration={3000}
+          onClose={() => setRequestSuccess(false)}
+        >
+          <Alert
+            onClose={() => setRequestSuccess(false)}
+            sx={{ color: "white" }}
+            variant="filled"
+            severity="success"
+          >
+            Your request has been sent.
+          </Alert>
+        </Snackbar>
       </CardContent>
     </Card>
   );
 };
-
-// check grad requirements to be mapped into module sections
-export function CheckGradRequirements(academicPlan) {
-  let basicRequirements = ["commonModules", "primaryDegreeModules"];
-  if (academicPlan.secondDegree) {
-    basicRequirements.push("secondDegreeModules");
-  } else if (academicPlan.secondMajor) {
-    basicRequirements.push("secondMajorModules");
-  }
-  return basicRequirements;
-}
 
 // styling for module box and module section
 export const ModuleBox = ({ module, category, handleSelectModule }) => {
