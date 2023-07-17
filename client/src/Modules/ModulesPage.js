@@ -8,12 +8,13 @@ import {
   IconButton,
   Snackbar,
   Alert,
+  Tooltip,
 } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
 import React, { useState } from "react";
 import ModulesDisplay from "./ModulesDisplay";
-
+import { emptyAcademicInfo } from "./ModuleConstants";
 import CreatePlanDialog from "./CreatePlanDialog";
 
 // header for modules page
@@ -59,16 +60,6 @@ export const ModulesPageHeader = () => {
       </Box>
     </div>
   );
-};
-
-// styling for academic info
-export const emptyAcademicInfo = {
-  faculty: "",
-  primaryDegree: "",
-  secondDegree: "",
-  secondMajor: "",
-  minor: [],
-  programme: "",
 };
 
 // main page component
@@ -136,9 +127,11 @@ const ModulesPage = () => {
                 />
               ))}
             </Tabs>
-            <IconButton onClick={handleAddPlan}>
-              <AddRoundedIcon color="primary" />
-            </IconButton>
+            <Tooltip title="Add New Plan" placement="top">
+              <IconButton onClick={handleAddPlan}>
+                <AddRoundedIcon color="primary" />
+              </IconButton>
+            </Tooltip>
           </Box>
           <ModulesDisplay />
           <Snackbar

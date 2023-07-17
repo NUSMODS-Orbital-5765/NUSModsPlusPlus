@@ -19,6 +19,7 @@ import {
 } from "../FormStyledComponents";
 import { majorList, progsList } from "../Constants";
 import React, { useState, useEffect } from "react";
+import { emptyAcademicInfo } from "./ModuleConstants";
 
 // dialog for creating a new plan
 const CreatePlanDialog = ({
@@ -51,6 +52,7 @@ const CreatePlanDialog = ({
     handleCloseDialog();
     onSubmit(academicPlanInfo);
     console.log(academicPlanInfo);
+    setAcademicPlanInfo(emptyAcademicInfo);
   };
 
   // check form completion status
