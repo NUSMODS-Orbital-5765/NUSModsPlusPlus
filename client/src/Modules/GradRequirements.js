@@ -51,45 +51,15 @@ export function getSectionHeader(req, academicPlan) {
 }
 
 // graduation requirements component
-const GradRequirements = ({ academicPlan, type }) => {
-  // placeholder line to get the academic requirements from academic plan.
-  const [requiredModulesDict, setRequiredModulesDict] = useState(
-    getRequiredModules(academicPlan)
-  );
-  const [selectedModules, setSelectedModules] = useState([]);
-
-  const handleSelectModule = (module) => {
-    setSelectedModules((prevSelectedModules) => [
-      ...prevSelectedModules,
-      module,
-    ]);
-  };
-
-  const handleDeselectModule = (module) => {
-    setSelectedModules((prevSelectedModules) =>
-      prevSelectedModules.filter((selectedModule) => selectedModule !== module)
-    );
-  };
-
-  // handle deletion of modules here and logging modules somewhere else
-  const handleMoveModules = () => {
-    console.log(selectedModules);
-
-    const updatedModulesDict = requiredModulesDict.map((requirement) => {
-      // check each requirement within and check if the modules within are inside selectedModules array
-      const updatedModules = requirement.modules.filter(
-        (module) => !selectedModules.includes(module)
-      );
-      return {
-        ...requirement,
-        modules: updatedModules,
-      };
-    });
-
-    setRequiredModulesDict(updatedModulesDict);
-    setSelectedModules([]);
-  };
-
+const GradRequirements = ({
+  academicPlan,
+  type,
+  requiredModulesDict,
+  selectedModules,
+  handleSelectModule,
+  handleDeselectModule,
+  handleMoveModules,
+}) => {
   // styling for module box
   const ModuleBox = ({ module, category }) => {
     const isSelected = selectedModules.includes(module);

@@ -14,7 +14,7 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
 import React, { useState } from "react";
 import ModulesDisplay from "./ModulesDisplay";
-import { emptyAcademicInfo } from "./ModuleConstants";
+import { emptyAcademicInfo, sampleAcademicPlan } from "./ModuleConstants";
 import CreatePlanDialog from "./CreatePlanDialog";
 
 // header for modules page
@@ -133,7 +133,7 @@ const ModulesPage = () => {
               </IconButton>
             </Tooltip>
           </Box>
-          <ModulesDisplay />
+          <ModulesDisplay academicPlan={sampleAcademicPlan} />
           <Snackbar
             open={planAlert}
             autoHideDuration={3000}

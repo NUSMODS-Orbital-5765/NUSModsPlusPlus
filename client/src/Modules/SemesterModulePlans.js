@@ -21,7 +21,7 @@ import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
 import React, { useState } from "react";
 
 // semester module plans
-const SemesterModulePlans = () => {
+const SemesterModulePlans = ({ movedModules }) => {
   // request approval
   const [requestSuccess, setRequestSuccess] = useState(false);
   const handleRequestSuccess = () => {
