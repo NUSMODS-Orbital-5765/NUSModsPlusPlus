@@ -17,8 +17,8 @@ datasource db {
 model User {
   id             Int       @id @default(autoincrement())
   name           String
-  role String
-  NUSId      String    @unique
+  role           String
+  NUSId          String    @unique
   username       String    @unique
   password       String
   email          String    @unique
@@ -29,7 +29,8 @@ model User {
   programme      String?
   interests      String[]
   avatar         String?
-  Post           Post[]
+  Post           Post[]    @relation("createdPost")
+  LikedPost      Post[]    @relation("likedPost")
   Comment        Comment[]
   Event          Event[]
 }
@@ -43,9 +44,10 @@ model Post {
   content      String
   upload_file  String[]
   tags         String[]
-  author       User      @relation(fields: [authorId], references: [id])
-  authorId     Int
-  likes        Int       @default(0)
+  author       User      @relation("createdPost", fields: [PostAuthorId], references: [id])
+  PostAuthorId Int
+  like         User      @relation("likedPost", fields: [LikedUserId], references: [id])
+  LikedUserId  Int
   Comment      Comment[]
 }
 
@@ -58,79 +60,45 @@ model Comment {
   authorId    Int
 }
 
-model Faculty {
-  id           Int            @id @default(autoincrement())
-  name         String
-  Major        Major[]
-  Minor        Minor[]
-  CommonModule CommonModule[]
-}
-
-model Major {
-  id          Int           @id @default(autoincrement())
-  name        String
-  faculty     Faculty       @relation(fields: [facultyId], references: [id])
-  facultyId   Int
-  requirement ModuleGroup[]
-  Programme   Programme[]
-}
-
-model Minor {
-  id          Int           @id @default(autoincrement())
-  name        String
-  faculty     Faculty       @relation(fields: [facultyId], references: [id])
-  facultyId   Int
-  requirement ModuleGroup[]
-}
-
-model CommonModule {
-  id          Int           @id @default(autoincrement())
-  name        String
-  faculty     Faculty       @relation(fields: [facultyId], references: [id])
-  requirement ModuleGroup[]
-  facultyId   Int
-  Programme   Programme[]
-}
-
 model Programme {
-  id             Int          @id @default(autoincrement())
-  name           String
-  commonMod      CommonModule @relation(fields: [commonModuleId], references: [id])
-  major          Major        @relation(fields: [majorId], references: [id])
-  majorId        Int
-  commonModuleId Int
+  id                  Int               @id @default(autoincrement())
+  name                String
+  combination         String[]
+  commonModule        CommonModuleGroup @relation(fields: [commonModuleGroupId], references: [id])
+  coreModule          CoreModuleGroup[]
+  commonModuleGroupId Int
+}
+
+model CoreModuleGroup {
+  id        Int         @id @default(autoincrement())
+  name      String
+  faculty   String?
+  rules Json
+  programme Programme[]
+}
+
+model CommonModuleGroup {
+  id        Int         @id @default(autoincrement())
+  name      String
+  faculty   String
+  rules   Json
+  Programme Programme[]
 }
 
 model Module {
-  id              Int           @id @default(autoincrement())
-  title           String
-  moduleCode      String
-  description     String
-  moduleCredit    Int
-  department      String
-  faculty         String
-  professor       String[]
-  semester        Semester      @relation(fields: [semesterId], references: [id])
-  prequesiteTree  Json?
-  SUablity        Boolean
-  preclusion      String[]
-  semesterId      Int
-  moduleGroupList ModuleGroup[]
-}
-
-model Semester {
-  id           Int      @id @default(autoincrement())
-  semesterCode String
-  Module       Module[]
-}
-
-model ModuleGroup {
-  id           Int            @id @default(autoincrement())
-  title        String
-  moduleList   Module[]
-  major        Major[]
-  minor        Minor[]
-  CommonModule CommonModule[]
+  id                 Int                 @id @default(autoincrement())
+  acadYear           String
+  preclusion         String?
+  description        String
+  title              String
+  department         String
+  faculty            String
+  workload           Int[]
+  prerequisite       String?
+  moduleCredit       String
+  moduleCode         String
+  prereqTree         Json?
+  fulfillRequirement String[]
 }
 
 model Event {
@@ -143,4 +111,3 @@ model Event {
   user     User   @relation(fields: [userId], references: [id])
   userId   Int
 }
-
