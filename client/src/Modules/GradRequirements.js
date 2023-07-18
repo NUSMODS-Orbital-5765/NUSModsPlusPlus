@@ -50,6 +50,95 @@ export function getSectionHeader(req, academicPlan) {
   }
 }
 
+// styling for the alert feature
+export const SelectedModulesAlert = ({
+  handleMoveModules,
+  selectedModules,
+}) => {
+  return (
+    <Alert
+      action={
+        <Tooltip title="Add to Semester Plan" placement="top">
+          <IconButton color="primary" onClick={handleMoveModules}>
+            <DriveFileMoveRoundedIcon sx={{ fontSize: "30px" }} />
+          </IconButton>
+        </Tooltip>
+      }
+      sx={{
+        borderRadius: "10px",
+        marginTop: "20px",
+        backgroundColor: "#e7f2ff",
+        color: "#1a90ff",
+        fontSize: "15px",
+        display: "flex",
+        alignItems: "center",
+      }}
+      severity="info"
+      variant="filled"
+    >
+      You have selected{" "}
+      <span style={{ fontWeight: 700 }}>{selectedModules.length}</span> modules.
+    </Alert>
+  );
+};
+
+// styling for module box
+export const ModuleBox = ({
+  module,
+  category,
+  selectedModules,
+  handleSelectModule,
+  handleDeselectModule,
+}) => {
+  const isSelected = selectedModules.includes(module);
+
+  return (
+    <Box id={module.code} sx={{ marginTop: "10px", marginBottom: "20px" }}>
+      <Button
+        sx={{
+          borderRadius: "10px",
+          color: getModuleColors(category),
+          opacity: isSelected ? 0.5 : 1,
+        }}
+        onClick={
+          isSelected
+            ? () => handleDeselectModule(module)
+            : () => handleSelectModule(module)
+        }
+        component={Card}
+      >
+        <CardContent
+          sx={{
+            width: "200px",
+            margin: "-10px",
+            backgroundColor: getModuleColors(category),
+          }}
+        >
+          <Typography
+            sx={{
+              fontSize: "20px",
+              fontWeight: 600,
+              color: "white",
+            }}
+          >
+            {module.code}
+          </Typography>
+          <Typography
+            sx={{
+              marginTop: "10px",
+              fontSize: "15px",
+              textTransform: "none",
+              color: "white",
+            }}
+          >
+            {module.name}
+          </Typography>
+        </CardContent>
+      </Button>
+    </Box>
+  );
+};
+
 // graduation requirements component
 const GradRequirements = ({
   academicPlan,
@@ -60,57 +149,6 @@ const GradRequirements = ({
   handleDeselectModule,
   handleMoveModules,
 }) => {
-  // styling for module box
-  const ModuleBox = ({ module, category }) => {
-    const isSelected = selectedModules.includes(module);
-
-    return (
-      <Box id={module.code} sx={{ marginTop: "10px", marginBottom: "20px" }}>
-        <Button
-          sx={{
-            borderRadius: "10px",
-            color: getModuleColors(category),
-            opacity: isSelected ? 0.5 : 1,
-          }}
-          onClick={
-            isSelected
-              ? () => handleDeselectModule(module)
-              : () => handleSelectModule(module)
-          }
-          component={Card}
-        >
-          <CardContent
-            sx={{
-              width: "200px",
-              margin: "-10px",
-              backgroundColor: getModuleColors(category),
-            }}
-          >
-            <Typography
-              sx={{
-                fontSize: "20px",
-                fontWeight: 600,
-                color: "white",
-              }}
-            >
-              {module.code}
-            </Typography>
-            <Typography
-              sx={{
-                marginTop: "10px",
-                fontSize: "15px",
-                textTransform: "none",
-                color: "white",
-              }}
-            >
-              {module.name}
-            </Typography>
-          </CardContent>
-        </Button>
-      </Box>
-    );
-  };
-
   // styling for the required modules area
   const RequiredModules = () => {
     return (
@@ -142,6 +180,9 @@ const GradRequirements = ({
               </Typography>
               {requirement.modules.map((module, index) => (
                 <ModuleBox
+                  selectedModules={selectedModules}
+                  handleSelectModule={handleSelectModule}
+                  handleDeselectModule={handleDeselectModule}
                   module={module}
                   category={requirement.name}
                   key={index}
@@ -225,30 +266,10 @@ const GradRequirements = ({
             <FormatAcademicPlanDetails academicPlan={academicPlan} />
           </Box>
           {selectedModules.length !== 0 && (
-            <Alert
-              action={
-                <Tooltip title="Add to Semester Plan" placement="top">
-                  <IconButton color="primary" onClick={handleMoveModules}>
-                    <DriveFileMoveRoundedIcon sx={{ fontSize: "30px" }} />
-                  </IconButton>
-                </Tooltip>
-              }
-              sx={{
-                borderRadius: "10px",
-                marginTop: "20px",
-                backgroundColor: "#e7f2ff",
-                color: "#1a90ff",
-                fontSize: "15px",
-                display: "flex",
-                alignItems: "center",
-              }}
-              severity="info"
-              variant="filled"
-            >
-              You have selected{" "}
-              <span style={{ fontWeight: 700 }}>{selectedModules.length}</span>{" "}
-              modules.
-            </Alert>
+            <SelectedModulesAlert
+              handleMoveModules={handleMoveModules}
+              selectedModules={selectedModules}
+            />
           )}
           <Box
             sx={{
