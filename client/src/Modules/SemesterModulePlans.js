@@ -25,7 +25,7 @@ import { grey } from "@mui/material/colors";
 import { MoveModuleDialog } from "./ModulesDisplay";
 
 // semester module plans
-const SemesterModulePlans = ({ movedModules, isComplete }) => {
+const SemesterModulePlans = ({ movedModules, isComplete, academicPlan }) => {
   // receives incoming modules from the grad requirements component
   const [moduleDict, setModuleDict] = useState(movedModules);
 
@@ -124,6 +124,7 @@ const SemesterModulePlans = ({ movedModules, isComplete }) => {
           >
             {moduleList[currentYear]["Semester 1"].map((module, index) => (
               <ModuleBox
+                academicPlan={academicPlan}
                 module={module}
                 handleSelectModule={handleSelectToShiftModule}
                 handleDeselectModule={handleDeselectToShiftModule}

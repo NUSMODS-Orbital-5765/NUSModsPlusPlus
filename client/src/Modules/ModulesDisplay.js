@@ -170,6 +170,7 @@ const ModulesDisplay = ({ academicPlan }) => {
       />
       <Box sx={{ marginTop: "45px" }}>
         <SemesterModulePlans
+          academicPlan={academicPlan}
           movedModules={movedModules}
           isComplete={requiredModulesDict.every(
             (entry) => entry.modules.length === 0

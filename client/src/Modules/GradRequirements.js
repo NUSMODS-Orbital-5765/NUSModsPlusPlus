@@ -19,18 +19,30 @@ import {
 import { grey, red } from "@mui/material/colors";
 
 // get different colors for different module categories
-export function getModuleColors(cat) {
-  if (cat === "commonModules") {
-    return "#1a90ff";
-  } else if (cat === "primaryDegreeModules") {
-    return red[500];
-  } else if (cat === "secondDegreeModules" || cat === "secondMajorModules") {
-    return "#44b700";
-  } else if (cat === "minorModules") {
-    return grey[500];
-  } else {
-    return "black";
+export function getModuleColors(module, academicPlan) {
+  const defaultRequiredModules = getRequiredModules(academicPlan);
+
+  for (const category of defaultRequiredModules) {
+    const foundModule = category.modules.find(
+      (item) => item.code === module.code
+    );
+    if (foundModule) {
+      if (category.name === "commonModules") {
+        return "#1a90ff";
+      } else if (category.name === "primaryDegreeModules") {
+        return red[500];
+      } else if (
+        category.name === "secondDegreeModules" ||
+        category.name === "secondMajorModules"
+      ) {
+        return "#44b700";
+      } else if (category.name === "minorModules") {
+        return grey[500];
+      }
+    }
   }
+
+  return "black";
 }
 
 // function for rewriting the module section header
@@ -85,7 +97,7 @@ export const SelectedModulesAlert = ({
 // styling for module box
 export const ModuleBox = ({
   module,
-  category,
+  academicPlan,
   selectedModules,
   handleSelectModule,
   handleDeselectModule,
@@ -97,7 +109,7 @@ export const ModuleBox = ({
       <Button
         sx={{
           borderRadius: "10px",
-          color: getModuleColors(category),
+          color: getModuleColors(module, academicPlan),
           opacity: isSelected ? 0.5 : 1,
         }}
         onClick={
@@ -111,7 +123,7 @@ export const ModuleBox = ({
           sx={{
             width: "200px",
             margin: "-10px",
-            backgroundColor: getModuleColors(category),
+            backgroundColor: getModuleColors(module, academicPlan),
           }}
         >
           <Typography
@@ -184,7 +196,7 @@ const GradRequirements = ({
                   handleSelectModule={handleSelectModule}
                   handleDeselectModule={handleDeselectModule}
                   module={module}
-                  category={requirement.name}
+                  academicPlan={academicPlan}
                   key={index}
                 />
               ))}
