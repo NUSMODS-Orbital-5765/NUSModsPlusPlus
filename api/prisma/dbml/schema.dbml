@@ -5,7 +5,8 @@
 Table User {
   id Int [pk, increment]
   name String [not null]
-  studentId String [unique, not null]
+  role String [not null]
+  NUSId String [unique, not null]
   username String [unique, not null]
   password String [not null]
   email String [unique, not null]
@@ -17,6 +18,7 @@ Table User {
   interests String[] [not null]
   avatar String
   Post Post [not null]
+  LikedPost Post [not null]
   Comment Comment [not null]
   Event Event [not null]
 }
@@ -31,8 +33,9 @@ Table Post {
   upload_file String[] [not null]
   tags String[] [not null]
   author User [not null]
-  authorId Int [not null]
-  likes Int [not null, default: 0]
+  PostAuthorId Int [not null]
+  like User [not null]
+  LikedUserId Int [not null]
   Comment Comment [not null]
 }
 
@@ -45,79 +48,45 @@ Table Comment {
   authorId Int [not null]
 }
 
-Table Faculty {
-  id Int [pk, increment]
-  name String [not null]
-  Major Major [not null]
-  Minor Minor [not null]
-  CommonModule CommonModule [not null]
-}
-
-Table Major {
-  id Int [pk, increment]
-  name String [not null]
-  faculty Faculty [not null]
-  facultyId Int [not null]
-  requirement ModuleGroup [not null]
-  Programme Programme [not null]
-}
-
-Table Minor {
-  id Int [pk, increment]
-  name String [not null]
-  faculty Faculty [not null]
-  facultyId Int [not null]
-  requirement ModuleGroup [not null]
-}
-
-Table CommonModule {
-  id Int [pk, increment]
-  name String [not null]
-  faculty Faculty [not null]
-  requirement ModuleGroup [not null]
-  facultyId Int [not null]
-  Programme Programme [not null]
-}
-
 Table Programme {
   id Int [pk, increment]
   name String [not null]
-  commonMod CommonModule [not null]
-  major Major [not null]
-  majorId Int [not null]
-  commonModuleId Int [not null]
+  combination String[] [not null]
+  commonModule CommonModuleGroup [not null]
+  coreModule CoreModuleGroup [not null]
+  commonModuleGroupId Int [not null]
+}
+
+Table CoreModuleGroup {
+  id Int [pk, increment]
+  name String [not null]
+  faculty String
+  rules Json [not null]
+  programme Programme [not null]
+}
+
+Table CommonModuleGroup {
+  id Int [pk, increment]
+  name String [not null]
+  faculty String [not null]
+  rules Json [not null]
+  Programme Programme [not null]
 }
 
 Table Module {
   id Int [pk, increment]
-  title String [not null]
-  moduleCode String [not null]
+  acadYear String [not null]
+  preclusion String
   description String [not null]
-  moduleCredit Int [not null]
+  title String [not null]
   department String [not null]
   faculty String [not null]
-  professor String[] [not null]
-  semester Semester [not null]
-  prequesiteTree Json
-  SUablity Boolean [not null]
-  preclusion String[] [not null]
-  semesterId Int [not null]
-  moduleGroupList ModuleGroup [not null]
-}
-
-Table Semester {
-  id Int [pk, increment]
-  semesterCode String [not null]
-  Module Module [not null]
-}
-
-Table ModuleGroup {
-  id Int [pk, increment]
-  title String [not null]
-  moduleList Module [not null]
-  major Major [not null]
-  minor Minor [not null]
-  CommonModule CommonModule [not null]
+  workload Int[] [not null]
+  prerequisite String
+  moduleCredit String [not null]
+  moduleCode String [not null]
+  prereqTree Json
+  fulfillRequirement String[] [not null]
 }
 
 Table Event {
@@ -131,33 +100,12 @@ Table Event {
   userId Int [not null]
 }
 
-Table Admin {
-  id Int [pk, increment]
-  name String [not null]
-  staffId String [unique, not null]
-  username String [unique, not null]
-  password String [not null]
-  email String [unique, not null]
-  position String [not null]
-  faculty String [not null]
-  avatar String
-  programme String
-}
+Ref: Post.PostAuthorId > User.id
 
-Ref: Post.authorId > User.id
+Ref: Post.LikedUserId > User.id
 
 Ref: Comment.authorId > User.id
 
-Ref: Major.facultyId > Faculty.id
-
-Ref: Minor.facultyId > Faculty.id
-
-Ref: CommonModule.facultyId > Faculty.id
-
-Ref: Programme.commonModuleId > CommonModule.id
-
-Ref: Programme.majorId > Major.id
-
-Ref: Module.semesterId > Semester.id
+Ref: Programme.commonModuleGroupId > CommonModuleGroup.id
 
 Ref: Event.userId > User.id
