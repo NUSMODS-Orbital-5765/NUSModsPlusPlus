@@ -17,7 +17,8 @@ datasource db {
 model User {
   id             Int       @id @default(autoincrement())
   name           String
-  studentId      String    @unique
+  role String
+  NUSId      String    @unique
   username       String    @unique
   password       String
   email          String    @unique
@@ -143,15 +144,3 @@ model Event {
   userId   Int
 }
 
-model Admin {
-  id        Int     @id @default(autoincrement())
-  name      String
-  staffId String  @unique
-  username  String  @unique
-  password  String
-  email     String  @unique
-  position  String?
-  faculty   String
-  avatar    String?
-  programme String?
-}
