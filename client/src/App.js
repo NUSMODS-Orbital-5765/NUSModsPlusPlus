@@ -8,10 +8,10 @@ import EventsPlannerPage from "./Planner/EventsPlannerPage";
 import TasksPlannerPage from "./Planner/TasksPlannerPage";
 import GPACalculatorPage from "./GPACalculator/GPACalculatorPage";
 import CommunityPage from "./Community/CommunityPage";
-import ModulesPage from "./ModulesPage";
 import AdminHomePage from "./Admin/AdminHomePage";
 import AdminStudentsPage from "./Admin/AdminStudentsPage";
 import AdminProfilePage from "./Admin/AdminProfilePage";
+import ModulesPage from "./Modules/ModulesPage";
 import AdminSignUpPage from "./SignUp/AdminSignUpPage";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -25,6 +25,10 @@ const App = () => {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Routes>
         {/* user authentication pages */}
+        <Route path="/" element={<HomePage />} />
+        <Route path="/planner-events" element={<EventsPlannerPage />} />
+        <Route path="/planner-tasks" element={<TasksPlannerPage />} />
+        <Route path="/modules" element={<ModulesPage />} />
         <Route path="/sign-in" element={<SignInPage />} />
         <Route path="/student/sign-up" element={<StudentSignUpPage />} />
         <Route path="/admin/sign-up" element={<AdminSignUpPage />} />
