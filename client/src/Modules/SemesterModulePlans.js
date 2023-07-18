@@ -99,7 +99,6 @@ const SemesterModulePlans = ({ movedModules, isComplete, academicPlan }) => {
           width: "100%",
           display: "flex",
           flexDirection: "row",
-          justifyContent: "center",
         }}
       >
         <Box
@@ -108,8 +107,6 @@ const SemesterModulePlans = ({ movedModules, isComplete, academicPlan }) => {
             width: "50%",
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
           }}
         >
           <Typography sx={{ fontSize: "25px", fontWeight: 700 }}>
@@ -119,7 +116,6 @@ const SemesterModulePlans = ({ movedModules, isComplete, academicPlan }) => {
             sx={{
               display: "grid",
               gridTemplateColumns: "1fr 1fr",
-              columnGap: "20px",
             }}
           >
             {moduleList[currentYear]["Semester 1"].map((module, index) => (
@@ -136,12 +132,11 @@ const SemesterModulePlans = ({ movedModules, isComplete, academicPlan }) => {
         <Divider orientation="vertical" flexItem />
         <Box
           sx={{
+            marginLeft: "30px",
             marginTop: "20px",
             width: "50%",
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
           }}
         >
           <Typography sx={{ fontSize: "25px", fontWeight: 700 }}>
@@ -151,7 +146,6 @@ const SemesterModulePlans = ({ movedModules, isComplete, academicPlan }) => {
             sx={{
               display: "grid",
               gridTemplateColumns: "1fr 1fr",
-              columnGap: "20px",
             }}
           >
             {moduleList[currentYear]["Semester 2"].map((module, index) => (
