@@ -73,7 +73,7 @@ model CoreModuleGroup {
   id        Int         @id @default(autoincrement())
   name      String
   faculty   String?
-  rules Json
+  rules     Json
   programme Programme[]
 }
 
@@ -81,24 +81,27 @@ model CommonModuleGroup {
   id        Int         @id @default(autoincrement())
   name      String
   faculty   String
-  rules   Json
+  rules     Json
   Programme Programme[]
 }
 
 model Module {
-  id                 Int                 @id @default(autoincrement())
-  acadYear           String
-  preclusion         String?
-  description        String
-  title              String
-  department         String
-  faculty            String
-  workload           Int[]
-  prerequisite       String?
-  moduleCredit       String
-  moduleCode         String
-  prereqTree         Json?
-  fulfillRequirement String[]
+  id                  Int      @id @default(autoincrement())
+  acadYear            String
+  preclusion          String?
+  description         String
+  title               String
+  department          String
+  faculty             String
+  workload            String?
+  attributes          Json?
+  prerequisite        String?
+  moduleCredit        String
+  moduleCode          String
+  prereqTree          Json?
+  aliases             String[]
+  corequisite         String?
+  fulfillRequirements String[]
 }
 
 model Event {

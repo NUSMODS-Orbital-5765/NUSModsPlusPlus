@@ -81,12 +81,15 @@ Table Module {
   title String [not null]
   department String [not null]
   faculty String [not null]
-  workload Int[] [not null]
+  workload String
+  attributes Json
   prerequisite String
   moduleCredit String [not null]
   moduleCode String [not null]
   prereqTree Json
-  fulfillRequirement String[] [not null]
+  aliases String[] [not null]
+  corequisite String
+  fulfillRequirements String[] [not null]
 }
 
 Table Event {
