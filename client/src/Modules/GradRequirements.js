@@ -8,6 +8,9 @@ import {
   IconButton,
   Tooltip,
   Alert,
+  Popover,
+  List,
+  Rating,
 } from "@mui/material";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import DriveFileMoveRoundedIcon from "@mui/icons-material/DriveFileMoveRounded";
@@ -15,8 +18,61 @@ import React, { useState, useEffect } from "react";
 import {
   getRequiredModules,
   FormatAcademicPlanDetails,
+  getRecommendedPlan,
 } from "./ModuleConstants";
 import { grey, red } from "@mui/material/colors";
+import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
+import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
+import SentimentSatisfiedIcon from "@mui/icons-material/SentimentSatisfied";
+import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAltOutlined";
+import SentimentVerySatisfiedIcon from "@mui/icons-material/SentimentVerySatisfied";
+
+// get recommended year/semester for module
+export function getRecommendedTime(module, academicPlan) {
+  const recommendedModules = getRecommendedPlan(academicPlan);
+
+  for (const year in recommendedModules) {
+    for (const semester in recommendedModules[year]) {
+      const modules = recommendedModules[year][semester];
+      if (modules.some((m) => m.code === module.code)) {
+        return `Y${year.slice(-1)}S${semester.slice(-1)}`;
+      }
+    }
+  }
+
+  return "";
+}
+
+// styled difficulty rating
+export const StyledRating = ({ rating }) => {
+  const ratingIcons = {
+    1: <SentimentVeryDissatisfiedIcon color="error" />,
+    2: <SentimentDissatisfiedIcon color="error" />,
+    3: <SentimentSatisfiedIcon color="warning" />,
+    4: <SentimentSatisfiedAltIcon color="success" />,
+    5: <SentimentVerySatisfiedIcon color="success" />,
+  };
+
+  const IconContainer = ({ value, ...props }) => {
+    return React.cloneElement(ratingIcons[value], {
+      ...props,
+    });
+  };
+
+  return (
+    <Rating
+      value={rating}
+      readOnly
+      IconContainerComponent={IconContainer}
+      highlightSelectedOnly
+    />
+  );
+};
+
+// placeholder function for getting difficulty rating and workload
+export function getRating() {
+  return Math.floor(Math.random() * 5) + 1;
+}
 
 // get different colors for different module categories
 export function getModuleColors(module, academicPlan) {
@@ -102,7 +158,29 @@ export const ModuleBox = ({
   handleSelectModule,
   handleDeselectModule,
 }) => {
+  // check if the modulebox is selected, then activate selected display state
   const isSelected = selectedModules.includes(module);
+
+  // handle selecting/de-selecting module
+  const handleClickModule = () => {
+    if (isSelected) {
+      handleDeselectModule(module);
+    } else {
+      handleSelectModule(module);
+    }
+  };
+
+  // Display for difficulty, workload, etc. on hover
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handlePopoverOpen = (event) => {
+    event.preventDefault(); // prevent default context menu
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <Box id={module.code} sx={{ marginTop: "10px", marginBottom: "20px" }}>
@@ -112,11 +190,8 @@ export const ModuleBox = ({
           color: getModuleColors(module, academicPlan),
           opacity: isSelected ? 0.5 : 1,
         }}
-        onClick={
-          isSelected
-            ? () => handleDeselectModule(module)
-            : () => handleSelectModule(module)
-        }
+        onClick={handleClickModule}
+        onContextMenu={handlePopoverOpen}
         component={Card}
       >
         <CardContent
@@ -126,15 +201,18 @@ export const ModuleBox = ({
             backgroundColor: getModuleColors(module, academicPlan),
           }}
         >
-          <Typography
-            sx={{
+          <a
+            href={`https://nusmods.com/courses/${module.code}/`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
               fontSize: "20px",
               fontWeight: 600,
               color: "white",
             }}
           >
             {module.code}
-          </Typography>
+          </a>
           <Typography
             sx={{
               marginTop: "10px",
@@ -147,6 +225,65 @@ export const ModuleBox = ({
           </Typography>
         </CardContent>
       </Button>
+      {/* additional information on right click */}
+      <Popover
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        onClose={handlePopoverClose}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+        disableRestoreFocus
+        PaperProps={{
+          sx: {
+            borderRadius: "10px",
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
+            backdropFilter: "blur(3px)",
+            boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+          },
+        }}
+      >
+        <List sx={{ margin: "10px" }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyItems: "center",
+            }}
+          >
+            <Typography sx={{ fontWeight: 600, marginRight: "10px" }}>
+              Difficulty:
+            </Typography>
+            <StyledRating rating={getRating()} />
+          </Box>
+          <Box
+            sx={{
+              marginTop: "10px",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyItems: "center",
+            }}
+          >
+            <Typography sx={{ fontWeight: 600, marginRight: "10px" }}>
+              Workload:
+            </Typography>
+            <StyledRating rating={getRating()} />
+          </Box>
+          <Typography sx={{ marginTop: "10px" }}>
+            Best Taken in{" "}
+            <span style={{ fontWeight: 600 }}>
+              {getRecommendedTime(module, academicPlan)}
+            </span>
+          </Typography>
+        </List>
+      </Popover>
     </Box>
   );
 };

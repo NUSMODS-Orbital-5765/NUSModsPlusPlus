@@ -120,6 +120,11 @@ export function getRequiredModules(academicPlan) {
   return sampleAcademicRequirements;
 }
 
+// placeholder function for getting recommended plan
+export function getRecommendedPlan(academicPlan) {
+  return recommendedPlanLayout;
+}
+
 export const sampleAcademicRequirements = [
   {
     name: "commonModules",
