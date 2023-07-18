@@ -243,7 +243,7 @@ export const ModuleBox = ({
           sx: {
             borderRadius: "10px",
             backgroundColor: "rgba(255, 255, 255, 0.8)",
-            backdropFilter: "blur(3px)",
+            backdropFilter: "blur(5px)",
             boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
           },
         }}
