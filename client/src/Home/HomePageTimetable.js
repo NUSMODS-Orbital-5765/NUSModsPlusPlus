@@ -63,7 +63,21 @@ export const getThisWeekEvents = () => {
   return eventsDict;
 };
 
-function parseTime(timeString) {
+export const daysOfWeek = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
+
+const getTodayDayOfWeek = () => {
+  return daysOfWeek[new Date().getDay() - 1];
+};
+
+export function parseTime(timeString) {
   const [time, period] = timeString.split(" ");
   const [hours, minutes] = time.split(":");
   let parsedHours = parseInt(hours);
@@ -176,7 +190,9 @@ export const EventCard = ({ event }) => {
         <Typography sx={{ fontSize: "17px", fontWeight: 600, color: "white" }}>
           {event.name}
         </Typography>
-        <Typography sx={{ color: "white" }}>{event.time}</Typography>
+        <Typography sx={{ color: "white", marginTop: "5px" }}>
+          {event.category} • {event.time}
+        </Typography>
       </CardContent>
     </Box>
   );
@@ -238,16 +254,6 @@ export const TodayTimeline = ({ eventsList }) => {
 
 // styling for weekly timetable
 export const ThisWeekTimetable = ({ eventsDict }) => {
-  const daysOfWeek = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
-  ];
-
   return (
     <Card
       sx={{ borderRadius: "10px", backgroundColor: "#f2f2f2", boxShadow: 0 }}
@@ -300,7 +306,12 @@ export const ThisWeekTimetable = ({ eventsDict }) => {
                   }}
                 >
                   <Typography
-                    sx={{ fontWeight: 600, fontSize: "25px", marginLeft: "" }}
+                    sx={{
+                      fontWeight: 600,
+                      fontSize: "25px",
+                      color:
+                        getTodayDayOfWeek() === day ? "#1a90ff" : "inherit",
+                    }}
                   >
                     {getShortDay(day)}
                   </Typography>
