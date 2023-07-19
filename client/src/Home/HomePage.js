@@ -13,10 +13,10 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { sampleProfile, quotesList } from "../Constants";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import HomePageProgressBar from "./HomePageProgressBar";
 import HomePageRecommendedPosts from "./HomePageRecommendedPosts";
-
+import axios from "axios";
 const HomePage = () => {
   // testing out the quotes for new UI
   const [currentQuote, setCurrentQuote] = useState(0);
@@ -27,7 +27,20 @@ const HomePage = () => {
       setCurrentQuote(currentQuote + 1);
     }
   };
+  const [userFullName, setUserFullName] = useState("");
+  useEffect(()=>{
+    const getNameAPI = `${process.env.REACT_APP_API_LINK}/homepage/get-name`;
 
+    axios
+      .post(getNameAPI, {userId: localStorage.getItem("userId")})
+      .then((response) => {
+        //useNavigate need to be initalise at top
+        setUserFullName(response.data.res.name)
+      })
+      .catch((error) => {
+        console.log(error.message);
+  })
+  },[])
   return (
     <div className="homepage">
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -61,7 +74,7 @@ const HomePage = () => {
                   color: "#004d80",
                 }}
               >
-                Welcome Back, {sampleProfile["Name"]}
+                Welcome Back, {userFullName}
               </Typography>
               <Typography
                 sx={{
