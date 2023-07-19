@@ -1,313 +1,349 @@
 import {
   Stack,
-  Tabs,
-  Tab,
   Box,
   Card,
   CardContent,
   Typography,
   Chip,
-  FormControlLabel,
-  Checkbox,
   Divider,
-  List,
-  ListItem,
-  ListItemText,
   Dialog,
   DialogTitle,
   DialogContent,
   TextField,
+  Popover,
 } from "@mui/material";
 import React, { useState } from "react";
 import {
   Timeline,
   TimelineItem,
-  TimelineOppositeContent,
   TimelineConnector,
   TimelineContent,
   TimelineDot,
   TimelineSeparator,
+  timelineItemClasses,
 } from "@mui/lab";
 import {
+  currentDay,
   getShortDay,
   priorityColors,
   priorityList,
   sampleDayEvents,
-  sampleDayTasks,
   sampleWeekEvents,
 } from "../Constants";
 import { SeeMoreArrowButton } from "./HomePageShortcuts";
+import SentimentDissatisfiedRoundedIcon from "@mui/icons-material/SentimentDissatisfiedRounded";
 
-// styling for daily timeline
-export const TodayTimeline = ({ eventsList, tasksList }) => {
-  const sortedTasksList = tasksList.sort((a, b) => b.priority - a.priority);
-  const groupedTasks = sortedTasksList.reduce((result, task) => {
-    const { priority } = task;
-    if (!result[priority]) {
-      result[priority] = [];
+// placeholder function for getting today's events from the database
+export const getTodayEvents = () => {
+  return sampleDayEvents;
+};
+
+// placeholder function for getting current week's events from the database
+export const getThisWeekEvents = () => {
+  const thisWeekEvents = sampleWeekEvents; // supposed to extract from database.
+  // sample week events is just an array of events whose dates fall within the current week.
+  const eventsDict = {};
+
+  // group by day of the week
+  thisWeekEvents.forEach((event) => {
+    const dateParts = event.date.split("-");
+    const day = new Date(
+      parseInt(dateParts[2]),
+      parseInt(dateParts[1]) - 1,
+      parseInt(dateParts[0])
+    ).toLocaleDateString("en-US", { weekday: "long" });
+
+    if (!eventsDict[day]) {
+      eventsDict[day] = [];
     }
-    result[priority].push(task);
-    return result;
-  }, {});
 
+    eventsDict[day].push(event);
+  });
+
+  return eventsDict;
+};
+
+function parseTime(timeString) {
+  const [time, period] = timeString.split(" ");
+  const [hours, minutes] = time.split(":");
+  let parsedHours = parseInt(hours);
+  if (period === "PM" && parsedHours < 12) {
+    parsedHours += 12;
+  }
+  return new Date(0, 0, 0, parsedHours, minutes);
+}
+
+// check if event is over
+export function isEventOver(event) {
+  const [day, month, year] = event.date.split("-");
+  const parsedMonth = parseInt(month) - 1; // months start with 0
+  const parsedYear = parseInt(year);
+
+  const [time, period] = event.time.split(" ");
+  const [hours, minutes] = time.split(":");
+  let parsedHours = parseInt(hours);
+
+  if (period === "PM" && parsedHours !== 12) {
+    parsedHours += 12; // add time since pm
+  } else if (period === "AM" && parsedHours === 12) {
+    parsedHours = 0; // convert 12 AM to 00 hours
+  }
+
+  const datetime = new Date(parsedYear, parsedMonth, day, parsedHours, minutes);
+
+  const currentDateTime = new Date();
+
+  if (datetime < currentDateTime) {
+    return true; // earlier, event over
+  } else {
+    return false; // later, event not over
+  }
+}
+
+// show event details
+export const EventDetailsPopover = (
+  openPopover,
+  handleClosePopover,
+  event,
+  anchorEl
+) => {
+  return (
+    <Popover
+      open={openPopover}
+      anchorEl={anchorEl}
+      onClose={handleClosePopover}
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "left",
+      }}
+    >
+      <Typography sx={{ padding: "10px" }}>{event}</Typography>
+    </Popover>
+  );
+};
+
+// timeline box feature
+export const TimelineBox = ({ event }) => {
   return (
     <Box
       sx={{
-        marginTop: "20px",
         display: "flex",
         flexDirection: "row",
+        justifyContent: "space-between",
         alignItems: "center",
-        justifyItems: "center",
       }}
     >
-      <Timeline>
-        {eventsList.map((dayEvent, index) => (
-          <TimelineItem key={index}>
-            <TimelineSeparator>
-              <TimelineDot
-                sx={{
-                  backgroundColor: priorityColors[dayEvent.priority],
-                }}
-              />
-              {index !== eventsList.length - 1 && <TimelineConnector />}
-            </TimelineSeparator>
-            <TimelineContent>
-              <Typography sx={{ fontSize: "17px", fontWeight: 700 }}>
-                {dayEvent.name}
-              </Typography>
-              <Typography sx={{ fontSize: "15px" }} color="text.secondary">
-                {dayEvent.time}
-              </Typography>
-            </TimelineContent>
-          </TimelineItem>
-        ))}
-      </Timeline>
-      <Divider orientation="vertical" variant="middle" flexItem />
       <Box
         sx={{
-          width: "50%",
-          marginLeft: "30px",
+          display: "flex",
+          flexDirection: "column",
+          opacity: isEventOver(event) ? 0.5 : 1,
         }}
       >
-        <List>
-          {Object.entries(groupedTasks).map(([priority, tasks]) => (
-            <React.Fragment key={priority}>
-              {tasks.map((task) => (
-                <ListItem key={task.name}>
-                  <ListItemText>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          sx={{
-                            color: priorityColors[priority],
-                            "&.Mui-checked": {
-                              color: priorityColors[priority],
-                            },
-                          }}
-                        />
-                      }
-                      label={
-                        <Typography sx={{ fontSize: "17px" }}>
-                          {task.name}
-                        </Typography>
-                      }
-                    />
-                  </ListItemText>
-                </ListItem>
-              ))}
-            </React.Fragment>
-          ))}
-        </List>
+        <Typography sx={{ fontSize: "17px", fontWeight: 700 }}>
+          {event.name}
+        </Typography>
+        <Typography
+          sx={{ fontSize: "15px", marginTop: "3px" }}
+          color="text.secondary"
+        >
+          {event.category} • {event.time}
+        </Typography>
       </Box>
     </Box>
   );
 };
 
-// styling for weekly datagrid with chips
-// todo: enable editing and updating of event details
-export const ThisWeekTimetable = ({ eventsList }) => {
-  // view event details directly rather than going to planner
-  const ViewEventDetails = ({ event }) => {
-    // handle the opening and closing of the view event dialog
-    const [openEventDetails, setOpenEventDetails] = useState(false);
-    const handleOpenEventDetails = () => {
-      setOpenEventDetails(true);
-    };
-
-    const handleCloseEventDetails = () => {
-      setOpenEventDetails(false);
-    };
-
-    // easily view event details
-    // todo: will input edit feature
-    const eventDetailsDict = {
-      "Event Category": event.category,
-      "Event Date": event.date,
-      "Event Time": event.time,
-      "Event Priority": priorityList[4 - event.priority],
-    };
-
-    return (
-      <div>
-        <Chip
-          onClick={handleOpenEventDetails}
-          variant="filled"
-          sx={{
-            marginRight: "10px",
-            border: 0,
-            fontSize: "15px",
-            fontWeight: 700,
-            color: priorityColors[event.priority],
-          }}
-          label={event.time}
-        />
-        <Dialog
-          maxWidth="md"
-          open={openEventDetails}
-          onClose={handleCloseEventDetails}
-        >
-          <DialogTitle sx={{ margin: "20px" }}>
-            <Typography sx={{ fontWeight: 700, fontSize: "40px" }}>
-              {event.name}
-            </Typography>
-          </DialogTitle>
-          <DialogContent
-            sx={{ marginTop: "-10px", marginLeft: "20px", marginRight: "20px" }}
-          >
-            <Box sx={{ display: "flex", flexDirection: "column" }}>
-              {Object.entries(eventDetailsDict).map(
-                ([fieldName, fieldValue]) => (
-                  <TextField
-                    sx={{ width: "100ch", marginBottom: "20px" }}
-                    variant="standard"
-                    label={fieldName}
-                    readOnly
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                    defaultValue={fieldValue}
-                  />
-                )
-              )}
-            </Box>
-          </DialogContent>
-        </Dialog>
-      </div>
-    );
+// styling for event cards
+export const EventCard = ({ event }) => {
+  const [showEventDetails, setShowEventDetails] = useState(false);
+  const handleShowEventDetails = () => {
+    setShowEventDetails(true);
   };
 
-  // main component
   return (
     <Box
       sx={{
-        marginTop: "30px",
-        display: "flex",
-        alignContent: "center",
-        justifyContent: "center",
+        margin: "10px",
+        minWidth: "200px",
+        borderRadius: "10px",
+        backgroundColor: priorityColors[event.priority],
+        opacity: isEventOver(event) ? 0.7 : 1,
+      }}
+      component={Card}
+    >
+      <CardContent>
+        <Typography sx={{ fontSize: "17px", fontWeight: 600, color: "white" }}>
+          {event.name}
+        </Typography>
+        <Typography sx={{ color: "white" }}>{event.time}</Typography>
+      </CardContent>
+    </Box>
+  );
+};
+
+// styling for daily timeline
+export const TodayTimeline = ({ eventsList }) => {
+  return (
+    <Card
+      sx={{
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+        borderRadius: "10px",
+        height: "100%",
       }}
     >
-      <div style={{ overflowX: "auto", maxWidth: "100%" }}>
-        <Stack
-          direction="row"
-          divider={<Divider orientation="vertical" flexItem />}
-          spacing={5}
+      <CardContent sx={{ margin: "10px" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+          }}
         >
-          {eventsList.map((event, index) => (
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyItems: "center",
-              }}
-              key={index}
-            >
-              <Typography sx={{ fontWeight: 700, fontSize: "30px" }}>
-                {getShortDay(event.day)}
-              </Typography>
-              <Stack sx={{ marginTop: "30px" }} spacing={3}>
-                {event.events
-                  .sort((a, b) => a.time.localeCompare(b.time))
-                  .map((eventItem, subIndex) => (
-                    <Box
-                      key={subIndex}
-                      sx={{
-                        width: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
-                      <ViewEventDetails event={eventItem} />
-                      <Typography
-                        sx={{
-                          fontWeight: 600,
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          maxWidth: "70%",
-                        }}
-                      >
-                        {eventItem.name}
-                      </Typography>
-                    </Box>
-                  ))}
-              </Stack>
-            </Box>
+          <Typography
+            sx={{ fontSize: " 35px", marginRight: "20px", fontWeight: 700 }}
+          >
+            Today
+          </Typography>
+          <SeeMoreArrowButton pageName="Planner" />
+        </Box>
+        {/* to ensure that the timeline is left aligned rather than centre aligned */}
+        <Timeline
+          sx={{
+            [`& .${timelineItemClasses.root}:before`]: {
+              flex: 0,
+              padding: 0,
+            },
+          }}
+        >
+          {eventsList.map((dayEvent, index) => (
+            <TimelineItem key={index}>
+              <TimelineSeparator>
+                <TimelineDot
+                  sx={{
+                    backgroundColor: priorityColors[dayEvent.priority],
+                  }}
+                />
+                {index !== eventsList.length - 1 && <TimelineConnector />}
+              </TimelineSeparator>
+              <TimelineContent>
+                <TimelineBox event={dayEvent} />
+              </TimelineContent>
+            </TimelineItem>
           ))}
-        </Stack>
-      </div>
-    </Box>
+        </Timeline>
+      </CardContent>
+    </Card>
+  );
+};
+
+// styling for weekly timetable
+export const ThisWeekTimetable = ({ eventsDict }) => {
+  const daysOfWeek = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
+
+  return (
+    <Card
+      sx={{ borderRadius: "10px", backgroundColor: "#f2f2f2", boxShadow: 0 }}
+    >
+      <CardContent sx={{ margin: "10px" }}>
+        <Box sx={{ display: "flex", flexDirection: "row" }}>
+          <Typography
+            sx={{ fontSize: "35px", fontWeight: 700, marginRight: "20px" }}
+          >
+            Coming Up Next
+          </Typography>
+          <SeeMoreArrowButton pageName="Planner" />
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            overflowX: "auto",
+            maxWidth: "100%",
+          }}
+        >
+          {/* can only use object.entries on dictionary, cannot map directly. */}
+          {daysOfWeek.map((day, index) => {
+            // sort the events by time
+            const sortedEvents = eventsDict[day]?.sort((a, b) => {
+              const timeA = parseTime(a.time);
+              const timeB = parseTime(b.time);
+              if (timeA < timeB) return -1;
+              if (timeA > timeB) return 1;
+              return 0;
+            });
+
+            return (
+              <Box
+                key={index}
+                sx={{
+                  marginTop: "20px",
+                  marginBottom: "20px",
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyItems: "center",
+                }}
+              >
+                <Box
+                  sx={{
+                    minWidth: "60px",
+                    alignContent: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Typography
+                    sx={{ fontWeight: 600, fontSize: "25px", marginLeft: "" }}
+                  >
+                    {getShortDay(day)}
+                  </Typography>
+                </Box>
+                {/* render the events for the current day */}
+                {sortedEvents?.length &&
+                  sortedEvents.map((event, eventIndex) => (
+                    <EventCard key={eventIndex} event={event} />
+                  ))}
+              </Box>
+            );
+          })}
+        </Box>
+      </CardContent>
+    </Card>
   );
 };
 
 // events to sort the upcoming events for today and for current week.
 const HomePageTimetable = () => {
-  const [activeTab, setActiveTab] = useState(0);
-  const handleChangeTab = (event, newTab) => {
-    setActiveTab(newTab);
-  };
-
   return (
-    <Card
+    <Box
       sx={{
-        minHeight: "40ch",
-        marginBottom: "50px",
-        borderRadius: "5px",
-        width: "90%",
-        boxShadow: 1,
+        marginTop: "-10px",
+        marginBottom: "30px",
+        display: "flex",
+        flexDirection: "row",
+        width: "100%",
       }}
     >
-      <CardContent sx={{ margin: "20px" }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyItems: "center",
-          }}
-        >
-          <Typography
-            sx={{ marginRight: "20px", fontSize: "40px", fontWeight: 700 }}
-          >
-            Timetable
-          </Typography>
-          <SeeMoreArrowButton pageName="Planner" />
-        </Box>
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <Tabs value={activeTab} onChange={handleChangeTab}>
-            <Tab sx={{ fontWeight: 600 }} label="Today" />
-            <Tab sx={{ fontWeight: 600 }} label="This Week" />
-          </Tabs>
-        </Box>
-        {activeTab === 0 && (
-          <TodayTimeline
-            eventsList={sampleDayEvents}
-            tasksList={sampleDayTasks}
-          />
-        )}
-        {activeTab === 1 && <ThisWeekTimetable eventsList={sampleWeekEvents} />}
-      </CardContent>
-    </Card>
+      <Box sx={{ marginLeft: "55px", width: "30%" }}>
+        <TodayTimeline eventsList={getTodayEvents()} />
+      </Box>
+      <Box
+        sx={{
+          marginLeft: "30px",
+          width: "60%",
+          marginRight: "55px",
+        }}
+      >
+        <ThisWeekTimetable eventsDict={getThisWeekEvents()} />
+      </Box>
+    </Box>
   );
 };
 

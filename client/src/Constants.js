@@ -410,39 +410,58 @@ export const priorityValues = {
   Low: 1,
 };
 
+// get today's date
+export function todayDate() {
+  const today = new Date();
+  const day = String(today.getDate()).padStart(2, "0");
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  // padstart helps to ensure the string is a certain number of digits by adding zeros in front
+  const year = today.getFullYear();
+  return `${day}-${month}-${year}`;
+  // template literals ${} directly convert these numbers to strings.
+}
+
+// get the current time
+export function currentTime() {
+  const currentTime = new Date().toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 // list of sample day events for homepage timetable
 export const sampleDayEvents = [
   {
     name: "Lunch with Lauren",
-    date: "22-06-2003",
-    time: "12:30 PM",
+    date: "20-07-2023",
+    time: "12:00 AM",
     category: "Personal",
     priority: 1,
   },
   {
     name: "CS2030 Lab",
-    date: "22-06-2003",
+    date: "20-07-2023",
     time: "2:00 PM",
     category: "CS2030",
     priority: 4,
   },
   {
     name: "Team Meeting",
-    date: "22-06-2003",
+    date: "20-07-2023",
     time: "5:00 PM",
     category: "Personal",
     priority: 3,
   },
   {
     name: "Suite Dinner",
-    date: "22-06-2003",
+    date: "20-07-2023",
     time: "6:00 PM",
     category: "Personal",
     priority: 1,
   },
   {
     name: "Submit NTW essay",
-    date: "22-06-2003",
+    date: "20-07-2023",
     time: "11:00 PM",
     category: "NTW2004",
     priority: 4,
@@ -450,137 +469,109 @@ export const sampleDayEvents = [
 ];
 
 // list of sample week events for homepage timetable
-// need to extract from database
+// need to extract from database, filter by current week
 export const sampleWeekEvents = [
   {
-    day: "Monday",
-    events: [
-      {
-        name: "Lunch",
-        date: "19-06-2003",
-        time: "12:30 PM",
-        category: "Personal",
-        priority: 1,
-      },
-      {
-        name: "MA2001 Tutorial",
-        date: "19-06-2003",
-        time: "2:00 PM",
-        category: "MA2001",
-        priority: 4,
-      },
-      {
-        name: "Dinner with Amy",
-        date: "19-06-2003",
-        time: "5:00 PM",
-        category: "Personal",
-        priority: 1,
-      },
-    ],
+    name: "MA2001 Tutorial",
+    date: "18-07-2023",
+    time: "2:00 PM",
+    category: "MA2001",
+    priority: 4,
   },
   {
-    day: "Tuesday",
-    events: [
-      {
-        name: "BT2102 Lab",
-        date: "20-06-2003",
-        time: "1:00 PM",
-        category: "BT2102",
-        priority: 3,
-      },
-      {
-        name: "NTW Lesson",
-        date: "20-06-2003",
-        time: "4:00 PM",
-        category: "NTW2004",
-        priority: 3,
-      },
-      {
-        name: "Dinner",
-        date: "20-06-2003",
-        time: "6:30 PM",
-        category: "Personal",
-        priority: 1,
-      },
-    ],
+    name: "Dinner with Amy",
+    date: "19-07-2023",
+    time: "5:00 PM",
+    category: "Personal",
+    priority: 1,
+  },
+
+  {
+    name: "BT2102 Lab",
+    date: "20-07-2023",
+    time: "1:00 PM",
+    category: "BT2102",
+    priority: 3,
   },
   {
-    day: "Wednesday",
-    events: [
-      {
-        name: "Consult with Prof",
-        date: "21-06-2003",
-        time: "1:00 PM",
-        category: "NTW2004",
-        priority: 3,
-      },
-      {
-        name: "EC1101 tutorial 9",
-        date: "21-06-2003",
-        time: "4:00 PM",
-        category: "EC1101E",
-        priority: 3,
-      },
-    ],
+    name: "NTW Lesson",
+    date: "21-07-2023",
+    time: "4:00 PM",
+    category: "NTW2004",
+    priority: 3,
   },
   {
-    day: "Thursday",
-    events: [
-      {
-        name: "Lunch with Lauren",
-        date: "22-06-2003",
-        time: "12:30 PM",
-        category: "Personal",
-        priority: 1,
-      },
-      {
-        name: "CS2030 Lab",
-        date: "22-06-2003",
-        time: "2:00 PM",
-        category: "CS2030",
-        priority: 4,
-      },
-      {
-        name: "Team Meeting",
-        date: "22-06-2003",
-        time: "5:00 PM",
-        category: "Personal",
-        priority: 3,
-      },
-      {
-        name: "Suite Dinner",
-        date: "22-06-2003",
-        time: "6:00 PM",
-        category: "Personal",
-        priority: 1,
-      },
-      {
-        name: "Submit NTW essay",
-        date: "22-06-2003",
-        time: "11:00 PM",
-        category: "NTW2004",
-        priority: 4,
-      },
-    ],
+    name: "Dinner",
+    date: "21-07-2023",
+    time: "6:30 PM",
+    category: "Personal",
+    priority: 1,
+  },
+
+  {
+    name: "Consult with Prof",
+    date: "21-07-2023",
+    time: "9:00 AM",
+    category: "NTW2004",
+    priority: 3,
   },
   {
-    day: "Friday",
-    events: [
-      {
-        name: "Lunch",
-        date: "23-06-2003",
-        time: "12:30 PM",
-        category: "Personal",
-        priority: 1,
-      },
-      {
-        name: "Dinner with Jon",
-        date: "23-06-2003",
-        time: "6:00 PM",
-        category: "Personal",
-        priority: 1,
-      },
-    ],
+    name: "EC1101 tutorial 9",
+    date: "21-07-2023",
+    time: "4:00 PM",
+    category: "EC1101E",
+    priority: 3,
+  },
+
+  {
+    name: "Lunch with Lauren",
+    date: "22-07-2023",
+    time: "12:30 PM",
+    category: "Personal",
+    priority: 1,
+  },
+  {
+    name: "CS2030 Lab",
+    date: "22-07-2023",
+    time: "2:00 PM",
+    category: "CS2030",
+    priority: 4,
+  },
+  {
+    name: "Team Meeting",
+    date: "22-07-2023",
+    time: "5:00 PM",
+    category: "Personal",
+    priority: 3,
+  },
+  {
+    name: "Suite Dinner",
+    date: "22-07-2023",
+    time: "6:00 PM",
+    category: "Personal",
+    priority: 1,
+  },
+  {
+    name: "Submit NTW essay",
+    date: "22-07-2023",
+    time: "11:00 PM",
+    category: "NTW2004",
+    priority: 4,
+  },
+
+  {
+    name: "Lunch",
+    date: "23-07-2023",
+    time: "12:30 PM",
+    category: "Personal",
+    priority: 1,
+  },
+  {
+    name: "Dinner with Jon",
+    date: "23-07-2023",
+    time: "6:00 PM",
+    category: "Personal",
+    priority: 1,
   },
 ];
 
