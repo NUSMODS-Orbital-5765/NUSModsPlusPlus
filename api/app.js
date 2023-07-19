@@ -37,7 +37,8 @@ app.post("/register/user",jsonParser, (request, response) => {
       console.log("Create User Object");
       const user = {
         name: request.body.name,
-        studentId: request.body.studentId,
+        role: "STUDENT",
+        NUSId: request.body.NUSId,
         username: request.body.username,
         password: hashedPassword,
         email: request.body.email,
@@ -130,7 +131,7 @@ app.post("/register/admin",jsonParser, (request, response) => {
 });
 app.post("/login", jsonParser, (request, response) => {
   console.log(`User ${request.body.status} with username = ${request.body.username} Logging in`)
-  if (request.body.status === "student") {
+
   prisma.user
     .findUnique({
       where: {
@@ -180,58 +181,7 @@ app.post("/login", jsonParser, (request, response) => {
         e,
       });
     });
-  }
-  else if (request.body.status === "admin") {
-    prisma.admin
-    .findUnique({
-      where: {
-        username: request.body.username,
-      },
-    })
-    .then((user) => {
-      bcrypt
-        .compare(request.body.password, user.password)
-        .then((passwordCheck) => {
-          // check if password matches
-          if (!passwordCheck) {
-            return response.status(400).send({
-              message: "Passwords does not match",
-              error,
-            });
-          }
-
-          //   create JWT token
-          const token = jwt.sign(
-            {
-              userId: user._id,
-              username: user.username,
-            },
-            "RANDOM-TOKEN",
-            { expiresIn: "24h" }
-          );
-
-          //   return success response
-          response.status(200).send({
-            message: "Login Admin Successful at " + user.username,
-            username: user.username,
-            userId: user.id,
-            token,
-          });
-        })
-        .catch((error) => {
-          response.status(400).send({
-            message: "Passwords does not match",
-            error,
-          });
-        });
-    })
-    .catch((e) => {
-      response.status(404).send({
-        message: "username not found",
-        e,
-      });
-    });
-  }
+  
 });
 
 app.post("/post/upload", jsonParser, (request, response) => {
@@ -266,6 +216,7 @@ app.post("/post/upload", jsonParser, (request, response) => {
         });
 });
 
+// accept 3 attribute from the 
 app.post("/post/search", jsonParser, (request, response) => {
   console.log("POST search REQUEST with filter = " + request.body.filterValue + " and sort value = " + request.body.sortValue);
   console.log(request.body);
@@ -281,6 +232,10 @@ app.post("/post/search", jsonParser, (request, response) => {
   if (request.body.filterValue === "study guide") {where={category:"Study Guide"}}
   else if (request.body.filterValue === "module review") {where={category:"Module Review"}}
   else if (request.body.filterValue === "notes") {where={category:"Notes"}}
+
+  if (request.body.username) {
+    
+  }
   prisma.post.findMany({
   //   skip: 0,
   //   take: 8,
@@ -468,6 +423,69 @@ app.get("/event/get", [jsonParser,auth], (request, response) => {
       error,
     });
   })
+})
+app.post ("/post/like", [jsonParser,auth], (request, response) => {
+  console.log("Like Request on Post "+ request.body.postId + " from User = " + request.body.username)
+  const likedUser = request.body.username
+  prisma.post.findUnique({
+    where: {id: request.body.postId},
+  })
+  .then(result => {
+    if (result) {
+      let likedList = result.like;
+      if (likedList.includes(likedUser)) {
+        //Unlike
+        const filteredLikedList =  likedList.filter(e => e !== likedUser)
+        prisma.post.update({
+          where: {id: request.body.postId},
+          data: {
+            like: filteredLikedList
+          }
+        })
+        .then(result => {
+          console.log("Unlike Sucessfully")
+          response.status(200).send({
+            message: "User " +request.body.username + " Like Successfully from Post " + request.body.postId,
+            result,
+          });
+        })
+        .catch(error => {
+          console.log(error)
+          response.status(500).send({
+            message: "Error Unlike Post",
+            error,
+          });
+        });
+      }
+      else {
+        likedList.push(likedUser);
+        prisma.post.update({
+          where: {id: request.body.postId},
+          data: {
+            like: likedList
+          }
+        })
+        .then(any => {
+          console.log("Like Successfully")
+          response.status(200).send({
+            message: "User " +request.body.username + " Like Successfully from Post " + request.body.postId,
+            result,
+          });
+        })
+        .catch(error => {
+          console.log(error);
+          response.status(500).send({
+            message: "Error Liking Post",
+            error,
+          });
+        });
+      }
+    }
+  })
+  .catch(error => console.log(error));
+
+  
+  
 })
 app.post("/post/get-comment", jsonParser, (request, response) => {
   console.log("Getting Comment from Post " + request.body.postId);
