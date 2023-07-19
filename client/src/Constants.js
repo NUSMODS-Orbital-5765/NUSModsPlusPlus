@@ -429,45 +429,6 @@ export function currentTime() {
   });
 }
 
-// list of sample day events for homepage timetable
-export const sampleDayEvents = [
-  {
-    name: "Lunch with Lauren",
-    date: "20-07-2023",
-    time: "12:00 AM",
-    category: "Personal",
-    priority: 1,
-  },
-  {
-    name: "CS2030 Lab",
-    date: "20-07-2023",
-    time: "2:00 PM",
-    category: "CS2030",
-    priority: 4,
-  },
-  {
-    name: "Team Meeting",
-    date: "20-07-2023",
-    time: "5:00 PM",
-    category: "Personal",
-    priority: 3,
-  },
-  {
-    name: "Suite Dinner",
-    date: "20-07-2023",
-    time: "6:00 PM",
-    category: "Personal",
-    priority: 1,
-  },
-  {
-    name: "Submit NTW essay",
-    date: "20-07-2023",
-    time: "11:00 PM",
-    category: "NTW2004",
-    priority: 4,
-  },
-];
-
 // list of sample week events for homepage timetable
 // need to extract from database, filter by current week
 export const sampleWeekEvents = [

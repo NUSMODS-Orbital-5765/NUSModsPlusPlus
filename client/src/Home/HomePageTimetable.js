@@ -1,17 +1,4 @@
-import {
-  Stack,
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  Chip,
-  Divider,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  TextField,
-  Popover,
-} from "@mui/material";
+import { Box, Card, CardContent, Typography, Popover } from "@mui/material";
 import React, { useState } from "react";
 import {
   Timeline,
@@ -22,20 +9,12 @@ import {
   TimelineSeparator,
   timelineItemClasses,
 } from "@mui/lab";
-import {
-  currentDay,
-  getShortDay,
-  priorityColors,
-  priorityList,
-  sampleDayEvents,
-  sampleWeekEvents,
-} from "../Constants";
+import { getShortDay, priorityColors, sampleWeekEvents } from "../Constants";
 import { SeeMoreArrowButton } from "./HomePageShortcuts";
-import SentimentDissatisfiedRoundedIcon from "@mui/icons-material/SentimentDissatisfiedRounded";
 
 // placeholder function for getting today's events from the database
 export const getTodayEvents = () => {
-  return sampleDayEvents;
+  return getThisWeekEvents()[getTodayDayOfWeek()];
 };
 
 // placeholder function for getting current week's events from the database
@@ -190,7 +169,7 @@ export const EventCard = ({ event }) => {
         <Typography sx={{ fontSize: "17px", fontWeight: 600, color: "white" }}>
           {event.name}
         </Typography>
-        <Typography sx={{ color: "white", marginTop: "5px" }}>
+        <Typography sx={{ fontSize: "15px", color: "white", marginTop: "5px" }}>
           {event.category} • {event.time}
         </Typography>
       </CardContent>
@@ -270,9 +249,9 @@ export const ThisWeekTimetable = ({ eventsDict }) => {
         <Box
           sx={{
             display: "flex",
+            flex: 1,
             flexDirection: "column",
             overflowX: "auto",
-            maxWidth: "100%",
           }}
         >
           {/* can only use object.entries on dictionary, cannot map directly. */}
@@ -290,16 +269,22 @@ export const ThisWeekTimetable = ({ eventsDict }) => {
               <Box
                 key={index}
                 sx={{
+                  borderRadius: "10px",
+                  backgroundColor: "white",
                   marginTop: "20px",
                   marginBottom: "20px",
                   display: "flex",
                   flexDirection: "row",
                   alignItems: "center",
                   justifyItems: "center",
+                  minHeight: "120px",
+                  width: "200%",
+                  flex: 1,
                 }}
               >
                 <Box
                   sx={{
+                    marginLeft: "20px",
                     minWidth: "60px",
                     alignContent: "center",
                     justifyContent: "center",
