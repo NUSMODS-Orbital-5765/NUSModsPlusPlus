@@ -13,10 +13,11 @@ import {
   Tabs,
   Tab,
 } from "@mui/material";
-import { formatDate, pastNotifs, thisWeekNotifs } from "../Constants";
+import { formatDate } from "../Constants";
 import { red } from "@mui/material/colors";
 import { Link } from "react-router-dom";
 import { isToday, isThisWeek } from "../Constants";
+import { AdminDefaultNotif } from "../Admin/AdminAppBarNotifs";
 
 // notif count
 export const NotifCount = ({ label, notifListCount, labelColor }) => {
@@ -171,7 +172,7 @@ export const DefaultNotif = ({ notif }) => {
 };
 
 // styling for notification icon & pop-up
-const AppBarNotifs = ({ notifsList }) => {
+const AppBarNotifs = ({ notifsList, appBarType }) => {
   // filtering today, this week, past notifs
   const todayNotifs = notifsList.filter((notif) => isToday(notif.timestamp));
 
@@ -267,23 +268,35 @@ const AppBarNotifs = ({ notifsList }) => {
         </Box>
         {currentTab === 0 && (
           <List>
-            {todayNotifs.map((notif, index) => (
-              <DefaultNotif key={index} notif={notif} />
-            ))}
+            {todayNotifs.map((notif, index) =>
+              appBarType === "student" ? (
+                <DefaultNotif key={index} notif={notif} />
+              ) : (
+                <AdminDefaultNotif key={index} notif={notif} />
+              )
+            )}
           </List>
         )}
         {currentTab === 1 && (
           <List>
-            {thisWeekNotifs.map((notif, index) => (
-              <DefaultNotif key={index} notif={notif} />
-            ))}
+            {thisWeekNotifs.map((notif, index) =>
+              appBarType === "student" ? (
+                <DefaultNotif key={index} notif={notif} />
+              ) : (
+                <AdminDefaultNotif key={index} notif={notif} />
+              )
+            )}
           </List>
         )}
         {currentTab === 2 && (
           <List>
-            {pastNotifs.map((notif, index) => (
-              <DefaultNotif key={index} notif={notif} />
-            ))}
+            {pastNotifs.map((notif, index) =>
+              appBarType === "student" ? (
+                <DefaultNotif key={index} notif={notif} />
+              ) : (
+                <AdminDefaultNotif key={index} notif={notif} />
+              )
+            )}
           </List>
         )}
       </Drawer>

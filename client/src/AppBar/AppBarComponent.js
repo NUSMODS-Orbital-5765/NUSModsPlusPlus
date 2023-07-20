@@ -49,15 +49,13 @@ function AppBarComponent(props) {
                 justifyContent: "flex-end",
               }}
             >
-              <AppBarNotifs />
+              <AppBarNotifs notifsList={notifsList} appBarType="student" />
               <AppBarAvatar
                 userProfile={sampleProfile}
                 avatarItems={avatarItems}
               />
             </Box>
           </Box>
-          <AppBarNotifs notifsList={notifsList} />
-          <AppBarAvatar />
         </Toolbar>
       </AppBar>
     </SearchBarScroll>
@@ -65,5 +63,3 @@ function AppBarComponent(props) {
 }
 
 export default AppBarComponent;
-
-// TODO: transfer notifications from administrator comments to notifs icon.

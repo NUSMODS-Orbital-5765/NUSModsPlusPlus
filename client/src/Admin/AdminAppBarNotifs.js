@@ -14,17 +14,11 @@ import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
 import React, { useState } from "react";
 import { formatDate } from "../Constants";
 import { adminNotifsList } from "./AdminConstants";
-import { NotifCount } from "../AppBar/AppBarNotifs";
+import AppBarNotifs, { NotifCount } from "../AppBar/AppBarNotifs";
 import { red } from "@mui/material/colors";
-import { startOfDay, endOfDay } from "date-fns";
 
 // styling for admin notifications
-export const AdminDefaultNotif = (props) => {
-  const student = props.student;
-  const content = props.content;
-  const type = props.type;
-  const timestamp = props.timestamp;
-
+export const AdminDefaultNotif = ({ notif }) => {
   // max words for truncation
   const truncateContent = (content) => {
     const words = content.split(" ");
@@ -49,7 +43,7 @@ export const AdminDefaultNotif = (props) => {
           <Typography component="span" fontWeight={400}>
             You mentioned{" "}
           </Typography>
-          {student.username}
+          {notif.student.username}
         </Typography>
       );
     } else if (contentType === "approve") {
@@ -64,7 +58,7 @@ export const AdminDefaultNotif = (props) => {
           <Typography component="span" fontWeight={400}>
             You approved{" "}
           </Typography>
-          {student.username}
+          {notif.student.username}
           <Typography component="span" fontWeight={400}>
             's plan
           </Typography>
@@ -93,7 +87,7 @@ export const AdminDefaultNotif = (props) => {
           <Avatar
             sx={{ width: 70, height: 70 }}
             alt="Admin Icon"
-            src={student.avatar}
+            src={notif.student.avatar}
           />
           <Box
             sx={{
@@ -102,7 +96,7 @@ export const AdminDefaultNotif = (props) => {
               flexDirection: "column",
             }}
           >
-            {getNotifContent(type)}
+            {getNotifContent(notif.type)}
             <Typography
               variant="h1"
               sx={{
@@ -113,11 +107,11 @@ export const AdminDefaultNotif = (props) => {
                 fontSize: "14px",
               }}
             >
-              {formatDate(timestamp)}
+              {formatDate(notif.timestamp)}
             </Typography>
           </Box>
         </Box>
-        {content && (
+        {notif.content && (
           <Box
             sx={{
               marginTop: "10px",
@@ -128,7 +122,7 @@ export const AdminDefaultNotif = (props) => {
             }}
           >
             <Typography sx={{ margin: "15px" }}>
-              {truncateContent(content)}
+              {truncateContent(notif.content)}
             </Typography>
           </Box>
         )}
@@ -138,123 +132,9 @@ export const AdminDefaultNotif = (props) => {
   );
 };
 
-// function to check if the notification timestamp was today
-export const checkToday = (timestamp) => {
-  const now = new Date();
-  return timestamp >= startOfDay(now) && timestamp <= endOfDay(now);
-};
-
 // main component design
 const AdminAppBarNotifs = ({ notifsList }) => {
-  // handle the opening and closing of the drawer
-  const [openDrawer, setOpenDrawer] = useState(false);
-  const handleOpenNotifs = () => {
-    setOpenDrawer(true);
-    console.log(adminNotifsList);
-  };
-  const handleCloseNotifs = () => {
-    setOpenDrawer(false);
-  };
-
-  // handle the switching of tabs
-  const [currentTab, setCurrentTab] = useState(0);
-  const handleChangeTab = (event, activeTab) => {
-    setCurrentTab(activeTab);
-  };
-
-  // sort notifsList based on most recent
-
-  return (
-    <div>
-      <Badge
-        overlap="circular"
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        variant="dot"
-        color="error"
-      >
-        <IconButton sx={{ color: "black" }} onClick={handleOpenNotifs}>
-          <EmailRoundedIcon sx={{ fontSize: "30px" }} />
-        </IconButton>
-      </Badge>
-      <Drawer
-        sx={{
-          width: 400,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: 400,
-            boxSizing: "border-box",
-          },
-        }}
-        anchor="right"
-        open={openDrawer}
-        onClose={handleCloseNotifs}
-      >
-        <Box sx={{ margin: "20px" }}>
-          <Typography sx={{ fontSize: "30px", fontWeight: 600 }}>
-            Recent Activity
-          </Typography>
-          <Tabs value={currentTab} onChange={handleChangeTab}>
-            <Tab
-              label={
-                <NotifCount
-                  label="Today"
-                  unreadCount={
-                    notifsList.filter((notif) => checkToday(notif.timestamp))
-                      .length
-                  }
-                  labelColor="#1a90ff"
-                />
-              }
-            />
-            <Tab
-              label={
-                <NotifCount
-                  label="Previous"
-                  unreadCount={
-                    notifsList.filter((notif) => !checkToday(notif.timestamp))
-                      .length
-                  }
-                  labelColor={red[500]}
-                />
-              }
-            />
-          </Tabs>
-          <Divider
-            sx={{ margin: "-20px", marginBottom: "-30px", marginTop: "0px" }}
-          />
-        </Box>
-        {currentTab === 0 && (
-          <List>
-            {notifsList
-              .filter((notif) => checkToday(notif.timestamp))
-              .map((notif, index) => (
-                <AdminDefaultNotif
-                  key={index}
-                  student={notif.student}
-                  content={notif.content}
-                  type={notif.type}
-                  timestamp={notif.timestamp}
-                />
-              ))}
-          </List>
-        )}
-        {currentTab === 1 && (
-          <List>
-            {notifsList
-              .filter((notif) => !checkToday(notif.timestamp))
-              .map((notif, index) => (
-                <AdminDefaultNotif
-                  key={index}
-                  student={notif.student}
-                  content={notif.content}
-                  type={notif.type}
-                  timestamp={notif.timestamp}
-                />
-              ))}
-          </List>
-        )}
-      </Drawer>
-    </div>
-  );
+  return <div></div>;
 };
+
 export default AdminAppBarNotifs;

@@ -4,7 +4,7 @@ import { SearchBar } from "../StyledComponents";
 import AdminAppBarNotifs from "./AdminAppBarNotifs";
 import AppBarAvatar from "../AppBar/AppBarAvatar";
 import { SearchBarScroll } from "../Home/HomePageStyledComponents";
-import { notifsListWithId } from "../Constants";
+import { notifsList } from "../Constants";
 import {
   adminRecommendations,
   adminSampleProfile,
@@ -51,9 +51,7 @@ const AdminAppBar = (props) => {
                 justifyContent: "flex-end",
               }}
             >
-              <AdminAppBarNotifs
-                notifsList={notifsListWithId(adminNotifsList)}
-              />
+              <AdminAppBarNotifs notifsList={adminNotifsList} />
               <AppBarAvatar
                 userProfile={adminSampleProfile}
                 avatarItems={adminAvatarItems}
