@@ -221,14 +221,40 @@ export const CommunityPostDialog = (props) => {
 // code for each post
 const CommunityDefaultPost = (props) => {
   const post = props.post;
+  const likedList = post.like;
+  const localUsername = localStorage.getItem("username")
+  const [totalLikes, setTotalLikes] = useState(likedList.length);
   const [extensionOpen, setExtensionOpen] = useState(false);
   const [arrowDirection, setArrowDirection] = useState("down");
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(likedList.includes("username"));
   const [viewed, setViewed] = useState(false);
-
+  
   // function for toggling the like button (need to update in database)
   const toggleLiked = (event) => {
-    setLiked(!liked);
+    const LikePostAPI = `${process.env.REACT_APP_API_LINK}/post/like`;
+    axios
+    .post(
+      LikePostAPI,
+      {
+        username: localUsername,
+        postId: post.id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        },
+      }
+    )
+    .then(result => {
+      if (liked) {
+        setTotalLikes(totalLikes-1);
+      }
+      else {
+        setTotalLikes(totalLikes+1);
+      }
+      setLiked(!liked)
+    })
+    
   };
 
   // function for viewing the tags for each post
@@ -345,11 +371,12 @@ const CommunityDefaultPost = (props) => {
             >
               <Checkbox
                 onClick={toggleLiked}
+                defaultChecked={liked}
                 icon={<FavoriteBorderRoundedIcon />}
                 checkedIcon={<FavoriteRoundedIcon />}
               />
               <Typography sx={{ marginLeft: "-5px" }}>
-                {liked ? post.likes + 1 : post.likes}
+                {totalLikes}
               </Typography>
             </Box>
             <Box
