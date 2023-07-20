@@ -9,6 +9,7 @@ const HomePageEventProgressBar = ({ todayEvents }) => {
   ).length;
   const eventsOverFraction = todayEventsOverCount / todayEventsList.length;
 
+const HomePageTaskProgressBar = ({ taskList }) => {
   return (
     <Box>
       <Box
@@ -22,11 +23,10 @@ const HomePageEventProgressBar = ({ todayEvents }) => {
         <Typography
           sx={{ marginRight: "30px", fontSize: "35px", fontWeight: 700 }}
         >
-          Event Progress
+          Task Progress
         </Typography>
         <Typography variant="h1" sx={{ fontSize: "30px" }}>
-          <span style={{ color: "#44b700" }}>{todayEventsOverCount}</span>/
-          {todayEventsList.length}
+          <span style={{ color: "#44b700" }}>5</span>/25
         </Typography>
       </Box>
       <ProgressBar color="success" value={eventsOverFraction} />
@@ -34,4 +34,4 @@ const HomePageEventProgressBar = ({ todayEvents }) => {
   );
 };
 
-export default HomePageEventProgressBar;
+export default HomePageTaskProgressBar;

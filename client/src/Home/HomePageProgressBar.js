@@ -1,5 +1,5 @@
 import { Box, Card, CardContent, Typography } from "@mui/material";
-import HomePageEventProgressBar from "./HomePageEventProgressBar";
+import HomePageTaskProgressBar from "./HomePageTaskProgressBar";
 import { ProgressBar } from "../StyledComponents";
 import React, { useState, useEffect } from "react";
 
@@ -80,7 +80,7 @@ const HomePageProgressBar = () => {
         <Box sx={{ marginBottom: "30px" }}>
           <ProgressBar color="primary" value={progressPercentage} />
         </Box>
-        <HomePageEventProgressBar />
+        <HomePageTaskProgressBar />
       </CardContent>
     </Card>
   );

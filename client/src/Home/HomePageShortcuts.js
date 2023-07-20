@@ -9,7 +9,7 @@ import HomePageRecommendedPosts from "./HomePageRecommendedPosts";
 
 // styling for arrow button to go to related page
 export const SeeMoreArrowButton = ({ pageName }) => {
-  const pageLinks = { Planner: "/planner-events", Community: "/community" };
+  const pageLinks = { Planner: "/planner", Community: "/community" };
 
   return (
     <Tooltip title={<span>Go to {pageName}</span>} placement="top">
