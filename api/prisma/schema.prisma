@@ -48,6 +48,7 @@ model Post {
   author       User      @relation("createdPost", fields: [PostAuthorId], references: [id])
   PostAuthorId Int
   like         String[]
+  likeAmount Int @default(0)
   Comment      Comment[]
 }
 

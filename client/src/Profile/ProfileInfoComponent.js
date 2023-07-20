@@ -21,22 +21,16 @@ import {
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const ProfileInfoComponent = ({ userProfile }) => {
+const ProfileInfoFrame = ({ userProfile }) => {
   const [editableDetails, setEditableDetails] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState(false);
 
   // just for testing, please replace with actual implementation
-  const [profileInfoCopy, setProfileInfoCopy] = useState(userProfile);
+  const [profileInfo, setProfileInfo] = useState(userProfile);
+  const [academicPlan, setAcademicPlan] = useState(userProfile.academicPlan);
 
-  let defaultAcademicPlan = "Single Degree";
-  if (profileInfoCopy.secondDegree) {
-    defaultAcademicPlan = "Double Degree";
-  } else if (profileInfoCopy.secondMajor) {
-    defaultAcademicPlan = "Double Major";
-  }
-  const [academicPlan, setAcademicPlan] = useState(defaultAcademicPlan);
-
+  const handleEditableDetails = () => setEditableDetails(!editableDetails)
   const handleAcademicPlanChange = (event) => {
     setAcademicPlan(event.target.value);
   };
@@ -48,90 +42,54 @@ const ProfileInfoComponent = ({ userProfile }) => {
   };
 
   const fieldErrors = {
-    name: profileInfoCopy.name === "",
-    studentId: profileInfoCopy.studentId === "",
-    faculty: profileInfoCopy.faculty === "",
-    primaryDegree: profileInfoCopy.primaryDegree === "",
+    name: profileInfo.name === "",
+    studentId: profileInfo.studentId === "",
+    faculty: profileInfo.faculty === "",
+    primaryDegree: profileInfo.primaryDegree === "",
   };
 
   useEffect(() => {
     handleFormCompletion(fieldErrors);
-  }, [profileInfoCopy]);
+  }, [profileInfo]);
 
-  const handleProfileInfoCopy = (event) => {
+  const handleProfileInfo = (event) => {
     const name = event.target.name;
     const value = event.target.value;
-    setProfileInfoCopy({ ...profileInfoCopy, [name]: value });
+    setProfileInfo({ ...profileInfo, [name]: value });
   };
 
   const handleMinorInfo = (value) => {
-    setProfileInfoCopy({
-      ...profileInfoCopy,
+    setProfileInfo({
+      ...profileInfo,
       ["minor"]: value,
     });
   };
 
-  const submitProfileUpdateCopy = () => {
-    setEditableDetails(false);
-    setSubmitSuccess(true);
-    console.log(profileInfoCopy);
-  };
-  // end of test implementation //
-
-  // getting profile information
-  const [profileInfo, setProfileInfo] = useState();
-  const [isFetch, setIsFetch] = useState(false);
-  const handleEditableDetails = () => {
-    setEditableDetails(!editableDetails);
-  };
-
-  const handleProfileInfo = (evt) => {
-    const name = evt.target.name;
-    const value = evt.target.value;
-    setProfileInfo({
-      ...profileInfo,
-      [name]: value,
-    });
-  };
-
-  useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    const GETprofileURL = process.env.REACT_APP_API_LINK + "/profile/get";
-    axios
-      .get(GETprofileURL, {
-        params: {
-          userId: userId,
-        },
-      })
-      .then((user) => {
-        setProfileInfo(user.data.user);
-        setIsFetch(true);
-        console.log(user.data.user);
-      })
-      .catch((err) => console.log(err));
-  }, []);
-
-  const postUpdateAPI = `${process.env.REACT_APP_API_LINK}/profile/update`;
   const submitProfileUpdate = () => {
+    const profileUpdateAPI = `${process.env.REACT_APP_API_LINK}/profile/update`;
     axios
-      .post(postUpdateAPI, profileInfo, {
+      .post(profileUpdateAPI, profileInfo, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         },
       })
       .then((response) => {
+        setEditableDetails(false);
         setSubmitSuccess(true);
         console.log(response);
-        //useNavigate need to be initalise at top
       })
       .catch((error) => {
-        setSubmitError(true);
+        setSubmitError(false);
         console.log(error);
       });
   };
+  // end of test implementation //
+
+
+
+
 
   return (
-    // nam, please put back this line isFetch && (
     <Box sx={{ margin: "55px", marginTop: "-20px" }}>
       <Box
         sx={{
@@ -160,26 +118,26 @@ const ProfileInfoComponent = ({ userProfile }) => {
             disabled={!editableDetails}
             label="Name"
             name="name"
-            defaultText={profileInfoCopy.name}
-            setfn={handleProfileInfoCopy}
+            defaultText={profileInfo.name}
+            setfn={handleProfileInfo}
           />
         </Box>
         <Box sx={{ marginBottom: "20px" }}>
           <FormTextField
             disabled={!editableDetails}
             label="StudentID"
-            name="studentId"
-            defaultText={profileInfoCopy.studentId}
-            setfn={handleProfileInfoCopy}
+            name="NUSId"
+            defaultText={profileInfo.NUSId}
+            setfn={handleProfileInfo}
           />
         </Box>
         <FormHeader text="Academic Information" />
         <Box sx={{ marginBottom: "20px" }}>
           <FormFacultyMajorField
             disabled={!editableDetails}
-            filledFaculty={profileInfoCopy.faculty}
-            filledMajor={profileInfoCopy.primaryDegree}
-            setfn={handleProfileInfoCopy}
+            filledFaculty={profileInfo.faculty}
+            filledMajor={profileInfo.primaryDegree}
+            setfn={handleProfileInfo}
           />
         </Box>
         <Box sx={{ marginBottom: "20px" }}>
@@ -189,7 +147,8 @@ const ProfileInfoComponent = ({ userProfile }) => {
               disabled={!editableDetails}
               label="Academic Plan"
               value={academicPlan}
-              onChange={handleAcademicPlanChange}
+              name="academicPlan"
+              onChange={e=>{handleAcademicPlanChange(e);handleProfileInfo(e)}}
             >
               <MenuItem value={"Single Degree"}>Single Degree</MenuItem>
               <MenuItem value={"Double Degree"}>Double Degree</MenuItem>
@@ -203,11 +162,11 @@ const ProfileInfoComponent = ({ userProfile }) => {
               disabled={!editableDetails}
               optionsList={majorList}
               defaultText={
-                profileInfoCopy.secondDegree ? profileInfoCopy.secondDegree : ""
+                profileInfo.secondDegree ? profileInfo.secondDegree : ""
               }
               label="Second Degree"
               name="secondDegree"
-              setfn={handleProfileInfoCopy}
+              setfn={handleProfileInfo}
             />
           </Box>
         )}
@@ -217,17 +176,17 @@ const ProfileInfoComponent = ({ userProfile }) => {
               disabled={!editableDetails}
               optionsList={majorList}
               defaultText={
-                profileInfoCopy.secondMajor ? profileInfoCopy.secondMajor : ""
+                profileInfo.secondMajor ? profileInfo.secondMajor : ""
               }
               label="Second Major"
               name="secondMajor"
-              setfn={handleProfileInfoCopy}
+              setfn={handleProfileInfo}
             />
           </Box>
         )}
         <Box sx={{ marginBottom: "20px" }}>
           <FormMinorField
-            filledMinor={profileInfoCopy.minor}
+            filledMinor={profileInfo.minor}
             setfn={handleMinorInfo}
             disabled={!editableDetails}
           />
@@ -238,13 +197,13 @@ const ProfileInfoComponent = ({ userProfile }) => {
             name="programme"
             label="Special Programme (if any)"
             optionsList={progsList}
-            defaultText={profileInfoCopy.programme}
-            setfn={handleProfileInfoCopy}
+            defaultText={profileInfo.programme}
+            setfn={handleProfileInfo}
           />
         </Box>
       </Box>
       <Button
-        onClick={submitProfileUpdateCopy}
+        onClick={submitProfileUpdate}
         disabled={!isFormComplete}
         sx={{ marginTop: "10px" }}
         variant="contained"
@@ -282,4 +241,29 @@ const ProfileInfoComponent = ({ userProfile }) => {
     </Box>
   );
 };
+
+const ProfileInfoComponent = () => {
+  const [isFetch, setIsFetch] = useState(false);
+  const [userProfile, setUserProfile] = useState();
+  useEffect(() => {
+    const username = localStorage.getItem("username");
+    const GETprofileURL = process.env.REACT_APP_API_LINK + "/profile/get";
+    axios
+      .get(GETprofileURL, {
+        params: {
+          username: username,
+        },
+      })
+      .then((user) => {
+        setUserProfile(user.data.user);
+        setIsFetch(true);
+        console.log(user.data.user);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+  return(
+    isFetch &&
+  <ProfileInfoFrame userProfile={userProfile} />
+  );
+}
 export default ProfileInfoComponent;

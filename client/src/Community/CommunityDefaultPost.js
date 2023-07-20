@@ -223,7 +223,8 @@ const CommunityDefaultPost = (props) => {
   const post = props.post;
   const likedList = post.like;
   const localUsername = localStorage.getItem("username")
-  const [totalLikes, setTotalLikes] = useState(likedList.length);
+  const [action, setAction] = useState(false)
+  const [totalLikes, setTotalLikes] = useState(post.likeAmount)
   const [extensionOpen, setExtensionOpen] = useState(false);
   const [arrowDirection, setArrowDirection] = useState("down");
   const [liked, setLiked] = useState(likedList.includes("username"));
@@ -246,12 +247,6 @@ const CommunityDefaultPost = (props) => {
       }
     )
     .then(result => {
-      if (liked) {
-        setTotalLikes(totalLikes-1);
-      }
-      else {
-        setTotalLikes(totalLikes+1);
-      }
       setLiked(!liked)
     })
     
@@ -274,7 +269,7 @@ const CommunityDefaultPost = (props) => {
     setViewPost(false);
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {setTotalLikes(!liked ? post.likeAmount-1 : post.likeAmount + 1)}, [liked]);
   // how post looks like on screen
   return (
     <div>
