@@ -21,8 +21,10 @@ import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
 import React, { useState } from "react";
 import { ModuleBox, SelectedModulesAlert } from "./GradRequirements";
-import { grey } from "@mui/material/colors";
+import SaveAltRoundedIcon from "@mui/icons-material/SaveAltRounded";
 import { MoveModuleDialog } from "./ModulesDisplay";
+import { sampleProfile } from "../Constants";
+import { orange } from "@mui/material/colors";
 
 // semester module plans
 const SemesterModulePlans = ({ movedModules, isComplete, academicPlan }) => {
@@ -164,8 +166,26 @@ const SemesterModulePlans = ({ movedModules, isComplete, academicPlan }) => {
 
   // request approval
   const [requestSuccess, setRequestSuccess] = useState(false);
-  const handleRequestSuccess = () => {
-    setRequestSuccess(true);
+  const [requestError, setRequestError] = useState(false);
+  const [requestSubmitted, setRequestSubmitted] = useState(false);
+  const handleRequest = () => {
+    if (isComplete) {
+      setRequestSuccess(true);
+      handleSubmitRequest();
+    } else {
+      setRequestError(true);
+    }
+  };
+
+  // handle saving plan into database with "pending" status
+  // doesnt matter default or not default lol maybe they want change major?
+  const handleSubmitRequest = () => {
+    setRequestSubmitted(true);
+    console.log({
+      student: sampleProfile, // replace with the current user
+      status: "Pending",
+      modulePlan: moduleDict,
+    });
   };
 
   // perform plan validation
@@ -181,15 +201,31 @@ const SemesterModulePlans = ({ movedModules, isComplete, academicPlan }) => {
     setUseRecommended(true);
   };
 
+  // save changes
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const handleSavePlan = () => {
+    setSaveSuccess(true);
+    console.log({
+      student: sampleProfile, // replace with the current user
+      status: requestSubmitted ? "Pending" : " ",
+      modulePlan: moduleDict,
+    });
+  };
+
   // list of action buttons available
   const actionsList = [
+    {
+      tooltip: "Save Changes",
+      handleClick: handleSavePlan,
+      icon: <SaveAltRoundedIcon sx={{ color: "black", fontSize: "30px" }} />,
+    },
     {
       tooltip: "Validate Plan",
       handleClick: handleValidatePlan,
       icon: <DoneAllRoundedIcon color="error" sx={{ fontSize: "30px" }} />,
     },
     {
-      tooltip: "Use Recommended Plan",
+      tooltip: "Auto-allocate Modules",
       handleClick: handleUseRecommended,
       icon: (
         <AutoAwesomeRoundedIcon color="primary" sx={{ fontSize: "30px" }} />
@@ -197,7 +233,7 @@ const SemesterModulePlans = ({ movedModules, isComplete, academicPlan }) => {
     },
     {
       tooltip: "Request Admin Approval",
-      handleClick: handleRequestSuccess,
+      handleClick: handleRequest,
       icon: <ThumbUpRoundedIcon color="success" sx={{ fontSize: "30px" }} />,
     },
   ];
@@ -251,19 +287,19 @@ const SemesterModulePlans = ({ movedModules, isComplete, academicPlan }) => {
                 }}
               />
             )}
-            {/* chip to be updated based on the status of the module plans */}
-            {/* add a "request sent" chip, instead of allowing admins to filter out the "flagged" people just filter out the new requests*/}
-            <Chip
-              variant="filled"
-              label="No Plan"
-              sx={{
-                backgroundColor: grey[500],
-                fontWeight: 600,
-                color: "white",
-                marginLeft: "30px",
-                textTransform: "uppercase",
-              }}
-            />
+            {requestSubmitted && (
+              <Chip
+                variant="filled"
+                label="Pending"
+                sx={{
+                  fontWeight: 600,
+                  backgroundColor: orange[600],
+                  color: "white",
+                  marginLeft: "30px",
+                  textTransform: "uppercase",
+                }}
+              />
+            )}
           </Box>
           <Box
             sx={{
@@ -361,6 +397,34 @@ const SemesterModulePlans = ({ movedModules, isComplete, academicPlan }) => {
             severity="success"
           >
             Your request has been sent.
+          </Alert>
+        </Snackbar>
+        <Snackbar
+          open={requestError}
+          autoHideDuration={3000}
+          onClose={() => setRequestError(false)}
+        >
+          <Alert
+            onClose={() => setRequestError(false)}
+            sx={{ color: "white" }}
+            variant="filled"
+            severity="error"
+          >
+            Your plan is incomplete!
+          </Alert>
+        </Snackbar>
+        <Snackbar
+          open={saveSuccess}
+          autoHideDuration={3000}
+          onClose={() => setSaveSuccess(false)}
+        >
+          <Alert
+            onClose={() => setSaveSuccess(false)}
+            variant="filled"
+            sx={{ color: "white" }}
+            severity="success"
+          >
+            Plan saved!
           </Alert>
         </Snackbar>
       </CardContent>

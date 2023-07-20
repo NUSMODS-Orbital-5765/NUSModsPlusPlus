@@ -173,11 +173,18 @@ const ModulesDisplay = ({ academicPlan, type, handleDeletePlan }) => {
     setOpenDialog(false);
   };
 
+  // handle saving of the grad requirements
+  // unfortunately, have to save the semester plans separately, because they can be rearranged among the semesters/years.
+  const handleSaveGradRequirements = () => {
+    console.log(requiredModulesDict);
+  };
+
   return (
     <div>
       <GradRequirements
         academicPlan={academicPlan}
         type={type}
+        handleSaveGradRequirements={handleSaveGradRequirements}
         handleDeletePlan={handleDeletePlan}
         handleSelectModule={handleSelectModule}
         handleDeselectModule={handleDeselectModule}

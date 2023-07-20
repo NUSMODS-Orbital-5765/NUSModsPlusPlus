@@ -8,22 +8,18 @@ import {
   IconButton,
   Tooltip,
   Alert,
-  Rating,
+  Snackbar,
 } from "@mui/material";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import DriveFileMoveRoundedIcon from "@mui/icons-material/DriveFileMoveRounded";
-import React, { useState, useEffect } from "react";
+import SaveAltRoundedIcon from "@mui/icons-material/SaveAltRounded";
+import React, { useState } from "react";
 import {
   getRequiredModules,
   FormatAcademicPlanDetails,
   getRecommendedPlan,
 } from "./ModuleConstants";
 import { grey, red } from "@mui/material/colors";
-import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
-import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
-import SentimentSatisfiedIcon from "@mui/icons-material/SentimentSatisfied";
-import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAltOutlined";
-import SentimentVerySatisfiedIcon from "@mui/icons-material/SentimentVerySatisfied";
 
 // get recommended year/semester for module (based on a database)
 export function getRecommendedTime(module, academicPlan) {
@@ -39,37 +35,6 @@ export function getRecommendedTime(module, academicPlan) {
   }
 
   return "";
-}
-
-// styled difficulty rating
-export const StyledRating = ({ rating }) => {
-  const ratingIcons = {
-    1: <SentimentVeryDissatisfiedIcon color="error" />,
-    2: <SentimentDissatisfiedIcon color="error" />,
-    3: <SentimentSatisfiedIcon color="warning" />,
-    4: <SentimentSatisfiedAltIcon color="success" />,
-    5: <SentimentVerySatisfiedIcon color="success" />,
-  };
-
-  const IconContainer = ({ value, ...props }) => {
-    return React.cloneElement(ratingIcons[value], {
-      ...props,
-    });
-  };
-
-  return (
-    <Rating
-      value={rating}
-      readOnly
-      IconContainerComponent={IconContainer}
-      highlightSelectedOnly
-    />
-  );
-};
-
-// placeholder function for getting difficulty rating and workload
-export function getRating() {
-  return Math.floor(Math.random() * 5) + 1;
 }
 
 // get different colors for different module categories
@@ -224,7 +189,15 @@ const GradRequirements = ({
   handleDeselectModule,
   handleMoveModules,
   handleDeletePlan,
+  handleSaveGradRequirements,
 }) => {
+  // snackbar to show that changes have been saved
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const handleSaveSuccess = () => {
+    handleSaveGradRequirements();
+    setSaveSuccess(true);
+  };
+
   // styling for the required modules area
   const RequiredModules = () => {
     return (
@@ -331,6 +304,13 @@ const GradRequirements = ({
               )}
             </Box>
             <Box sx={{ display: "flex", flexDirection: "row" }}>
+              <Tooltip title="Save Changes" placement="top">
+                <IconButton onClick={handleSaveSuccess}>
+                  <SaveAltRoundedIcon
+                    sx={{ fontSize: "30px", color: "black" }}
+                  />
+                </IconButton>
+              </Tooltip>
               <Tooltip title="Delete" placement="top">
                 <IconButton onClick={handleDeletePlan}>
                   <DeleteRoundedIcon sx={{ fontSize: "30px" }} color="error" />
@@ -356,6 +336,20 @@ const GradRequirements = ({
           >
             <RequiredModules />
           </Box>
+          <Snackbar
+            open={saveSuccess}
+            autoHideDuration={3000}
+            onClose={() => setSaveSuccess(false)}
+          >
+            <Alert
+              onClose={() => setSaveSuccess(false)}
+              variant="filled"
+              sx={{ color: "white" }}
+              severity="success"
+            >
+              Graduation requirements saved!
+            </Alert>
+          </Snackbar>
         </CardContent>
       </Card>
     </div>
