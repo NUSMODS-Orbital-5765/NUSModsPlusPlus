@@ -9,6 +9,9 @@ import {
   Snackbar,
   Alert,
   Tooltip,
+  Dialog,
+  DialogContent,
+  Button,
 } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import React, { useState, useEffect } from "react";
@@ -17,7 +20,7 @@ import { emptyAcademicInfo, sampleAcademicPlan } from "./ModuleConstants";
 import CreatePlanDialog from "./CreatePlanDialog";
 
 // header for modules page
-export const ModulesPageHeader = () => {
+export const ModulesPageHeader = ({ handleOpenDialog }) => {
   return (
     <div>
       <Box
@@ -54,6 +57,9 @@ export const ModulesPageHeader = () => {
             Easily draft semester plans, check major requirements, get
             recommendations, and receive administrative validation.
           </Typography>
+          <Button variant="contained" onClick={handleOpenDialog}>
+            Create New Plan
+          </Button>
         </Box>
         <img src="/module-header.png" style={{ width: "30%" }} />
       </Box>
@@ -94,22 +100,16 @@ const ModulesPage = () => {
   // warning for trying to delete the default plan
   const [deleteAlert, setDeleteAlert] = useState(false);
 
-  // logic for switching tabs
-  const [currentTab, setCurrentTab] = useState(0);
-  const handleChangeTab = (event, activeTab) => {
-    setCurrentTab(activeTab);
-  };
-
   // keep an array of objects to track the current number of tabs and corresponding academic plans
-  const [tabsList, setTabsList] = useState([
+  const [planList, setPlanList] = useState([
     { title: "Default Plan", academicPlan: sampleAcademicPlan },
   ]);
 
-  // only add a new plan if the input is not empty, add to the tabsList for mapping.
+  // only add a new plan if the input is not empty, add to the planList for mapping.
   const handleAddPlan = (academicPlanInfo) => {
-    const newDraftPlan = "Draft Plan " + tabsList.length.toString();
-    setTabsList((prevTabsList) => [
-      ...prevTabsList,
+    const newDraftPlan = "Draft Plan " + planList.length.toString();
+    setPlanList((prevPlanList) => [
+      ...prevPlanList,
       { title: newDraftPlan, academicPlan: academicPlanInfo },
     ]);
   };
@@ -119,17 +119,16 @@ const ModulesPage = () => {
     if (index === 0) {
       setDeleteAlert(true);
     } else {
-      setTabsList((prevTabsList) => {
-        const newTabsList = prevTabsList.filter((tab, ind) => ind !== index);
-        return newTabsList;
+      setPlanList((prevPlanList) => {
+        const newPlanList = prevPlanList.filter((plan, ind) => ind !== index);
+        return newPlanList;
       });
-      setCurrentTab(0);
     }
   };
 
   // function for clicking on "add" button
   const handleOpenDialog = () => {
-    if (tabsList.length === 4) {
+    if (planList.length === 3) {
       setPlanAlert(true);
     } else {
       setOpenDialog(true);
@@ -141,42 +140,18 @@ const ModulesPage = () => {
       <DrawerComponent defaultTab={3} />
       <AppBarComponent />
       <Box className="remainingViewport">
-        <ModulesPageHeader />
+        <ModulesPageHeader handleOpenDialog={handleOpenDialog} />
         <Box sx={{ margin: "55px", marginTop: "-20px" }}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyItems: "center",
-            }}
-          >
-            <Tabs value={currentTab} onChange={handleChangeTab}>
-              {tabsList.map((tab, index) => (
-                <Tab
-                  label={tab.title}
-                  key={index}
-                  sx={{ fontWeight: currentTab === index && 600 }}
-                />
-              ))}
-            </Tabs>
-            <Tooltip title="Add New Plan" placement="top">
-              <IconButton onClick={handleOpenDialog}>
-                <AddRoundedIcon color="primary" />
-              </IconButton>
-            </Tooltip>
-          </Box>
-          {tabsList.map(
-            (tab, index) =>
-              index === currentTab && (
-                <ModulesDisplay
-                  index={index}
-                  handleDeletePlan={() => handleDeletePlan(index)}
-                  academicPlan={tab.academicPlan}
-                  type={index === 0 ? "default" : "draft"}
-                />
-              )
-          )}
+          {planList.map((plan, index) => (
+            <Box sx={{ marginBottom: "35px" }}>
+              <ModulesDisplay
+                index={index}
+                handleDeletePlan={() => handleDeletePlan(index)}
+                academicPlan={plan.academicPlan}
+                type={index === 0 ? "default" : "draft"}
+              />
+            </Box>
+          ))}
           <Snackbar
             open={planAlert}
             autoHideDuration={3000}
@@ -187,7 +162,7 @@ const ModulesPage = () => {
               variant="filled"
               severity="error"
             >
-              You are only allowed to create a maximum of 3 draft plans.
+              You are only allowed to create a maximum of 2 draft plans.
             </Alert>
           </Snackbar>
           <Snackbar

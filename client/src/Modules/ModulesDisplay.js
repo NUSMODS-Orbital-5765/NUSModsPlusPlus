@@ -176,7 +176,7 @@ const ModulesDisplay = ({ academicPlan, type, handleDeletePlan }) => {
         selectedModules={selectedModules}
         handleMoveModules={handleMoveModules}
       />
-      <Box sx={{ marginTop: "45px" }}>
+      <Box sx={{ marginTop: "35px" }}>
         <SemesterModulePlans
           academicPlan={academicPlan}
           movedModules={movedModules}
