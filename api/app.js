@@ -472,6 +472,7 @@ app.post ("/post/like", [jsonParser,auth], (request, response) => {
       if (likedList.includes(likedUser)) {
         //Unlike
         const filteredLikedList =  likedList.filter(e => e !== likedUser)
+        
         prisma.post.update({
           where: {id: request.body.postId},
           data: {
@@ -482,7 +483,7 @@ app.post ("/post/like", [jsonParser,auth], (request, response) => {
         .then(result => {
           console.log("Unlike Sucessfully")
           response.status(200).send({
-            message: "User " +request.body.username + " Like Successfully from Post " + request.body.postId,
+            message: "User " +request.body.username + " unlike Successfully from Post " + request.body.postId,
             likeAmount: result.likeAmount,
           });
         })
@@ -503,7 +504,7 @@ app.post ("/post/like", [jsonParser,auth], (request, response) => {
             likeAmount: {increment : 1}
           }
         })
-        .then(any => {
+        .then(result => {
           console.log("Like Successfully")
           response.status(200).send({
             message: "User " +request.body.username + " Like Successfully from Post " + request.body.postId,
