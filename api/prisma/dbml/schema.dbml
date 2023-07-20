@@ -18,7 +18,6 @@ Table User {
   interests String[] [not null]
   avatar String
   Post Post [not null]
-  LikedPost Post [not null]
   Comment Comment [not null]
   Event Event [not null]
 }
@@ -34,8 +33,7 @@ Table Post {
   tags String[] [not null]
   author User [not null]
   PostAuthorId Int [not null]
-  like User [not null]
-  LikedUserId Int [not null]
+  like String[] [not null]
   Comment Comment [not null]
 }
 
@@ -104,8 +102,6 @@ Table Event {
 }
 
 Ref: Post.PostAuthorId > User.id
-
-Ref: Post.LikedUserId > User.id
 
 Ref: Comment.authorId > User.id
 
