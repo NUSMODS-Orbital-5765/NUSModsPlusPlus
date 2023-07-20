@@ -1,10 +1,29 @@
-import { Box, Typography, Divider, Avatar } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Divider,
+  Avatar,
+  Tooltip,
+  Dialog,
+  DialogContent,
+  Fab,
+} from "@mui/material";
 import { formatDate } from "../Constants";
 import { adminNotifsList } from "./AdminConstants";
 import AppBarNotifs from "../AppBar/AppBarNotifs";
+import { StudentProfileView } from "./StudentDataGrid";
+import React, { useState } from "react";
 
 // styling for admin notifications
 export const AdminDefaultNotif = ({ notif }) => {
+  const [showProfile, setShowProfile] = useState(false);
+  const handleShowProfile = () => {
+    setShowProfile(true);
+  };
+  const handleHideProfile = () => {
+    setShowProfile(false);
+  };
+
   // max words for truncation
   const truncateContent = (content) => {
     const words = content.split(" ");
@@ -70,10 +89,26 @@ export const AdminDefaultNotif = ({ notif }) => {
             justifyItems: "center",
           }}
         >
-          <Avatar
-            sx={{ width: 70, height: 70 }}
-            alt="Admin Icon"
-            src={notif.student.avatar}
+          <Tooltip title="View Profile" placement="top">
+            <Avatar
+              sx={{
+                width: 70,
+                height: 70,
+                transition: "filter 0.3s",
+                "&:hover": {
+                  filter: "brightness(0.8)",
+                  cursor: "pointer",
+                },
+              }}
+              onClick={handleShowProfile}
+              alt="Admin Icon"
+              src={notif.student.avatar}
+            />
+          </Tooltip>
+          <StudentProfileView
+            studentProfile={notif.student}
+            openDialog={showProfile}
+            handleCloseDialog={handleHideProfile}
           />
           <Box
             sx={{

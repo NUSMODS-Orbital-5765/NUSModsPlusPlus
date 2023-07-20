@@ -4,11 +4,9 @@ import { SearchBar } from "../StyledComponents";
 import AdminAppBarNotifs from "./AdminAppBarNotifs";
 import AppBarAvatar from "../AppBar/AppBarAvatar";
 import { SearchBarScroll } from "../Home/HomePageStyledComponents";
-import { notifsList } from "../Constants";
 import {
   adminRecommendations,
   adminSampleProfile,
-  adminNotifsList,
   adminAvatarItems,
 } from "./AdminConstants";
 
