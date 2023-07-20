@@ -11,6 +11,7 @@ import {
   IconButton,
   LinearProgress,
   Button,
+  Rating,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded"; // for back to top button
@@ -21,6 +22,37 @@ import NavigateBeforeRoundedIcon from "@mui/icons-material/NavigateBeforeRounded
 import { useNavigate } from "react-router-dom";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
+import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
+import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
+import SentimentSatisfiedIcon from "@mui/icons-material/SentimentSatisfied";
+import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAltOutlined";
+import SentimentVerySatisfiedIcon from "@mui/icons-material/SentimentVerySatisfied";
+
+// styled rating with sad/happy faces
+export const StyledRating = ({ rating }) => {
+  const ratingIcons = {
+    1: <SentimentVeryDissatisfiedIcon color="error" />,
+    2: <SentimentDissatisfiedIcon color="error" />,
+    3: <SentimentSatisfiedIcon color="warning" />,
+    4: <SentimentSatisfiedAltIcon color="success" />,
+    5: <SentimentVerySatisfiedIcon color="success" />,
+  };
+
+  const IconContainer = ({ value, ...props }) => {
+    return React.cloneElement(ratingIcons[value], {
+      ...props,
+    });
+  };
+
+  return (
+    <Rating
+      value={rating}
+      readOnly
+      IconContainerComponent={IconContainer}
+      highlightSelectedOnly
+    />
+  );
+};
 
 // sliding upwards transition
 export const SlideUpTransition = React.forwardRef(function Transition(
