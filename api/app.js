@@ -234,7 +234,7 @@ app.post("/post/search", jsonParser, (request, response) => {
   else if (request.body.filterValue === "notes") {where={category:"Notes"}}
 
   if (request.body.username) {
-    
+    where={author: {username: request.body.username}}
   }
   prisma.post.findMany({
   //   skip: 0,
@@ -303,7 +303,7 @@ app.post("/post/top",jsonParser, (request, response) => {
 app.get('/profile/get', jsonParser, (request, response) => {
   console.log(request.query);
   prisma.user.findUnique({
-    where: {id: parseInt(request.query.userId),}
+    where: {username: (request.query.username),}
   })
   .then(user => {
     console.log("Getting User Profile");

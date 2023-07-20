@@ -15,7 +15,7 @@ import { samplePosts, sampleProfile } from "../Constants";
 import ProfilePictureComponent from "./ProfilePictureComponent";
 import ProfileInfoComponent from "./ProfileInfoComponent";
 import { Link } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MyPostsTab from "./MyPostsTab";
 import LikedPostsTab from "./LikedPostsTab";
 import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
@@ -25,7 +25,7 @@ import CreateRoundedIcon from "@mui/icons-material/CreateRounded";
 import LockRoundedIcon from "@mui/icons-material/LockRounded";
 import AccountSecurityTab from "./AccountSecurityTab";
 import { combinedItems } from "../Home/HomePageStyledComponents";
-
+import axios from "axios"
 // button for viewing public profile
 export const PublicProfileButton = ({ disabledCondition, link }) => {
   return (
@@ -73,12 +73,56 @@ export const profileTabsList = [
 const ProfilePage = ({ selectedTab }) => {
   // handling the tabs field
   const [currentTab, setCurrentTab] = useState(selectedTab);
-
+  const [profileInfo, setProfileInfo] = useState();
+  // Edit profile
+  const handleProfileInfo = (evt) => {
+    const name = evt.target.name;
+    const value = evt.target.value;
+    setProfileInfo({
+      ...profileInfo,
+      [name]: value,
+    });
+  };
   // handling public vs private profile
   const [publicProfile, setPublicProfile] = useState(false);
   const togglePublicProfile = () => {
     setPublicProfile(!publicProfile);
   };
+
+  // useEffect(() => {
+  //   if (selectedTab === 1 || selectedTab === 3) {
+  //     //get profile page tab 1
+  //     const username = localStorage.getItem("username");
+  //     const GETprofileURL = process.env.REACT_APP_API_LINK + "/profile/get";
+  //     axios
+  //       .get(GETprofileURL, {
+  //         params: {
+  //           username: username,
+  //         },
+  //       })
+  //       .then((user) => {
+  //         setProfileInfo(user.data.user);
+  //         console.log(user.data.user);
+  //       })
+  //       .catch((err) => console.log(err));
+  //   }
+  //   else if (selectedTab === 2) {
+  //     const username = localStorage.getItem("username");
+  //     const GETprofileURL = process.env.REACT_APP_API_LINK + "/post/search";
+  //     axios
+  //       .post(GETprofileURL, {
+  //         {
+  //           username: username,
+
+  //         },
+  //       })
+  //       .then((user) => {
+  //         setProfileInfo(user.data.user);
+  //         console.log(user.data.user);
+  //       })
+  //       .catch((err) => console.log(err));
+  //   }
+  //   },[])
 
   // styling the switch component to toggle between public and private profile
   const PublicProfileSwitch = () => {
