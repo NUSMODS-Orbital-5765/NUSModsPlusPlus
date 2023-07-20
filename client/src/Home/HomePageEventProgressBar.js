@@ -29,7 +29,7 @@ const HomePageEventProgressBar = ({ todayEvents }) => {
           {todayEventsList.length}
         </Typography>
       </Box>
-      <ProgressBar color="success" value={eventsOverFraction} />
+      <ProgressBar color="success" value={eventsOverFraction * 100} />
     </Box>
   );
 };
