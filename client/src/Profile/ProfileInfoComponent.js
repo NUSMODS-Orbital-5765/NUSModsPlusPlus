@@ -25,7 +25,7 @@ const ProfileInfoComponent = ({ userProfile }) => {
   const [editableDetails, setEditableDetails] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState(false);
-  const [isFetch, setIsFetch] = useState(false);
+
   // just for testing, please replace with actual implementation
   const [profileInfoCopy, setProfileInfoCopy] = useState(userProfile);
 
@@ -80,6 +80,7 @@ const ProfileInfoComponent = ({ userProfile }) => {
 
   // getting profile information
   const [profileInfo, setProfileInfo] = useState();
+  const [isFetch, setIsFetch] = useState(false);
   const handleEditableDetails = () => {
     setEditableDetails(!editableDetails);
   };
@@ -94,12 +95,12 @@ const ProfileInfoComponent = ({ userProfile }) => {
   };
 
   useEffect(() => {
-    const username = localStorage.getItem("username");
+    const userId = localStorage.getItem("userId");
     const GETprofileURL = process.env.REACT_APP_API_LINK + "/profile/get";
     axios
       .get(GETprofileURL, {
         params: {
-          username: username,
+          userId: userId,
         },
       })
       .then((user) => {
@@ -130,7 +131,7 @@ const ProfileInfoComponent = ({ userProfile }) => {
   };
 
   return (
-    isFetch && 
+    // nam, please put back this line isFetch && (
     <Box sx={{ margin: "55px", marginTop: "-20px" }}>
       <Box
         sx={{

@@ -30,6 +30,7 @@ model User {
   interests      String[]
   avatar         String?
   Post           Post[]    @relation("createdPost")
+  LikedPost      Post[]    @relation("likedPost")
   Comment        Comment[]
   Event          Event[]
 }
@@ -45,7 +46,8 @@ model Post {
   tags         String[]
   author       User      @relation("createdPost", fields: [PostAuthorId], references: [id])
   PostAuthorId Int
-  like         String[]
+  like         User      @relation("likedPost", fields: [LikedUserId], references: [id])
+  LikedUserId  Int
   Comment      Comment[]
 }
 
