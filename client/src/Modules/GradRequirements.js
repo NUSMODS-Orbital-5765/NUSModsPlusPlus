@@ -8,8 +8,6 @@ import {
   IconButton,
   Tooltip,
   Alert,
-  Popover,
-  List,
   Rating,
 } from "@mui/material";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
@@ -170,18 +168,6 @@ export const ModuleBox = ({
     }
   };
 
-  // Display for difficulty, workload, etc. on hover
-  const [anchorEl, setAnchorEl] = useState(null);
-
-  const handlePopoverOpen = (event) => {
-    event.preventDefault(); // prevent default context menu
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handlePopoverClose = () => {
-    setAnchorEl(null);
-  };
-
   return (
     <Box id={module.code} sx={{ marginTop: "10px", marginBottom: "20px" }}>
       <Button
@@ -191,7 +177,6 @@ export const ModuleBox = ({
           opacity: isSelected ? 0.5 : 1,
         }}
         onClick={handleClickModule}
-        onContextMenu={handlePopoverOpen}
         component={Card}
       >
         <CardContent
@@ -225,65 +210,6 @@ export const ModuleBox = ({
           </Typography>
         </CardContent>
       </Button>
-      {/* additional information on right click */}
-      <Popover
-        open={Boolean(anchorEl)}
-        anchorEl={anchorEl}
-        onClose={handlePopoverClose}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "left",
-        }}
-        disableRestoreFocus
-        PaperProps={{
-          sx: {
-            borderRadius: "10px",
-            backgroundColor: "rgba(255, 255, 255, 0.8)",
-            backdropFilter: "blur(5px)",
-            boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
-          },
-        }}
-      >
-        <List sx={{ margin: "10px" }}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyItems: "center",
-            }}
-          >
-            <Typography sx={{ fontWeight: 600, marginRight: "10px" }}>
-              Difficulty:
-            </Typography>
-            <StyledRating rating={getRating()} />
-          </Box>
-          <Box
-            sx={{
-              marginTop: "10px",
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyItems: "center",
-            }}
-          >
-            <Typography sx={{ fontWeight: 600, marginRight: "10px" }}>
-              Workload:
-            </Typography>
-            <StyledRating rating={getRating()} />
-          </Box>
-          <Typography sx={{ marginTop: "10px" }}>
-            Best Taken in{" "}
-            <span style={{ fontWeight: 600 }}>
-              {getRecommendedTime(module, academicPlan)}
-            </span>
-          </Typography>
-        </List>
-      </Popover>
     </Box>
   );
 };
