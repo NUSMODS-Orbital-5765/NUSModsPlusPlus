@@ -16,9 +16,10 @@ import {
 } from "@mui/material";
 import { formatDate } from "../Constants";
 import { red } from "@mui/material/colors";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { isToday, isThisWeek } from "../Constants";
 import { AdminDefaultNotif } from "../Admin/AdminAppBarNotifs";
+import UserProfileView from "../UserProfileView";
 
 // notif count
 export const NotifCount = ({ label, notifListCount, labelColor }) => {
@@ -53,9 +54,22 @@ export const NotifCount = ({ label, notifListCount, labelColor }) => {
 
 // styling for a single notif
 export const DefaultNotif = ({ notif }) => {
-  const handleShowProfile = () => {
-    console.log(notif);
+  const navigate = useNavigate();
+
+  const [showProfile, setShowProfile] = useState(false);
+  const handleHideProfile = () => {
+    setShowProfile(false);
   };
+
+  const handleAvatarClick = (event) => {
+    event.stopPropagation();
+    setShowProfile(true);
+  };
+
+  const handleBoxClick = () => {
+    navigate(getNotifURL(notif.type));
+  };
+
   // max words for truncation
   const truncateContent = (content, wordLimit) => {
     const words = content.split(" ");
@@ -107,8 +121,7 @@ export const DefaultNotif = ({ notif }) => {
             textDecoration: "none",
           },
         }}
-        component={Link}
-        to={getNotifURL(notif.type)}
+        onClick={handleBoxClick}
       >
         <Box
           sx={{
@@ -129,11 +142,27 @@ export const DefaultNotif = ({ notif }) => {
                   cursor: "pointer",
                 },
               }}
-              alt="Admin Icon"
+              alt="User Icon"
               src={notif.author.avatar}
-              onClick={handleShowProfile}
+              onClick={handleAvatarClick}
             />
           </Tooltip>
+          {notif.author.hasOwnProperty("staffId") && (
+            <UserProfileView
+              userProfile={notif.author}
+              openDialog={showProfile}
+              handleCloseDialog={handleHideProfile}
+              userType="admin"
+            />
+          )}
+          {notif.author.hasOwnProperty("studentId") && (
+            <UserProfileView
+              userProfile={notif.author}
+              openDialog={showProfile}
+              handleCloseDialog={handleHideProfile}
+              userType="student"
+            />
+          )}
           <Box
             sx={{
               marginLeft: "10px",
@@ -246,7 +275,7 @@ const AppBarNotifs = ({ notifsList, appBarType }) => {
       >
         <Box sx={{ margin: "20px" }}>
           <Typography sx={{ fontSize: "30px", fontWeight: 600 }}>
-            Inbox
+            {appBarType === "student" ? "Inbox" : "Recent Activity"}
           </Typography>
           <Tabs value={currentTab} onChange={handleChangeTab}>
             <Tab

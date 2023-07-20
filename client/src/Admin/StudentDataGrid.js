@@ -8,17 +8,12 @@ import {
   Typography,
   IconButton,
   Tooltip,
-  Dialog,
-  DialogContent,
-  Fab,
 } from "@mui/material";
 import { checkPlanStatus } from "./AdminConstants";
 import FlagRoundedIcon from "@mui/icons-material/FlagRounded";
 import { grey, orange } from "@mui/material/colors";
 import React, { useState } from "react";
-import { PublicProfileView } from "../Profile/PublicProfilePage";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import { SlideUpTransition } from "../StyledComponents";
+import UserProfileView from "../UserProfileView";
 
 // for the "approved", "no plan", "flagged", "rejected" plan status
 const getStatusColor = (status) => {
@@ -290,49 +285,14 @@ const StudentDataGrid = ({ studentList, color }) => {
         disableRowSelectionOnClick
         onRowClick={handleRowClick}
       />
-      <StudentProfileView
-        studentProfile={selectedRow}
+      {/* replace this with a different view --> student module profile view */}
+      <UserProfileView
+        userProfile={selectedRow}
         openDialog={openDialog}
+        userType="student"
         handleCloseDialog={handleCloseDialog}
       />
     </div>
-  );
-};
-
-// styling for dialog that admin sees when they click on a row of the datagrid.
-export const StudentProfileView = ({
-  studentProfile,
-  openDialog,
-  handleCloseDialog,
-}) => {
-  return (
-    <Dialog
-      fullScreen
-      open={openDialog}
-      onClose={handleCloseDialog}
-      TransitionComponent={SlideUpTransition}
-    >
-      <DialogContent>
-        <PublicProfileView sampleProfile={studentProfile} />
-        <Tooltip title="Close" placement="bottom">
-          <Fab
-            color="error"
-            onClick={handleCloseDialog}
-            sx={{
-              position: "fixed",
-              top: "3rem",
-              right: "3rem",
-              transition: "transform 0.2s ease",
-              "&:hover": {
-                transform: "scale(1.2)",
-              },
-            }}
-          >
-            <CloseRoundedIcon sx={{ fontSize: "30px", fontWeight: 600 }} />
-          </Fab>
-        </Tooltip>
-      </DialogContent>
-    </Dialog>
   );
 };
 
