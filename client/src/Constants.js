@@ -118,10 +118,9 @@ export const sampleProfile = {
 // samplePosts list should be updated when a new post is uploaded.
 // posts should take note of the time and author upon upload.
 export const today = new Date();
-export const yesterday = new Date();
-yesterday.setDate(today.getDate() - 1);
-export const twoDaysAgo = new Date();
-twoDaysAgo.setDate(twoDaysAgo.getDate() - 1);
+export const yesterday = addDays(today, -1);
+export const twoDaysAgo = addDays(today, -2);
+export const tomorrow = addDays(today, 1);
 
 // each post should have a list of comments, but i'm just using one comment list for each post for simplicity
 export const sampleComments = [
@@ -205,7 +204,7 @@ export const samplePosts = [
     comments: 3,
   },
   {
-    dateCreated: yesterday,
+    dateCreated: twoDaysAgo,
     title: "Why is CS2040 so hard??",
     category: "Module Review",
     related_major: "Computer Science",
@@ -251,53 +250,11 @@ export const formatDate = (dateTime) => {
   return formatDistanceToNow(dateTime, { addSuffix: true });
 };
 
-// function for checking if notification was today (00:00 to 23:59)
-export function isToday(timestamp) {
-  const today = new Date();
-
-  // datetime object 12am today
-  const startOfDay = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate(),
-    0,
-    0,
-    0
-  );
-
-  // datetime object 11:59pm today
-  const endOfDay = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate(),
-    23,
-    59,
-    59
-  );
-
-  const notificationTime = new Date(timestamp);
-
-  return notificationTime >= startOfDay && notificationTime <= endOfDay;
-}
-
-// function for checking if occurred this week (00:00 Monday to 23:59 Sunday)
-export const isThisWeek = (timestamp) => {
-  const currentDate = new Date();
-  const firstDayOfWeek = new Date(
-    currentDate.setDate(currentDate.getDate() - currentDate.getDay())
-  );
-  const lastDayOfWeek = new Date(
-    currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 6)
-  );
-
-  return timestamp >= firstDayOfWeek && timestamp <= lastDayOfWeek;
-};
-
 // sample notifs list
 export const notifsList = [
   {
     timestamp: today,
-    avatar: "profilepic_2.png",
+    avatar: "/profilepic_2.png",
     author: "admin 1",
     content: "You are not approved for exemption from MA2001.",
     type: "mention",
@@ -305,8 +262,8 @@ export const notifsList = [
     readStatus: false,
   },
   {
-    timestamp: yesterday,
-    avatar: "profilepic_1.png",
+    timestamp: twoDaysAgo,
+    avatar: "/profilepic_1.png",
     author: "admin 2",
     content: "You are missing two core modules: BT2101 and BT2102.",
     type: "mention",
@@ -314,8 +271,8 @@ export const notifsList = [
     readStatus: false,
   },
   {
-    timestamp: twoDaysAgo,
-    avatar: "profilepic_2.png",
+    timestamp: yesterday,
+    avatar: "/profilepic_2.png",
     author: "admin 3",
     content: "",
     type: "approve",
@@ -323,8 +280,8 @@ export const notifsList = [
     readStatus: false,
   },
   {
-    timestamp: yesterday,
-    avatar: "profilepic_2.png",
+    timestamp: twoDaysAgo,
+    avatar: "/profilepic_2.png",
     author: "random_user",
     content: "",
     type: "like",
@@ -332,8 +289,8 @@ export const notifsList = [
     readStatus: false,
   },
   {
-    timestamp: twoDaysAgo,
-    avatar: "profilepic_2.png",
+    timestamp: yesterday,
+    avatar: "/profilepic_2.png",
     author: "random_user",
     content:
       "Amazing post! Really insightful and covered all the necessary details. On that note, I would like to add that the curriculum board has discussed and intended for the new curriculum to be released much earlier.",
@@ -342,6 +299,14 @@ export const notifsList = [
     readStatus: false,
   },
 ];
+
+// notifsList with id
+export const notifsListWithId = (notifsList) => {
+  return notifsList.map((notif, index) => ({
+    ...notif,
+    id: index,
+  }));
+};
 
 // list of possible views
 export const GPACalculatorViewList = ["By Year", "Overall GPA"];
@@ -448,129 +413,177 @@ export const priorityValues = {
   Low: 1,
 };
 
-// get today's date
-export function todayDate() {
-  const today = new Date();
-  const day = String(today.getDate()).padStart(2, "0");
-  const month = String(today.getMonth() + 1).padStart(2, "0");
-  // padstart helps to ensure the string is a certain number of digits by adding zeros in front
-  const year = today.getFullYear();
-  return `${day}-${month}-${year}`;
-  // template literals ${} directly convert these numbers to strings.
-}
-
-// get the current time
-export function currentTime() {
-  const currentTime = new Date().toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
-
-// list of sample week events for homepage timetable
-// need to extract from database, filter by current week
-export const sampleWeekEvents = [
-  {
-    name: "MA2001 Tutorial",
-    date: "18-07-2023",
-    time: "2:00 PM",
-    category: "MA2001",
-    priority: 4,
-  },
-  {
-    name: "Dinner with Amy",
-    date: "19-07-2023",
-    time: "5:00 PM",
-    category: "Personal",
-    priority: 1,
-  },
-
-  {
-    name: "BT2102 Lab",
-    date: "20-07-2023",
-    time: "1:00 PM",
-    category: "BT2102",
-    priority: 3,
-  },
-  {
-    name: "NTW Lesson",
-    date: "21-07-2023",
-    time: "4:00 PM",
-    category: "NTW2004",
-    priority: 3,
-  },
-  {
-    name: "Dinner",
-    date: "21-07-2023",
-    time: "6:30 PM",
-    category: "Personal",
-    priority: 1,
-  },
-
-  {
-    name: "Consult with Prof",
-    date: "21-07-2023",
-    time: "9:00 AM",
-    category: "NTW2004",
-    priority: 3,
-  },
-  {
-    name: "EC1101 tutorial 9",
-    date: "21-07-2023",
-    time: "4:00 PM",
-    category: "EC1101E",
-    priority: 3,
-  },
-
+// list of sample day events for homepage timetable
+export const sampleDayEvents = [
   {
     name: "Lunch with Lauren",
-    date: "22-07-2023",
+    date: "22-06-2003",
     time: "12:30 PM",
     category: "Personal",
     priority: 1,
   },
   {
     name: "CS2030 Lab",
-    date: "22-07-2023",
+    date: "22-06-2003",
     time: "2:00 PM",
     category: "CS2030",
     priority: 4,
   },
   {
     name: "Team Meeting",
-    date: "22-07-2023",
+    date: "22-06-2003",
     time: "5:00 PM",
     category: "Personal",
     priority: 3,
   },
   {
     name: "Suite Dinner",
-    date: "22-07-2023",
+    date: "22-06-2003",
     time: "6:00 PM",
     category: "Personal",
     priority: 1,
   },
   {
     name: "Submit NTW essay",
-    date: "22-07-2023",
+    date: "22-06-2003",
     time: "11:00 PM",
     category: "NTW2004",
     priority: 4,
   },
+];
 
+// list of sample week events for homepage timetable
+// need to extract from database
+export const sampleWeekEvents = [
   {
-    name: "Lunch",
-    date: "23-07-2023",
-    time: "12:30 PM",
-    category: "Personal",
-    priority: 1,
+    day: "Monday",
+    events: [
+      {
+        name: "Lunch",
+        date: "19-06-2003",
+        time: "12:30 PM",
+        category: "Personal",
+        priority: 1,
+      },
+      {
+        name: "MA2001 Tutorial",
+        date: "19-06-2003",
+        time: "2:00 PM",
+        category: "MA2001",
+        priority: 4,
+      },
+      {
+        name: "Dinner with Amy",
+        date: "19-06-2003",
+        time: "5:00 PM",
+        category: "Personal",
+        priority: 1,
+      },
+    ],
   },
   {
-    name: "Dinner with Jon",
-    date: "23-07-2023",
-    time: "6:00 PM",
-    category: "Personal",
-    priority: 1,
+    day: "Tuesday",
+    events: [
+      {
+        name: "BT2102 Lab",
+        date: "20-06-2003",
+        time: "1:00 PM",
+        category: "BT2102",
+        priority: 3,
+      },
+      {
+        name: "NTW Lesson",
+        date: "20-06-2003",
+        time: "4:00 PM",
+        category: "NTW2004",
+        priority: 3,
+      },
+      {
+        name: "Dinner",
+        date: "20-06-2003",
+        time: "6:30 PM",
+        category: "Personal",
+        priority: 1,
+      },
+    ],
+  },
+  {
+    day: "Wednesday",
+    events: [
+      {
+        name: "Consult with Prof",
+        date: "21-06-2003",
+        time: "1:00 PM",
+        category: "NTW2004",
+        priority: 3,
+      },
+      {
+        name: "EC1101 tutorial 9",
+        date: "21-06-2003",
+        time: "4:00 PM",
+        category: "EC1101E",
+        priority: 3,
+      },
+    ],
+  },
+  {
+    day: "Thursday",
+    events: [
+      {
+        name: "Lunch with Lauren",
+        date: "22-06-2003",
+        time: "12:30 PM",
+        category: "Personal",
+        priority: 1,
+      },
+      {
+        name: "CS2030 Lab",
+        date: "22-06-2003",
+        time: "2:00 PM",
+        category: "CS2030",
+        priority: 4,
+      },
+      {
+        name: "Team Meeting",
+        date: "22-06-2003",
+        time: "5:00 PM",
+        category: "Personal",
+        priority: 3,
+      },
+      {
+        name: "Suite Dinner",
+        date: "22-06-2003",
+        time: "6:00 PM",
+        category: "Personal",
+        priority: 1,
+      },
+      {
+        name: "Submit NTW essay",
+        date: "22-06-2003",
+        time: "11:00 PM",
+        category: "NTW2004",
+        priority: 4,
+      },
+    ],
+  },
+  {
+    day: "Friday",
+    events: [
+      {
+        name: "Lunch",
+        date: "23-06-2003",
+        time: "12:30 PM",
+        category: "Personal",
+        priority: 1,
+      },
+      {
+        name: "Dinner with Jon",
+        date: "23-06-2003",
+        time: "6:00 PM",
+        category: "Personal",
+        priority: 1,
+      },
+    ],
   },
 ];
 
