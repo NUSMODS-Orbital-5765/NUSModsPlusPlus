@@ -115,29 +115,29 @@ export const sampleProfile = {
 
 // samplePosts list should be updated when a new post is uploaded.
 // posts should take note of the time and author upon upload.
-export const currentDay = new Date();
-export const nextDay = new Date();
-nextDay.setDate(currentDay.getDate() + 1);
-export const followingDay = new Date();
-followingDay.setDate(nextDay.getDate() + 1);
+export const today = new Date();
+export const yesterday = new Date();
+yesterday.setDate(today.getDate() - 1);
+export const twoDaysAgo = new Date();
+twoDaysAgo.setDate(twoDaysAgo.getDate() - 1);
 
 // each post should have a list of comments, but i'm just using one comment list for each post for simplicity
 export const sampleComments = [
   {
-    timestamp: currentDay,
+    timestamp: today,
     content:
       "Curabitur lacinia commodo metus, sed varius felis scelerisque eu. In sit amet nibh sem. Vivamus nec aliquam sapien, eu semper dolor. Duis rhoncus vulputate cursus. In vel gravida orci, et dapibus nunc. Praesent eu erat porta, varius tellus in, vulputate mi. Pellentesque dapibus turpis velit, vitae convallis nisi porttitor sit amet. Cras a posuere metus, pharetra facilisis justo.",
     author: "ryan123",
     avatar: "profilepic_1.png",
   },
   {
-    timestamp: nextDay,
+    timestamp: yesterday,
     content: "Nullam egestas at ex nec fermentum. Cras a tellus quis.",
     author: "nam1nam",
     avatar: "profilepic_1.png",
   },
   {
-    timestamp: followingDay,
+    timestamp: twoDaysAgo,
     content:
       "Duis tincidunt nec est id efficitur. Ut porttitor fermentum dictum.",
     author: "joannee",
@@ -147,7 +147,7 @@ export const sampleComments = [
 
 export const samplePosts = [
   {
-    dateCreated: currentDay, // it's not in the form, but should record time and date of upload once button is pressed
+    dateCreated: today, // it's not in the form, but should record time and date of upload once button is pressed
     title: "Recent changes to the MA2001 curriculum",
     category: "Study Guide",
     related_major: "Mathematics",
@@ -161,7 +161,7 @@ export const samplePosts = [
     comments: 5,
   },
   {
-    dateCreated: nextDay,
+    dateCreated: yesterday,
     title: "Mindmaps that I used for EC1101E revision",
     category: "Notes",
     related_major: "Economics",
@@ -175,7 +175,7 @@ export const samplePosts = [
     comments: 1,
   },
   {
-    dateCreated: followingDay,
+    dateCreated: twoDaysAgo,
     title: "Why is CS2040 so hard??",
     category: "Module Review",
     related_major: "Computer Science",
@@ -189,7 +189,7 @@ export const samplePosts = [
     comments: 3,
   },
   {
-    dateCreated: followingDay,
+    dateCreated: twoDaysAgo,
     title: "Why is CS2040 so hard??",
     category: "Module Review",
     related_major: "Computer Science",
@@ -203,7 +203,7 @@ export const samplePosts = [
     comments: 3,
   },
   {
-    dateCreated: followingDay,
+    dateCreated: yesterday,
     title: "Why is CS2040 so hard??",
     category: "Module Review",
     related_major: "Computer Science",
@@ -217,7 +217,7 @@ export const samplePosts = [
     comments: 3,
   },
   {
-    dateCreated: nextDay,
+    dateCreated: yesterday,
     title: "Mindmaps that I used for EC1101E revision",
     category: "Notes",
     related_major: "Economics",
@@ -249,10 +249,52 @@ export const formatDate = (dateTime) => {
   return formatDistanceToNow(dateTime, { addSuffix: true });
 };
 
+// function for checking if notification was today (00:00 to 23:59)
+export function isToday(timestamp) {
+  const today = new Date();
+
+  // datetime object 12am today
+  const startOfDay = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+    0,
+    0,
+    0
+  );
+
+  // datetime object 11:59pm today
+  const endOfDay = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+    23,
+    59,
+    59
+  );
+
+  const notificationTime = new Date(timestamp);
+
+  return notificationTime >= startOfDay && notificationTime <= endOfDay;
+}
+
+// function for checking if occurred this week (00:00 Monday to 23:59 Sunday)
+export const isThisWeek = (timestamp) => {
+  const currentDate = new Date();
+  const firstDayOfWeek = new Date(
+    currentDate.setDate(currentDate.getDate() - currentDate.getDay())
+  );
+  const lastDayOfWeek = new Date(
+    currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 6)
+  );
+
+  return timestamp >= firstDayOfWeek && timestamp <= lastDayOfWeek;
+};
+
 // sample notifs list
 export const notifsList = [
   {
-    timestamp: currentDay,
+    timestamp: today,
     avatar: "profilepic_2.png",
     author: "admin 1",
     content: "You are not approved for exemption from MA2001.",
@@ -261,7 +303,7 @@ export const notifsList = [
     readStatus: false,
   },
   {
-    timestamp: nextDay,
+    timestamp: yesterday,
     avatar: "profilepic_1.png",
     author: "admin 2",
     content: "You are missing two core modules: BT2101 and BT2102.",
@@ -270,7 +312,7 @@ export const notifsList = [
     readStatus: false,
   },
   {
-    timestamp: followingDay,
+    timestamp: twoDaysAgo,
     avatar: "profilepic_2.png",
     author: "admin 3",
     content: "",
@@ -279,7 +321,7 @@ export const notifsList = [
     readStatus: false,
   },
   {
-    timestamp: followingDay,
+    timestamp: yesterday,
     avatar: "profilepic_2.png",
     author: "random_user",
     content: "",
@@ -288,7 +330,7 @@ export const notifsList = [
     readStatus: false,
   },
   {
-    timestamp: followingDay,
+    timestamp: twoDaysAgo,
     avatar: "profilepic_2.png",
     author: "random_user",
     content:
@@ -298,12 +340,6 @@ export const notifsList = [
     readStatus: false,
   },
 ];
-
-// notifsList with id
-export const notifsListWithId = notifsList.map((notif, index) => ({
-  ...notif,
-  id: index,
-}));
 
 // list of possible views
 export const GPACalculatorViewList = ["By Year", "Overall GPA"];
