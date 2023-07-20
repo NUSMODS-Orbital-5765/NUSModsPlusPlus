@@ -80,19 +80,14 @@ const ModulesPage = () => {
     setCurrentTab(activeTab);
   };
 
-  // for adding more draft plans
-  const [tabsList, setTabsList] = useState(["Default Plan"]);
+  // for adding more draft plans & keeping track of the
+  const [tabsList, setTabsList] = useState({
+    "Default Plan": sampleAcademicPlan,
+  });
 
-  // only add a new plan if the input is not empty
-  // otherwise users are still allowed to close the dialog, then there won't be any plan being rendered.
+  // only add a new plan if the input is not empty, add to the tabsList for mapping.
   const handleAddPlan = () => {
-    if (tabsList.length === 1) {
-      setOpenDialog(true);
-      console.log(newTabAcademicInfo);
-      newTabAcademicInfo !== emptyAcademicInfo &&
-        setTabsList([...tabsList, "Draft Plan 1"]);
-      setNewTabAcademicInfo(emptyAcademicInfo);
-    } else if (tabsList.length === 4) {
+    if (tabsList.length === 4) {
       setPlanAlert(true);
     } else {
       setOpenDialog(true);
