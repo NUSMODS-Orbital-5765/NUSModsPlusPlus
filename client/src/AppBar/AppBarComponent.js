@@ -4,7 +4,7 @@ import React from "react";
 import { SearchBar } from "../StyledComponents";
 import AppBarNotifs from "./AppBarNotifs";
 import AppBarAvatar, { avatarItems } from "./AppBarAvatar";
-import { sampleProfile } from "../Constants";
+import { sampleProfile, notifsList } from "../Constants";
 import {
   SearchBarScroll,
   siteRecommendations,
