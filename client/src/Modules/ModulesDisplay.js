@@ -88,6 +88,11 @@ const ModulesDisplay = ({ academicPlan, type, handleDeletePlan }) => {
     getRequiredModules(academicPlan)
   );
 
+  // for rendering a new select module box
+  const handleAddModule = () => {
+    setRequiredModulesDict([{ ...requiredModulesDict }]);
+  };
+
   const [selectedModules, setSelectedModules] = useState([]);
   const [movedModules, setMovedModules] = useState(emptyPlanLayout);
   const [openDialog, setOpenDialog] = useState(false);
@@ -121,6 +126,7 @@ const ModulesDisplay = ({ academicPlan, type, handleDeletePlan }) => {
 
   // handle moving of modules to correct destination year and semester
   const handleSubmitMovedModules = () => {
+    setSelectedModules([]);
     const updatedModulesDict = requiredModulesDict.map((requirement) => {
       // check each requirement within and check if the modules within are inside selectedModules array
       const updatedModules = requirement.modules.filter(
@@ -153,7 +159,6 @@ const ModulesDisplay = ({ academicPlan, type, handleDeletePlan }) => {
 
     setMovedModules(updatedMovedModules);
     console.log(updatedMovedModules);
-    setSelectedModules([]);
     setOpenDialog(false);
   };
 

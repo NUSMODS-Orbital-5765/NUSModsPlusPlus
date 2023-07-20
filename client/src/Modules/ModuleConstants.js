@@ -118,9 +118,9 @@ export const sampleAcademicPlan = {
 // i assume the plan that we get when we enter a sample academic plan is in this format..hahaha
 export function getRequiredModules(academicPlan) {
   if (academicPlan.primaryDegree === "Data Science and Analytics") {
-    return sampleAcademicRequirements;
-  } else {
     return draftAcademicRequirements;
+  } else {
+    return sampleAcademicRequirements;
   }
 }
 
@@ -186,6 +186,14 @@ export const sampleAcademicRequirements = [
         code: "CS2030",
         name: "Programming Methodology II",
       },
+      {
+        code: "3K requirement",
+        name: "",
+      },
+      {
+        code: "4K requirement",
+        name: "",
+      },
     ],
   },
   {
@@ -225,10 +233,28 @@ export const draftAcademicRequirements = [
   {
     name: "commonModules",
     modules: [
-      {
-        code: "NTW2006",
-        name: "Human Trafficking and Labour Migration",
-      },
+      [
+        {
+          code: "NTW2006",
+          name: "Human Trafficking and Labour Migration",
+        },
+        {
+          code: "NTW2031",
+          name: "Equity and Education",
+        },
+        {
+          code: "NTW2010",
+          name: "Sites of Tourism",
+        },
+        {
+          code: "NTW2017",
+          name: "Multidisciplinary Perspectives on 'Mind'",
+        },
+        {
+          code: "NTW2018",
+          name: "Danger and National Security",
+        },
+      ],
       {
         code: "HSI1000",
         name: "How Science Works, Why Science Works",

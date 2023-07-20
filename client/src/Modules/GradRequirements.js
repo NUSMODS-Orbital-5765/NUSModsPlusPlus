@@ -9,6 +9,8 @@ import {
   Tooltip,
   Alert,
   Snackbar,
+  Autocomplete,
+  TextField,
 } from "@mui/material";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import DriveFileMoveRoundedIcon from "@mui/icons-material/DriveFileMoveRounded";
@@ -21,14 +23,26 @@ import {
 } from "./ModuleConstants";
 import { grey, red } from "@mui/material/colors";
 
-// get different colors for different module categories
+// get different colors for different modules
 export function getModuleColors(module, academicPlan) {
   const defaultRequiredModules = getRequiredModules(academicPlan);
 
+  function findModuleInCategory(category, moduleCode) {
+    for (const item of category.modules) {
+      if (Array.isArray(item)) {
+        const foundModule = findModuleInCategory({ modules: item }, moduleCode);
+        if (foundModule) {
+          return foundModule;
+        }
+      } else if (item.code === moduleCode) {
+        return item;
+      }
+    }
+    return null;
+  }
+
   for (const category of defaultRequiredModules) {
-    const foundModule = category.modules.find(
-      (item) => item.code === module.code
-    );
+    const foundModule = findModuleInCategory(category, module.code);
     if (foundModule) {
       if (category.name === "commonModules") {
         return "#1a90ff";
@@ -44,8 +58,6 @@ export function getModuleColors(module, academicPlan) {
       }
     }
   }
-
-  return "black";
 }
 
 // function for rewriting the module section header
@@ -94,6 +106,143 @@ export const SelectedModulesAlert = ({
       You have selected{" "}
       <span style={{ fontWeight: 700 }}>{selectedModules.length}</span> modules.
     </Alert>
+  );
+};
+
+export const SelectModuleBox = ({
+  moduleList,
+  academicPlan,
+  selectedModules,
+  handleSelectModule,
+  handleDeselectModule,
+}) => {
+  const [selectedModule, setSelectedModule] = useState(moduleList[0]);
+  const [showSelectOptions, setShowSelectOptions] = useState(false);
+
+  const isSelected = selectedModules.includes(moduleList);
+
+  const handleSelectButtonClick = (event) => {
+    event.stopPropagation();
+    if (isSelected) {
+      handleDeselectModule(moduleList);
+    } else {
+      handleSelectModule(moduleList);
+    }
+  };
+
+  const handleShowSelectOptions = (event) => {
+    event.stopPropagation();
+    setShowSelectOptions(true);
+  };
+
+  const handleChangeModule = (event, newValue) => {
+    event.stopPropagation();
+    if (newValue) {
+      setSelectedModule(moduleList.find((module) => module.code === newValue));
+      setShowSelectOptions(false);
+    }
+  };
+
+  return (
+    <Box
+      sx={{
+        marginTop: "10px",
+        marginBottom: "20px",
+        borderRadius: "10px",
+        backgroundColor: getModuleColors(moduleList[0], academicPlan),
+        opacity: isSelected ? 0.5 : 1,
+        boxShadow: 1,
+        width: "200px",
+      }}
+    >
+      <Button
+        sx={{
+          borderRadius: "10px",
+          color: getModuleColors(selectedModule, academicPlan),
+          overflowY: "auto",
+          boxShadow: 0,
+          width: "100%",
+        }}
+        onClick={handleSelectButtonClick}
+        component={Card}
+      >
+        <CardContent
+          sx={{
+            width: "100%",
+            margin: "-10px",
+            backgroundColor: getModuleColors(moduleList[0], academicPlan),
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <a
+              href={`https://nusmods.com/courses/${selectedModule.code}/`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                fontSize: "20px",
+                fontWeight: 600,
+                color: "white",
+              }}
+            >
+              {selectedModule.code}
+            </a>
+            <Button sx={{ color: "white" }} onClick={handleShowSelectOptions}>
+              Change
+            </Button>
+          </Box>
+          <Typography
+            sx={{
+              marginTop: "10px",
+              fontSize: "15px",
+              textTransform: "none",
+              color: "white",
+            }}
+          >
+            {selectedModule.name}
+          </Typography>
+        </CardContent>
+      </Button>
+      {showSelectOptions && (
+        <Autocomplete
+          sx={{ marginTop: "10px", width: "200px" }}
+          disablePortal
+          options={moduleList.map((module) => module.code)}
+          value={selectedModule.code}
+          onChange={handleChangeModule}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              onMouseDown={(event) => {
+                event.stopPropagation();
+              }}
+              label="Select Module"
+              InputProps={{
+                ...params.InputProps,
+                sx: {
+                  color: "white",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "white",
+                  },
+                },
+              }}
+              InputLabelProps={{
+                style: {
+                  color: "white",
+                },
+              }}
+            />
+          )}
+        />
+      )}
+    </Box>
   );
 };
 
@@ -167,6 +316,7 @@ export const ModuleBox = ({
 const GradRequirements = ({
   academicPlan,
   type,
+  handleAddModule,
   requiredModulesDict,
   selectedModules,
   handleSelectModule,
@@ -211,16 +361,59 @@ const GradRequirements = ({
               >
                 {getSectionHeader(requirement.name, academicPlan)}
               </Typography>
-              {requirement.modules.map((module, index) => (
-                <ModuleBox
-                  selectedModules={selectedModules}
-                  handleSelectModule={handleSelectModule}
-                  handleDeselectModule={handleDeselectModule}
-                  module={module}
-                  academicPlan={academicPlan}
-                  key={index}
-                />
-              ))}
+              {requirement.modules.map((moduleOrArray, index) =>
+                Array.isArray(moduleOrArray) ? (
+                  <SelectModuleBox
+                    key={index}
+                    academicPlan={academicPlan}
+                    moduleList={moduleOrArray}
+                    handleSelectModule={handleSelectModule}
+                    handleDeselectModule={handleDeselectModule}
+                    selectedModules={selectedModules}
+                  />
+                ) : (
+                  <ModuleBox
+                    academicPlan={academicPlan}
+                    key={index}
+                    module={moduleOrArray}
+                    handleSelectModule={handleSelectModule}
+                    handleDeselectModule={handleDeselectModule}
+                    selectedModules={selectedModules}
+                  />
+                )
+              )}
+              {(requirement.name === "primaryDegreeModules" ||
+                requirement.name === "secondDegreeModules") && (
+                <div>
+                  <Button
+                    onClick={handleAddModule}
+                    color="error"
+                    variant="outlined"
+                    sx={{
+                      width: "200px",
+                      height: "100px",
+                      borderRadius: "10px",
+                      border: "1px dashed",
+                      marginBottom: "20px",
+                    }}
+                  >
+                    Add 3k Module
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={handleAddModule}
+                    sx={{
+                      width: "200px",
+                      height: "100px",
+                      borderRadius: "10px",
+                      border: "1px dashed",
+                    }}
+                  >
+                    Add 4k Module
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}

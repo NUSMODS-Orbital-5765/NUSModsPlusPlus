@@ -18,6 +18,7 @@ import React, { useState, useEffect } from "react";
 import ModulesDisplay from "./ModulesDisplay";
 import { emptyAcademicInfo, sampleAcademicPlan } from "./ModuleConstants";
 import CreatePlanDialog from "./CreatePlanDialog";
+import { BackToTop } from "../StyledComponents";
 
 // header for modules page
 export const ModulesPageHeader = ({ handleOpenDialog }) => {
@@ -141,7 +142,7 @@ const ModulesPage = () => {
       <AppBarComponent />
       <Box className="remainingViewport">
         <ModulesPageHeader handleOpenDialog={handleOpenDialog} />
-        <Box sx={{ margin: "55px", marginTop: "-20px" }}>
+        <Box sx={{ margin: "55px", marginTop: "-20px", marginBottom: "100px" }}>
           {planList.map((plan, index) => (
             <Box sx={{ marginBottom: "35px" }}>
               <ModulesDisplay
@@ -185,6 +186,7 @@ const ModulesPage = () => {
               handleAddPlan(academicPlanInfo)
             }
           />
+          <BackToTop />
         </Box>
       </Box>
     </div>
