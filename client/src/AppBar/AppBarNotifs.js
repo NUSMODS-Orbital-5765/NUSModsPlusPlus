@@ -12,7 +12,6 @@ import {
   Divider,
   Tabs,
   Tab,
-  Button,
 } from "@mui/material";
 import { formatDate } from "../Constants";
 import { red } from "@mui/material/colors";
@@ -21,7 +20,7 @@ import { isToday, isThisWeek } from "../Constants";
 import { AdminDefaultNotif } from "../Admin/AdminAppBarNotifs";
 
 // notif count
-export const NotifCount = ({ label, unreadCount, labelColor }) => {
+export const NotifCount = ({ label, notifListCount, labelColor }) => {
   return (
     <Box
       sx={{
@@ -45,23 +44,14 @@ export const NotifCount = ({ label, unreadCount, labelColor }) => {
           marginLeft: "10px",
         }}
       >
-        {unreadCount}
+        {notifListCount}
       </Box>
     </Box>
   );
 };
 
 // styling for a single notif
-export const DefaultNotif = (props) => {
-  const id = props.id;
-  const timestamp = props.timestamp;
-  const avatar = props.avatar;
-  const author = props.author;
-  const content = props.content;
-  const type = props.type;
-  const readStatus = props.readStatus;
-  const handleNotifClick = props.handleNotifClick;
-
+export const DefaultNotif = ({ notif }) => {
   // max words for truncation
   const truncateContent = (content, wordLimit) => {
     const words = content.split(" ");
@@ -72,7 +62,7 @@ export const DefaultNotif = (props) => {
     return truncatedWords.join(" ") + "...";
   };
 
-  const truncatedContent = truncateContent(content, 10);
+  const truncatedContent = truncateContent(notif.content, 10);
 
   // to set the content for the notification
   const getNotifContent = (type) => {
@@ -87,6 +77,17 @@ export const DefaultNotif = (props) => {
     }
   };
 
+  // to set the content for the notification
+  const getNotifURL = (type) => {
+    if (type === "comment" || type === "like") {
+      return "/profile/my-posts";
+    } else if (type === "approve" || type === "mention") {
+      return "/modules";
+    } else {
+      return "/";
+    }
+  };
+
   return (
     <div>
       <Box
@@ -94,13 +95,16 @@ export const DefaultNotif = (props) => {
           margin: "20px",
           display: "flex",
           flexDirection: "column",
-          opacity: readStatus ? 0.5 : 1,
+          textDecoration: "none",
+          color: "inherit",
           transition: "transform 0.3s",
           "&:hover": {
             transform: "scale(1.05)",
+            textDecoration: "none",
           },
         }}
-        onClick={handleNotifClick}
+        component={Link}
+        to={getNotifURL(notif.type)}
       >
         <Box
           sx={{
@@ -113,7 +117,7 @@ export const DefaultNotif = (props) => {
           <Avatar
             sx={{ width: 70, height: 70 }}
             alt="Admin Icon"
-            src={avatar}
+            src={notif.avatar}
           />
           <Box
             sx={{
@@ -129,9 +133,9 @@ export const DefaultNotif = (props) => {
                 color: "text.primary",
               }}
             >
-              {author}{" "}
+              {notif.author}{" "}
               <Typography component="span" fontWeight={400}>
-                {getNotifContent(type)}
+                {getNotifContent(notif.type)}
               </Typography>
             </Typography>
             <Typography
@@ -144,11 +148,11 @@ export const DefaultNotif = (props) => {
                 fontSize: "14px",
               }}
             >
-              {formatDate(timestamp)}
+              {formatDate(notif.timestamp)}
             </Typography>
           </Box>
         </Box>
-        {content !== "" && (
+        {notif.content !== "" && (
           <Box
             sx={{
               marginTop: "10px",
@@ -161,14 +165,6 @@ export const DefaultNotif = (props) => {
             <Typography sx={{ margin: "15px" }}>{truncatedContent}</Typography>
           </Box>
         )}
-        <Box
-          sx={{
-            marginLeft: "80px",
-            marginTop: "10px",
-            display: "flex",
-            flexDirection: "row",
-          }}
-        ></Box>
       </Box>
       <Divider sx={{ marginLeft: "-20px", marginRight: "-20px" }} />
     </div>
@@ -201,28 +197,10 @@ const AppBarNotifs = ({ notifsList, appBarType }) => {
     setCurrentTab(activeTab);
   };
 
-  // handling read notifs status
-  const [currentNotifs, setCurrentNotifs] = useState(
-    notifsListWithId(notifsList)
-  );
-
-  // update the read state of each notification
-  const handleReadNotif = (id) => {
-    const updatedNotifs = currentNotifs.map((notif) => {
-      if (notif.id === id) {
-        return { ...notif, readStatus: true };
-      }
-      return notif;
-    });
-
-    setCurrentNotifs(updatedNotifs);
-  };
-
-  // display badge if have unread notifications, otherwise no badge if all read
+  // display badge if have new notifications today, otherwise no badge
   return (
-    <Box>
-      {currentNotifs.filter((notif) => notif.readStatus === false).length ===
-      0 ? (
+    <Box sx={{ marginLeft: "55ch" }}>
+      {todayNotifs.length === 0 ? (
         <IconButton sx={{ color: "black" }} onClick={handleOpenNotifs}>
           <MarkEmailReadRoundedIcon sx={{ fontSize: "30px" }} />
         </IconButton>
@@ -259,8 +237,8 @@ const AppBarNotifs = ({ notifsList, appBarType }) => {
             <Tab
               label={
                 <NotifCount
-                  label="All"
-                  unreadCount={currentNotifs.length}
+                  label="Today"
+                  notifListCount={todayNotifs.length}
                   labelColor="#1a90ff"
                 />
               }
@@ -268,24 +246,18 @@ const AppBarNotifs = ({ notifsList, appBarType }) => {
             <Tab
               label={
                 <NotifCount
-                  label="Unread"
-                  unreadCount={
-                    currentNotifs.filter((notif) => notif.readStatus === false)
-                      .length
-                  }
-                  labelColor={red[500]}
+                  label="This Week"
+                  notifListCount={thisWeekNotifs.length}
+                  labelColor="#44b700"
                 />
               }
             />
             <Tab
               label={
                 <NotifCount
-                  label="Read"
-                  unreadCount={
-                    currentNotifs.filter((notif) => notif.readStatus === true)
-                      .length
-                  }
-                  labelColor="#44b700"
+                  label="Past"
+                  notifListCount={pastNotifs.length}
+                  labelColor={red[500]}
                 />
               }
             />
