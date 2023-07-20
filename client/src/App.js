@@ -11,6 +11,7 @@ import CommunityPage from "./Community/CommunityPage";
 import AdminHomePage from "./Admin/AdminHomePage";
 import AdminStudentsPage from "./Admin/AdminStudentsPage";
 import AdminProfilePage from "./Admin/AdminProfilePage";
+import AdminPublicProfilePage from "./Admin/AdminPublicProfilePage";
 import ModulesPage from "./Modules/ModulesPage";
 import AdminSignUpPage from "./SignUp/AdminSignUpPage";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -64,6 +65,10 @@ const App = () => {
         <Route
           path="/admin/profile"
           element={<AdminProfilePage selectedTab={0} />}
+        />
+        <Route
+          path="/admin/profile/public"
+          element={<AdminPublicProfilePage />}
         />
         <Route
           path="/admin/profile/account"

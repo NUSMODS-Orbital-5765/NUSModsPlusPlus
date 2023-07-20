@@ -293,53 +293,90 @@ export const isThisWeek = (timestamp) => {
   return timestamp >= firstDayOfWeek && timestamp <= lastDayOfWeek;
 };
 
+// sample profile list
+export const sampleProfileList = [
+  {
+    name: "Admin 1",
+    avatar: "/sample-admin-icon.png",
+    staffId: "s1234567",
+    username: "admin_1",
+    password: "admin_password!",
+    email: "admin1@gmail.com",
+    department: "School of Computing",
+    position: "Faculty Administrator",
+  },
+  {
+    name: "Ryan Wong",
+    avatar: "/profilepic_1.png",
+    studentId: "e5557777",
+    username: "ryan123",
+    password: "ryan123",
+    email: "ryan_wong@gmail.com",
+    faculty: "School of Business",
+    primaryDegree: "Business Administration",
+    secondDegree: "Economics",
+    secondMajor: "",
+    minor: ["Statistics", "Mathematics"],
+    programme: "NUS College",
+  },
+  {
+    name: "Nguyen Xuan Nam",
+    avatar: "/profilepic_1.png",
+    studentId: "e1234567",
+    username: "nam1nam",
+    password: "nam123",
+    email: "namnam@gmail.com",
+    faculty: "Faculty of Science",
+    primaryDegree: "Data Science and Analytics",
+    secondDegree: "",
+    secondMajor: "Computer Science",
+    minor: ["Mathematics"],
+    programme: "",
+  },
+  {
+    name: "Admin 2",
+    avatar: "/sample-admin-icon.png",
+    staffId: "s2244395",
+    username: "admin_2",
+    password: "admin_password!",
+    email: "admin2@gmail.com",
+    department: "NUS College",
+    position: "Faculty Administrator",
+  },
+];
+
 // sample notifs list
 export const notifsList = [
   {
     timestamp: today,
-    avatar: "/profilepic_2.png",
-    author: "admin 1",
+    author: sampleProfileList[0], // sample admin profile
     content: "You are not approved for exemption from MA2001.",
     type: "mention",
-    url: "/modules",
-    readStatus: false,
   },
   {
     timestamp: yesterday,
-    avatar: "/profilepic_1.png",
-    author: "admin 2",
+    author: sampleProfileList[0], // sample admin profile
     content: "You are missing two core modules: BT2101 and BT2102.",
     type: "mention",
-    url: "/modules",
-    readStatus: false,
   },
   {
     timestamp: twoDaysAgo,
-    avatar: "/profilepic_2.png",
-    author: "admin 3",
+    author: sampleProfileList[3], // sample admin profile
     content: "",
     type: "approve",
-    url: "/modules",
-    readStatus: false,
   },
   {
     timestamp: yesterday,
-    avatar: "/profilepic_2.png",
-    author: "random_user",
+    author: sampleProfileList[1], // sample student profile
     content: "",
     type: "like",
-    url: "/community", // should replace with the actual url
-    readStatus: false,
   },
   {
     timestamp: twoDaysAgo,
-    avatar: "/profilepic_2.png",
-    author: "random_user",
+    author: sampleProfileList[2], // sample student profile
     content:
       "Amazing post! Really insightful and covered all the necessary details. On that note, I would like to add that the curriculum board has discussed and intended for the new curriculum to be released much earlier.",
     type: "comment",
-    url: "/community",
-    readStatus: false,
   },
 ];
 

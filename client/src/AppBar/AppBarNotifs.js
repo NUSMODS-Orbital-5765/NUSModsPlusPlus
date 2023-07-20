@@ -12,6 +12,7 @@ import {
   Divider,
   Tabs,
   Tab,
+  Tooltip,
 } from "@mui/material";
 import { formatDate } from "../Constants";
 import { red } from "@mui/material/colors";
@@ -52,6 +53,9 @@ export const NotifCount = ({ label, notifListCount, labelColor }) => {
 
 // styling for a single notif
 export const DefaultNotif = ({ notif }) => {
+  const handleShowProfile = () => {
+    console.log(notif);
+  };
   // max words for truncation
   const truncateContent = (content, wordLimit) => {
     const words = content.split(" ");
@@ -114,11 +118,22 @@ export const DefaultNotif = ({ notif }) => {
             justifyItems: "center",
           }}
         >
-          <Avatar
-            sx={{ width: 70, height: 70 }}
-            alt="Admin Icon"
-            src={notif.avatar}
-          />
+          <Tooltip title="View Profile" placement="top">
+            <Avatar
+              sx={{
+                width: 70,
+                height: 70,
+                transition: "filter 0.3s",
+                "&:hover": {
+                  filter: "brightness(0.8)",
+                  cursor: "pointer",
+                },
+              }}
+              alt="Admin Icon"
+              src={notif.author.avatar}
+              onClick={handleShowProfile}
+            />
+          </Tooltip>
           <Box
             sx={{
               marginLeft: "10px",
@@ -133,7 +148,7 @@ export const DefaultNotif = ({ notif }) => {
                 color: "text.primary",
               }}
             >
-              {notif.author}{" "}
+              {notif.author.username}{" "}
               <Typography component="span" fontWeight={400}>
                 {getNotifContent(notif.type)}
               </Typography>
