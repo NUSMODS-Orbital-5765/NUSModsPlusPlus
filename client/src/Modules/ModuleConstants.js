@@ -248,7 +248,11 @@ export const FormatAcademicPlanDetails = ({ academicPlan }) => {
       " in " + primaryDegree.toString() + " and " + secondMajor.toString()
     );
   } else {
-    degreeContent.push(<span key="degree">Degree</span>);
+    degreeContent.push(
+      <span key="degree" style={{ fontWeight: 600 }}>
+        Degree
+      </span>
+    );
     degreeContent.push(" in " + primaryDegree.toString());
   }
 

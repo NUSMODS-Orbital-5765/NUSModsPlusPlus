@@ -11,8 +11,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ModulesDisplay from "./ModulesDisplay";
 import { emptyAcademicInfo, sampleAcademicPlan } from "./ModuleConstants";
 import CreatePlanDialog from "./CreatePlanDialog";
@@ -64,15 +63,14 @@ export const ModulesPageHeader = () => {
 
 // main page component
 const ModulesPage = () => {
-  // information about the new tab
-  const [newTabAcademicInfo, setNewTabAcademicInfo] =
-    useState(emptyAcademicInfo);
-
   // dialog for creating a new plan
   const [openDialog, setOpenDialog] = useState(false);
 
   // warning if too many plans have been created
   const [planAlert, setPlanAlert] = useState(false);
+
+  // warning for trying to delete the default plan
+  const [deleteAlert, setDeleteAlert] = useState(false);
 
   // logic for switching tabs
   const [currentTab, setCurrentTab] = useState(0);
@@ -80,21 +78,39 @@ const ModulesPage = () => {
     setCurrentTab(activeTab);
   };
 
-  // for adding more draft plans & keeping track of the
-  const [tabsList, setTabsList] = useState({
-    "Default Plan": sampleAcademicPlan,
-  });
+  // keep an array of objects to track the current number of tabs and corresponding academic plans
+  const [tabsList, setTabsList] = useState([
+    { title: "Default Plan", academicPlan: sampleAcademicPlan },
+  ]);
 
   // only add a new plan if the input is not empty, add to the tabsList for mapping.
-  const handleAddPlan = () => {
+  const handleAddPlan = (academicPlanInfo) => {
+    const newDraftPlan = "Draft Plan " + tabsList.length.toString();
+    setTabsList((prevTabsList) => [
+      ...prevTabsList,
+      { title: newDraftPlan, academicPlan: academicPlanInfo },
+    ]);
+  };
+
+  // handle deleting a plan
+  const handleDeletePlan = (index) => {
+    if (index === 0) {
+      setDeleteAlert(true);
+    } else {
+      setTabsList((prevTabsList) => {
+        const newTabsList = prevTabsList.filter((tab, ind) => ind !== index);
+        return newTabsList;
+      });
+      setCurrentTab(0);
+    }
+  };
+
+  // function for clicking on "add" button
+  const handleOpenDialog = () => {
     if (tabsList.length === 4) {
       setPlanAlert(true);
     } else {
       setOpenDialog(true);
-      const newDraftPlan = "Draft Plan " + tabsList.length.toString();
-      newTabAcademicInfo !== emptyAcademicInfo &&
-        setTabsList([...tabsList, newDraftPlan]);
-      setNewTabAcademicInfo(emptyAcademicInfo);
     }
   };
 
@@ -116,19 +132,29 @@ const ModulesPage = () => {
             <Tabs value={currentTab} onChange={handleChangeTab}>
               {tabsList.map((tab, index) => (
                 <Tab
-                  label={tab}
+                  label={tab.title}
                   key={index}
                   sx={{ fontWeight: currentTab === index && 600 }}
                 />
               ))}
             </Tabs>
             <Tooltip title="Add New Plan" placement="top">
-              <IconButton onClick={handleAddPlan}>
+              <IconButton onClick={handleOpenDialog}>
                 <AddRoundedIcon color="primary" />
               </IconButton>
             </Tooltip>
           </Box>
-          <ModulesDisplay academicPlan={sampleAcademicPlan} />
+          {tabsList.map(
+            (tab, index) =>
+              index === currentTab && (
+                <ModulesDisplay
+                  index={index}
+                  handleDeletePlan={() => handleDeletePlan(index)}
+                  academicPlan={tab.academicPlan}
+                  type={index === 0 ? "default" : "draft"}
+                />
+              )
+          )}
           <Snackbar
             open={planAlert}
             autoHideDuration={3000}
@@ -142,11 +168,25 @@ const ModulesPage = () => {
               You are only allowed to create a maximum of 3 draft plans.
             </Alert>
           </Snackbar>
+          <Snackbar
+            open={deleteAlert}
+            autoHideDuration={3000}
+            onClose={() => setDeleteAlert(false)}
+          >
+            <Alert
+              onClose={() => setDeleteAlert(false)}
+              variant="filled"
+              severity="error"
+            >
+              You cannot delete a default plan!
+            </Alert>
+          </Snackbar>
           <CreatePlanDialog
             openDialog={openDialog}
             handleCloseDialog={() => setOpenDialog(false)}
-            currentAcademicInfo={emptyAcademicInfo}
-            onSubmit={(newTabInfo) => setNewTabAcademicInfo(newTabInfo)} // this is so that the requirements for the new plan can be calculated and then displayed
+            handleSubmitAcademicInfo={(academicPlanInfo) =>
+              handleAddPlan(academicPlanInfo)
+            }
           />
         </Box>
       </Box>

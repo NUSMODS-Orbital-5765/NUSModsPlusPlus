@@ -25,7 +25,7 @@ import SentimentSatisfiedIcon from "@mui/icons-material/SentimentSatisfied";
 import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAltOutlined";
 import SentimentVerySatisfiedIcon from "@mui/icons-material/SentimentVerySatisfied";
 
-// get recommended year/semester for module
+// get recommended year/semester for module (based on a database)
 export function getRecommendedTime(module, academicPlan) {
   const recommendedModules = getRecommendedPlan(academicPlan);
 
@@ -223,6 +223,7 @@ const GradRequirements = ({
   handleSelectModule,
   handleDeselectModule,
   handleMoveModules,
+  handleDeletePlan,
 }) => {
   // styling for the required modules area
   const RequiredModules = () => {
@@ -325,13 +326,13 @@ const GradRequirements = ({
                     color: "white",
                     backgroundColor: grey[500],
                   }}
-                  label="Default"
+                  label="Draft"
                 />
               )}
             </Box>
             <Box sx={{ display: "flex", flexDirection: "row" }}>
               <Tooltip title="Delete" placement="top">
-                <IconButton disabled={type === "default"}>
+                <IconButton onClick={handleDeletePlan}>
                   <DeleteRoundedIcon sx={{ fontSize: "30px" }} color="error" />
                 </IconButton>
               </Tooltip>

@@ -1,6 +1,6 @@
 import GradRequirements from "./GradRequirements";
 import SemesterModulePlans from "./SemesterModulePlans";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Dialog,
@@ -82,7 +82,23 @@ export const MoveModuleDialog = ({
 };
 
 // manages moving of modules from one component to the other
-const ModulesDisplay = ({ academicPlan }) => {
+const ModulesDisplay = ({ academicPlan, type, handleDeletePlan }) => {
+  // ensure that users don't attempt to leave the page without saving their stuff
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      console.log(requiredModulesDict);
+      console.log(movedModules);
+      // the console won't work cause the page will reload.
+      // replace with database input, if necessary, etc.
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
   // placeholder line to get the academic requirements from academic plan.
   const [requiredModulesDict, setRequiredModulesDict] = useState(
     getRequiredModules(academicPlan)
@@ -161,7 +177,8 @@ const ModulesDisplay = ({ academicPlan }) => {
     <div>
       <GradRequirements
         academicPlan={academicPlan}
-        type="default"
+        type={type}
+        handleDeletePlan={handleDeletePlan}
         handleSelectModule={handleSelectModule}
         handleDeselectModule={handleDeselectModule}
         requiredModulesDict={requiredModulesDict}
