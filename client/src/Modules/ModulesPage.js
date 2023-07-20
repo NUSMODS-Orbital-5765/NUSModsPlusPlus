@@ -63,6 +63,28 @@ export const ModulesPageHeader = () => {
 
 // main page component
 const ModulesPage = () => {
+  // ensure that users don't attempt to leave the page without saving their stuff
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    const handleBlur = () => {
+      const confirmationMessage =
+        "You have unsaved changes. Are you sure you want to leave the page?";
+      return confirmationMessage;
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    window.addEventListener("blur", handleBlur);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener("blur", handleBlur);
+    };
+  }, []);
+
   // dialog for creating a new plan
   const [openDialog, setOpenDialog] = useState(false);
 

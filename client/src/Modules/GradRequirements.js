@@ -21,22 +21,6 @@ import {
 } from "./ModuleConstants";
 import { grey, red } from "@mui/material/colors";
 
-// get recommended year/semester for module (based on a database)
-export function getRecommendedTime(module, academicPlan) {
-  const recommendedModules = getRecommendedPlan(academicPlan);
-
-  for (const year in recommendedModules) {
-    for (const semester in recommendedModules[year]) {
-      const modules = recommendedModules[year][semester];
-      if (modules.some((m) => m.code === module.code)) {
-        return `Y${year.slice(-1)}S${semester.slice(-1)}`;
-      }
-    }
-  }
-
-  return "";
-}
-
 // get different colors for different module categories
 export function getModuleColors(module, academicPlan) {
   const defaultRequiredModules = getRequiredModules(academicPlan);

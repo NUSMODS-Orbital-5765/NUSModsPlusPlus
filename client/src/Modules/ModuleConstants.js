@@ -117,7 +117,11 @@ export const sampleAcademicPlan = {
 // placeholder function for getting academic requirements
 // i assume the plan that we get when we enter a sample academic plan is in this format..hahaha
 export function getRequiredModules(academicPlan) {
-  return sampleAcademicRequirements;
+  if (academicPlan.primaryDegree === "Data Science and Analytics") {
+    return sampleAcademicRequirements;
+  } else {
+    return draftAcademicRequirements;
+  }
 }
 
 // placeholder function for getting recommended plan
@@ -198,6 +202,81 @@ export const sampleAcademicRequirements = [
       {
         code: "CS2103T",
         name: "Software Engineering",
+      },
+    ],
+  },
+  {
+    name: "minorModules",
+    modules: [
+      {
+        code: "MA2108",
+        name: "Mathematical Analysis I",
+      },
+      {
+        code: "MA2116",
+        name: "Probability",
+      },
+    ],
+  },
+];
+
+// another array to check state independence
+export const draftAcademicRequirements = [
+  {
+    name: "commonModules",
+    modules: [
+      {
+        code: "NTW2006",
+        name: "Human Trafficking and Labour Migration",
+      },
+      {
+        code: "HSI1000",
+        name: "How Science Works, Why Science Works",
+      },
+      {
+        code: "HSS1000",
+        name: "Understanding Social Complexity",
+      },
+      {
+        code: "HSA1000",
+        name: "Asian Interconnections",
+      },
+      {
+        code: "HSH1000",
+        name: "The Human Condition",
+      },
+      {
+        code: "DTK1234",
+        name: "Design Thinking",
+      },
+    ],
+  },
+  {
+    name: "primaryDegreeModules",
+    modules: [
+      {
+        code: "MA2002",
+        name: "Calculus",
+      },
+      {
+        code: "CS2040",
+        name: "Data Structures and Algorithms",
+      },
+      {
+        code: "ST2131",
+        name: "Probability",
+      },
+      {
+        code: "MA2001",
+        name: "Linear Algebra I",
+      },
+      {
+        code: "MA2104",
+        name: "Multivariable Calculus",
+      },
+      {
+        code: "CS2030",
+        name: "Programming Methodology II",
       },
     ],
   },

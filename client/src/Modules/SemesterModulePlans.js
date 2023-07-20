@@ -26,6 +26,87 @@ import { MoveModuleDialog } from "./ModulesDisplay";
 import { sampleProfile } from "../Constants";
 import { orange } from "@mui/material/colors";
 
+// styling for each year plan
+const EachYearPlan = ({
+  academicPlan,
+  currentYear,
+  moduleList,
+  handleSelectToShiftModule,
+  handleDeselectToShiftModule,
+  toShiftModules,
+}) => {
+  return (
+    <Box
+      sx={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "row",
+      }}
+    >
+      <Box
+        sx={{
+          marginTop: "20px",
+          width: "50%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <Typography sx={{ fontSize: "25px", fontWeight: 700 }}>
+          Semester 1
+        </Typography>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+          }}
+        >
+          {moduleList[currentYear]["Semester 1"].map((module, index) => (
+            <ModuleBox
+              key={index}
+              academicPlan={academicPlan}
+              module={module}
+              handleSelectModule={handleSelectToShiftModule}
+              handleDeselectModule={handleDeselectToShiftModule}
+              selectedModules={toShiftModules}
+            />
+          ))}
+        </Box>
+      </Box>
+      <Divider orientation="vertical" flexItem />
+      <Box
+        sx={{
+          marginLeft: "30px",
+          marginTop: "20px",
+          width: "50%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <Typography sx={{ fontSize: "25px", fontWeight: 700 }}>
+          Semester 2
+        </Typography>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+          }}
+        >
+          {moduleList[currentYear]["Semester 2"].map((module, index) => (
+            <ModuleBox
+              academicPlan={academicPlan}
+              key={index}
+              module={module}
+              handleSelectModule={handleSelectToShiftModule}
+              handleDeselectModule={handleDeselectToShiftModule}
+              selectedModules={toShiftModules}
+            />
+          ))}
+        </Box>
+      </Box>
+    </Box>
+  );
+};
+
 // semester module plans
 const SemesterModulePlans = ({ movedModules, isComplete, academicPlan }) => {
   // receives incoming modules from the grad requirements component
@@ -91,77 +172,6 @@ const SemesterModulePlans = ({ movedModules, isComplete, academicPlan }) => {
     setOpenShiftModulesDialog(false);
     setModuleDict(updatedModuleDict);
     setToShiftModules([]);
-  };
-
-  // styling for each year plan
-  const EachYearPlan = ({ currentYear, moduleList }) => {
-    return (
-      <Box
-        sx={{
-          width: "100%",
-          display: "flex",
-          flexDirection: "row",
-        }}
-      >
-        <Box
-          sx={{
-            marginTop: "20px",
-            width: "50%",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Typography sx={{ fontSize: "25px", fontWeight: 700 }}>
-            Semester 1
-          </Typography>
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-            }}
-          >
-            {moduleList[currentYear]["Semester 1"].map((module, index) => (
-              <ModuleBox
-                academicPlan={academicPlan}
-                module={module}
-                handleSelectModule={handleSelectToShiftModule}
-                handleDeselectModule={handleDeselectToShiftModule}
-                selectedModules={toShiftModules}
-              />
-            ))}
-          </Box>
-        </Box>
-        <Divider orientation="vertical" flexItem />
-        <Box
-          sx={{
-            marginLeft: "30px",
-            marginTop: "20px",
-            width: "50%",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Typography sx={{ fontSize: "25px", fontWeight: 700 }}>
-            Semester 2
-          </Typography>
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-            }}
-          >
-            {moduleList[currentYear]["Semester 2"].map((module, index) => (
-              <ModuleBox
-                module={module}
-                handleSelectModule={handleSelectToShiftModule}
-                handleDeselectModule={handleDeselectToShiftModule}
-                selectedModules={toShiftModules}
-              />
-            ))}
-          </Box>
-        </Box>
-      </Box>
-    );
   };
 
   // request approval
@@ -337,9 +347,13 @@ const SemesterModulePlans = ({ movedModules, isComplete, academicPlan }) => {
             (tab, index) =>
               currentTab === index && (
                 <EachYearPlan
+                  academicPlan={academicPlan}
                   key={index}
                   currentYear={tabsList[index]}
                   moduleList={moduleDict}
+                  handleSelectToShiftModule={handleSelectToShiftModule}
+                  handleDeselectToShiftModule={handleDeselectToShiftModule}
+                  toShiftModules={toShiftModules}
                 />
               )
           )}
