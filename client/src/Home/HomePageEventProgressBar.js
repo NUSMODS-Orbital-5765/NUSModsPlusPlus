@@ -1,7 +1,13 @@
 import { Box, LinearProgress, Typography } from "@mui/material";
 import { ProgressBar } from "../StyledComponents";
+import { getTodayEvents, isEventOver } from "./HomePageTimetable";
 
-const HomePageTaskProgressBar = ({ taskList }) => {
+const HomePageEventProgressBar = ({ todayEvents }) => {
+  const todayEventsList = getTodayEvents();
+  const todayEventsOverCount = todayEventsList.filter((event) =>
+    isEventOver(event)
+  ).length;
+
   return (
     <Box>
       <Box
@@ -15,10 +21,11 @@ const HomePageTaskProgressBar = ({ taskList }) => {
         <Typography
           sx={{ marginRight: "30px", fontSize: "35px", fontWeight: 700 }}
         >
-          Task Progress
+          Event Progress
         </Typography>
         <Typography variant="h1" sx={{ fontSize: "30px" }}>
-          <span style={{ color: "#44b700" }}>5</span>/25
+          <span style={{ color: "#44b700" }}>{todayEventsOverCount}</span>/
+          {todayEventsList.length}
         </Typography>
       </Box>
       <ProgressBar color="success" value={30} />
@@ -26,4 +33,4 @@ const HomePageTaskProgressBar = ({ taskList }) => {
   );
 };
 
-export default HomePageTaskProgressBar;
+export default HomePageEventProgressBar;

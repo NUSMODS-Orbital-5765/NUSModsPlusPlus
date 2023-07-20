@@ -9,6 +9,7 @@ import {
   SearchBarScroll,
   siteRecommendations,
 } from "../Home/HomePageStyledComponents";
+import { notifsList } from "../Constants";
 
 // main app bar
 function AppBarComponent(props) {
@@ -55,6 +56,8 @@ function AppBarComponent(props) {
               />
             </Box>
           </Box>
+          <AppBarNotifs notifsList={notifsList} />
+          <AppBarAvatar />
         </Toolbar>
       </AppBar>
     </SearchBarScroll>
