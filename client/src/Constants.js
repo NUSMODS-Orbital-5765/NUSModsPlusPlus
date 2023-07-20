@@ -130,20 +130,20 @@ export const sampleComments = [
     content:
       "Curabitur lacinia commodo metus, sed varius felis scelerisque eu. In sit amet nibh sem. Vivamus nec aliquam sapien, eu semper dolor. Duis rhoncus vulputate cursus. In vel gravida orci, et dapibus nunc. Praesent eu erat porta, varius tellus in, vulputate mi. Pellentesque dapibus turpis velit, vitae convallis nisi porttitor sit amet. Cras a posuere metus, pharetra facilisis justo.",
     author: "ryan123",
-    avatar: "profilepic_1.png",
+    avatar: "/profilepic_1.png",
   },
   {
     timestamp: yesterday,
     content: "Nullam egestas at ex nec fermentum. Cras a tellus quis.",
     author: "nam1nam",
-    avatar: "profilepic_1.png",
+    avatar: "/profilepic_1.png",
   },
   {
     timestamp: twoDaysAgo,
     content:
       "Duis tincidunt nec est id efficitur. Ut porttitor fermentum dictum.",
     author: "joannee",
-    avatar: "profilepic_2.png",
+    avatar: "/profilepic_2.png",
   },
 ];
 
@@ -158,7 +158,7 @@ export const samplePosts = [
     upload_file: "", // possible to store the filepreviewURL so can download the file on click?
     tags: ["Mathematics", "homework"],
     author: "ryan123", // this should be a user object, which connects to a profile (will set up later lol)
-    avatar: "profilepic_1.png", // this should be stored as a filepreviewURL (as above) and linked to user profile directly
+    avatar: "/profilepic_1.png", // this should be stored as a filepreviewURL (as above) and linked to user profile directly
     likes: 195,
     comments: 5,
   },
@@ -172,7 +172,7 @@ export const samplePosts = [
     upload_file: "EconsNotes.pdf",
     tags: ["Economics", "homework", "homework help"],
     author: "nam1nam",
-    avatar: "profilepic_1.png",
+    avatar: "/profilepic_1.png",
     likes: 200,
     comments: 1,
   },
@@ -186,7 +186,7 @@ export const samplePosts = [
     upload_file: "",
     tags: ["Computer Science", "csmods", "java"],
     author: "joannee",
-    avatar: "profilepic_2.png",
+    avatar: "/profilepic_2.png",
     likes: 39,
     comments: 3,
   },
@@ -200,7 +200,7 @@ export const samplePosts = [
     upload_file: "",
     tags: ["Computer Science", "csmods", "java"],
     author: "joannee",
-    avatar: "profilepic_2.png",
+    avatar: "/profilepic_2.png",
     likes: 39,
     comments: 3,
   },
@@ -214,7 +214,7 @@ export const samplePosts = [
     upload_file: "",
     tags: ["Computer Science", "csmods", "java"],
     author: "joannee",
-    avatar: "profilepic_2.png",
+    avatar: "/profilepic_2.png",
     likes: 39,
     comments: 3,
   },
@@ -228,7 +228,7 @@ export const samplePosts = [
     upload_file: "EconsNotes.pdf",
     tags: ["Economics", "homework", "homework help"],
     author: "nam1nam",
-    avatar: "profilepic_1.png",
+    avatar: "/profilepic_1.png",
     likes: 200,
     comments: 1,
   },
@@ -297,7 +297,7 @@ export const isThisWeek = (timestamp) => {
 export const notifsList = [
   {
     timestamp: today,
-    avatar: "profilepic_2.png",
+    avatar: "/profilepic_2.png",
     author: "admin 1",
     content: "You are not approved for exemption from MA2001.",
     type: "mention",
@@ -306,7 +306,7 @@ export const notifsList = [
   },
   {
     timestamp: yesterday,
-    avatar: "profilepic_1.png",
+    avatar: "/profilepic_1.png",
     author: "admin 2",
     content: "You are missing two core modules: BT2101 and BT2102.",
     type: "mention",
@@ -315,7 +315,7 @@ export const notifsList = [
   },
   {
     timestamp: twoDaysAgo,
-    avatar: "profilepic_2.png",
+    avatar: "/profilepic_2.png",
     author: "admin 3",
     content: "",
     type: "approve",
@@ -324,7 +324,7 @@ export const notifsList = [
   },
   {
     timestamp: yesterday,
-    avatar: "profilepic_2.png",
+    avatar: "/profilepic_2.png",
     author: "random_user",
     content: "",
     type: "like",
@@ -333,7 +333,7 @@ export const notifsList = [
   },
   {
     timestamp: twoDaysAgo,
-    avatar: "profilepic_2.png",
+    avatar: "/profilepic_2.png",
     author: "random_user",
     content:
       "Amazing post! Really insightful and covered all the necessary details. On that note, I would like to add that the curriculum board has discussed and intended for the new curriculum to be released much earlier.",

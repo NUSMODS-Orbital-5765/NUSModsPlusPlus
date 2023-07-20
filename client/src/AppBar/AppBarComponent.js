@@ -31,6 +31,7 @@ function AppBarComponent(props) {
             sx={{
               display: "flex",
               flexDirection: "row",
+              alignItems: "center",
               justifyContent: "space-between",
             }}
           >
@@ -41,12 +42,10 @@ function AppBarComponent(props) {
             />
             <Box
               sx={{
-                marginLeft: "50ch",
-                marginTop: "20px",
+                marginLeft: "-50px",
                 display: "flex",
                 alignItems: "center",
-                justifyItems: "center",
-                justifyContent: "flex-end",
+                flexDirection: "row",
               }}
             >
               <AppBarNotifs notifsList={notifsList} appBarType="student" />

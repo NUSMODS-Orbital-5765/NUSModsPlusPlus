@@ -16,6 +16,7 @@ import React, { useState } from "react";
 import ModulesDisplay from "./ModulesDisplay";
 import { emptyAcademicInfo, sampleAcademicPlan } from "./ModuleConstants";
 import CreatePlanDialog from "./CreatePlanDialog";
+import { combinedItems } from "../Home/HomePageStyledComponents";
 
 // header for modules page
 export const ModulesPageHeader = () => {
@@ -105,7 +106,7 @@ const ModulesPage = () => {
 
   return (
     <div className="homepage">
-      <DrawerComponent defaultTab={3} />
+      <DrawerComponent defaultTab={3} tabsList={combinedItems} />
       <AppBarComponent />
       <Box className="remainingViewport">
         <ModulesPageHeader />

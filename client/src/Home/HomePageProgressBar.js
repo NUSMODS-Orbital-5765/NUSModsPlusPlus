@@ -1,6 +1,7 @@
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import HomePageEventProgressBar from "./HomePageEventProgressBar";
 import { ProgressBar } from "../StyledComponents";
+import React, { useState, useEffect } from "react";
 
 const HomePageProgressBar = () => {
   // encouraging messages based on day progress
@@ -14,16 +15,35 @@ const HomePageProgressBar = () => {
     }
   };
 
+  // update the current time every minute
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Function to format the time as desired (12:00pm or 12:00am)
+  const formatTime = (date) => {
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+
+    const ampm = hours >= 12 ? " PM" : " AM";
+    const formattedHours = hours % 12 || 12;
+    const formattedMinutes = minutes.toString().padStart(2, "0");
+
+    return `${formattedHours}:${formattedMinutes}${ampm}`;
+  };
+
+  const currentTimeDisplay = formatTime(currentTime);
+
   // calculate percentage of today
-  const currentTime = new Date();
   const totalMinutesInDay = 24 * 60;
   const elapsedMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
   const progressPercentage = (elapsedMinutes / totalMinutesInDay) * 100;
-  const currentTimeDisplay = currentTime.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
   console.log(progressPercentage); // just for checking
 
   return (

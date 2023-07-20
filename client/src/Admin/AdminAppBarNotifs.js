@@ -1,21 +1,7 @@
-import {
-  Badge,
-  Box,
-  Typography,
-  Drawer,
-  IconButton,
-  Divider,
-  Avatar,
-  List,
-  Tabs,
-  Tab,
-} from "@mui/material";
-import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
-import React, { useState } from "react";
+import { Box, Typography, Divider, Avatar } from "@mui/material";
 import { formatDate } from "../Constants";
 import { adminNotifsList } from "./AdminConstants";
-import AppBarNotifs, { NotifCount } from "../AppBar/AppBarNotifs";
-import { red } from "@mui/material/colors";
+import AppBarNotifs from "../AppBar/AppBarNotifs";
 
 // styling for admin notifications
 export const AdminDefaultNotif = ({ notif }) => {
@@ -133,8 +119,8 @@ export const AdminDefaultNotif = ({ notif }) => {
 };
 
 // main component design
-const AdminAppBarNotifs = ({ notifsList }) => {
-  return <div></div>;
+const AdminAppBarNotifs = () => {
+  return <AppBarNotifs notifsList={adminNotifsList} appBarType="admin" />;
 };
 
 export default AdminAppBarNotifs;

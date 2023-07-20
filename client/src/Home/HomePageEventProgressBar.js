@@ -7,6 +7,7 @@ const HomePageEventProgressBar = ({ todayEvents }) => {
   const todayEventsOverCount = todayEventsList.filter((event) =>
     isEventOver(event)
   ).length;
+  const eventsOverFraction = todayEventsOverCount / todayEventsList.length;
 
   return (
     <Box>
@@ -28,7 +29,7 @@ const HomePageEventProgressBar = ({ todayEvents }) => {
           {todayEventsList.length}
         </Typography>
       </Box>
-      <ProgressBar color="success" value={30} />
+      <ProgressBar color="success" value={eventsOverFraction} />
     </Box>
   );
 };

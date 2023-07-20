@@ -33,7 +33,6 @@ const AdminAppBar = (props) => {
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
-              justifyContent: "space-between",
             }}
           >
             <SearchBar
@@ -43,15 +42,13 @@ const AdminAppBar = (props) => {
             />
             <Box
               sx={{
-                marginLeft: "50ch",
-                marginTop: "20px",
+                marginLeft: "-50px",
                 display: "flex",
                 alignItems: "center",
-                justifyItems: "center",
-                justifyContent: "flex-end",
+                flexDirection: "row",
               }}
             >
-              <AdminAppBarNotifs notifsList={adminNotifsList} />
+              <AdminAppBarNotifs />
               <AppBarAvatar
                 userProfile={adminSampleProfile}
                 avatarItems={adminAvatarItems}
