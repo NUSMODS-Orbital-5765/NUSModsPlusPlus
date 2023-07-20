@@ -11,10 +11,12 @@ Table User {
   password String [not null]
   email String [unique, not null]
   faculty String [not null]
-  primaryMajor String [not null]
-  secondaryMajor String
-  minors String
+  academicPlan String
+  primaryDegree String
+  secondDegree String
+  secondMajor String
   programme String
+  minor String[] [not null]
   interests String[] [not null]
   avatar String
   Post Post [not null]

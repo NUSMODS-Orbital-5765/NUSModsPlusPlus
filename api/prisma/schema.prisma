@@ -15,24 +15,25 @@ datasource db {
 }
 
 model User {
-  id             Int       @id @default(autoincrement())
-  name           String
-  role           String
-  NUSId          String    @unique
-  username       String    @unique
-  password       String
-  email          String    @unique
-  faculty        String
-  primaryMajor   String
-  secondaryMajor String?
-  minors         String?
-  programme      String?
-  interests      String[]
-  avatar         String?
-  Post           Post[]    @relation("createdPost")
-  LikedPost      Post[]    @relation("likedPost")
-  Comment        Comment[]
-  Event          Event[]
+  id            Int       @id @default(autoincrement())
+  name          String
+  role          String
+  NUSId         String    @unique
+  username      String    @unique
+  password      String
+  email         String    @unique
+  faculty       String
+  academicPlan  String?
+  primaryDegree String?
+  secondDegree  String?
+  secondMajor   String?
+  programme     String?
+  minor         String[]
+  interests     String[]
+  avatar        String?
+  Post          Post[]    @relation("createdPost")
+  Comment       Comment[]
+  Event         Event[]
 }
 
 model Post {
@@ -46,8 +47,7 @@ model Post {
   tags         String[]
   author       User      @relation("createdPost", fields: [PostAuthorId], references: [id])
   PostAuthorId Int
-  like         User      @relation("likedPost", fields: [LikedUserId], references: [id])
-  LikedUserId  Int
+  like         String[]
   Comment      Comment[]
 }
 
