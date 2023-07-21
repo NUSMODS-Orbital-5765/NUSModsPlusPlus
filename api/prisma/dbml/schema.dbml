@@ -22,6 +22,9 @@ Table User {
   Post Post [not null]
   Comment Comment [not null]
   Event Event [not null]
+  NotificationFrom Notification [not null]
+  NotificationTo Notification [not null]
+  ModulePlan ModulePlan [not null]
 }
 
 Table Post {
@@ -104,6 +107,28 @@ Table Event {
   userId Int [not null]
 }
 
+Table Notification {
+  id Int [pk, increment]
+  timestamp DateTime [not null]
+  content String [not null]
+  type String [not null]
+  author User [not null]
+  userIdFrom Int [not null]
+  target User [not null]
+  userIdTo Int [not null]
+  hiddenValue Json
+}
+
+Table ModulePlan {
+  id Int [pk, increment]
+  owner User [not null]
+  GradRequirement Json
+  SemesterModulePlan Json
+  status String [not null]
+  userId Int [not null]
+  AdminComment String [not null]
+}
+
 Ref: Post.PostAuthorId > User.id
 
 Ref: Comment.authorId > User.id
@@ -111,3 +136,9 @@ Ref: Comment.authorId > User.id
 Ref: Programme.commonModuleGroupId > CommonModuleGroup.id
 
 Ref: Event.userId > User.id
+
+Ref: Notification.userIdFrom > User.id
+
+Ref: Notification.userIdTo > User.id
+
+Ref: ModulePlan.userId > User.id

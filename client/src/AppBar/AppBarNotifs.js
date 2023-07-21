@@ -20,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { isToday, isThisWeek } from "../Constants";
 import { AdminDefaultNotif } from "../Admin/AdminAppBarNotifs";
 import UserProfileView from "../UserProfileView";
-
+import {parseISO} from "date-fns";
 // notif count
 export const NotifCount = ({ label, notifListCount, labelColor }) => {
   return (
@@ -192,7 +192,7 @@ export const DefaultNotif = ({ notif }) => {
                 fontSize: "14px",
               }}
             >
-              {formatDate(notif.timestamp)}
+              {formatDate(parseISO(notif.timestamp))}
             </Typography>
           </Box>
         </Box>

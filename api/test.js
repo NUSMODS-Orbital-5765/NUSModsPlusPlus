@@ -9,10 +9,7 @@ const { request } = require("http");
 const { json } = require("body-parser");
 const { error } = require("console");
 dotenv.config();
-prisma.post.findMany({
-  where: {
-    like: {has: "username"}
-  }
-})
-.then(result=>
-console.log(result))
+const {formatDistanceToNow, parseISO} = require("date-fns")
+
+console.log(new 
+    Date())

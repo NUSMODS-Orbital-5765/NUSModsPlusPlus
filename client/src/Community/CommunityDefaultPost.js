@@ -37,6 +37,7 @@ import { formatDate } from "../Constants";
 import CommunityPostComments from "./CommunityPostComments";
 import AWSLinkGenerate from "../libs/AWSLinkGenerate";
 import axios from "axios";
+import generateNotification from "../libs/generateNotification";
 // styling for post preview
 export const CommunityPostDialog = (props) => {
   const post = props.post;
@@ -249,6 +250,7 @@ const CommunityDefaultPost = (props) => {
       console.log(result.data)
       post.likeAmount=result.data.likeAmount
       setLiked(!liked)
+      generateNotification("like",localStorage.getItem("username"),post.author.username,"","")
     })
     
   };
