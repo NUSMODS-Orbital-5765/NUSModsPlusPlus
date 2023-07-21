@@ -17,6 +17,10 @@ prisma.module.findMany({
         {moduleCode: {startsWith: "CS3"}},
         {moduleCode: {startsWith: "ST3"}},
     ]
+    },
+    select: {
+        moduleCode: true,
+        title: true
     }
 }
 ).then((res)=>console.log(res))
