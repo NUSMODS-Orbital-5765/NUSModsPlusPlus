@@ -15,25 +15,27 @@ datasource db {
 }
 
 model User {
-  id            Int       @id @default(autoincrement())
-  name          String
-  role          String
-  NUSId         String    @unique
-  username      String    @unique
-  password      String
-  email         String    @unique
-  faculty       String
-  academicPlan  String?
-  primaryDegree String?
-  secondDegree  String?
-  secondMajor   String?
-  programme     String?
-  minor         String[]
-  interests     String[]
-  avatar        String?
-  Post          Post[]    @relation("createdPost")
-  Comment       Comment[]
-  Event         Event[]
+  id               Int            @id @default(autoincrement())
+  name             String
+  role             String
+  NUSId            String         @unique
+  username         String         @unique
+  password         String
+  email            String         @unique
+  faculty          String
+  academicPlan     String?
+  primaryDegree    String?
+  secondDegree     String?
+  secondMajor      String?
+  programme        String?
+  minor            String[]
+  interests        String[]
+  avatar           String?
+  Post             Post[]         @relation("createdPost")
+  Comment          Comment[]
+  Event            Event[]
+  NotificationFrom Notification[] @relation("from")
+  NotificationTo   Notification[] @relation("to")
 }
 
 model Post {
@@ -48,7 +50,7 @@ model Post {
   author       User      @relation("createdPost", fields: [PostAuthorId], references: [id])
   PostAuthorId Int
   like         String[]
-  likeAmount Int @default(0)
+  likeAmount   Int       @default(0)
   Comment      Comment[]
 }
 
@@ -114,4 +116,15 @@ model Event {
   priority Int
   user     User   @relation(fields: [userId], references: [id])
   userId   Int
+}
+
+model Notification {
+  id         Int      @id @default(autoincrement())
+  timestamp  DateTime
+  author     User     @relation("from", fields: [userIdFrom], references: [id])
+  userIdFrom Int
+  content    String
+  type       String
+  target     User     @relation("to", fields: [userIdTo], references: [id])
+  userIdTo   Int
 }
