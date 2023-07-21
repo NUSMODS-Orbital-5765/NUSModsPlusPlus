@@ -1,18 +1,10 @@
-import {
-  Box,
-  Typography,
-  Divider,
-  Avatar,
-  Tooltip,
-  Dialog,
-  DialogContent,
-  Fab,
-} from "@mui/material";
+import { Box, Typography, Divider, Avatar, Tooltip } from "@mui/material";
 import { formatDate } from "../Constants";
 import { adminNotifsList } from "./AdminConstants";
 import AppBarNotifs from "../AppBar/AppBarNotifs";
 import { StudentProfileView } from "./StudentDataGrid";
 import React, { useState } from "react";
+import UserProfileView from "../UserProfileView";
 
 // styling for admin notifications
 export const AdminDefaultNotif = ({ notif }) => {
@@ -105,8 +97,9 @@ export const AdminDefaultNotif = ({ notif }) => {
               src={notif.student.avatar}
             />
           </Tooltip>
-          <StudentProfileView
-            studentProfile={notif.student}
+          <UserProfileView
+            userType="student"
+            userProfile={notif.student}
             openDialog={showProfile}
             handleCloseDialog={handleHideProfile}
           />

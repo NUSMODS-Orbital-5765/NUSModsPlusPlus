@@ -1,6 +1,6 @@
 import GradRequirements from "./GradRequirements";
 import SemesterModulePlans from "./SemesterModulePlans";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Dialog,
@@ -82,11 +82,16 @@ export const MoveModuleDialog = ({
 };
 
 // manages moving of modules from one component to the other
-const ModulesDisplay = ({ academicPlan }) => {
+const ModulesDisplay = ({ academicPlan, type, handleDeletePlan }) => {
   // placeholder line to get the academic requirements from academic plan.
   const [requiredModulesDict, setRequiredModulesDict] = useState(
     getRequiredModules(academicPlan)
   );
+
+  // for rendering a new select module box
+  const handleAddModule = () => {
+    setRequiredModulesDict([{ ...requiredModulesDict }]);
+  };
 
   const [selectedModules, setSelectedModules] = useState([]);
   const [movedModules, setMovedModules] = useState(emptyPlanLayout);
@@ -121,6 +126,7 @@ const ModulesDisplay = ({ academicPlan }) => {
 
   // handle moving of modules to correct destination year and semester
   const handleSubmitMovedModules = () => {
+    setSelectedModules([]);
     const updatedModulesDict = requiredModulesDict.map((requirement) => {
       // check each requirement within and check if the modules within are inside selectedModules array
       const updatedModules = requirement.modules.filter(
@@ -153,22 +159,29 @@ const ModulesDisplay = ({ academicPlan }) => {
 
     setMovedModules(updatedMovedModules);
     console.log(updatedMovedModules);
-    setSelectedModules([]);
     setOpenDialog(false);
+  };
+
+  // handle saving of the grad requirements
+  // unfortunately, have to save the semester plans separately, because they can be rearranged among the semesters/years.
+  const handleSaveGradRequirements = () => {
+    console.log(requiredModulesDict);
   };
 
   return (
     <div>
       <GradRequirements
         academicPlan={academicPlan}
-        type="default"
+        type={type}
+        handleSaveGradRequirements={handleSaveGradRequirements}
+        handleDeletePlan={handleDeletePlan}
         handleSelectModule={handleSelectModule}
         handleDeselectModule={handleDeselectModule}
         requiredModulesDict={requiredModulesDict}
         selectedModules={selectedModules}
         handleMoveModules={handleMoveModules}
       />
-      <Box sx={{ marginTop: "45px" }}>
+      <Box sx={{ marginTop: "35px" }}>
         <SemesterModulePlans
           academicPlan={academicPlan}
           movedModules={movedModules}
@@ -178,6 +191,7 @@ const ModulesDisplay = ({ academicPlan }) => {
         />
       </Box>
       <MoveModuleDialog
+        academicPlan={academicPlan}
         handleSubmitMovedModules={handleSubmitMovedModules}
         openDialog={openDialog}
         handleCloseDialog={() => setOpenDialog(false)}

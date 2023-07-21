@@ -8,80 +8,41 @@ import {
   IconButton,
   Tooltip,
   Alert,
-  Popover,
-  List,
-  Rating,
+  Snackbar,
+  Autocomplete,
+  TextField,
 } from "@mui/material";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import DriveFileMoveRoundedIcon from "@mui/icons-material/DriveFileMoveRounded";
-import React, { useState, useEffect } from "react";
+import SaveAltRoundedIcon from "@mui/icons-material/SaveAltRounded";
+import React, { useState } from "react";
 import {
   getRequiredModules,
   FormatAcademicPlanDetails,
   getRecommendedPlan,
 } from "./ModuleConstants";
 import { grey, red } from "@mui/material/colors";
-import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
-import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
-import SentimentSatisfiedIcon from "@mui/icons-material/SentimentSatisfied";
-import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAltOutlined";
-import SentimentVerySatisfiedIcon from "@mui/icons-material/SentimentVerySatisfied";
 
-// get recommended year/semester for module
-export function getRecommendedTime(module, academicPlan) {
-  const recommendedModules = getRecommendedPlan(academicPlan);
-
-  for (const year in recommendedModules) {
-    for (const semester in recommendedModules[year]) {
-      const modules = recommendedModules[year][semester];
-      if (modules.some((m) => m.code === module.code)) {
-        return `Y${year.slice(-1)}S${semester.slice(-1)}`;
-      }
-    }
-  }
-
-  return "";
-}
-
-// styled difficulty rating
-export const StyledRating = ({ rating }) => {
-  const ratingIcons = {
-    1: <SentimentVeryDissatisfiedIcon color="error" />,
-    2: <SentimentDissatisfiedIcon color="error" />,
-    3: <SentimentSatisfiedIcon color="warning" />,
-    4: <SentimentSatisfiedAltIcon color="success" />,
-    5: <SentimentVerySatisfiedIcon color="success" />,
-  };
-
-  const IconContainer = ({ value, ...props }) => {
-    return React.cloneElement(ratingIcons[value], {
-      ...props,
-    });
-  };
-
-  return (
-    <Rating
-      value={rating}
-      readOnly
-      IconContainerComponent={IconContainer}
-      highlightSelectedOnly
-    />
-  );
-};
-
-// placeholder function for getting difficulty rating and workload
-export function getRating() {
-  return Math.floor(Math.random() * 5) + 1;
-}
-
-// get different colors for different module categories
+// get different colors for different modules
 export function getModuleColors(module, academicPlan) {
   const defaultRequiredModules = getRequiredModules(academicPlan);
 
+  function findModuleInCategory(category, moduleCode) {
+    for (const item of category.modules) {
+      if (Array.isArray(item)) {
+        const foundModule = findModuleInCategory({ modules: item }, moduleCode);
+        if (foundModule) {
+          return foundModule;
+        }
+      } else if (item.code === moduleCode) {
+        return item;
+      }
+    }
+    return null;
+  }
+
   for (const category of defaultRequiredModules) {
-    const foundModule = category.modules.find(
-      (item) => item.code === module.code
-    );
+    const foundModule = findModuleInCategory(category, module.code);
     if (foundModule) {
       if (category.name === "commonModules") {
         return "#1a90ff";
@@ -97,8 +58,6 @@ export function getModuleColors(module, academicPlan) {
       }
     }
   }
-
-  return "black";
 }
 
 // function for rewriting the module section header
@@ -150,6 +109,143 @@ export const SelectedModulesAlert = ({
   );
 };
 
+export const SelectModuleBox = ({
+  moduleList,
+  academicPlan,
+  selectedModules,
+  handleSelectModule,
+  handleDeselectModule,
+}) => {
+  const [selectedModule, setSelectedModule] = useState(moduleList[0]);
+  const [showSelectOptions, setShowSelectOptions] = useState(false);
+
+  const isSelected = selectedModules.includes(moduleList);
+
+  const handleSelectButtonClick = (event) => {
+    event.stopPropagation();
+    if (isSelected) {
+      handleDeselectModule(moduleList);
+    } else {
+      handleSelectModule(moduleList);
+    }
+  };
+
+  const handleShowSelectOptions = (event) => {
+    event.stopPropagation();
+    setShowSelectOptions(true);
+  };
+
+  const handleChangeModule = (event, newValue) => {
+    event.stopPropagation();
+    if (newValue) {
+      setSelectedModule(moduleList.find((module) => module.code === newValue));
+      setShowSelectOptions(false);
+    }
+  };
+
+  return (
+    <Box
+      sx={{
+        marginTop: "10px",
+        marginBottom: "20px",
+        borderRadius: "10px",
+        backgroundColor: getModuleColors(moduleList[0], academicPlan),
+        opacity: isSelected ? 0.5 : 1,
+        boxShadow: 1,
+        width: "200px",
+      }}
+    >
+      <Button
+        sx={{
+          borderRadius: "10px",
+          color: getModuleColors(selectedModule, academicPlan),
+          overflowY: "auto",
+          boxShadow: 0,
+          width: "100%",
+        }}
+        onClick={handleSelectButtonClick}
+        component={Card}
+      >
+        <CardContent
+          sx={{
+            width: "100%",
+            margin: "-10px",
+            backgroundColor: getModuleColors(moduleList[0], academicPlan),
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <a
+              href={`https://nusmods.com/courses/${selectedModule.code}/`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                fontSize: "20px",
+                fontWeight: 600,
+                color: "white",
+              }}
+            >
+              {selectedModule.code}
+            </a>
+            <Button sx={{ color: "white" }} onClick={handleShowSelectOptions}>
+              Change
+            </Button>
+          </Box>
+          <Typography
+            sx={{
+              marginTop: "10px",
+              fontSize: "15px",
+              textTransform: "none",
+              color: "white",
+            }}
+          >
+            {selectedModule.name}
+          </Typography>
+        </CardContent>
+      </Button>
+      {showSelectOptions && (
+        <Autocomplete
+          sx={{ marginTop: "10px", width: "200px" }}
+          disablePortal
+          options={moduleList.map((module) => module.code)}
+          value={selectedModule.code}
+          onChange={handleChangeModule}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              onMouseDown={(event) => {
+                event.stopPropagation();
+              }}
+              label="Select Module"
+              InputProps={{
+                ...params.InputProps,
+                sx: {
+                  color: "white",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "white",
+                  },
+                },
+              }}
+              InputLabelProps={{
+                style: {
+                  color: "white",
+                },
+              }}
+            />
+          )}
+        />
+      )}
+    </Box>
+  );
+};
+
 // styling for module box
 export const ModuleBox = ({
   module,
@@ -170,18 +266,6 @@ export const ModuleBox = ({
     }
   };
 
-  // Display for difficulty, workload, etc. on hover
-  const [anchorEl, setAnchorEl] = useState(null);
-
-  const handlePopoverOpen = (event) => {
-    event.preventDefault(); // prevent default context menu
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handlePopoverClose = () => {
-    setAnchorEl(null);
-  };
-
   return (
     <Box id={module.code} sx={{ marginTop: "10px", marginBottom: "20px" }}>
       <Button
@@ -191,7 +275,6 @@ export const ModuleBox = ({
           opacity: isSelected ? 0.5 : 1,
         }}
         onClick={handleClickModule}
-        onContextMenu={handlePopoverOpen}
         component={Card}
       >
         <CardContent
@@ -225,65 +308,6 @@ export const ModuleBox = ({
           </Typography>
         </CardContent>
       </Button>
-      {/* additional information on right click */}
-      <Popover
-        open={Boolean(anchorEl)}
-        anchorEl={anchorEl}
-        onClose={handlePopoverClose}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "left",
-        }}
-        disableRestoreFocus
-        PaperProps={{
-          sx: {
-            borderRadius: "10px",
-            backgroundColor: "rgba(255, 255, 255, 0.8)",
-            backdropFilter: "blur(5px)",
-            boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
-          },
-        }}
-      >
-        <List sx={{ margin: "10px" }}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyItems: "center",
-            }}
-          >
-            <Typography sx={{ fontWeight: 600, marginRight: "10px" }}>
-              Difficulty:
-            </Typography>
-            <StyledRating rating={getRating()} />
-          </Box>
-          <Box
-            sx={{
-              marginTop: "10px",
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyItems: "center",
-            }}
-          >
-            <Typography sx={{ fontWeight: 600, marginRight: "10px" }}>
-              Workload:
-            </Typography>
-            <StyledRating rating={getRating()} />
-          </Box>
-          <Typography sx={{ marginTop: "10px" }}>
-            Best Taken in{" "}
-            <span style={{ fontWeight: 600 }}>
-              {getRecommendedTime(module, academicPlan)}
-            </span>
-          </Typography>
-        </List>
-      </Popover>
     </Box>
   );
 };
@@ -292,12 +316,22 @@ export const ModuleBox = ({
 const GradRequirements = ({
   academicPlan,
   type,
+  handleAddModule,
   requiredModulesDict,
   selectedModules,
   handleSelectModule,
   handleDeselectModule,
   handleMoveModules,
+  handleDeletePlan,
+  handleSaveGradRequirements,
 }) => {
+  // snackbar to show that changes have been saved
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const handleSaveSuccess = () => {
+    handleSaveGradRequirements();
+    setSaveSuccess(true);
+  };
+
   // styling for the required modules area
   const RequiredModules = () => {
     return (
@@ -327,16 +361,59 @@ const GradRequirements = ({
               >
                 {getSectionHeader(requirement.name, academicPlan)}
               </Typography>
-              {requirement.modules.map((module, index) => (
-                <ModuleBox
-                  selectedModules={selectedModules}
-                  handleSelectModule={handleSelectModule}
-                  handleDeselectModule={handleDeselectModule}
-                  module={module}
-                  academicPlan={academicPlan}
-                  key={index}
-                />
-              ))}
+              {requirement.modules.map((moduleOrArray, index) =>
+                Array.isArray(moduleOrArray) ? (
+                  <SelectModuleBox
+                    key={index}
+                    academicPlan={academicPlan}
+                    moduleList={moduleOrArray}
+                    handleSelectModule={handleSelectModule}
+                    handleDeselectModule={handleDeselectModule}
+                    selectedModules={selectedModules}
+                  />
+                ) : (
+                  <ModuleBox
+                    academicPlan={academicPlan}
+                    key={index}
+                    module={moduleOrArray}
+                    handleSelectModule={handleSelectModule}
+                    handleDeselectModule={handleDeselectModule}
+                    selectedModules={selectedModules}
+                  />
+                )
+              )}
+              {(requirement.name === "primaryDegreeModules" ||
+                requirement.name === "secondDegreeModules") && (
+                <div>
+                  <Button
+                    onClick={handleAddModule}
+                    color="error"
+                    variant="outlined"
+                    sx={{
+                      width: "200px",
+                      height: "100px",
+                      borderRadius: "10px",
+                      border: "1px dashed",
+                      marginBottom: "20px",
+                    }}
+                  >
+                    Add 3k Module
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={handleAddModule}
+                    sx={{
+                      width: "200px",
+                      height: "100px",
+                      borderRadius: "10px",
+                      border: "1px dashed",
+                    }}
+                  >
+                    Add 4k Module
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}
@@ -399,13 +476,20 @@ const GradRequirements = ({
                     color: "white",
                     backgroundColor: grey[500],
                   }}
-                  label="Default"
+                  label="Draft"
                 />
               )}
             </Box>
             <Box sx={{ display: "flex", flexDirection: "row" }}>
+              <Tooltip title="Save Changes" placement="top">
+                <IconButton onClick={handleSaveSuccess}>
+                  <SaveAltRoundedIcon
+                    sx={{ fontSize: "30px", color: "black" }}
+                  />
+                </IconButton>
+              </Tooltip>
               <Tooltip title="Delete" placement="top">
-                <IconButton disabled={type === "default"}>
+                <IconButton onClick={handleDeletePlan}>
                   <DeleteRoundedIcon sx={{ fontSize: "30px" }} color="error" />
                 </IconButton>
               </Tooltip>
@@ -429,6 +513,20 @@ const GradRequirements = ({
           >
             <RequiredModules />
           </Box>
+          <Snackbar
+            open={saveSuccess}
+            autoHideDuration={3000}
+            onClose={() => setSaveSuccess(false)}
+          >
+            <Alert
+              onClose={() => setSaveSuccess(false)}
+              variant="filled"
+              sx={{ color: "white" }}
+              severity="success"
+            >
+              Graduation requirements saved!
+            </Alert>
+          </Snackbar>
         </CardContent>
       </Card>
     </div>

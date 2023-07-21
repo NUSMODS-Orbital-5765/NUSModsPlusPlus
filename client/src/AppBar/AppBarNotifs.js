@@ -12,12 +12,14 @@ import {
   Divider,
   Tabs,
   Tab,
+  Tooltip,
 } from "@mui/material";
 import { formatDate } from "../Constants";
 import { red } from "@mui/material/colors";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { isToday, isThisWeek } from "../Constants";
 import { AdminDefaultNotif } from "../Admin/AdminAppBarNotifs";
+import UserProfileView from "../UserProfileView";
 
 // notif count
 export const NotifCount = ({ label, notifListCount, labelColor }) => {
@@ -52,6 +54,22 @@ export const NotifCount = ({ label, notifListCount, labelColor }) => {
 
 // styling for a single notif
 export const DefaultNotif = ({ notif }) => {
+  const navigate = useNavigate();
+
+  const [showProfile, setShowProfile] = useState(false);
+  const handleHideProfile = () => {
+    setShowProfile(false);
+  };
+
+  const handleAvatarClick = (event) => {
+    event.stopPropagation();
+    setShowProfile(true);
+  };
+
+  const handleBoxClick = () => {
+    navigate(getNotifURL(notif.type));
+  };
+
   // max words for truncation
   const truncateContent = (content, wordLimit) => {
     const words = content.split(" ");
@@ -103,8 +121,7 @@ export const DefaultNotif = ({ notif }) => {
             textDecoration: "none",
           },
         }}
-        component={Link}
-        to={getNotifURL(notif.type)}
+        onClick={handleBoxClick}
       >
         <Box
           sx={{
@@ -114,11 +131,38 @@ export const DefaultNotif = ({ notif }) => {
             justifyItems: "center",
           }}
         >
-          <Avatar
-            sx={{ width: 70, height: 70 }}
-            alt="Admin Icon"
-            src={notif.avatar}
-          />
+          <Tooltip title="View Profile" placement="top">
+            <Avatar
+              sx={{
+                width: 70,
+                height: 70,
+                transition: "filter 0.3s",
+                "&:hover": {
+                  filter: "brightness(0.8)",
+                  cursor: "pointer",
+                },
+              }}
+              alt="User Icon"
+              src={notif.author.avatar}
+              onClick={handleAvatarClick}
+            />
+          </Tooltip>
+          {notif.author.hasOwnProperty("staffId") && (
+            <UserProfileView
+              userProfile={notif.author}
+              openDialog={showProfile}
+              handleCloseDialog={handleHideProfile}
+              userType="admin"
+            />
+          )}
+          {notif.author.hasOwnProperty("studentId") && (
+            <UserProfileView
+              userProfile={notif.author}
+              openDialog={showProfile}
+              handleCloseDialog={handleHideProfile}
+              userType="student"
+            />
+          )}
           <Box
             sx={{
               marginLeft: "10px",
@@ -133,7 +177,7 @@ export const DefaultNotif = ({ notif }) => {
                 color: "text.primary",
               }}
             >
-              {notif.author}{" "}
+              {notif.author.username}{" "}
               <Typography component="span" fontWeight={400}>
                 {getNotifContent(notif.type)}
               </Typography>
@@ -231,7 +275,7 @@ const AppBarNotifs = ({ notifsList, appBarType }) => {
       >
         <Box sx={{ margin: "20px" }}>
           <Typography sx={{ fontSize: "30px", fontWeight: 600 }}>
-            Inbox
+            {appBarType === "student" ? "Inbox" : "Recent Activity"}
           </Typography>
           <Tabs value={currentTab} onChange={handleChangeTab}>
             <Tab

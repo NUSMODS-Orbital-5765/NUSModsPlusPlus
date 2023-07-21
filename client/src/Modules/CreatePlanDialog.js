@@ -25,10 +25,9 @@ import { emptyAcademicInfo } from "./ModuleConstants";
 const CreatePlanDialog = ({
   openDialog,
   handleCloseDialog,
-  currentAcademicInfo,
-  onSubmit,
+  handleSubmitAcademicInfo,
 }) => {
-  const [academicPlanInfo, setAcademicPlanInfo] = useState(currentAcademicInfo);
+  const [academicPlanInfo, setAcademicPlanInfo] = useState(emptyAcademicInfo);
 
   const handleAcademicPlanInfo = (event) => {
     const name = event.target.name;
@@ -49,9 +48,8 @@ const CreatePlanDialog = ({
   };
 
   const submitAcademicPlanInfo = () => {
+    handleSubmitAcademicInfo(academicPlanInfo);
     handleCloseDialog();
-    onSubmit(academicPlanInfo);
-    console.log(academicPlanInfo);
     setAcademicPlanInfo(emptyAcademicInfo);
   };
 

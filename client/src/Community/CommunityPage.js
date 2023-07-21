@@ -162,8 +162,7 @@ const PostsRow = ({ postList }) => {
 };
 
 // styling for sort and filter features
-export const SortAndFilter = (props) => {
-  const { setFilterValue, setSortValue } = props;
+export const SortAndFilter = ({ setFilterValue, setSortValue }) => {
   return (
     <Box sx={{ display: "flex", flexDirection: "row" }}>
       <FormControl>
