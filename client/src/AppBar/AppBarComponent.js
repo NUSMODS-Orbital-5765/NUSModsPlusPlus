@@ -13,7 +13,6 @@ import axios from "axios";
 // main app bar
 function AppBarComponent(props) {
   const [notificationList, setNotificationList] = useState([]);
-  const [start, setStart] = useState(true);
 
   const getNotification = async () => {
     const notifsGetAPI = `${process.env.REACT_APP_API_LINK}/notification/get`;
@@ -25,19 +24,15 @@ function AppBarComponent(props) {
       console.log(e);
     }
   };
+  useEffect(() => {getNotification()},[])
   useEffect(() => {
-    if (start) {
-      getNotification();
-      setStart(false);
-    } else {
     const intervalCall = setInterval(() => {
       getNotification();
     }, 30000);
     return () => {
       // clean up
       clearInterval(intervalCall);
-    };
-  }}, []);
+    }}, []);
   return (
     <SearchBarScroll {...props}>
       <AppBar
