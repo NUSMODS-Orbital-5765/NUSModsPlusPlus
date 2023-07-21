@@ -11,5 +11,13 @@ const { error } = require("console");
 dotenv.config();
 const {formatDistanceToNow, parseISO} = require("date-fns")
 
-console.log(new 
-    Date())
+prisma.module.findMany({
+    where: { OR: [
+        {moduleCode: {startsWith: "DSA3"}},
+        {moduleCode: {startsWith: "CS3"}},
+        {moduleCode: {startsWith: "ST3"}},
+    ]
+    }
+}
+).then((res)=>console.log(res))
+.catch(err=>console.log(err))
