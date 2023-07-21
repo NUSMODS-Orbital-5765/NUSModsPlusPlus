@@ -1,7 +1,8 @@
 import { Box, Typography } from "@mui/material";
 import PostsList from "../Community/PostsList";
-import { SortAndFilter } from "../Community/CommunityPage";
+import { SortAndFilter, NoPostsPlaceholder } from "../Community/CommunityPage";
 import { useEffect, useState } from "react";
+
 import axios from "axios"
 const MyPostsTabFrame = (props) => {
   const {postList, setFilterValue, setSortValue} = props;
@@ -21,12 +22,12 @@ const MyPostsTabFrame = (props) => {
         </Typography>
         <SortAndFilter setFilterValue={setFilterValue} setSortValue={setSortValue} />
       </Box>
-      {!postReceived || postList == undefined ? (
+      {postList == undefined ? (
         <Box sx={{ marginTop: "100px", marginBottom: "150px" }}>
           <NoPostsPlaceholder />
         </Box>
       ) : (
-        <PostsList postList={myPostsList} />
+        <PostsList postList={postList} />
       )}
     </Box>
   );
