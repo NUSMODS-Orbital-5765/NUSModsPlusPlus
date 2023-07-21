@@ -48,12 +48,17 @@ export const AddModuleDialog = ({
   };
 
   return (
-    <Dialog open={openAddModuleDialog} onClose={handleCloseAddModuleDialog}>
-      <DialogContent sx={{ margin: "10px" }}>
+    <Dialog
+      minWidth="md"
+      open={openAddModuleDialog}
+      onClose={handleCloseAddModuleDialog}
+    >
+      <DialogContent sx={{ margin: "10px", height: "60vh" }}>
         <Typography sx={{ fontSize: "35px", fontWeight: 700 }}>
           Please select a module.
         </Typography>
         <Autocomplete
+          sx={{ marginTop: "20px", maxHeight: "40vh" }}
           onChange={(event, value) =>
             setNewModuleObject(
               sampleOptionsList.find((module) => module.code === value)
