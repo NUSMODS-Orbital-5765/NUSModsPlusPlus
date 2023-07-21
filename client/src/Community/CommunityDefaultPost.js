@@ -37,6 +37,7 @@ import { formatDate } from "../Constants";
 import CommunityPostComments from "./CommunityPostComments";
 import AWSLinkGenerate from "../libs/AWSLinkGenerate";
 import axios from "axios";
+import generateNotification from "../libs/generateNotification";
 // styling for post preview
 export const CommunityPostDialog = (props) => {
   const post = props.post;
@@ -66,10 +67,10 @@ export const CommunityPostDialog = (props) => {
           }
         )
         .then((res) => {
-          console.log(res);
           alert("Successfully add comment");
           setCommentAddStatus(commentAddStatus + 1);
           console.log(commentAddStatus);
+          generateNotification("comment", localStorage.getItem("username"), post.author.username,commentContent, {postId: post.id, commentId: res.data.id})
         })
         .catch((err) => console.log(err));
     }
@@ -249,6 +250,7 @@ const CommunityDefaultPost = (props) => {
       console.log(result.data)
       post.likeAmount=result.data.likeAmount
       setLiked(!liked)
+      generateNotification("like",localStorage.getItem("username"),post.author.username,"","")
     })
     
   };
