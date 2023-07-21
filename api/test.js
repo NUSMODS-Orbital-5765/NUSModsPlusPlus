@@ -10,11 +10,9 @@ const { json } = require("body-parser");
 const { error } = require("console");
 dotenv.config();
 prisma.post.findMany({
-  include: {
-    _count: {
-      select: { like: true },
-    },
-  },
+  where: {
+    like: {has: "username"}
+  }
 })
 .then(result=>
 console.log(result))

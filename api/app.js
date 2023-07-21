@@ -238,6 +238,9 @@ app.post("/post/search", jsonParser, (request, response) => {
   if (request.body.username) {
     where.author = {username: request.body.username}
   }
+  if (request.body.likedByUsername) {
+    where.like =  {has: request.body.likedByUsername}
+  }
   prisma.post.findMany({
   //   skip: 0,
   //   take: 8,
