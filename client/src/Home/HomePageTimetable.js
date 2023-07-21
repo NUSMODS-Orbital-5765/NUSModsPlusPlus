@@ -179,6 +179,15 @@ export const EventCard = ({ event }) => {
 
 // styling for daily timeline
 export const TodayTimeline = ({ eventsList }) => {
+  // sort the events by time for currentday
+  const sortedEventsList = eventsList.sort((a, b) => {
+    const timeA = parseTime(a.time);
+    const timeB = parseTime(b.time);
+    if (timeA < timeB) return -1;
+    if (timeA > timeB) return 1;
+    return 0;
+  });
+
   return (
     <Card
       sx={{
@@ -210,7 +219,7 @@ export const TodayTimeline = ({ eventsList }) => {
             },
           }}
         >
-          {eventsList.map((dayEvent, index) => (
+          {sortedEventsList.map((dayEvent, index) => (
             <TimelineItem key={index}>
               <TimelineSeparator>
                 <TimelineDot
@@ -218,7 +227,7 @@ export const TodayTimeline = ({ eventsList }) => {
                     backgroundColor: priorityColors[dayEvent.priority],
                   }}
                 />
-                {index !== eventsList.length - 1 && <TimelineConnector />}
+                {index !== sortedEventsList.length - 1 && <TimelineConnector />}
               </TimelineSeparator>
               <TimelineContent>
                 <TimelineBox event={dayEvent} />

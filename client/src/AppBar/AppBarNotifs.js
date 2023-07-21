@@ -53,11 +53,12 @@ export const NotifCount = ({ label, notifListCount, labelColor }) => {
 };
 
 // styling for a single notif
-export const DefaultNotif = ({ notif }) => {
+export const DefaultNotif = ({ notif, handleCloseDrawer }) => {
   const navigate = useNavigate();
 
   const [showProfile, setShowProfile] = useState(false);
-  const handleHideProfile = () => {
+  const handleHideProfile = (event) => {
+    event.stopPropagation();
     setShowProfile(false);
   };
 
@@ -66,7 +67,8 @@ export const DefaultNotif = ({ notif }) => {
     setShowProfile(true);
   };
 
-  const handleBoxClick = () => {
+  const handleBoxClick = (event) => {
+    event.stopPropagation();
     navigate(getNotifURL(notif.type));
   };
 
