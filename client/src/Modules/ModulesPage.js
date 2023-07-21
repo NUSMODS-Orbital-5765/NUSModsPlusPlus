@@ -22,7 +22,6 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import ModulesDisplay from "./ModulesDisplay";
 import {
-  emptyAcademicInfo,
   emptyPlanLayout,
   getRequiredModules,
   sampleAcademicPlan,

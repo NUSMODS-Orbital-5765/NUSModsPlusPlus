@@ -1,4 +1,5 @@
 import { Typography } from "@mui/material";
+import { red, grey } from "@mui/material/colors";
 
 // styling for academic info
 export const emptyAcademicInfo = {
@@ -482,3 +483,36 @@ export const sampleOptionsList = [
     name: "Danger and National Security",
   },
 ];
+
+// get different colors for different modules
+export function getModuleColors(requirement) {
+  if (requirement === "commonModules") {
+    return "#1a90ff";
+  } else if (requirement == "primaryDegreeModules") {
+    return red[500];
+  } else if (
+    requirement === "secondDegreeModules" ||
+    requirement === "secondMajorModules"
+  ) {
+    return "#44b700";
+  } else if (requirement === "minorModules") {
+    return grey[500];
+  }
+}
+
+// function for rewriting the module section header
+export function getSectionHeader(req, academicPlan) {
+  if (req === "commonModules") {
+    return "Common Modules";
+  } else if (req === "primaryDegreeModules") {
+    return "Degree in " + academicPlan.primaryDegree.toString();
+  } else if (req === "secondDegreeModules") {
+    return "Second Degree in " + academicPlan.secondDegree.toString();
+  } else if (req === "secondMajorModules") {
+    return "Second Major in " + academicPlan.secondMajor.toString();
+  } else if (req === "minorModules") {
+    return (
+      "Minor in " + academicPlan.minor.map((item) => item.toString()).join(",")
+    );
+  }
+}

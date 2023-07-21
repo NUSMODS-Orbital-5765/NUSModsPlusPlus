@@ -13,15 +13,14 @@ import {
   DialogContent,
   Snackbar,
   Alert,
-  Divider,
 } from "@mui/material";
 import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
 import React, { useState } from "react";
-import { ModuleBox, SelectModuleBox } from "./GradRequirements";
-import SaveAltRoundedIcon from "@mui/icons-material/SaveAltRounded";
+import ModuleBox from "./ModuleBox";
+import SelectModuleBox from "./SelectModuleBox";
 import { sampleProfile } from "../Constants";
 import { orange } from "@mui/material/colors";
 
