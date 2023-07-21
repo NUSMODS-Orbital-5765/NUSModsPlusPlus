@@ -24,39 +24,18 @@ import { grey, red } from "@mui/material/colors";
 import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 
 // get different colors for different modules
-export function getModuleColors(module, academicPlan) {
-  const defaultRequiredModules = getRequiredModules(academicPlan);
-
-  function findModuleInCategory(category, moduleCode) {
-    for (const item of category.modules) {
-      if (Array.isArray(item)) {
-        const foundModule = findModuleInCategory({ modules: item }, moduleCode);
-        if (foundModule) {
-          return foundModule;
-        }
-      } else if (item.code === moduleCode) {
-        return item;
-      }
-    }
-    return null;
-  }
-
-  for (const category of defaultRequiredModules) {
-    const foundModule = findModuleInCategory(category, module.code);
-    if (foundModule) {
-      if (category.name === "commonModules") {
-        return "#1a90ff";
-      } else if (category.name === "primaryDegreeModules") {
-        return red[500];
-      } else if (
-        category.name === "secondDegreeModules" ||
-        category.name === "secondMajorModules"
-      ) {
-        return "#44b700";
-      } else if (category.name === "minorModules") {
-        return grey[500];
-      }
-    }
+export function getModuleColors(requirement) {
+  if (requirement === "commonModules") {
+    return "#1a90ff";
+  } else if (requirement == "primaryDegreeModules") {
+    return red[500];
+  } else if (
+    requirement === "secondDegreeModules" ||
+    requirement === "secondMajorModules"
+  ) {
+    return "#44b700";
+  } else if (requirement === "minorModules") {
+    return grey[500];
   }
 }
 
@@ -251,16 +230,23 @@ export const SelectModuleBox = ({
 // styling for module box
 export const ModuleBox = ({
   module,
-  academicPlan,
+  requirement,
   selectedModules,
   handleSelectModule,
   handleDeselectModule,
   handleDeleteModule,
+  handleRevertModule,
   isSelectable,
   isRevertable,
 }) => {
   // check if the modulebox is selected, then activate selected display state
-  const isSelected = isSelectable && selectedModules.includes(module);
+  const isSelected =
+    isSelectable &&
+    selectedModules.some(
+      (selectedModuleObject) =>
+        selectedModuleObject.module.code === module.code &&
+        selectedModuleObject.requirement === requirement
+    );
 
   // handle delete button click without triggering module selection
   const handleClickDelete = (event) => {
@@ -274,14 +260,14 @@ export const ModuleBox = ({
       if (isSelected) {
         handleDeselectModule(module);
       } else {
-        handleSelectModule(module);
+        handleSelectModule(module, requirement);
       }
     }
   };
 
   const handleClickRevert = () => {
     if (isRevertable) {
-      console.log(module);
+      handleRevertModule(module, requirement);
     }
   };
 
@@ -290,7 +276,7 @@ export const ModuleBox = ({
       <Button
         sx={{
           borderRadius: "10px",
-          color: getModuleColors(module, academicPlan),
+          color: getModuleColors(requirement),
           opacity: isSelected ? 0.5 : 1,
         }}
         onClick={handleClickModule}
@@ -300,7 +286,7 @@ export const ModuleBox = ({
           sx={{
             width: "200px",
             margin: "-10px",
-            backgroundColor: getModuleColors(module, academicPlan),
+            backgroundColor: getModuleColors(requirement),
           }}
         >
           <Box
@@ -323,14 +309,14 @@ export const ModuleBox = ({
               {module.code}
             </a>
             {isSelectable && (
-              <Tooltip title="Delete">
+              <Tooltip title="Delete" placement="top">
                 <IconButton onClick={handleClickDelete}>
                   <CloseRoundedIcon sx={{ color: "white" }} />
                 </IconButton>
               </Tooltip>
             )}
             {isRevertable && (
-              <Tooltip title="Delete">
+              <Tooltip title="Revert" placement="top">
                 <IconButton onClick={handleClickRevert}>
                   <RestartAltRoundedIcon sx={{ color: "white" }} />
                 </IconButton>
@@ -399,7 +385,7 @@ const GradRequirements = ({
                   <SelectModuleBox
                     isSelectable={true}
                     key={index}
-                    academicPlan={academicPlan}
+                    requirement={requirement.name}
                     moduleList={moduleOrArray}
                     handleSelectModule={handleSelectModule}
                     handleDeselectModule={handleDeselectModule}
@@ -408,8 +394,8 @@ const GradRequirements = ({
                 ) : (
                   <ModuleBox
                     isSelectable={true}
-                    academicPlan={academicPlan}
                     key={index}
+                    requirement={requirement.name}
                     module={moduleOrArray}
                     handleSelectModule={handleSelectModule}
                     handleDeselectModule={handleDeselectModule}

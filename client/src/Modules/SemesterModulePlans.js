@@ -27,10 +27,10 @@ import { orange } from "@mui/material/colors";
 
 // styling for each year plan
 const EachYearPlan = ({
-  academicPlan,
   currentYear,
   handleDeleteModule,
   semesterModulesDict,
+  handleRevertModule,
 }) => {
   const semesters = ["Semester 1", "Semester 2"];
 
@@ -66,18 +66,16 @@ const EachYearPlan = ({
                   <SelectModuleBox
                     isSelectable={false}
                     key={index}
-                    handleDeleteModule={handleDeleteModule}
-                    academicPlan={academicPlan}
                     moduleList={moduleOrArray}
                   />
                 ) : (
                   <ModuleBox
                     isSelectable={false}
                     isRevertable={true}
-                    academicPlan={academicPlan}
-                    handleDeleteModule={handleDeleteModule}
+                    handleRevertModule={handleRevertModule}
                     key={index}
-                    module={moduleOrArray}
+                    requirement={moduleOrArray.requirement}
+                    module={moduleOrArray.module}
                   />
                 )
             )}
@@ -91,7 +89,7 @@ const EachYearPlan = ({
 // semester module plans
 const SemesterModulePlans = ({
   academicPlan,
-  handleDeleteModule,
+  handleRevertModule,
   semesterModulesDict,
   isComplete,
 }) => {
@@ -251,6 +249,7 @@ const SemesterModulePlans = ({
                   key={index}
                   currentYear={tabsList[index]}
                   semesterModulesDict={semesterModulesDict}
+                  handleRevertModule={handleRevertModule}
                 />
               )
           )}

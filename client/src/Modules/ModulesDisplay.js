@@ -192,16 +192,18 @@ const ModulesDisplay = ({
   };
 
   // just to make sure no confusion in state changes because select/deselect is toggled by clicking again
-  const handleSelectModule = (module) => {
+  const handleSelectModule = (module, requirement) => {
     setSelectedModules((prevSelectedModules) => [
       ...prevSelectedModules,
-      module,
+      { module: module, requirement: requirement },
     ]);
   };
 
   const handleDeselectModule = (module) => {
     setSelectedModules((prevSelectedModules) =>
-      prevSelectedModules.filter((selectedModule) => selectedModule !== module)
+      prevSelectedModules.filter(
+        (selectedModuleObject) => selectedModuleObject.module !== module
+      )
     );
   };
 
@@ -225,6 +227,66 @@ const ModulesDisplay = ({
 
     if (requirementIndex !== -1) {
       updatedGradRequirements[requirementIndex].modules.push(moduleObject);
+      setNewGradRequirements(updatedGradRequirements);
+    }
+  };
+
+  const handleRevertModule = (moduleObject, requirement) => {
+    const moduleMatches = (module1, module2) => {
+      return module1.code === module2.code && module1.name === module2.name;
+    };
+
+    const moduleObjectMatches = (module1, module2) => {
+      return (
+        moduleMatches(module1.module, module2.module) &&
+        module1.requirement === module2.requirement
+      );
+    };
+
+    const requirementIndex = gradRequirementsDict.findIndex(
+      (req) => req.name === requirement
+    );
+
+    if (requirementIndex === -1) {
+      return;
+    }
+
+    const moduleToRemove = {
+      module: moduleObject,
+      requirement: requirement,
+    };
+
+    const updatedModulesArray = newGradRequirements[
+      requirementIndex
+    ].modules.filter((mod) => !moduleMatches(mod, moduleToRemove.module));
+
+    const updatedGradRequirements = [...newGradRequirements];
+    updatedGradRequirements[requirementIndex].modules = updatedModulesArray;
+    setNewGradRequirements(updatedGradRequirements);
+
+    const updatedMovedModules = { ...newSemesterModules };
+
+    const semesterModulesArray =
+      updatedMovedModules[destinationYear]?.[destinationSemester];
+
+    if (semesterModulesArray) {
+      const updatedSemesterModules = semesterModulesArray.filter(
+        (mod) => !moduleObjectMatches(mod, moduleToRemove)
+      );
+
+      updatedMovedModules[destinationYear][destinationSemester] =
+        updatedSemesterModules;
+      setNewSemesterModules(updatedMovedModules);
+    }
+
+    const targetRequirementIndex = updatedGradRequirements.findIndex(
+      (req) => req.name === moduleToRemove.requirement
+    );
+
+    if (targetRequirementIndex !== -1) {
+      updatedGradRequirements[targetRequirementIndex].modules.push(
+        moduleToRemove.module
+      );
       setNewGradRequirements(updatedGradRequirements);
     }
   };
@@ -255,14 +317,19 @@ const ModulesDisplay = ({
     setOpenDialog(true);
   };
 
-  // handle moving of modules to correct destination year and semester
+  // handle shifting of modules
   const handleSubmitMovedModules = () => {
     setSelectedModules([]);
+
     const updatedModulesDict = newGradRequirements.map((requirement) => {
-      // check each requirement within and check if the modules within are inside selectedModules array
-      const updatedModules = requirement.modules.filter(
-        (module) => !selectedModules.includes(module)
-      );
+      const updatedModules = requirement.modules.filter((module) => {
+        return !selectedModules.some(
+          (selectedModuleObject) =>
+            selectedModuleObject.module.code === module.code &&
+            selectedModuleObject.requirement === requirement.name
+        );
+      });
+
       return {
         ...requirement,
         modules: updatedModules,
@@ -273,8 +340,6 @@ const ModulesDisplay = ({
     console.log(updatedModulesDict);
 
     const updatedMovedModules = { ...newSemesterModules };
-
-    // move the selected modules to the specified year and semester
     if (!updatedMovedModules.hasOwnProperty(destinationYear)) {
       updatedMovedModules[destinationYear] = {};
     }
@@ -283,13 +348,26 @@ const ModulesDisplay = ({
     ) {
       updatedMovedModules[destinationYear][destinationSemester] = [];
     }
+
+    const filteredMovedModules = updatedMovedModules[destinationYear][
+      destinationSemester
+    ].filter(
+      (moduleObject) =>
+        !selectedModules.some(
+          (selectedModuleObject) =>
+            selectedModuleObject.module.code === moduleObject.module.code &&
+            selectedModuleObject.requirement === moduleObject.requirement
+        )
+    );
+
     updatedMovedModules[destinationYear][destinationSemester] = [
-      ...updatedMovedModules[destinationYear][destinationSemester],
+      ...filteredMovedModules,
       ...selectedModules,
     ];
 
     setNewSemesterModules(updatedMovedModules);
     console.log(updatedMovedModules);
+
     setOpenDialog(false);
   };
 
@@ -315,7 +393,7 @@ const ModulesDisplay = ({
       <Box sx={{ marginTop: "35px" }}>
         <SemesterModulePlans
           academicPlan={academicPlan}
-          handleDeleteModule={handleDeleteModule}
+          handleRevertModule={handleRevertModule}
           semesterModulesDict={newSemesterModules}
           isComplete={newGradRequirements.every(
             (entry) => entry.modules.length === 0
