@@ -13,9 +13,80 @@ import {
   Button,
   Tooltip,
   Fab,
+  Autocomplete,
+  TextField,
 } from "@mui/material";
 import SaveAltRoundedIcon from "@mui/icons-material/SaveAltRounded";
-import { emptyPlanLayout, getRequiredModules } from "./ModuleConstants";
+import {
+  emptyPlanLayout,
+  getRequiredModules,
+  sampleOptionsList,
+} from "./ModuleConstants";
+
+// dialog for adding modules
+export const AddModuleDialog = ({
+  openAddModuleDialog,
+  handleCloseAddModuleDialog,
+  academicPlan,
+  newModuleInfo,
+  handleSubmitNewModule,
+}) => {
+  const [newModuleObject, setNewModuleObject] = useState({});
+
+  // placeholder fn, get options for selecting a new module
+  function getOptions(academicPlan, newModuleInfo) {
+    // new module gives the primarydeg, seconddeg/etc and also gives 3k/4k req.
+    return sampleOptionsList.map((module) => module.code);
+  }
+
+  const handleClickSubmitNewModule = () => {
+    handleCloseAddModuleDialog();
+    handleSubmitNewModule(newModuleInfo, newModuleObject);
+    console.log(newModuleObject);
+    console.log(newModuleInfo);
+    setNewModuleObject({});
+  };
+
+  return (
+    <Dialog open={openAddModuleDialog} onClose={handleCloseAddModuleDialog}>
+      <DialogContent sx={{ margin: "10px" }}>
+        <Typography sx={{ fontSize: "35px", fontWeight: 700 }}>
+          Please select a module.
+        </Typography>
+        <Autocomplete
+          onChange={(event, value) =>
+            setNewModuleObject(
+              sampleOptionsList.find((module) => module.code === value)
+            )
+          }
+          disablePortal
+          options={getOptions(academicPlan, newModuleInfo)}
+          fullWidth
+          renderInput={(params) => (
+            <TextField {...params} label="Select Module" />
+          )}
+        />
+        <Box
+          sx={{
+            marginTop: "20px",
+            justifyContent: "flex-end",
+            alignItems: "flex-end",
+            display: "flex",
+          }}
+        >
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={newModuleObject === {}}
+            onClick={handleClickSubmitNewModule}
+          >
+            Add Module
+          </Button>
+        </Box>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 // dialog for asking where to move the modules to
 export const MoveModuleDialog = ({
@@ -99,6 +170,16 @@ const ModulesDisplay = ({
   const [newSemesterModules, setNewSemesterModules] =
     useState(semesterModulesDict);
 
+  const [newModuleInfo, setNewModuleInfo] = useState({
+    moduleType: "",
+    requirement: "",
+  });
+
+  const [openAddModuleDialog, setOpenAddModuleDialog] = useState(false);
+  const handleCloseAddModuleDialog = () => {
+    setOpenAddModuleDialog(false);
+  };
+
   const [selectedModules, setSelectedModules] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [destinationYear, setDestinationYear] = useState("");
@@ -125,11 +206,47 @@ const ModulesDisplay = ({
   };
 
   // for rendering a new select module box
-  // must edit, this is not correct.
-  const handleAddModule = (module, requirement) => {
-    setNewGradRequirements({
-      ...newGradRequirements,
-      [requirement]: module,
+  const handleAddModule = (moduleTypeInput, requirementName) => {
+    setOpenAddModuleDialog(true);
+    setNewModuleInfo({
+      moduleType: moduleTypeInput,
+      requirement: requirementName,
+    });
+    console.log(moduleTypeInput); // testing to check if correct
+    console.log(requirementName); // testing to check if correct
+  };
+
+  // for adding the new selected module (does NOT allow for further change)
+  const handleSubmitNewModule = (moduleInfo, moduleObject) => {
+    const updatedGradRequirements = [...newGradRequirements];
+    const requirementIndex = updatedGradRequirements.findIndex(
+      (requirement) => requirement.name === moduleInfo.requirement
+    );
+
+    if (requirementIndex !== -1) {
+      updatedGradRequirements[requirementIndex].modules.push(moduleObject);
+      setNewGradRequirements(updatedGradRequirements);
+    }
+  };
+
+  // code for deleting a module
+  const handleDeleteModule = (moduleInput) => {
+    setNewGradRequirements((prevGradRequirements) => {
+      const updatedGradRequirements = JSON.parse(
+        JSON.stringify(prevGradRequirements)
+      );
+
+      const sectionIndex = updatedGradRequirements.findIndex((section) =>
+        section.modules.some((module) => module.code === moduleInput.code)
+      );
+
+      if (sectionIndex !== -1) {
+        updatedGradRequirements[sectionIndex].modules = updatedGradRequirements[
+          sectionIndex
+        ].modules.filter((module) => module.code !== moduleInput.code);
+      }
+
+      return updatedGradRequirements;
     });
   };
 
@@ -192,10 +309,13 @@ const ModulesDisplay = ({
         gradRequirementsDict={newGradRequirements}
         selectedModules={selectedModules}
         handleMoveModules={handleMoveModules}
+        handleDeleteModule={handleDeleteModule}
+        handleAddModule={handleAddModule}
       />
       <Box sx={{ marginTop: "35px" }}>
         <SemesterModulePlans
           academicPlan={academicPlan}
+          handleDeleteModule={handleDeleteModule}
           semesterModulesDict={newSemesterModules}
           isComplete={newGradRequirements.every(
             (entry) => entry.modules.length === 0
@@ -212,6 +332,13 @@ const ModulesDisplay = ({
         destinationSemester={destinationSemester}
         handleDestinationSemesterChange={handleDestinationSemesterChange}
       />
+      <AddModuleDialog
+        openAddModuleDialog={openAddModuleDialog}
+        handleCloseAddModuleDialog={handleCloseAddModuleDialog}
+        academicPlan={academicPlan}
+        newModuleInfo={newModuleInfo}
+        handleSubmitNewModule={handleSubmitNewModule}
+      />
       <Tooltip title="Save Plan" placement="top">
         <Fab
           onClick={handleSaveGradRequirements}
@@ -219,7 +346,7 @@ const ModulesDisplay = ({
           sx={{
             position: "fixed",
             top: "3rem",
-            right: "3rem",
+            right: "8rem",
             transition: "transform 0.2s ease",
             "&:hover": {
               transform: "scale(1.2)",

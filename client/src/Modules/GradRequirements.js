@@ -13,7 +13,7 @@ import {
   TextField,
 } from "@mui/material";
 import DriveFileMoveRoundedIcon from "@mui/icons-material/DriveFileMoveRounded";
-import SaveAltRoundedIcon from "@mui/icons-material/SaveAltRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import React, { useState } from "react";
 import {
   getRequiredModules,
@@ -21,6 +21,7 @@ import {
   getRecommendedPlan,
 } from "./ModuleConstants";
 import { grey, red } from "@mui/material/colors";
+import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 
 // get different colors for different modules
 export function getModuleColors(module, academicPlan) {
@@ -114,6 +115,8 @@ export const SelectModuleBox = ({
   selectedModules,
   handleSelectModule,
   handleDeselectModule,
+  handleDeleteModule,
+  isSelectable,
 }) => {
   const [selectedModule, setSelectedModule] = useState(moduleList[0]);
   const [showSelectOptions, setShowSelectOptions] = useState(false);
@@ -252,16 +255,33 @@ export const ModuleBox = ({
   selectedModules,
   handleSelectModule,
   handleDeselectModule,
+  handleDeleteModule,
+  isSelectable,
+  isRevertable,
 }) => {
   // check if the modulebox is selected, then activate selected display state
-  const isSelected = selectedModules.includes(module);
+  const isSelected = isSelectable && selectedModules.includes(module);
+
+  // handle delete button click without triggering module selection
+  const handleClickDelete = (event) => {
+    event.stopPropagation();
+    handleDeleteModule(module);
+  };
 
   // handle selecting/de-selecting module
   const handleClickModule = () => {
-    if (isSelected) {
-      handleDeselectModule(module);
-    } else {
-      handleSelectModule(module);
+    if (isSelectable) {
+      if (isSelected) {
+        handleDeselectModule(module);
+      } else {
+        handleSelectModule(module);
+      }
+    }
+  };
+
+  const handleClickRevert = () => {
+    if (isRevertable) {
+      console.log(module);
     }
   };
 
@@ -283,18 +303,40 @@ export const ModuleBox = ({
             backgroundColor: getModuleColors(module, academicPlan),
           }}
         >
-          <a
-            href={`https://nusmods.com/courses/${module.code}/`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              fontSize: "20px",
-              fontWeight: 600,
-              color: "white",
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              flexDirection: "row",
             }}
           >
-            {module.code}
-          </a>
+            <a
+              href={`https://nusmods.com/courses/${module.code}/`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                fontSize: "20px",
+                fontWeight: 600,
+                color: "white",
+              }}
+            >
+              {module.code}
+            </a>
+            {isSelectable && (
+              <Tooltip title="Delete">
+                <IconButton onClick={handleClickDelete}>
+                  <CloseRoundedIcon sx={{ color: "white" }} />
+                </IconButton>
+              </Tooltip>
+            )}
+            {isRevertable && (
+              <Tooltip title="Delete">
+                <IconButton onClick={handleClickRevert}>
+                  <RestartAltRoundedIcon sx={{ color: "white" }} />
+                </IconButton>
+              </Tooltip>
+            )}
+          </Box>
           <Typography
             sx={{
               marginTop: "10px",
@@ -320,6 +362,8 @@ const GradRequirements = ({
   gradRequirementsDict,
   selectedModules,
   handleMoveModules,
+  handleDeleteModule,
+  handleAddModule,
 }) => {
   // styling for the required modules area
   const RequiredModules = () => {
@@ -353,6 +397,7 @@ const GradRequirements = ({
               {requirement.modules.map((moduleOrArray, index) =>
                 Array.isArray(moduleOrArray) ? (
                   <SelectModuleBox
+                    isSelectable={true}
                     key={index}
                     academicPlan={academicPlan}
                     moduleList={moduleOrArray}
@@ -362,28 +407,33 @@ const GradRequirements = ({
                   />
                 ) : (
                   <ModuleBox
+                    isSelectable={true}
                     academicPlan={academicPlan}
                     key={index}
                     module={moduleOrArray}
                     handleSelectModule={handleSelectModule}
                     handleDeselectModule={handleDeselectModule}
+                    handleDeleteModule={handleDeleteModule}
                     selectedModules={selectedModules}
                   />
                 )
               )}
               {(requirement.name === "primaryDegreeModules" ||
+                requirement.name === "secondMajorModules" ||
                 requirement.name === "secondDegreeModules") && (
-                <div>
+                <Box sx={{ display: "flex", flexDirection: "column" }}>
                   <Button
                     color="error"
                     variant="outlined"
                     sx={{
-                      width: "200px",
+                      fontWeight: 600,
+                      width: "230px",
                       height: "100px",
                       borderRadius: "10px",
                       border: "1px dashed",
                       marginBottom: "20px",
                     }}
+                    onClick={() => handleAddModule("3k", requirement.name)} // change to map the optionsList or something
                   >
                     Add 3k Module
                   </Button>
@@ -391,15 +441,17 @@ const GradRequirements = ({
                     variant="outlined"
                     color="error"
                     sx={{
-                      width: "200px",
+                      fontWeight: 600,
+                      width: "230px",
                       height: "100px",
                       borderRadius: "10px",
                       border: "1px dashed",
                     }}
+                    onClick={() => handleAddModule("4k", requirement.name)} // change to map the optionsList or something
                   >
                     Add 4k Module
                   </Button>
-                </div>
+                </Box>
               )}
             </CardContent>
           </Card>

@@ -26,7 +26,12 @@ import { sampleProfile } from "../Constants";
 import { orange } from "@mui/material/colors";
 
 // styling for each year plan
-const EachYearPlan = ({ academicPlan, currentYear, semesterModulesDict }) => {
+const EachYearPlan = ({
+  academicPlan,
+  currentYear,
+  handleDeleteModule,
+  semesterModulesDict,
+}) => {
   const semesters = ["Semester 1", "Semester 2"];
 
   return (
@@ -59,13 +64,18 @@ const EachYearPlan = ({ academicPlan, currentYear, semesterModulesDict }) => {
               (moduleOrArray, index) =>
                 Array.isArray(moduleOrArray) ? (
                   <SelectModuleBox
+                    isSelectable={false}
                     key={index}
+                    handleDeleteModule={handleDeleteModule}
                     academicPlan={academicPlan}
                     moduleList={moduleOrArray}
                   />
                 ) : (
                   <ModuleBox
+                    isSelectable={false}
+                    isRevertable={true}
                     academicPlan={academicPlan}
+                    handleDeleteModule={handleDeleteModule}
                     key={index}
                     module={moduleOrArray}
                   />
@@ -80,9 +90,10 @@ const EachYearPlan = ({ academicPlan, currentYear, semesterModulesDict }) => {
 
 // semester module plans
 const SemesterModulePlans = ({
+  academicPlan,
+  handleDeleteModule,
   semesterModulesDict,
   isComplete,
-  academicPlan,
 }) => {
   // request approval
   const [requestSuccess, setRequestSuccess] = useState(false);
@@ -122,25 +133,8 @@ const SemesterModulePlans = ({
     setUseRecommended(true);
   };
 
-  // save changes
-  const [saveSuccess, setSaveSuccess] = useState(false);
-  const handleSavePlan = () => {
-    setSaveSuccess(true);
-    console.log({
-      student: sampleProfile, // replace with the current user
-      status: requestSubmitted ? "Pending" : " ",
-      academicPlan: academicPlan,
-      semesterModules: semesterModulesDict,
-    });
-  };
-
   // list of action buttons available
   const actionsList = [
-    {
-      tooltip: "Save Changes",
-      handleClick: handleSavePlan,
-      icon: <SaveAltRoundedIcon sx={{ color: "black", fontSize: "30px" }} />,
-    },
     {
       tooltip: "Validate Plan",
       handleClick: handleValidatePlan,
@@ -319,20 +313,6 @@ const SemesterModulePlans = ({
             severity="error"
           >
             Your plan is incomplete!
-          </Alert>
-        </Snackbar>
-        <Snackbar
-          open={saveSuccess}
-          autoHideDuration={3000}
-          onClose={() => setSaveSuccess(false)}
-        >
-          <Alert
-            onClose={() => setSaveSuccess(false)}
-            variant="filled"
-            sx={{ color: "white" }}
-            severity="success"
-          >
-            Plan saved!
           </Alert>
         </Snackbar>
       </CardContent>

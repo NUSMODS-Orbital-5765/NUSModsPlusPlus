@@ -233,28 +233,34 @@ export const draftAcademicRequirements = [
   {
     name: "commonModules",
     modules: [
-      [
-        {
+      {
+        selected: {
           code: "NTW2006",
           name: "Human Trafficking and Labour Migration",
         },
-        {
-          code: "NTW2031",
-          name: "Equity and Education",
-        },
-        {
-          code: "NTW2010",
-          name: "Sites of Tourism",
-        },
-        {
-          code: "NTW2017",
-          name: "Multidisciplinary Perspectives on 'Mind'",
-        },
-        {
-          code: "NTW2018",
-          name: "Danger and National Security",
-        },
-      ],
+        options: [
+          {
+            code: "NTW2006",
+            name: "Human Trafficking and Labour Migration",
+          },
+          {
+            code: "NTW2031",
+            name: "Equity and Education",
+          },
+          {
+            code: "NTW2010",
+            name: "Sites of Tourism",
+          },
+          {
+            code: "NTW2017",
+            name: "Multidisciplinary Perspectives on 'Mind'",
+          },
+          {
+            code: "NTW2018",
+            name: "Danger and National Security",
+          },
+        ],
+      },
       {
         code: "HSI1000",
         name: "How Science Works, Why Science Works",
@@ -452,3 +458,27 @@ export const FormatAcademicPlanTitle = ({ academicPlan }) => {
     </Typography>
   );
 };
+
+// sample module selection options
+export const sampleOptionsList = [
+  {
+    code: "NTW2006",
+    name: "Human Trafficking and Labour Migration",
+  },
+  {
+    code: "NTW2031",
+    name: "Equity and Education",
+  },
+  {
+    code: "NTW2010",
+    name: "Sites of Tourism",
+  },
+  {
+    code: "NTW2017",
+    name: "Multidisciplinary Perspectives on 'Mind'",
+  },
+  {
+    code: "NTW2018",
+    name: "Danger and National Security",
+  },
+];

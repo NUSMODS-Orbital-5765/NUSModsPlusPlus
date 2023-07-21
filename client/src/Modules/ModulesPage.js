@@ -157,7 +157,7 @@ export const ModuleDisplayCard = ({
                   onClick={handleClosePlan}
                   sx={{
                     position: "fixed",
-                    top: "8rem",
+                    top: "3rem",
                     right: "3rem",
                     transition: "transform 0.2s ease",
                     "&:hover": {
