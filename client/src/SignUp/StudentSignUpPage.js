@@ -51,12 +51,13 @@ const StudentSignUpPage = () => {
   // save inputs
   const [registerInfo, setRegisterInfo] = useState({
     name: "",
-    studentId: "",
+    NUSId: "",
     username: "",
     password: "",
     confirmPassword: "",
     email: "",
     faculty: "",
+    academicPlan: "",
     primaryDegree: "",
     secondDegree: "",
     secondMajor: "",
@@ -83,6 +84,7 @@ const StudentSignUpPage = () => {
   // on first load of the page
   useEffect(() => {
     handleFormCompletion(fieldErrors);
+    console.log(registerInfo)
   }, [registerInfo]);
 
   // submitting register info
@@ -111,7 +113,7 @@ const StudentSignUpPage = () => {
   // check for errors among the fields
   const fieldErrors = {
     name: registerInfo.name === "",
-    studentId: registerInfo.studentId === "",
+    NUSId: registerInfo.NUSId === "",
     username: registerInfo.username === "",
     password: registerInfo.password === "",
     confirmPassword: registerInfo.confirmPassword === "",
@@ -176,7 +178,7 @@ const StudentSignUpPage = () => {
               </Box>
               <Box sx={{ marginBottom: "20px" }}>
                 <FormTextField
-                  name="studentId"
+                  name="NUSId"
                   label="StudentID"
                   defaultText=""
                   setfn={handleRegisterInfo}
@@ -214,7 +216,8 @@ const StudentSignUpPage = () => {
                   <InputLabel id="academic-plan">Academic Plan</InputLabel>
                   <Select
                     label="Academic Plan"
-                    onChange={handleAcademicPlanChange}
+                    name="academicPlan"
+                    onChange={e=>{handleAcademicPlanChange(e);handleRegisterInfo(e)}}
                   >
                     <MenuItem value={"Single Degree"}>Single Degree</MenuItem>
                     <MenuItem value={"Double Degree"}>Double Degree</MenuItem>

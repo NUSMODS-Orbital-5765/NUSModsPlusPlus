@@ -1,9 +1,9 @@
 import { Box, Typography } from "@mui/material";
 import PostsList from "../Community/PostsList";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-// for liked posts, dunno whether to sort based on most recently liked (i.e. every time a post is liked, add it to the LikedPosts array and sort descending)
-// or sort based on dateCreated of the liked post (most recently created posts at the top)
-const LikedPostsTab = ({ postList }) => {
+const LikedPostsTabFrame = ({ postList }) => {
   return (
     <Box sx={{ margin: "55px", marginTop: "-20px" }}>
       <Typography
@@ -15,5 +15,25 @@ const LikedPostsTab = ({ postList }) => {
     </Box>
   );
 };
-
+const LikedPostsTab = () => {
+  const [postList, setPostList] = useState();
+  const [isFetch, setIsFetch] = useState(false)
+  const postSearchAPI = `${process.env.REACT_APP_API_LINK}/post/search`;
+  useEffect(()=>{
+    axios
+      .post(postSearchAPI, {
+        sortValue: "timestamp",
+        filterValue: "",
+        likedByUsername: localStorage.getItem("username")
+      })
+      .then((res) => {
+        console.log(res.data.postList);
+        setPostList(res.data.postList);
+        setIsFetch(true);
+      })
+      .catch((err) => console.log(err))},[])
+  return (isFetch &&
+  <LikedPostsTabFrame postList={postList}/>
+  )
+}
 export default LikedPostsTab;

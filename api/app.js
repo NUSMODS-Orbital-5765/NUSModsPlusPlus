@@ -43,9 +43,11 @@ app.post("/register/user",jsonParser, (request, response) => {
         password: hashedPassword,
         email: request.body.email,
         faculty: request.body.faculty,
-        primaryMajor: request.body.primaryMajor,
-        secondaryMajor: request.body.secondaryMajor,
-        minors: request.body.minors,
+        academicPlan: request.body.academicPlan,
+        primaryDegree: request.body.primaryDegree,
+        secondDegree: request.body.secondDegree,
+        secondMajor: request.body.secondMajor,
+        minor: request.body.minor,
         programme: request.body.programme,
         interests: request.body.interests,
       };
@@ -224,7 +226,7 @@ app.post("/post/search", jsonParser, (request, response) => {
   //Deal with sortValue
   let orderBy = {};
   if (request.body.sortValue === "timestamp") {orderBy={dateCreated:"desc"}}
-  else if (request.body.sortValue === "likes") {orderBy={likes:"desc"}}
+  else if (request.body.sortValue === "likes") {orderBy={likeAmount:"desc"}}
   else {orderBy={dateCreated:"desc"}}
 
   //Deal with filterValue
@@ -234,7 +236,10 @@ app.post("/post/search", jsonParser, (request, response) => {
   else if (request.body.filterValue === "notes") {where={category:"Notes"}}
 
   if (request.body.username) {
-    where={author: {username: request.body.username}}
+    where.author = {username: request.body.username}
+  }
+  if (request.body.likedByUsername) {
+    where.like =  {has: request.body.likedByUsername}
   }
   prisma.post.findMany({
   //   skip: 0,
@@ -329,11 +334,14 @@ app.post('/profile/update', [jsonParser,auth], (request, response) => {
     },
     data: {
       name: request.body.name,
-      studentId: request.body.studentId,
+      NUSId: request.body.NUSId,
+      email: request.body.email,
       faculty: request.body.faculty,
-      primaryMajor: request.body.primaryMajor,
-      secondaryMajor: request.body.secondaryMajor,
-      minors: request.body.minors,
+      academicPlan: request.body.academicPlan,
+      primaryDegree: request.body.primaryDegree,
+      secondDegree: request.body.secondDegree,
+      secondMajor: request.body.secondMajor,
+      minor: request.body.minor,
       programme: request.body.programme,
       interests: request.body.interests,
     }
@@ -353,6 +361,37 @@ app.post('/profile/update', [jsonParser,auth], (request, response) => {
     });
   })
 })
+
+app.post('/profile/security-update', [jsonParser,auth], (request, response) => {
+  if (request.body.password) {
+  bcrypt
+    .hash(request.body.password, 10)
+    .then((hashedPassword) => {
+    prisma.user.update({
+      where: {
+        username: response.locals.user.username,
+      },
+      data: {
+        email: request.body.email,
+        password: hashedPassword
+      }
+    }) })
+  .then(res => {
+    console.log("Updating User Profile");
+    response.status(200).send({
+      message: "User Update Successfully at id = "+ res.id,
+      res,
+    });
+  })
+  .catch(error => {
+    console.log(error);
+    response.status(500).send({
+      message: "Error Getting User",
+      error,
+    });
+  })
+}})
+
 
 app.post('/event/add', [jsonParser,auth], (request, response) => {
 
@@ -436,17 +475,19 @@ app.post ("/post/like", [jsonParser,auth], (request, response) => {
       if (likedList.includes(likedUser)) {
         //Unlike
         const filteredLikedList =  likedList.filter(e => e !== likedUser)
+        
         prisma.post.update({
           where: {id: request.body.postId},
           data: {
-            like: filteredLikedList
+            like: filteredLikedList,
+            likeAmount: {decrement : 1}
           }
         })
         .then(result => {
           console.log("Unlike Sucessfully")
           response.status(200).send({
-            message: "User " +request.body.username + " Like Successfully from Post " + request.body.postId,
-            result,
+            message: "User " +request.body.username + " unlike Successfully from Post " + request.body.postId,
+            likeAmount: result.likeAmount,
           });
         })
         .catch(error => {
@@ -462,14 +503,15 @@ app.post ("/post/like", [jsonParser,auth], (request, response) => {
         prisma.post.update({
           where: {id: request.body.postId},
           data: {
-            like: likedList
+            like: likedList,
+            likeAmount: {increment : 1}
           }
         })
-        .then(any => {
+        .then(result => {
           console.log("Like Successfully")
           response.status(200).send({
             message: "User " +request.body.username + " Like Successfully from Post " + request.body.postId,
-            result,
+            likeAmount: result.likeAmount,
           });
         })
         .catch(error => {

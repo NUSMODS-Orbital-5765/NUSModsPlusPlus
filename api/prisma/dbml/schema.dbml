@@ -11,14 +11,15 @@ Table User {
   password String [not null]
   email String [unique, not null]
   faculty String [not null]
-  primaryMajor String [not null]
-  secondaryMajor String
-  minors String
+  academicPlan String
+  primaryDegree String
+  secondDegree String
+  secondMajor String
   programme String
+  minor String[] [not null]
   interests String[] [not null]
   avatar String
   Post Post [not null]
-  LikedPost Post [not null]
   Comment Comment [not null]
   Event Event [not null]
 }
@@ -34,8 +35,8 @@ Table Post {
   tags String[] [not null]
   author User [not null]
   PostAuthorId Int [not null]
-  like User [not null]
-  LikedUserId Int [not null]
+  like String[] [not null]
+  likeAmount Int [not null, default: 0]
   Comment Comment [not null]
 }
 
@@ -104,8 +105,6 @@ Table Event {
 }
 
 Ref: Post.PostAuthorId > User.id
-
-Ref: Post.LikedUserId > User.id
 
 Ref: Comment.authorId > User.id
 

@@ -6,15 +6,14 @@ import {
   FormEmailField,
 } from "../FormStyledComponents";
 import React, { useState, useEffect } from "react";
-
-const AccountSecurityTab = ({ userProfile }) => {
+import axios from "axios";
+const AccountSecurityTabFrame = ({ userProfile }) => {
   const [editableDetails, setEditableDetails] = useState(false);
   const handleEditableDetails = () => {
     setEditableDetails(!editableDetails);
   };
 
   const [accountInfo, setAccountInfo] = useState({
-    username: userProfile.username,
     password: "",
     confirmPassword: "",
     email: userProfile.email,
@@ -29,14 +28,12 @@ const AccountSecurityTab = ({ userProfile }) => {
 
   const [isFormComplete, setIsFormComplete] = useState(false);
   const handleFormCompletion = (fieldErrors) => {
-    const isComplete = Object.values(fieldErrors).every((error) => !error);
+    const isComplete = Object.values(fieldErrors).reduce((a, err) => a || !err, false);
     setIsFormComplete(isComplete);
   };
 
   const fieldErrors = {
-    username: accountInfo.username === "",
-    password: accountInfo.password === "",
-    confirmPassword: accountInfo.confirmPassword === "",
+    passwordAndconfirmPassword: (accountInfo.password === "" || accountInfo.confirmPassword === ""),
     email: accountInfo.email === "",
   };
 
@@ -79,7 +76,7 @@ const AccountSecurityTab = ({ userProfile }) => {
       <Box sx={{ marginBottom: "50px" }}>
         <FormUsernameField
           setfn={handleAccountInfo}
-          disabled={!editableDetails}
+          disabled={true}
           defaultText={userProfile.username}
         />
       </Box>
@@ -137,4 +134,29 @@ const AccountSecurityTab = ({ userProfile }) => {
     </Box>
   );
 };
+
+const AccountSecurityTab = () => {
+  const [isFetch, setIsFetch] = useState(false);
+  const [userProfile, setUserProfile] = useState();
+  useEffect(() => {
+    const username = localStorage.getItem("username");
+    const GETprofileURL = process.env.REACT_APP_API_LINK + "/profile/get";
+    axios
+      .get(GETprofileURL, {
+        params: {
+          username: username,
+        },
+      })
+      .then((user) => {
+        setUserProfile(user.data.user);
+        setIsFetch(true);
+        console.log(user.data.user);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+  return(
+    isFetch &&
+  <AccountSecurityTabFrame userProfile={userProfile} />
+  );
+}
 export default AccountSecurityTab;

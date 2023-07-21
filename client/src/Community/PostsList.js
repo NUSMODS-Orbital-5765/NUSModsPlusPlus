@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import CommunityDefaultPost from "./CommunityDefaultPost";
 import { Box } from "@mui/material";
 
