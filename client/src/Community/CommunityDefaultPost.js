@@ -223,7 +223,7 @@ const CommunityDefaultPost = (props) => {
   const post = props.post;
   const likedList = post.like;
   const localUsername = localStorage.getItem("username")
-  const [totalLikes, setTotalLikes] = useState(likedList.length);
+  const [totalLikes, setTotalLikes] = useState(post.likeAmount)
   const [extensionOpen, setExtensionOpen] = useState(false);
   const [arrowDirection, setArrowDirection] = useState("down");
   const [liked, setLiked] = useState(likedList.includes("username"));
@@ -246,12 +246,8 @@ const CommunityDefaultPost = (props) => {
       }
     )
     .then(result => {
-      if (liked) {
-        setTotalLikes(totalLikes-1);
-      }
-      else {
-        setTotalLikes(totalLikes+1);
-      }
+      console.log(result.data)
+      post.likeAmount=result.data.likeAmount
       setLiked(!liked)
     })
     
@@ -274,7 +270,6 @@ const CommunityDefaultPost = (props) => {
     setViewPost(false);
   };
 
-  useEffect(() => {}, []);
   // how post looks like on screen
   return (
     <div>
@@ -370,13 +365,13 @@ const CommunityDefaultPost = (props) => {
               }}
             >
               <Checkbox
-                onClick={toggleLiked}
+                onClick={e=>toggleLiked(e)}
                 defaultChecked={liked}
                 icon={<FavoriteBorderRoundedIcon />}
                 checkedIcon={<FavoriteRoundedIcon />}
               />
               <Typography sx={{ marginLeft: "-5px" }}>
-                {totalLikes}
+                {post.likeAmount}
               </Typography>
             </Box>
             <Box

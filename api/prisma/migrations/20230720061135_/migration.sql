@@ -8,10 +8,12 @@ CREATE TABLE "User" (
     "password" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "faculty" TEXT NOT NULL,
-    "primaryMajor" TEXT NOT NULL,
-    "secondaryMajor" TEXT,
-    "minors" TEXT,
+    "academicPlan" TEXT NOT NULL,
+    "primaryDegree" TEXT NOT NULL,
+    "secondDegree" TEXT,
+    "secondMajor" TEXT,
     "programme" TEXT,
+    "minor" TEXT[],
     "interests" TEXT[],
     "avatar" TEXT,
 
@@ -29,7 +31,7 @@ CREATE TABLE "Post" (
     "upload_file" TEXT[],
     "tags" TEXT[],
     "PostAuthorId" INTEGER NOT NULL,
-    "LikedUserId" INTEGER NOT NULL,
+    "like" TEXT[],
 
     CONSTRAINT "Post_pkey" PRIMARY KEY ("id")
 );
@@ -144,9 +146,6 @@ CREATE INDEX "_CoreModuleGroupToProgramme_B_index" ON "_CoreModuleGroupToProgram
 
 -- AddForeignKey
 ALTER TABLE "Post" ADD CONSTRAINT "Post_PostAuthorId_fkey" FOREIGN KEY ("PostAuthorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Post" ADD CONSTRAINT "Post_LikedUserId_fkey" FOREIGN KEY ("LikedUserId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Comment" ADD CONSTRAINT "Comment_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
