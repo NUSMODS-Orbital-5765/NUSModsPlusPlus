@@ -67,11 +67,10 @@ export const CommunityPostDialog = (props) => {
           }
         )
         .then((res) => {
-          console.log(res);
           alert("Successfully add comment");
           setCommentAddStatus(commentAddStatus + 1);
           console.log(commentAddStatus);
-          generateNotification("comment", localStorage.getItem("username"), post.author.username,commentContent, {postId: post.id})
+          generateNotification("comment", localStorage.getItem("username"), post.author.username,commentContent, {postId: post.id, commentId: res.data.id})
         })
         .catch((err) => console.log(err));
     }
