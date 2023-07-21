@@ -84,11 +84,11 @@ export const ModulesPageHeader = ({ handleOpenDialog }) => {
 
 // export const ModuleDisplayCards
 export const ModuleDisplayCard = ({
-  index,
-  title,
+  planIndex,
   academicPlan,
   gradRequirementsDict,
   semesterModulesDict,
+  handleDeletePlan,
 }) => {
   const [openPlan, setOpenPlan] = useState(false);
   const handleOpenPlan = () => {
@@ -104,8 +104,8 @@ export const ModuleDisplayCard = ({
       <Card
         sx={{
           borderRadius: "10px",
-          backgroundColor: index === 0 ? "#f2f2f2" : "white",
-          boxShadow: index === 0 ? 0 : "0px 4px 10px rgba(0, 0, 0, 0.1)",
+          backgroundColor: planIndex === 0 ? "#f2f2f2" : "white",
+          boxShadow: planIndex === 0 ? 0 : "0px 4px 10px rgba(0, 0, 0, 0.1)",
         }}
       >
         <CardContent sx={{ margin: "10px" }}>
@@ -121,9 +121,9 @@ export const ModuleDisplayCard = ({
                 textTransform: "uppercase",
                 fontWeight: 600,
                 color: "white",
-                backgroundColor: index === 0 ? "#44b700" : grey[500],
+                backgroundColor: planIndex === 0 ? "#44b700" : grey[500],
               }}
-              label={index === 0 ? "Default" : "Draft"}
+              label={planIndex === 0 ? "Default" : "Draft"}
             />
             <Tooltip title="View Plan" placement="top">
               <IconButton
@@ -146,6 +146,13 @@ export const ModuleDisplayCard = ({
           <FormatAcademicPlanTitle academicPlan={academicPlan} />
           <Dialog open={openPlan} fullScreen>
             <DialogContent>
+              <ModulesDisplay
+                academicPlan={academicPlan}
+                gradRequirementsDict={gradRequirementsDict}
+                semesterModulesDict={semesterModulesDict}
+                planIndex={planIndex}
+                handleDeletePlan={handleDeletePlan}
+              />
               <Tooltip title="Close Plan" placement="top">
                 <Fab
                   color="error"
@@ -177,7 +184,6 @@ export const ModuleDisplayCard = ({
 // calls function getRequiredModules here to get the module plan
 export const defaultStudentPlanList = [
   {
-    title: "Default Plan",
     academicPlan: sampleAcademicPlan,
     gradRequirementsDict: getRequiredModules(sampleAcademicPlan),
     semesterModulesDict: emptyPlanLayout,
@@ -219,11 +225,9 @@ const ModulesPage = () => {
 
   // only add a new plan if the input is not empty, add to the planList for mapping.
   const handleAddPlan = (academicPlanInfo) => {
-    const newDraftPlan = "Draft Plan " + planList.length.toString();
     setPlanList((prevPlanList) => [
       ...prevPlanList,
       {
-        title: newDraftPlan,
         academicPlan: academicPlanInfo,
         gradRequirementsDict: getRequiredModules(academicPlanInfo),
         semesterModulesDict: emptyPlanLayout, // always begin with an empty plan layout
@@ -254,16 +258,17 @@ const ModulesPage = () => {
       <AppBarComponent />
       <Box className="remainingViewport">
         <ModulesPageHeader handleOpenDialog={handleOpenDialog} />
-        <Box sx={{ margin: "55px", marginTop: "-20px", marginBottom: "100px" }}>
-          <Grid container spacing={7}>
+        <Box sx={{ margin: "55px", marginBottom: "100px" }}>
+          <Grid sx={{ marginTop: "-65px" }} container spacing={7}>
             {planList.map((plan, index) => (
               <Grid item xs={6} key={index}>
                 <ModuleDisplayCard
                   title={plan.title}
-                  index={index}
+                  planIndex={index}
                   academicPlan={plan.academicPlan}
                   gradRequirementsDict={plan.gradRequirementsDict}
                   semesterModulesDict={plan.semesterModulesDict}
+                  handleDeletePlan={handleDeletePlan}
                 />
               </Grid>
             ))}

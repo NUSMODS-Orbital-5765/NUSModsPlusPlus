@@ -30,6 +30,7 @@ export const MoveModuleDialog = ({
   // list of semester options
   const semesterOptions = ["Semester 1", "Semester 2"];
 
+  // TODO: might change the select components to a radio group instead
   return (
     <Dialog open={openDialog} onClose={handleCloseDialog}>
       <DialogContent sx={{ margin: "10px" }}>
@@ -82,19 +83,21 @@ export const MoveModuleDialog = ({
 };
 
 // manages moving of modules from one component to the other
-const ModulesDisplay = ({ academicPlan, type, handleDeletePlan }) => {
-  // placeholder line to get the academic requirements from academic plan.
-  const [requiredModulesDict, setRequiredModulesDict] = useState(
-    getRequiredModules(academicPlan)
-  );
+const ModulesDisplay = ({
+  academicPlan,
+  gradRequirementsDict,
+  semesterModulesDict,
+  planIndex,
+  handleDeletePlan,
+}) => {
+  // set the state, this is because addition of 3k 4k modules is allowed
+  const [newGradRequirements, setNewGradRequirements] =
+    useState(gradRequirementsDict);
 
-  // for rendering a new select module box
-  const handleAddModule = () => {
-    setRequiredModulesDict([{ ...requiredModulesDict }]);
-  };
+  const [newSemesterModules, setNewSemesterModules] =
+    useState(semesterModulesDict);
 
   const [selectedModules, setSelectedModules] = useState([]);
-  const [movedModules, setMovedModules] = useState(emptyPlanLayout);
   const [openDialog, setOpenDialog] = useState(false);
   const [destinationYear, setDestinationYear] = useState("");
   const handleDestinationYearChange = (event) => {
@@ -119,6 +122,15 @@ const ModulesDisplay = ({ academicPlan, type, handleDeletePlan }) => {
     );
   };
 
+  // for rendering a new select module box
+  // must edit, this is not correct.
+  const handleAddModule = (module, requirement) => {
+    setNewGradRequirements({
+      ...newGradRequirements,
+      [requirement]: module,
+    });
+  };
+
   // handle deletion of modules here and logging modules somewhere else
   const handleMoveModules = () => {
     setOpenDialog(true);
@@ -127,7 +139,7 @@ const ModulesDisplay = ({ academicPlan, type, handleDeletePlan }) => {
   // handle moving of modules to correct destination year and semester
   const handleSubmitMovedModules = () => {
     setSelectedModules([]);
-    const updatedModulesDict = requiredModulesDict.map((requirement) => {
+    const updatedModulesDict = newGradRequirements.map((requirement) => {
       // check each requirement within and check if the modules within are inside selectedModules array
       const updatedModules = requirement.modules.filter(
         (module) => !selectedModules.includes(module)
@@ -138,10 +150,10 @@ const ModulesDisplay = ({ academicPlan, type, handleDeletePlan }) => {
       };
     });
 
-    setRequiredModulesDict(updatedModulesDict);
+    setNewGradRequirements(updatedModulesDict);
     console.log(updatedModulesDict);
 
-    const updatedMovedModules = { ...movedModules };
+    const updatedMovedModules = { ...newSemesterModules };
 
     // move the selected modules to the specified year and semester
     if (!updatedMovedModules.hasOwnProperty(destinationYear)) {
@@ -157,37 +169,35 @@ const ModulesDisplay = ({ academicPlan, type, handleDeletePlan }) => {
       ...selectedModules,
     ];
 
-    setMovedModules(updatedMovedModules);
+    setNewSemesterModules(updatedMovedModules);
     console.log(updatedMovedModules);
     setOpenDialog(false);
   };
 
-  // handle saving of the grad requirements
-  // unfortunately, have to save the semester plans separately, because they can be rearranged among the semesters/years.
+  // handle saving of the grad requirements and semester modules together
   const handleSaveGradRequirements = () => {
-    console.log(requiredModulesDict);
+    console.log(newGradRequirements);
+    console.log(newSemesterModules);
   };
 
   return (
     <div>
       <GradRequirements
+        planIndex={planIndex}
         academicPlan={academicPlan}
-        type={type}
-        handleSaveGradRequirements={handleSaveGradRequirements}
-        handleDeletePlan={handleDeletePlan}
         handleSelectModule={handleSelectModule}
         handleDeselectModule={handleDeselectModule}
-        requiredModulesDict={requiredModulesDict}
+        gradRequirementsDict={newGradRequirements}
         selectedModules={selectedModules}
         handleMoveModules={handleMoveModules}
       />
       <Box sx={{ marginTop: "35px" }}>
         <SemesterModulePlans
           academicPlan={academicPlan}
-          movedModules={movedModules}
-          isComplete={requiredModulesDict.every(
+          semesterModulesDict={newSemesterModules}
+          isComplete={newGradRequirements.every(
             (entry) => entry.modules.length === 0
-          )}
+          )} // shows that everything has been moved over
         />
       </Box>
       <MoveModuleDialog

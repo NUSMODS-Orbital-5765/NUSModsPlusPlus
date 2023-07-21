@@ -20,25 +20,13 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
 import React, { useState } from "react";
-import {
-  ModuleBox,
-  SelectModuleBox,
-  SelectedModulesAlert,
-} from "./GradRequirements";
+import { ModuleBox, SelectModuleBox } from "./GradRequirements";
 import SaveAltRoundedIcon from "@mui/icons-material/SaveAltRounded";
-import { MoveModuleDialog } from "./ModulesDisplay";
 import { sampleProfile } from "../Constants";
 import { orange } from "@mui/material/colors";
 
 // styling for each year plan
-const EachYearPlan = ({
-  academicPlan,
-  currentYear,
-  moduleList,
-  handleSelectToShiftModule,
-  handleDeselectToShiftModule,
-  toShiftModules,
-}) => {
+const EachYearPlan = ({ academicPlan, currentYear, semesterModulesDict }) => {
   const semesters = ["Semester 1", "Semester 2"];
 
   return (
@@ -67,26 +55,21 @@ const EachYearPlan = ({
               gridTemplateColumns: "1fr 1fr",
             }}
           >
-            {moduleList[currentYear][semester].map((moduleOrArray, index) =>
-              Array.isArray(moduleOrArray) ? (
-                <SelectModuleBox
-                  key={index}
-                  academicPlan={academicPlan}
-                  moduleList={moduleOrArray}
-                  handleSelectModule={handleSelectToShiftModule}
-                  handleDeselectModule={handleDeselectToShiftModule}
-                  selectedModules={toShiftModules}
-                />
-              ) : (
-                <ModuleBox
-                  academicPlan={academicPlan}
-                  key={index}
-                  module={moduleOrArray}
-                  handleSelectModule={handleSelectToShiftModule}
-                  handleDeselectModule={handleDeselectToShiftModule}
-                  selectedModules={toShiftModules}
-                />
-              )
+            {semesterModulesDict[currentYear][semester].map(
+              (moduleOrArray, index) =>
+                Array.isArray(moduleOrArray) ? (
+                  <SelectModuleBox
+                    key={index}
+                    academicPlan={academicPlan}
+                    moduleList={moduleOrArray}
+                  />
+                ) : (
+                  <ModuleBox
+                    academicPlan={academicPlan}
+                    key={index}
+                    module={moduleOrArray}
+                  />
+                )
             )}
           </Box>
         </Box>
@@ -96,72 +79,11 @@ const EachYearPlan = ({
 };
 
 // semester module plans
-const SemesterModulePlans = ({ movedModules, isComplete, academicPlan }) => {
-  // receives incoming modules from the grad requirements component
-  const [moduleDict, setModuleDict] = useState(movedModules);
-
-  // handle opening the dialog for moving modules
-  const [openShiftModulesDialog, setOpenShiftModulesDialog] = useState(false);
-  const handleOpenShiftModulesDialog = () => {
-    setOpenShiftModulesDialog(true);
-  };
-  const handleCloseShiftModulesDialog = () => {
-    setOpenShiftModulesDialog(false);
-  };
-
-  // select modules to be moved somewhere else within the component
-  const [toShiftModules, setToShiftModules] = useState([]);
-  const handleSelectToShiftModule = (module) => {
-    setToShiftModules((prevSelectedModules) => [
-      ...prevSelectedModules,
-      module,
-    ]);
-  };
-
-  const handleDeselectToShiftModule = (module) => {
-    setToShiftModules((prevSelectedModules) =>
-      prevSelectedModules.filter((selectedModule) => selectedModule !== module)
-    );
-  };
-
-  // handle the shifting of modules to another year/semester
-  const [destinationYear, setDestinationYear] = useState("");
-  const handleDestinationYearChange = (event) => {
-    setDestinationYear(event.target.value);
-  };
-  const [destinationSemester, setDestinationSemester] = useState("");
-  const handleDestinationSemesterChange = (event) => {
-    setDestinationSemester(event.target.value);
-  };
-
-  // handle the shifting of modules to another year/semester
-  const handleSubmitShiftModules = () => {
-    const updatedModuleDict = { ...moduleDict };
-
-    toShiftModules.forEach((module) => {
-      for (const year in updatedModuleDict) {
-        for (const semester in updatedModuleDict[year]) {
-          const currentModuleIndex = updatedModuleDict[year][
-            semester
-          ].findIndex((m) => m === module);
-
-          if (currentModuleIndex !== -1) {
-            updatedModuleDict[year][semester].splice(currentModuleIndex, 1);
-
-            updatedModuleDict[destinationYear][destinationSemester].push(
-              module
-            );
-            return;
-          }
-        }
-      }
-    });
-
-    setOpenShiftModulesDialog(false);
-    setModuleDict(updatedModuleDict);
-    setToShiftModules([]);
-  };
-
+const SemesterModulePlans = ({
+  semesterModulesDict,
+  isComplete,
+  academicPlan,
+}) => {
   // request approval
   const [requestSuccess, setRequestSuccess] = useState(false);
   const [requestError, setRequestError] = useState(false);
@@ -182,7 +104,8 @@ const SemesterModulePlans = ({ movedModules, isComplete, academicPlan }) => {
     console.log({
       student: sampleProfile, // replace with the current user
       status: "Pending",
-      modulePlan: moduleDict,
+      academicPlan: academicPlan,
+      semesterModules: semesterModulesDict,
     });
   };
 
@@ -206,7 +129,8 @@ const SemesterModulePlans = ({ movedModules, isComplete, academicPlan }) => {
     console.log({
       student: sampleProfile, // replace with the current user
       status: requestSubmitted ? "Pending" : " ",
-      modulePlan: moduleDict,
+      academicPlan: academicPlan,
+      semesterModules: semesterModulesDict,
     });
   };
 
@@ -325,12 +249,6 @@ const SemesterModulePlans = ({ movedModules, isComplete, academicPlan }) => {
           ))}
         </Tabs>
         <Box sx={{ display: "flex", flexDirection: "column" }}>
-          {toShiftModules.length !== 0 && (
-            <SelectedModulesAlert
-              handleMoveModules={handleOpenShiftModulesDialog}
-              selectedModules={toShiftModules}
-            />
-          )}
           {tabsList.map(
             (tab, index) =>
               currentTab === index && (
@@ -338,23 +256,11 @@ const SemesterModulePlans = ({ movedModules, isComplete, academicPlan }) => {
                   academicPlan={academicPlan}
                   key={index}
                   currentYear={tabsList[index]}
-                  moduleList={moduleDict}
-                  handleSelectToShiftModule={handleSelectToShiftModule}
-                  handleDeselectToShiftModule={handleDeselectToShiftModule}
-                  toShiftModules={toShiftModules}
+                  semesterModulesDict={semesterModulesDict}
                 />
               )
           )}
         </Box>
-        <MoveModuleDialog
-          openDialog={openShiftModulesDialog}
-          handleCloseDialog={handleCloseShiftModulesDialog}
-          handleDestinationYearChange={handleDestinationYearChange}
-          handleDestinationSemesterChange={handleDestinationSemesterChange}
-          destinationYear={destinationYear}
-          destinationSemester={destinationSemester}
-          handleSubmitMovedModules={handleSubmitShiftModules}
-        />
         <PlanRecommendationDialog
           openDialog={useRecommended}
           handleCloseDialog={() => setUseRecommended(false)}

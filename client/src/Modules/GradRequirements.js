@@ -314,29 +314,19 @@ export const ModuleBox = ({
 
 // graduation requirements component
 const GradRequirements = ({
+  planIndex,
   academicPlan,
-  type,
-  handleAddModule,
-  requiredModulesDict,
-  selectedModules,
   handleSelectModule,
   handleDeselectModule,
+  gradRequirementsDict,
+  selectedModules,
   handleMoveModules,
-  handleDeletePlan,
-  handleSaveGradRequirements,
 }) => {
-  // snackbar to show that changes have been saved
-  const [saveSuccess, setSaveSuccess] = useState(false);
-  const handleSaveSuccess = () => {
-    handleSaveGradRequirements();
-    setSaveSuccess(true);
-  };
-
   // styling for the required modules area
   const RequiredModules = () => {
     return (
       <Box sx={{ overflowX: "auto", display: "flex", flexDirection: "row" }}>
-        {requiredModulesDict.map((requirement, index) => (
+        {gradRequirementsDict.map((requirement, index) => (
           <Card
             key={index}
             sx={{
@@ -386,7 +376,6 @@ const GradRequirements = ({
                 requirement.name === "secondDegreeModules") && (
                 <div>
                   <Button
-                    onClick={handleAddModule}
                     color="error"
                     variant="outlined"
                     sx={{
@@ -402,7 +391,6 @@ const GradRequirements = ({
                   <Button
                     variant="outlined"
                     color="error"
-                    onClick={handleAddModule}
                     sx={{
                       width: "200px",
                       height: "100px",
@@ -440,60 +428,37 @@ const GradRequirements = ({
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
-              justifyContent: "space-between",
+              justifyItems: "center",
             }}
           >
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyItems: "center",
-              }}
-            >
-              <Typography sx={{ fontSize: "35px", fontWeight: 700 }}>
-                Graduation Requirements
-              </Typography>
-              {type === "default" && (
-                <Chip
-                  sx={{
-                    marginLeft: "30px",
-                    textTransform: "uppercase",
-                    fontWeight: 600,
-                    color: "white",
-                  }}
-                  label="Default"
-                  color="success"
-                  variant="filled"
-                />
-              )}
-              {type === "draft" && (
-                <Chip
-                  sx={{
-                    marginLeft: "30px",
-                    textTransform: "uppercase",
-                    fontWeight: 600,
-                    color: "white",
-                    backgroundColor: grey[500],
-                  }}
-                  label="Draft"
-                />
-              )}
-            </Box>
-            <Box sx={{ display: "flex", flexDirection: "row" }}>
-              <Tooltip title="Save Changes" placement="top">
-                <IconButton onClick={handleSaveSuccess}>
-                  <SaveAltRoundedIcon
-                    sx={{ fontSize: "30px", color: "black" }}
-                  />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Delete" placement="top">
-                <IconButton onClick={handleDeletePlan}>
-                  <DeleteRoundedIcon sx={{ fontSize: "30px" }} color="error" />
-                </IconButton>
-              </Tooltip>
-            </Box>
+            <Typography sx={{ fontSize: "35px", fontWeight: 700 }}>
+              Graduation Requirements
+            </Typography>
+            {planIndex === 0 && (
+              <Chip
+                sx={{
+                  marginLeft: "30px",
+                  textTransform: "uppercase",
+                  fontWeight: 600,
+                  color: "white",
+                }}
+                label="Default"
+                color="success"
+                variant="filled"
+              />
+            )}
+            {planIndex === 0 && (
+              <Chip
+                sx={{
+                  marginLeft: "30px",
+                  textTransform: "uppercase",
+                  fontWeight: 600,
+                  color: "white",
+                  backgroundColor: grey[500],
+                }}
+                label="Draft"
+              />
+            )}
           </Box>
           <Box sx={{ marginTop: "10px" }}>
             <FormatAcademicPlanDetails academicPlan={academicPlan} />
@@ -513,20 +478,6 @@ const GradRequirements = ({
           >
             <RequiredModules />
           </Box>
-          <Snackbar
-            open={saveSuccess}
-            autoHideDuration={3000}
-            onClose={() => setSaveSuccess(false)}
-          >
-            <Alert
-              onClose={() => setSaveSuccess(false)}
-              variant="filled"
-              sx={{ color: "white" }}
-              severity="success"
-            >
-              Graduation requirements saved!
-            </Alert>
-          </Snackbar>
         </CardContent>
       </Card>
     </div>
