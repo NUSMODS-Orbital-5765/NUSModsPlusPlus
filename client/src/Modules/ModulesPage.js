@@ -12,14 +12,27 @@ import {
   Dialog,
   DialogContent,
   Button,
+  Card,
+  CardContent,
+  Chip,
+  Fab,
+  Grid,
 } from "@mui/material";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import React, { useState, useEffect } from "react";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ModulesDisplay from "./ModulesDisplay";
-import { emptyAcademicInfo, sampleAcademicPlan } from "./ModuleConstants";
+import {
+  emptyAcademicInfo,
+  emptyPlanLayout,
+  getRequiredModules,
+  sampleAcademicPlan,
+} from "./ModuleConstants";
 import CreatePlanDialog from "./CreatePlanDialog";
 import { combinedItems } from "../Home/HomePageStyledComponents";
 import { BackToTop } from "../StyledComponents";
+import { grey } from "@mui/material/colors";
+import { FormatAcademicPlanTitle } from "./ModuleConstants";
 
 // header for modules page
 export const ModulesPageHeader = ({ handleOpenDialog }) => {
@@ -69,6 +82,108 @@ export const ModulesPageHeader = ({ handleOpenDialog }) => {
   );
 };
 
+// export const ModuleDisplayCards
+export const ModuleDisplayCard = ({
+  index,
+  title,
+  academicPlan,
+  gradRequirementsDict,
+  semesterModulesDict,
+}) => {
+  const [openPlan, setOpenPlan] = useState(false);
+  const handleOpenPlan = () => {
+    setOpenPlan(true);
+  };
+
+  const handleClosePlan = () => {
+    setOpenPlan(false);
+  };
+
+  return (
+    <div>
+      <Card
+        sx={{
+          borderRadius: "10px",
+          backgroundColor: index === 0 ? "#f2f2f2" : "white",
+          boxShadow: index === 0 ? 0 : "0px 4px 10px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <CardContent sx={{ margin: "10px" }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <Chip
+              sx={{
+                textTransform: "uppercase",
+                fontWeight: 600,
+                color: "white",
+                backgroundColor: index === 0 ? "#44b700" : grey[500],
+              }}
+              label={index === 0 ? "Default" : "Draft"}
+            />
+            <Tooltip title="View Plan" placement="top">
+              <IconButton
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "transparent",
+                    transform: "translateX(5px)",
+                    transition: "transform 0.1s",
+                  },
+                }}
+                onClick={handleOpenPlan}
+              >
+                <ArrowForwardRoundedIcon
+                  color="primary"
+                  sx={{ fontSize: "30px" }}
+                />
+              </IconButton>
+            </Tooltip>
+          </Box>
+          <FormatAcademicPlanTitle academicPlan={academicPlan} />
+          <Dialog open={openPlan} fullScreen>
+            <DialogContent>
+              <Tooltip title="Close Plan" placement="top">
+                <Fab
+                  color="error"
+                  onClick={handleClosePlan}
+                  sx={{
+                    position: "fixed",
+                    top: "3rem",
+                    right: "3rem",
+                    transition: "transform 0.2s ease",
+                    "&:hover": {
+                      transform: "scale(1.2)",
+                    },
+                  }}
+                >
+                  <CloseRoundedIcon
+                    sx={{ fontSize: "30px", fontWeight: 600 }}
+                  />
+                </Fab>
+              </Tooltip>
+            </DialogContent>
+          </Dialog>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+// get the student plan list from the database
+// calls function getRequiredModules here to get the module plan
+export const defaultStudentPlanList = [
+  {
+    title: "Default Plan",
+    academicPlan: sampleAcademicPlan,
+    gradRequirementsDict: getRequiredModules(sampleAcademicPlan),
+    semesterModulesDict: emptyPlanLayout,
+  },
+];
+
 // main page component
 const ModulesPage = () => {
   // ensure that users don't attempt to leave the page without saving their stuff
@@ -96,23 +211,23 @@ const ModulesPage = () => {
   // dialog for creating a new plan
   const [openDialog, setOpenDialog] = useState(false);
 
-  // warning if too many plans have been created
-  const [planAlert, setPlanAlert] = useState(false);
-
   // warning for trying to delete the default plan
   const [deleteAlert, setDeleteAlert] = useState(false);
 
-  // keep an array of objects to track the current number of tabs and corresponding academic plans
-  const [planList, setPlanList] = useState([
-    { title: "Default Plan", academicPlan: sampleAcademicPlan },
-  ]);
+  // track the current student list of student plans
+  const [planList, setPlanList] = useState(defaultStudentPlanList);
 
   // only add a new plan if the input is not empty, add to the planList for mapping.
   const handleAddPlan = (academicPlanInfo) => {
     const newDraftPlan = "Draft Plan " + planList.length.toString();
     setPlanList((prevPlanList) => [
       ...prevPlanList,
-      { title: newDraftPlan, academicPlan: academicPlanInfo },
+      {
+        title: newDraftPlan,
+        academicPlan: academicPlanInfo,
+        gradRequirementsDict: getRequiredModules(academicPlanInfo),
+        semesterModulesDict: emptyPlanLayout, // always begin with an empty plan layout
+      },
     ]);
   };
 
@@ -130,11 +245,7 @@ const ModulesPage = () => {
 
   // function for clicking on "add" button
   const handleOpenDialog = () => {
-    if (planList.length === 3) {
-      setPlanAlert(true);
-    } else {
-      setOpenDialog(true);
-    }
+    setOpenDialog(true);
   };
 
   return (
@@ -144,29 +255,19 @@ const ModulesPage = () => {
       <Box className="remainingViewport">
         <ModulesPageHeader handleOpenDialog={handleOpenDialog} />
         <Box sx={{ margin: "55px", marginTop: "-20px", marginBottom: "100px" }}>
-          {planList.map((plan, index) => (
-            <Box sx={{ marginBottom: "35px" }}>
-              <ModulesDisplay
-                index={index}
-                handleDeletePlan={() => handleDeletePlan(index)}
-                academicPlan={plan.academicPlan}
-                type={index === 0 ? "default" : "draft"}
-              />
-            </Box>
-          ))}
-          <Snackbar
-            open={planAlert}
-            autoHideDuration={3000}
-            onClose={() => setPlanAlert(false)}
-          >
-            <Alert
-              onClose={() => setPlanAlert(false)}
-              variant="filled"
-              severity="error"
-            >
-              You are only allowed to create a maximum of 2 draft plans.
-            </Alert>
-          </Snackbar>
+          <Grid container spacing={7}>
+            {planList.map((plan, index) => (
+              <Grid item xs={6} key={index}>
+                <ModuleDisplayCard
+                  title={plan.title}
+                  index={index}
+                  academicPlan={plan.academicPlan}
+                  gradRequirementsDict={plan.gradRequirementsDict}
+                  semesterModulesDict={plan.semesterModulesDict}
+                />
+              </Grid>
+            ))}
+          </Grid>
           <Snackbar
             open={deleteAlert}
             autoHideDuration={3000}
@@ -193,4 +294,14 @@ const ModulesPage = () => {
     </div>
   );
 };
+
+/*
+<ModulesDisplay
+                index={index}
+                handleDeletePlan={() => handleDeletePlan(index)}
+                academicPlan={plan.academicPlan}
+                type={index === 0 ? "default" : "draft"}
+              />
+              */
+
 export default ModulesPage;

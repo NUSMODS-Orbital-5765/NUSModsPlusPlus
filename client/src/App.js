@@ -26,10 +26,6 @@ const App = () => {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Routes>
         {/* user authentication pages */}
-        <Route path="/" element={<HomePage />} />
-        <Route path="/planner-events" element={<EventsPlannerPage />} />
-        <Route path="/planner-tasks" element={<TasksPlannerPage />} />
-        <Route path="/modules" element={<ModulesPage />} />
         <Route path="/sign-in" element={<SignInPage />} />
         <Route path="/student/sign-up" element={<StudentSignUpPage />} />
         <Route path="/admin/sign-up" element={<AdminSignUpPage />} />
@@ -37,8 +33,7 @@ const App = () => {
         {/* student pages */}
         <Route path="/" element={<HomePage />} />
         <Route path="/planner-events" element={<EventsPlannerPage />} />
-        <Route path="/planner-tasks" element={<TasksPlannerPage />} />
-
+        <Route path="/modules" element={<ModulesPage />} />
         <Route path="/profile" element={<ProfilePage selectedTab={0} />} />
         <Route
           path="/profile/my-posts"

@@ -382,3 +382,73 @@ export const FormatAcademicPlanDetails = ({ academicPlan }) => {
 
   return <Typography sx={{ fontSize: "17px" }}>{degreeContent}</Typography>;
 };
+
+// format the academic plan description
+export const FormatAcademicPlanTitle = ({ academicPlan }) => {
+  const {
+    faculty,
+    primaryDegree,
+    secondDegree,
+    secondMajor,
+    minor,
+    programme,
+  } = academicPlan;
+
+  const degreeContent = [];
+
+  if (secondDegree) {
+    degreeContent.push(
+      <span key="doubleDegree" style={{ fontWeight: 700 }}>
+        Double Degree
+      </span>
+    );
+    degreeContent.push(
+      <div key="degreeInfo">
+        {" in " + primaryDegree.toString() + " and " + secondDegree.toString()}
+      </div>
+    );
+  } else if (secondMajor) {
+    degreeContent.push(
+      <span key="doubleMajor" style={{ fontWeight: 700 }}>
+        Double Major
+      </span>
+    );
+    degreeContent.push(
+      <div key="degreeInfo">
+        {" in " + primaryDegree.toString() + " and " + secondMajor.toString()}
+      </div>
+    );
+  } else {
+    degreeContent.push(
+      <span key="degree" style={{ fontWeight: 700 }}>
+        Degree
+      </span>
+    );
+    degreeContent.push(
+      <div key="degreeInfo">{" in " + primaryDegree.toString()}</div>
+    );
+  }
+
+  if (minor && minor.length > 0) {
+    degreeContent.push(
+      <div key="minor" style={{ fontWeight: 700, marginTop: "20px" }}>
+        Minor
+      </div>
+    );
+    degreeContent.push(<div key="minorInfo">{" in " + minor.join(", ")}</div>);
+  }
+
+  if (programme) {
+    degreeContent.push(
+      <div key="programme" style={{ fontWeight: 700, marginTop: "20px" }}>
+        {programme.toString()}
+      </div>
+    );
+  }
+
+  return (
+    <Typography sx={{ fontSize: "30px", marginTop: "20px" }}>
+      {degreeContent}
+    </Typography>
+  );
+};

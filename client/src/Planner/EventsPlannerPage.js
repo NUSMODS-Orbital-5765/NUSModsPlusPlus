@@ -54,7 +54,9 @@ export const EventsPageHeader = () => {
         >
           Easily keep track of academic and non-academic events.
         </Typography>
-        <AddNewEvent />
+        <Box sx={{ marginLeft: "10px" }}>
+          <AddNewEvent />
+        </Box>
       </Box>
       <img
         style={{ width: "35%" }}
