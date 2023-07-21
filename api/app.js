@@ -533,7 +533,7 @@ app.post ("/post/like", [jsonParser,auth], (request, response) => {
 app.post("/post/get-comment", jsonParser, (request, response) => {
   console.log("Getting Comment from Post " + request.body.postId);
   prisma.comment.findMany({
-    where: {post: {every: {id: 1}}},
+    where: {post: {every: {id: request.body.postId}}},
     include: {author: {
         select: {
           username: true,
