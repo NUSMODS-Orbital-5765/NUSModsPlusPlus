@@ -11,7 +11,10 @@ import {
   Select,
   Typography,
   Button,
+  Tooltip,
+  Fab,
 } from "@mui/material";
+import SaveAltRoundedIcon from "@mui/icons-material/SaveAltRounded";
 import { emptyPlanLayout, getRequiredModules } from "./ModuleConstants";
 
 // dialog for asking where to move the modules to
@@ -88,7 +91,6 @@ const ModulesDisplay = ({
   gradRequirementsDict,
   semesterModulesDict,
   planIndex,
-  handleDeletePlan,
 }) => {
   // set the state, this is because addition of 3k 4k modules is allowed
   const [newGradRequirements, setNewGradRequirements] =
@@ -210,6 +212,25 @@ const ModulesDisplay = ({
         destinationSemester={destinationSemester}
         handleDestinationSemesterChange={handleDestinationSemesterChange}
       />
+      <Tooltip title="Save Plan" placement="top">
+        <Fab
+          onClick={handleSaveGradRequirements}
+          color="success"
+          sx={{
+            position: "fixed",
+            top: "3rem",
+            right: "3rem",
+            transition: "transform 0.2s ease",
+            "&:hover": {
+              transform: "scale(1.2)",
+            },
+          }}
+        >
+          <SaveAltRoundedIcon
+            sx={{ fontSize: "30px", fontWeight: 600, color: "white" }}
+          />
+        </Fab>
+      </Tooltip>
     </div>
   );
 };

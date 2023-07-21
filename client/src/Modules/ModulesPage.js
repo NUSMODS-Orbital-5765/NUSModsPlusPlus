@@ -3,8 +3,6 @@ import DrawerComponent from "../DrawerComponent";
 import {
   Box,
   Typography,
-  Tabs,
-  Tab,
   IconButton,
   Snackbar,
   Alert,
@@ -21,6 +19,7 @@ import {
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import React, { useState, useEffect } from "react";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import ModulesDisplay from "./ModulesDisplay";
 import {
   emptyAcademicInfo,
@@ -151,7 +150,6 @@ export const ModuleDisplayCard = ({
                 gradRequirementsDict={gradRequirementsDict}
                 semesterModulesDict={semesterModulesDict}
                 planIndex={planIndex}
-                handleDeletePlan={handleDeletePlan}
               />
               <Tooltip title="Close Plan" placement="top">
                 <Fab
@@ -159,7 +157,7 @@ export const ModuleDisplayCard = ({
                   onClick={handleClosePlan}
                   sx={{
                     position: "fixed",
-                    top: "3rem",
+                    top: "8rem",
                     right: "3rem",
                     transition: "transform 0.2s ease",
                     "&:hover": {
@@ -169,6 +167,26 @@ export const ModuleDisplayCard = ({
                 >
                   <CloseRoundedIcon
                     sx={{ fontSize: "30px", fontWeight: 600 }}
+                  />
+                </Fab>
+              </Tooltip>
+              <Tooltip title="Delete Plan" placement="top">
+                <Fab
+                  onClick={handleDeletePlan}
+                  sx={{
+                    backgroundColor: "black",
+                    position: "fixed",
+                    bottom: "3rem",
+                    right: "3rem",
+                    transition: "transform 0.2s ease",
+                    "&:hover": {
+                      transform: "scale(1.2)",
+                      backgroundColor: "black",
+                    },
+                  }}
+                >
+                  <DeleteRoundedIcon
+                    sx={{ fontSize: "30px", fontWeight: 600, color: "white" }}
                   />
                 </Fab>
               </Tooltip>
@@ -268,7 +286,7 @@ const ModulesPage = () => {
                   academicPlan={plan.academicPlan}
                   gradRequirementsDict={plan.gradRequirementsDict}
                   semesterModulesDict={plan.semesterModulesDict}
-                  handleDeletePlan={handleDeletePlan}
+                  handleDeletePlan={() => handleDeletePlan(index)}
                 />
               </Grid>
             ))}
@@ -299,14 +317,5 @@ const ModulesPage = () => {
     </div>
   );
 };
-
-/*
-<ModulesDisplay
-                index={index}
-                handleDeletePlan={() => handleDeletePlan(index)}
-                academicPlan={plan.academicPlan}
-                type={index === 0 ? "default" : "draft"}
-              />
-              */
 
 export default ModulesPage;

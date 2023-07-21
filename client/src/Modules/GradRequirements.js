@@ -12,7 +12,6 @@ import {
   Autocomplete,
   TextField,
 } from "@mui/material";
-import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import DriveFileMoveRoundedIcon from "@mui/icons-material/DriveFileMoveRounded";
 import SaveAltRoundedIcon from "@mui/icons-material/SaveAltRounded";
 import React, { useState } from "react";
@@ -447,7 +446,7 @@ const GradRequirements = ({
                 variant="filled"
               />
             )}
-            {planIndex === 0 && (
+            {planIndex !== 0 && (
               <Chip
                 sx={{
                   marginLeft: "30px",
