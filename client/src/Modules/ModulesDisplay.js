@@ -159,6 +159,7 @@ export const MoveModuleDialog = ({
 
 // manages moving of modules from one component to the other
 const ModulesDisplay = ({
+  nanoid,
   academicPlan,
   gradRequirementsDict,
   semesterModulesDict,
@@ -429,7 +430,7 @@ const ModulesDisplay = ({
   const handleSaveGradRequirements = () => {
     console.log(
       {
-        nanoid: nanoid(),
+        nanoid: nanoid,
         owner: localStorage.getItem("username"),
         academicPlan: academicPlan,
         gradRequirementsDict: newGradRequirements,

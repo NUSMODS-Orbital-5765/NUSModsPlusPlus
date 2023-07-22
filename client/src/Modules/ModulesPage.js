@@ -32,7 +32,7 @@ import { BackToTop } from "../StyledComponents";
 import { grey } from "@mui/material/colors";
 import { FormatAcademicPlanTitle } from "./ModuleConstants";
 import ThumbDownRoundedIcon from "@mui/icons-material/ThumbDownRounded";
-
+import { nanoid } from "nanoid";
 // header for modules page
 export const ModulesPageHeader = ({ handleOpenDialog }) => {
   return (
@@ -88,6 +88,7 @@ export const ModuleDisplayCard = ({
   gradRequirementsDict,
   semesterModulesDict,
   handleDeletePlan,
+  nanoid
 }) => {
   const [openPlan, setOpenPlan] = useState(false);
   const handleOpenPlan = () => {
@@ -246,6 +247,7 @@ const ModulesPage = () => {
     setPlanList((prevPlanList) => [
       ...prevPlanList,
       {
+        nanoid: nanoid(),
         academicPlan: academicPlanInfo,
         gradRequirementsDict: getRequiredModules(academicPlanInfo),
         semesterModulesDict: emptyPlanLayout, // always begin with an empty plan layout
@@ -285,6 +287,7 @@ const ModulesPage = () => {
                   title={plan.title}
                   planIndex={index}
                   academicPlan={plan.academicPlan}
+                  nanoid={plan.nanoid}
                   gradRequirementsDict={plan.gradRequirementsDict}
                   semesterModulesDict={plan.semesterModulesDict}
                   handleDeletePlan={() => handleDeletePlan(index)}
