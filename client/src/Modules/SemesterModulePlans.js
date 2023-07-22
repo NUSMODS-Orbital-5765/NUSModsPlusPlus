@@ -22,12 +22,70 @@ import React, { useState } from "react";
 import ModuleBox from "./ModuleBox";
 import SelectModuleBox from "./SelectModuleBox";
 import { sampleProfile } from "../Constants";
-import { orange } from "@mui/material/colors";
+import { orange, red } from "@mui/material/colors";
+
+// styling for module plan chips
+export const ModulePlanStatusChip = ({ status }) => {
+  function getChipColor(status) {
+    if (status === "Approved") {
+      return "#44b700";
+    } else if (status === "Pending") {
+      return orange[600];
+    } else {
+      return red[500];
+    }
+  }
+
+  return (
+    <Chip
+      variant="filled"
+      label={status}
+      sx={{
+        fontWeight: 600,
+        backgroundColor: getChipColor(status),
+        color: "white",
+        marginLeft: "30px",
+        textTransform: "uppercase",
+      }}
+    />
+  );
+};
+
+// semester module plans data grid (use for admin viewing)
+export const SemesterModulePlansDataGrid = ({
+  semesterModulesDict,
+  modulePlanStatus,
+}) => {
+  return (
+    <Card
+      sx={{
+        border: "1px solid #f2f2f2",
+        borderRadius: "10px",
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+      }}
+    >
+      <CardContent sx={{ margin: "10px" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyItems: "center",
+          }}
+        >
+          <Typography sx={{ fontSize: "35px", fontWeight: 700 }}>
+            Semester Module Plans
+          </Typography>
+          <ModulePlanStatusChip status={modulePlanStatus} />
+        </Box>
+      </CardContent>
+    </Card>
+  );
+};
 
 // styling for each year plan
-const EachYearPlan = ({
+export const EachYearPlan = ({
   currentYear,
-  handleDeleteModule,
   semesterModulesDict,
   handleRevertModule,
 }) => {
@@ -85,13 +143,18 @@ const EachYearPlan = ({
   );
 };
 
-// semester module plans
+// semester module plans (functioning) for student use
 const SemesterModulePlans = ({
   academicPlan,
   handleRevertModule,
   semesterModulesDict,
   isComplete,
+  modulePlanStatus,
 }) => {
+  // retrieve status from database and update status when the user requests for approval
+  const [newModulePlanStatus, setNewModulePlanStatus] =
+    useState(modulePlanStatus);
+
   // request approval
   const [requestSuccess, setRequestSuccess] = useState(false);
   const [requestError, setRequestError] = useState(false);
@@ -100,6 +163,7 @@ const SemesterModulePlans = ({
     if (isComplete) {
       setRequestSuccess(true);
       handleSubmitRequest();
+      setNewModulePlanStatus("Pending");
     } else {
       setRequestError(true);
     }
@@ -200,18 +264,8 @@ const SemesterModulePlans = ({
                 }}
               />
             )}
-            {requestSubmitted && (
-              <Chip
-                variant="filled"
-                label="Pending"
-                sx={{
-                  fontWeight: 600,
-                  backgroundColor: orange[600],
-                  color: "white",
-                  marginLeft: "30px",
-                  textTransform: "uppercase",
-                }}
-              />
+            {newModulePlanStatus && (
+              <ModulePlanStatusChip status={newModulePlanStatus} />
             )}
           </Box>
           <Box

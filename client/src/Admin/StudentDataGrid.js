@@ -10,14 +10,14 @@ import {
   Tooltip,
 } from "@mui/material";
 import { checkPlanStatus } from "./AdminConstants";
-import FlagRoundedIcon from "@mui/icons-material/FlagRounded";
-import { grey, orange } from "@mui/material/colors";
+import { orange } from "@mui/material/colors";
 import React, { useState } from "react";
 import UserProfileView from "../UserProfileView";
+import StudentModuleProfileView from "../StudentModuleProfileView";
 
-// for the "approved", "no plan", "flagged", "rejected" plan status
+// for the "approved", "pending", "rejected" plan status
 const getStatusColor = (status) => {
-  if (status === "approved") {
+  if (status === "Approved") {
     return (
       <Chip
         variant="filled"
@@ -30,25 +30,12 @@ const getStatusColor = (status) => {
         label={status}
       />
     );
-  } else if (status === "no plan") {
+  } else if (status === "Pending") {
     return (
       <Chip
         variant="filled"
         sx={{
-          backgroundColor: grey[500],
-          color: "white",
-          textTransform: "uppercase",
-          fontWeight: 600,
-        }}
-        label={status}
-      />
-    );
-  } else if (status === "flagged") {
-    return (
-      <Chip
-        variant="filled"
-        sx={{
-          backgroundColor: orange[500],
+          backgroundColor: orange[600],
           color: "white",
           textTransform: "uppercase",
           fontWeight: 600,
@@ -224,23 +211,6 @@ const StudentDataGrid = ({ studentList, color }) => {
       flex: 1,
       renderCell: (params) => getStatusColor(checkPlanStatus(params.row)),
     },
-    {
-      field: "flag",
-      headerName: "Flag",
-      headerClassName: color ? "custom-datagrid-header" : "",
-      flex: 0.5,
-      sortable: false,
-      filterable: false,
-      renderCell: (params) => (
-        <Box sx={{ display: "flex", flexDirection: "row" }}>
-          <Tooltip title="Flag student" placement="top">
-            <IconButton>
-              <FlagRoundedIcon color="primary" sx={{ fontSize: "25px" }} />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      ),
-    },
   ];
 
   // sets id column of datagrid as student id
@@ -285,11 +255,9 @@ const StudentDataGrid = ({ studentList, color }) => {
         disableRowSelectionOnClick
         onRowClick={handleRowClick}
       />
-      {/* replace this with a different view --> student module profile view */}
-      <UserProfileView
+      <StudentModuleProfileView
         userProfile={selectedRow}
         openDialog={openDialog}
-        userType="student"
         handleCloseDialog={handleCloseDialog}
       />
     </div>

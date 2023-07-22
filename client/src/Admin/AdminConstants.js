@@ -65,17 +65,17 @@ export const sampleStudentsList = [
 export const sampleStudentsModules = [
   {
     studentId: "e1234567",
-    planStatus: "approved",
+    planStatus: "Approved",
     modules: {},
   },
   {
     studentId: "e5557777",
-    planStatus: "rejected",
+    planStatus: "Rejected",
     modules: {},
   },
   {
     studentId: "e2244668",
-    planStatus: "no plan",
+    planStatus: "Pending",
     modules: {},
   },
 ];

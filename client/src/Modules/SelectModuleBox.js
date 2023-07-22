@@ -11,31 +11,35 @@ import {
 import { getModuleColors } from "./ModuleConstants";
 
 export const SelectModuleBox = ({
-  moduleList,
-  academicPlan,
+  module,
+  requirement,
   selectedModules,
   handleSelectModule,
   handleDeselectModule,
   handleDeleteModule,
+  handleRevertModule,
   isSelectable,
+  isRevertable,
+  moduleList,
+  academicPlan,
+  setSelectedModule,
+  selectedModule,
 }) => {
-  const [selectedModule, setSelectedModule] = useState(moduleList[0]);
   const [showSelectOptions, setShowSelectOptions] = useState(false);
-
   const isSelected = selectedModules.includes(moduleList);
 
   const handleSelectButtonClick = (event) => {
     event.stopPropagation();
     if (isSelected) {
-      handleDeselectModule(moduleList);
+      handleDeselectModule(module);
     } else {
-      handleSelectModule(moduleList);
+      handleSelectModule(module, requirement);
     }
   };
 
   const handleShowSelectOptions = (event) => {
     event.stopPropagation();
-    setShowSelectOptions(true);
+    setShowSelectOptions(!showSelectOptions);
   };
 
   const handleChangeModule = (event, newValue) => {
