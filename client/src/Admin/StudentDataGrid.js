@@ -2,7 +2,7 @@
 // using student profile as placeholder for the time being, until module page is complete
 import { DataGrid } from "@mui/x-data-grid";
 import { Avatar, Box, Chip, Typography } from "@mui/material";
-import { checkPlanStatus } from "./AdminConstants";
+import { checkPlanStatus, checkStudentModules } from "./AdminConstants";
 import React, { useState } from "react";
 import StudentModuleProfileView from "../StudentModuleProfileView";
 import { ModulePlanStatusChip } from "../Modules/SemesterModulePlans";
@@ -13,8 +13,6 @@ const StudentDataGrid = ({ studentList, color }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const handleRowClick = (params) => {
-    console.log(params.row); // for checking
-    console.log(params.row.studentId); // for checking
     setSelectedRow(params.row);
     setOpenDialog(true);
   };

@@ -12,18 +12,13 @@ import { combinedItems } from "../Home/HomePageStyledComponents";
 
 // list of information to map
 // change this to a mapping function which checks profile fields before mapping
-export const AboutInfoList = ({ sampleProfile }) => {
+export function AboutInfoList(sampleProfile) {
   // displaying the minor content
   let minorContent = {
-    content: (
-      <Typography>
-        <span style={{ fontWeight: 700 }}>Minor</span> in{" "}
-        {sampleProfile.minor[0]}
-      </Typography>
-    ),
+    content: <Typography></Typography>,
     icon: <ImportContactsRoundedIcon />,
   };
-  if (sampleProfile.minor.length > 1) {
+  if (sampleProfile.minor.length > 0) {
     const formattedContent = (
       <Typography>
         <span style={{ fontWeight: 700 }}>Minor</span> in{" "}
@@ -71,7 +66,7 @@ export const AboutInfoList = ({ sampleProfile }) => {
       icon: <HomeRoundedIcon />,
     },
   ];
-};
+}
 
 // public profile header (used for module page)
 export const PublicProfileHeader = ({ sampleProfile }) => {
@@ -152,7 +147,7 @@ export const PublicProfileView = ({ sampleProfile }) => {
               About
             </Typography>
             <Box sx={{ marginTop: "20px" }}>
-              {AboutInfoList({ sampleProfile }).map((infoItem, index) => (
+              {AboutInfoList(sampleProfile).map((infoItem, index) => (
                 <Box
                   sx={{
                     marginTop: "20px",

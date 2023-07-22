@@ -57,6 +57,75 @@ export const SemesterModulePlansDataGrid = ({
   semesterModulesDict,
   modulePlanStatus,
 }) => {
+  const allYears = Object.keys(semesterModulesDict);
+  const allSemesters = Object.keys(semesterModulesDict[allYears[0]]);
+
+  const columns = allYears.reduce((cols, year) => {
+    const semesterColumns = allSemesters.map((semester) => ({
+      field: `${year}-${semester}`,
+      headerName: `Y${year.slice(-1)}S${semester.slice(-1)}`,
+      flex: 1,
+      valueGetter: (params) => {
+        const module = semesterModulesDict[year][semester][params.row.id];
+        return module ? module : "";
+      },
+      renderCell: (params) => {
+        const moduleCode = params.value.code;
+        const moduleName = params.value.name;
+        return (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              maxWidth: "100px",
+            }}
+          >
+            <a
+              href={`https://nusmods.com/courses/${moduleCode}/`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                fontSize: "16px",
+                fontWeight: 600,
+                color: "black",
+              }}
+            >
+              {moduleCode}
+            </a>
+            <Typography
+              sx={{
+                marginTop: "5px",
+                fontSize: "14px",
+                whiteSpace: "normal",
+                wordWrap: "break-word",
+              }}
+            >
+              {moduleName}
+            </Typography>
+          </Box>
+        );
+      },
+    }));
+
+    return [...cols, ...semesterColumns];
+  }, []);
+
+  const rows = [];
+  allYears.forEach((year) => {
+    allSemesters.forEach((semester, index) => {
+      semesterModulesDict[year][semester].forEach((module) => {
+        rows.push({
+          id: rows.length + 1,
+          year: year,
+          semester: semester,
+          [`${year}-${semester}`]: module,
+        });
+      });
+    });
+  });
+
+  const rowsPerPage = 10;
+
   return (
     <Card
       sx={{
@@ -83,7 +152,16 @@ export const SemesterModulePlansDataGrid = ({
             <Typography sx={{ fontSize: "35px", fontWeight: 700 }}>
               Semester Module Plans
             </Typography>
+            <ModulePlanStatusChip status={modulePlanStatus} />
           </Box>
+          <div style={{ marginTop: "20px", height: 1000, width: "100%" }}>
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              disableRowSelectionOnClick
+              rowHeight={150}
+            />
+          </div>
         </Box>
       </CardContent>
     </Card>

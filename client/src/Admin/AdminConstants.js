@@ -83,21 +83,28 @@ export const sampleStudentsModules = [
 
 // join student with module table to find students' modules
 export function checkStudentModules(studentProfile) {
-  const matchingPlan = sampleStudentsModules.find(
-    (module) => module.studentId === studentProfile.studentId
-  );
+  if (studentProfile) {
+    const matchingPlan = sampleStudentsModules.find(
+      (module) => module.studentId === studentProfile.studentId
+    );
 
-  return matchingPlan ? matchingPlan.modules : {};
+    return matchingPlan ? matchingPlan.modules : {};
+  } else {
+    return {};
+  }
 }
 
 // match the student profile link with the student module database to check for the module plan status
 // i assume the database format also have join table like this right
 export function checkPlanStatus(studentProfile) {
-  const matchingPlan = sampleStudentsModules.find(
-    (module) => module.studentId === studentProfile.studentId
-  );
-
-  return matchingPlan ? matchingPlan.planStatus : "";
+  if (studentProfile) {
+    const matchingPlan = sampleStudentsModules.find(
+      (module) => module.studentId === studentProfile.studentId
+    );
+    return matchingPlan ? matchingPlan.planStatus : "";
+  } else {
+    return "";
+  }
 }
 
 // list of notifications to be mapped for admin user interface
