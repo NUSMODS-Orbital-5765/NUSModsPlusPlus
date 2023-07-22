@@ -121,12 +121,15 @@ Table Notification {
 
 Table ModulePlan {
   id Int [pk, increment]
+  nanoid String [unique, not null]
   owner User [not null]
-  GradRequirement Json
-  SemesterModulePlan Json
-  status String [not null]
+  academicPlan Json
+  gradRequirementsDict Json
+  semesterModulesDict Json
+  isDefault Boolean [not null, default: false]
+  status String
   userId Int [not null]
-  AdminComment String [not null]
+  AdminComment String
 }
 
 Ref: Post.PostAuthorId > User.id

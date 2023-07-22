@@ -23,6 +23,8 @@ import { AdminCommentsDialog } from "../StudentModuleProfileView";
 import { adminSampleProfile } from "../Admin/AdminConstants";
 import { sampleProfile } from "../Constants";
 
+import { sampleOptionsList } from "./ModuleConstants";
+import { nanoid } from "nanoid";
 // dialog for adding modules
 export const AddModuleDialog = ({
   openAddModuleDialog,
@@ -163,6 +165,7 @@ export const MoveModuleDialog = ({
 
 // manages moving of modules from one component to the other
 const ModulesDisplay = ({
+  nanoid,
   academicPlan,
   gradRequirementsDict,
   semesterModulesDict,
@@ -438,8 +441,13 @@ const ModulesDisplay = ({
 
   // handle saving of the grad requirements and semester modules together
   const handleSaveGradRequirements = () => {
-    console.log(newGradRequirements);
-    console.log(newSemesterModules);
+    console.log({
+      nanoid: nanoid,
+      owner: localStorage.getItem("username"),
+      academicPlan: academicPlan,
+      gradRequirementsDict: newGradRequirements,
+      semesterModulesDict: newSemesterModules,
+    });
   };
 
   return (
