@@ -4,10 +4,12 @@ import { getTodayEvents, isEventOver } from "./HomePageTimetable";
 
 const HomePageEventProgressBar = ({ todayEvents }) => {
   const todayEventsList = getTodayEvents();
-  const todayEventsOverCount = todayEventsList.filter((event) =>
-    isEventOver(event)
-  ).length;
-  const eventsOverFraction = todayEventsOverCount / todayEventsList.length;
+  const todayEventsOverCount = todayEventsList
+    ? todayEventsList.filter((event) => isEventOver(event)).length
+    : 0;
+  const eventsOverFraction = todayEventsOverCount
+    ? todayEventsOverCount / todayEventsList.length
+    : 0;
 
   return (
     <Box>
@@ -24,10 +26,16 @@ const HomePageEventProgressBar = ({ todayEvents }) => {
         >
           Event Progress
         </Typography>
-        <Typography variant="h1" sx={{ fontSize: "30px" }}>
-          <span style={{ color: "#44b700" }}>{todayEventsOverCount}</span>/
-          {todayEventsList.length}
-        </Typography>
+        {todayEventsList ? (
+          <Typography variant="h1" sx={{ fontSize: "30px" }}>
+            <span style={{ color: "#44b700" }}>{todayEventsOverCount}</span>/
+            {todayEventsList.length}
+          </Typography>
+        ) : (
+          <Typography variant="h1" sx={{ fontSize: "30px", color: "#44b700" }}>
+            No Events
+          </Typography>
+        )}
       </Box>
       <ProgressBar color="success" value={eventsOverFraction * 100} />
     </Box>

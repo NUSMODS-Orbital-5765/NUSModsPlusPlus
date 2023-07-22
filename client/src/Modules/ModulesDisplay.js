@@ -22,8 +22,6 @@ import { getRecommendedPlan, sampleOptionsList } from "./ModuleConstants";
 import { AdminCommentsDialog } from "../StudentModuleProfileView";
 import { adminSampleProfile } from "../Admin/AdminConstants";
 import { sampleProfile } from "../Constants";
-
-import { sampleOptionsList } from "./ModuleConstants";
 import { nanoid } from "nanoid";
 // dialog for adding modules
 export const AddModuleDialog = ({

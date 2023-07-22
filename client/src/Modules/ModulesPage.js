@@ -242,6 +242,7 @@ const ModulesPage = () => {
           academicPlan: academicPlanInfo,
           gradRequirementsDict: getRequiredModules(academicPlanInfo),
           semesterModulesDict: emptyPlanLayout,
+          modulePlanStatus: "",
         },
       ]);
     } else {
@@ -251,7 +252,8 @@ const ModulesPage = () => {
           nanoid: nanoid(),
           academicPlan: academicPlanInfo,
           gradRequirementsDict: getRequiredModules(academicPlanInfo),
-          semesterModulesDict: emptyPlanLayout, // always begin with an empty plan layout
+          semesterModulesDict: emptyPlanLayout,
+          modulePlanStatus: "",
         },
       ]);
     }
@@ -300,6 +302,7 @@ const ModulesPage = () => {
                   <ModuleDisplayCard
                     title={plan.title}
                     planIndex={index}
+                    planStatus={plan.modulePlanStatus}
                     academicPlan={plan.academicPlan}
                     nanoid={plan.nanoid}
                     gradRequirementsDict={plan.gradRequirementsDict}

@@ -11,6 +11,8 @@ import {
 } from "@mui/lab";
 import { getShortDay, priorityColors, sampleWeekEvents } from "../Constants";
 import { SeeMoreArrowButton } from "./HomePageShortcuts";
+import { getDay } from "date-fns";
+import HeartBrokenRoundedIcon from "@mui/icons-material/HeartBrokenRounded";
 
 // placeholder function for getting today's events from the database
 export const getTodayEvents = () => {
@@ -53,7 +55,12 @@ export const daysOfWeek = [
 ];
 
 const getTodayDayOfWeek = () => {
-  return daysOfWeek[new Date().getDay() - 1];
+  const today = new Date().getDay();
+  if (today === 0) {
+    return daysOfWeek[daysOfWeek.length - 1]; // specifically for sunday because getDay is 0
+  } else {
+    return daysOfWeek[today - 1];
+  }
 };
 
 export function parseTime(timeString) {
@@ -180,13 +187,16 @@ export const EventCard = ({ event }) => {
 // styling for daily timeline
 export const TodayTimeline = ({ eventsList }) => {
   // sort the events by time for currentday
-  const sortedEventsList = eventsList.sort((a, b) => {
-    const timeA = parseTime(a.time);
-    const timeB = parseTime(b.time);
-    if (timeA < timeB) return -1;
-    if (timeA > timeB) return 1;
-    return 0;
-  });
+  const sortedEventsList =
+    eventsList.length !== 0
+      ? eventsList.sort((a, b) => {
+          const timeA = parseTime(a.time);
+          const timeB = parseTime(b.time);
+          if (timeA < timeB) return -1;
+          if (timeA > timeB) return 1;
+          return 0;
+        })
+      : [];
 
   return (
     <Card
@@ -219,24 +229,53 @@ export const TodayTimeline = ({ eventsList }) => {
             },
           }}
         >
-          {sortedEventsList.map((dayEvent, index) => (
-            <TimelineItem key={index}>
-              <TimelineSeparator>
-                <TimelineDot
-                  sx={{
-                    backgroundColor: priorityColors[dayEvent.priority],
-                  }}
-                />
-                {index !== sortedEventsList.length - 1 && <TimelineConnector />}
-              </TimelineSeparator>
-              <TimelineContent>
-                <TimelineBox event={dayEvent} />
-              </TimelineContent>
-            </TimelineItem>
-          ))}
+          {sortedEventsList.length !== 0 ? (
+            sortedEventsList.map((dayEvent, index) => (
+              <TimelineItem key={index}>
+                <TimelineSeparator>
+                  <TimelineDot
+                    sx={{
+                      backgroundColor: priorityColors[dayEvent.priority],
+                    }}
+                  />
+                  {index !== sortedEventsList.length - 1 && (
+                    <TimelineConnector />
+                  )}
+                </TimelineSeparator>
+                <TimelineContent>
+                  <TimelineBox event={dayEvent} />
+                </TimelineContent>
+              </TimelineItem>
+            ))
+          ) : (
+            <NoEventsPlaceholder />
+          )}
         </Timeline>
       </CardContent>
     </Card>
+  );
+};
+
+export const NoEventsPlaceholder = () => {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        justifyItems: "center",
+      }}
+    >
+      <HeartBrokenRoundedIcon
+        sx={{ fontSize: "100px", color: "text.secondary" }}
+      />
+      <Typography
+        sx={{ color: "text.secondary", fontSize: "35px", fontWeight: 700 }}
+      >
+        No Events Yet
+      </Typography>
+    </Box>
   );
 };
 
