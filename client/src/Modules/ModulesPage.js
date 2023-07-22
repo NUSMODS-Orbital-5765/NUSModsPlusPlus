@@ -31,6 +31,7 @@ import { combinedItems } from "../Home/HomePageStyledComponents";
 import { BackToTop } from "../StyledComponents";
 import { grey } from "@mui/material/colors";
 import { FormatAcademicPlanTitle } from "./ModuleConstants";
+import ThumbDownRoundedIcon from "@mui/icons-material/ThumbDownRounded";
 
 // header for modules page
 export const ModulesPageHeader = ({ handleOpenDialog }) => {

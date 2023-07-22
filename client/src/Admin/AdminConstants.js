@@ -196,3 +196,28 @@ function getMajorColorByFaculty(faculty) {
 export function getMajorColor(major) {
   return majorColorLookup[major] || "white";
 }
+
+// same data structure as postcomments
+export const sampleAdminComments = [
+  {
+    dateCreated: today,
+    content:
+      "Curabitur lacinia commodo metus, sed varius felis scelerisque eu. In sit amet nibh sem. Vivamus nec aliquam sapien, eu semper dolor. Duis rhoncus vulputate cursus. In vel gravida orci, et dapibus nunc. Praesent eu erat porta, varius tellus in, vulputate mi. Pellentesque dapibus turpis velit, vitae convallis nisi porttitor sit amet. Cras a posuere metus, pharetra facilisis justo.",
+    author: adminSampleProfile,
+    avatar: adminSampleProfile,
+    // remember search for recipient to match the comments to the right user
+  },
+  {
+    dateCreated: yesterday,
+    content: "Nullam egestas at ex nec fermentum. Cras a tellus quis.",
+    author: adminSampleProfile,
+    avatar: adminSampleProfile,
+  },
+  {
+    dateCreated: twoDaysAgo,
+    content:
+      "Duis tincidunt nec est id efficitur. Ut porttitor fermentum dictum.",
+    author: adminSampleProfile,
+    avatar: adminSampleProfile,
+  },
+];

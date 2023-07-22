@@ -243,8 +243,8 @@ const UploadPost = () => {
           <Box
             sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}
           >
-            <Typography sx={{ fontSize: "40px", fontWeight: 700 }}>
-              New <span style={{ color: "#536DFE" }}>Post</span>
+            <Typography sx={{ fontSize: "35px", fontWeight: 700 }}>
+              New Post
             </Typography>
             <Button
               sx={{ marginLeft: "120ch" }}
