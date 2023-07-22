@@ -9,10 +9,19 @@ const { request } = require("http");
 const { json } = require("body-parser");
 const { error } = require("console");
 dotenv.config();
-prisma.post.findMany({
-  where: {
-    like: {has: "username"}
-  }
-})
-.then(result=>
-console.log(result))
+const {formatDistanceToNow, parseISO} = require("date-fns")
+
+prisma.module.findMany({
+    where: { OR: [
+        {moduleCode: {startsWith: "DSA3"}},
+        {moduleCode: {startsWith: "CS3"}},
+        {moduleCode: {startsWith: "ST3"}},
+    ]
+    },
+    select: {
+        moduleCode: true,
+        title: true
+    }
+}
+).then((res)=>console.log(res))
+.catch(err=>console.log(err))

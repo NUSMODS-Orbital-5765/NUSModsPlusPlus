@@ -465,7 +465,8 @@ app.get("/event/get", [jsonParser,auth], (request, response) => {
 })
 app.post ("/post/like", [jsonParser,auth], (request, response) => {
   console.log("Like Request on Post "+ request.body.postId + " from User = " + request.body.username)
-  const likedUser = request.body.username
+  const likedUser = request.body.username;
+  const timestamp = Date.now();
   prisma.post.findUnique({
     where: {id: request.body.postId},
   })
@@ -508,11 +509,11 @@ app.post ("/post/like", [jsonParser,auth], (request, response) => {
           }
         })
         .then(result => {
-          console.log("Like Successfully")
+          
           response.status(200).send({
             message: "User " +request.body.username + " Like Successfully from Post " + request.body.postId,
             likeAmount: result.likeAmount,
-          });
+          })
         })
         .catch(error => {
           console.log(error);
@@ -532,7 +533,7 @@ app.post ("/post/like", [jsonParser,auth], (request, response) => {
 app.post("/post/get-comment", jsonParser, (request, response) => {
   console.log("Getting Comment from Post " + request.body.postId);
   prisma.comment.findMany({
-    where: {post: {every: {id: 1}}},
+    where: {post: {every: {id: request.body.postId}}},
     include: {author: {
         select: {
           username: true,
@@ -586,6 +587,127 @@ app.post("/post/add-comment", jsonParser, (request, response) => {
           });
         });
 });
+
+app.post('/module-plan/save', [jsonParser,auth], (request, response) => {
+
+  let data = {}
+  if (request.body.GradRequirement) {
+    data.GradRequirement = request.body.GradRequirement
+  }
+  if (request.body.SemesterModulePlan) {
+    data.SemesterModulePlan = request.body.SemesterModulePlan
+  }
+  console.log("POST module save request")
+  prisma.modulePlan.update({
+    where: {id: request.body.modulePlanId},
+    data,
+  })
+  .then(res => {
+    console.log("Delete Event Successfully");
+    response.status(200).send({
+      message: `Save Module successfully`,
+      res,
+    });
+  })
+  .catch(error => {
+    console.log(error);
+    response.status(500).send({
+      message: "Error Saving Module",
+      error,
+    });
+  })
+})
+
+app.post("/module-plan/get", jsonParser, (request, response) => {
+  console.log("Getting Module from username " + request.body.username);
+  prisma.modulePlan.findMany({
+    where: 
+      {user: 
+        {username: request.body.username}
+      }
+  })
+  .then(ModulePlan => {
+    console.log("Getting Module Plan");
+  
+    response.status(200).send({
+      message: "Getting Module Plan Successfully from username " + request.body.username,
+      ModulePlan,
+    });
+  })
+  .catch(error => {
+    console.log(error);
+    response.status(500).send({
+      message: "Error Getting Module Plan",
+      error,
+    });
+  })
+})
+app.post("/notification/generate", jsonParser, (request, response) => {
+  console.log("Create Notification Object");
+  console.log(request.body)
+  console.log()
+  const notificationData = {
+    timestamp : request.body.timestamp,
+    type: request.body.type,
+    content: request.body.content,
+    author: {connect: {username: request.body.author}},
+    target: {connect: {username: request.body.target}},
+    hiddenValue: request.body.hiddenValue,
+  }
+  
+  prisma.notification
+        .create({ data: notificationData })
+        // return success if the new post is added to the database successfully
+        .then((result) => {
+          console.log("Created Notification Successfully");
+          response.status(201).send({
+            message: "Notification Created Successfully",
+            result,
+          });
+        })
+        // catch error if the new post wasn't added successfully to the database
+        .catch((error) => {
+          console.log(error);
+          response.status(500).send({
+            message: "Error creating Notification",
+            error,
+          });
+        });
+});
+app.post("/notification/get", jsonParser, (request, response) => {
+  console.log("Getting Notification List");
+  prisma.notification
+        .findMany({
+          where: { OR: [
+            {author: {is: {username: request.body.username}}},
+            {target: {is: {username: request.body.username}}}
+          ]},
+          include: {
+            author: {select: {username: true}},
+            target: {select: {username: true}}
+          },
+          orderBy: {
+            timestamp: "desc"
+          }
+        })
+        // return success if the new post is added to the database successfully
+        .then((result) => {
+          console.log("Getting Notification List Successfully");
+          response.status(201).send({
+            message: "Getting Notification List Successfull",
+            result,
+          });
+        })
+        // catch error if the new post wasn't added successfully to the database
+        .catch((error) => {
+          console.log(error);
+          response.status(500).send({
+            message: "Getting Notification List Error",
+            error,
+          });
+        });
+});
+
 app.get("/free-endpoint", (request, response) => {
   response.json({ message: "You are free to access me anytime" });
 });
