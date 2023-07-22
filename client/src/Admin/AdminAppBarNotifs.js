@@ -5,6 +5,7 @@ import AppBarNotifs from "../AppBar/AppBarNotifs";
 import { StudentProfileView } from "./StudentDataGrid";
 import React, { useState } from "react";
 import UserProfileView from "../UserProfileView";
+import StudentModuleProfileView from "../StudentModuleProfileView";
 
 // styling for admin notifications
 export const AdminDefaultNotif = ({ notif }) => {
@@ -97,8 +98,7 @@ export const AdminDefaultNotif = ({ notif }) => {
               src={notif.student.avatar}
             />
           </Tooltip>
-          <UserProfileView
-            userType="student"
+          <StudentModuleProfileView
             userProfile={notif.student}
             openDialog={showProfile}
             handleCloseDialog={handleHideProfile}

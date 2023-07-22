@@ -152,9 +152,8 @@ const StudentDataGrid = ({ studentList, color }) => {
       headerName: "Status",
       headerClassName: color ? "custom-datagrid-header" : "",
       flex: 1.2,
-      renderCell: (params) => (
-        <ModulePlanStatusChip status={checkPlanStatus(params.row)} />
-      ),
+      valueGetter: (params) => checkPlanStatus(params.row),
+      renderCell: (params) => <ModulePlanStatusChip status={params.value} />,
     },
   ];
 
