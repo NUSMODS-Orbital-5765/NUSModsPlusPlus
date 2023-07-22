@@ -171,6 +171,7 @@ export const SemesterModulePlansDataGrid = ({
 // styling for each year plan
 export const EachYearPlan = ({
   currentYear,
+  handleChooseModule,
   semesterModulesDict,
   handleRevertModule,
 }) => {
@@ -203,12 +204,16 @@ export const EachYearPlan = ({
             }}
           >
             {semesterModulesDict[currentYear][semester].map(
-              (moduleOrArray, index) =>
-                Array.isArray(moduleOrArray) ? (
+              (moduleObject, index) =>
+                moduleObject.hasOwnProperty("options") ? (
                   <SelectModuleBox
                     isSelectable={false}
+                    isRevertable={true}
+                    handleChooseModule={handleChooseModule}
+                    handleRevertModule={handleRevertModule}
                     key={index}
-                    moduleList={moduleOrArray}
+                    requirement={moduleObject.requirement}
+                    module={moduleObject.module}
                   />
                 ) : (
                   <ModuleBox
@@ -216,8 +221,8 @@ export const EachYearPlan = ({
                     isRevertable={true}
                     handleRevertModule={handleRevertModule}
                     key={index}
-                    requirement={moduleOrArray.requirement}
-                    module={moduleOrArray.module}
+                    requirement={moduleObject.requirement}
+                    module={moduleObject.module}
                   />
                 )
             )}
@@ -231,6 +236,7 @@ export const EachYearPlan = ({
 // semester module plans (functioning) for student use
 const SemesterModulePlans = ({
   academicPlan,
+  handleChooseModule,
   handleRevertModule,
   semesterModulesDict,
   isComplete,
@@ -386,6 +392,7 @@ const SemesterModulePlans = ({
                   academicPlan={academicPlan}
                   key={index}
                   currentYear={tabsList[index]}
+                  handleChooseModule={handleChooseModule}
                   semesterModulesDict={semesterModulesDict}
                   handleRevertModule={handleRevertModule}
                 />

@@ -1,52 +1,85 @@
-import React, { useState } from "react";
 import {
   Box,
   Typography,
-  Autocomplete,
-  TextField,
   Card,
   CardContent,
   Button,
+  IconButton,
+  Tooltip,
+  Autocomplete,
+  TextField,
 } from "@mui/material";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 import { getModuleColors } from "./ModuleConstants";
+import React, { useState } from "react";
 
 export const SelectModuleBox = ({
-  module,
+  isSelectable,
+  isRevertable,
   requirement,
-  selectedModules,
+  module,
+  handleChooseModule,
   handleSelectModule,
   handleDeselectModule,
   handleDeleteModule,
   handleRevertModule,
-  isSelectable,
-  isRevertable,
-  moduleList,
-  academicPlan,
-  setSelectedModule,
-  selectedModule,
+  selectedModules,
 }) => {
   const [showSelectOptions, setShowSelectOptions] = useState(false);
-  const isSelected = selectedModules.includes(moduleList);
+  const [newModule, setNewModule] = useState(module);
 
-  const handleSelectButtonClick = (event) => {
+  const isSelected =
+    isSelectable &&
+    selectedModules.some(
+      (selectedModuleObject) =>
+        selectedModuleObject.module.code === module.code &&
+        selectedModuleObject.requirement === requirement
+    );
+
+  // handle delete button click without triggering module selection
+  const handleClickDelete = (event) => {
     event.stopPropagation();
-    if (isSelected) {
-      handleDeselectModule(module);
-    } else {
-      handleSelectModule(module, requirement);
+    console.log(module);
+    handleDeleteModule(module);
+  };
+
+  // handle selecting/de-selecting module
+  const handleClickModule = () => {
+    if (isSelectable && !showSelectOptions) {
+      if (isSelected) {
+        handleDeselectModule(module);
+      } else {
+        !showSelectOptions && handleSelectModule(module, requirement);
+      }
+    }
+  };
+
+  const handleClickRevert = () => {
+    if (isRevertable) {
+      handleRevertModule(module, requirement);
     }
   };
 
   const handleShowSelectOptions = (event) => {
     event.stopPropagation();
-    setShowSelectOptions(!showSelectOptions);
+    !isSelected && setShowSelectOptions(!showSelectOptions);
   };
 
-  const handleChangeModule = (event, newValue) => {
+  const handleChooseNewModule = (event, newValue) => {
     event.stopPropagation();
     if (newValue) {
-      setSelectedModule(moduleList.find((module) => module.code === newValue));
+      const selectedOption = module.options.find(
+        (mod) => mod.code === newValue
+      );
+      const newModuleSubmit = {
+        ...selectedOption,
+        options: module.options,
+      };
+      setNewModule(newModuleSubmit);
+      console.log(newModuleSubmit);
       setShowSelectOptions(false);
+      handleChooseModule(newModuleSubmit);
     }
   };
 
@@ -56,7 +89,7 @@ export const SelectModuleBox = ({
         marginTop: "10px",
         marginBottom: "20px",
         borderRadius: "10px",
-        backgroundColor: getModuleColors(moduleList[0], academicPlan),
+        backgroundColor: getModuleColors(requirement),
         opacity: isSelected ? 0.5 : 1,
         boxShadow: 1,
         width: "200px",
@@ -65,19 +98,19 @@ export const SelectModuleBox = ({
       <Button
         sx={{
           borderRadius: "10px",
-          color: getModuleColors(selectedModule, academicPlan),
+          color: getModuleColors(requirement),
           overflowY: "auto",
           boxShadow: 0,
           width: "100%",
         }}
-        onClick={handleSelectButtonClick}
+        onClick={handleClickModule}
         component={Card}
       >
         <CardContent
           sx={{
             width: "100%",
             margin: "-10px",
-            backgroundColor: getModuleColors(moduleList[0], academicPlan),
+            backgroundColor: getModuleColors(requirement),
             display: "flex",
             flexDirection: "column",
           }}
@@ -90,7 +123,7 @@ export const SelectModuleBox = ({
             }}
           >
             <a
-              href={`https://nusmods.com/courses/${selectedModule.code}/`}
+              href={`https://nusmods.com/courses/${newModule.code}/`}
               target="_blank"
               rel="noopener noreferrer"
               style={{
@@ -99,11 +132,22 @@ export const SelectModuleBox = ({
                 color: "white",
               }}
             >
-              {selectedModule.code}
+              {newModule.code}
             </a>
-            <Button sx={{ color: "white" }} onClick={handleShowSelectOptions}>
-              Change
-            </Button>
+            {isSelectable && (
+              <Tooltip title="Delete" placement="top">
+                <IconButton onClick={handleClickDelete}>
+                  <CloseRoundedIcon sx={{ color: "white" }} />
+                </IconButton>
+              </Tooltip>
+            )}
+            {isRevertable && (
+              <Tooltip title="Revert" placement="top">
+                <IconButton onClick={handleClickRevert}>
+                  <RestartAltRoundedIcon sx={{ color: "white" }} />
+                </IconButton>
+              </Tooltip>
+            )}
           </Box>
           <Typography
             sx={{
@@ -113,17 +157,20 @@ export const SelectModuleBox = ({
               color: "white",
             }}
           >
-            {selectedModule.name}
+            {newModule.name}
           </Typography>
+          <Button onClick={handleShowSelectOptions} sx={{ color: "white" }}>
+            Change
+          </Button>
         </CardContent>
       </Button>
       {showSelectOptions && (
         <Autocomplete
           sx={{ marginTop: "10px", width: "200px" }}
           disablePortal
-          options={moduleList.map((module) => module.code)}
-          value={selectedModule.code}
-          onChange={handleChangeModule}
+          options={module.options.map((mod) => mod.code)}
+          value={newModule.code}
+          onChange={handleChooseNewModule}
           renderInput={(params) => (
             <TextField
               {...params}

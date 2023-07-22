@@ -17,11 +17,7 @@ import {
   TextField,
 } from "@mui/material";
 import SaveAltRoundedIcon from "@mui/icons-material/SaveAltRounded";
-import {
-  emptyPlanLayout,
-  getRequiredModules,
-  sampleOptionsList,
-} from "./ModuleConstants";
+import { sampleOptionsList } from "./ModuleConstants";
 
 // dialog for adding modules
 export const AddModuleDialog = ({
@@ -296,18 +292,19 @@ const ModulesDisplay = ({
     }
   };
 
-  // code for deleting a module
   const handleDeleteModule = (moduleInput) => {
     setNewGradRequirements((prevGradRequirements) => {
       const updatedGradRequirements = JSON.parse(
         JSON.stringify(prevGradRequirements)
       );
 
-      const sectionIndex = updatedGradRequirements.findIndex((section) =>
-        section.modules.some((module) => module.code === moduleInput.code)
+      // Find the section index that contains the module to be deleted
+      const sectionIndex = updatedGradRequirements.findIndex((requirement) =>
+        requirement.modules.some((module) => module.code === moduleInput.code)
       );
 
       if (sectionIndex !== -1) {
+        // Remove the entire module object from the array
         updatedGradRequirements[sectionIndex].modules = updatedGradRequirements[
           sectionIndex
         ].modules.filter((module) => module.code !== moduleInput.code);
@@ -376,6 +373,58 @@ const ModulesDisplay = ({
     setOpenDialog(false);
   };
 
+  const areSelectModulesEqual = (module1, module2) => {
+    if (module1.options.length !== module2.options.length) {
+      return false;
+    }
+
+    for (let i = 0; i < module1.options.length; i++) {
+      const option1 = module1.options[i];
+      const option2 = module2.options[i];
+
+      if (option1.code !== option2.code || option1.name !== option2.name) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  // handle choose module function
+  const handleChooseModule = (newModule) => {
+    const moduleOptions = newModule.options;
+
+    setNewGradRequirements((prevRequirements) => {
+      const updatedRequirements = prevRequirements.map((requirement) => {
+        const updatedModules = requirement.modules.map((mod) =>
+          JSON.stringify(mod.options) === JSON.stringify(moduleOptions)
+            ? newModule
+            : mod
+        );
+        return { ...requirement, modules: updatedModules };
+      });
+      return updatedRequirements;
+    });
+
+    setNewSemesterModules((prevLayout) => {
+      const updatedLayout = {};
+      for (const yearKey in prevLayout) {
+        const semesters = prevLayout[yearKey];
+        const updatedSemesters = {};
+        for (const semesterKey in semesters) {
+          const updatedModules = semesters[semesterKey].map((mod) =>
+            JSON.stringify(mod.options) === JSON.stringify(moduleOptions)
+              ? newModule
+              : mod
+          );
+          updatedSemesters[semesterKey] = updatedModules;
+        }
+        updatedLayout[yearKey] = updatedSemesters;
+      }
+      return updatedLayout;
+    });
+  };
+
   // handle saving of the grad requirements and semester modules together
   const handleSaveGradRequirements = () => {
     console.log(newGradRequirements);
@@ -391,6 +440,7 @@ const ModulesDisplay = ({
         handleDeselectModule={handleDeselectModule}
         gradRequirementsDict={newGradRequirements}
         selectedModules={selectedModules}
+        handleChooseModule={handleChooseModule}
         handleMoveModules={handleMoveModules}
         handleDeleteModule={handleDeleteModule}
         handleAddModule={handleAddModule}
@@ -398,6 +448,7 @@ const ModulesDisplay = ({
       <Box sx={{ marginTop: "35px" }}>
         <SemesterModulePlans
           academicPlan={academicPlan}
+          handleChooseModule={handleChooseModule}
           handleRevertModule={handleRevertModule}
           semesterModulesDict={newSemesterModules}
           isComplete={newGradRequirements.every(

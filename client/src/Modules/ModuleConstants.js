@@ -235,10 +235,8 @@ export const draftAcademicRequirements = [
     name: "commonModules",
     modules: [
       {
-        selected: {
-          code: "NTW2006",
-          name: "Human Trafficking and Labour Migration",
-        },
+        code: "NTW2006",
+        name: "Human Trafficking and Labour Migration",
         options: [
           {
             code: "NTW2006",

@@ -52,6 +52,7 @@ export const SelectedModulesAlert = ({
 const GradRequirements = ({
   planIndex,
   academicPlan,
+  handleChooseModule,
   handleSelectModule,
   handleDeselectModule,
   gradRequirementsDict,
@@ -89,15 +90,17 @@ const GradRequirements = ({
               >
                 {getSectionHeader(requirement.name, academicPlan)}
               </Typography>
-              {requirement.modules.map((moduleOrArray, index) =>
-                Array.isArray(moduleOrArray) ? (
+              {requirement.modules.map((moduleObject, index) =>
+                moduleObject.hasOwnProperty("options") ? (
                   <SelectModuleBox
                     isSelectable={true}
                     key={index}
                     requirement={requirement.name}
-                    moduleList={moduleOrArray}
+                    module={moduleObject}
+                    handleChooseModule={handleChooseModule}
                     handleSelectModule={handleSelectModule}
                     handleDeselectModule={handleDeselectModule}
+                    handleDeleteModule={handleDeleteModule}
                     selectedModules={selectedModules}
                   />
                 ) : (
@@ -105,7 +108,7 @@ const GradRequirements = ({
                     isSelectable={true}
                     key={index}
                     requirement={requirement.name}
-                    module={moduleOrArray}
+                    module={moduleObject}
                     handleSelectModule={handleSelectModule}
                     handleDeselectModule={handleDeselectModule}
                     handleDeleteModule={handleDeleteModule}
