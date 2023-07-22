@@ -223,6 +223,7 @@ const ModulesPage = () => {
     if (planList.length === 0) {
       setPlanList([
         {
+          nanoid: nanoid(),
           academicPlan: academicPlanInfo,
           gradRequirementsDict: getRequiredModules(academicPlanInfo),
           semesterModulesDict: emptyPlanLayout,
