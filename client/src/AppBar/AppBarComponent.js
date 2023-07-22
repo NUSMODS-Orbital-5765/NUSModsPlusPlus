@@ -19,7 +19,6 @@ function AppBarComponent(props) {
     try {
       const notifsList = await axios.post(notifsGetAPI, {username: localStorage.getItem("username")})
       setNotificationList(notifsList.data.result);
-      console.log(notifsList.data.result);
     } catch (e) {
       console.log(e);
     }
