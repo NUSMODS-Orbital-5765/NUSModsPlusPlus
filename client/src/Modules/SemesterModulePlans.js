@@ -23,6 +23,7 @@ import ModuleBox from "./ModuleBox";
 import SelectModuleBox from "./SelectModuleBox";
 import { sampleProfile } from "../Constants";
 import { orange, red } from "@mui/material/colors";
+import { DataGrid } from "@mui/x-data-grid";
 
 // styling for module plan chips
 export const ModulePlanStatusChip = ({ status }) => {
@@ -68,15 +69,21 @@ export const SemesterModulePlansDataGrid = ({
         <Box
           sx={{
             display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyItems: "center",
+            flexDirection: "column",
           }}
         >
-          <Typography sx={{ fontSize: "35px", fontWeight: 700 }}>
-            Semester Module Plans
-          </Typography>
-          <ModulePlanStatusChip status={modulePlanStatus} />
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyItems: "center",
+            }}
+          >
+            <Typography sx={{ fontSize: "35px", fontWeight: 700 }}>
+              Semester Module Plans
+            </Typography>
+          </Box>
         </Box>
       </CardContent>
     </Card>

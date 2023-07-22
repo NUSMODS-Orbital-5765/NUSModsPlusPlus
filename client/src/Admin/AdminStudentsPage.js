@@ -1,4 +1,3 @@
-// Flag icon rendering not complete
 import { Box, Button, Typography } from "@mui/material";
 import { facultyList, progsList, acadPlanList } from "../Constants";
 import { adminSampleProfile, sampleStudentsList } from "./AdminConstants";
@@ -81,7 +80,7 @@ const AdminStudentsPage = () => {
                 color: "#004d80",
               }}
             >
-              Module validation made easy.
+              Plan validation made easy.
             </Typography>
             <Typography
               sx={{

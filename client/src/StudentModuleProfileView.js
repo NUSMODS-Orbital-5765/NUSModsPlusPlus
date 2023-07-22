@@ -2,17 +2,23 @@ import { Dialog, DialogContent, Fab, Tooltip, Box } from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { SlideUpTransition } from "./StyledComponents";
 import { PublicProfileHeader } from "./Profile/PublicProfilePage";
-import { sampleProfile } from "./Constants";
 import { recommendedPlanLayout } from "./Modules/ModuleConstants";
 import { SemesterModulePlansDataGrid } from "./Modules/SemesterModulePlans";
+import { checkPlanStatus, checkStudentModules } from "./Admin/AdminConstants";
 
 const StudentModuleProfileView = ({
   userProfile,
-  modulePlanDict,
-  modulePlanStatus,
   openDialog,
   handleCloseDialog,
 }) => {
+  const handleClickClose = () => {
+    console.log(userProfile);
+    const userStatus = checkPlanStatus(userProfile);
+    console.log(userStatus);
+    console.log(checkStudentModules(userProfile));
+    handleCloseDialog();
+  };
+
   return (
     <Dialog
       fullScreen
@@ -25,7 +31,7 @@ const StudentModuleProfileView = ({
         <Tooltip title="Close" placement="bottom">
           <Fab
             color="error"
-            onClick={handleCloseDialog}
+            onClick={handleClickClose}
             sx={{
               position: "fixed",
               top: "3rem",
@@ -39,12 +45,6 @@ const StudentModuleProfileView = ({
             <CloseRoundedIcon sx={{ fontSize: "30px", fontWeight: 600 }} />
           </Fab>
         </Tooltip>
-        <Box sx={{ margin: "55px" }}>
-          <SemesterModulePlansDataGrid
-            semesterModulesDict={recommendedPlanLayout}
-            modulePlanStatus="Approved"
-          />
-        </Box>
       </DialogContent>
     </Dialog>
   );

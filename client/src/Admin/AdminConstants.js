@@ -3,6 +3,7 @@ import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import { majorDict } from "../Constants";
 import { format } from "date-fns";
+import { recommendedPlanLayout } from "../Modules/ModuleConstants";
 
 // shortcuts for searchbar for admin user interface
 export const adminRecommendations = [
@@ -66,26 +67,37 @@ export const sampleStudentsModules = [
   {
     studentId: "e1234567",
     planStatus: "Approved",
-    modules: {},
+    modules: recommendedPlanLayout,
   },
   {
     studentId: "e5557777",
     planStatus: "Rejected",
-    modules: {},
+    modules: recommendedPlanLayout,
   },
   {
     studentId: "e2244668",
     planStatus: "Pending",
-    modules: {},
+    modules: recommendedPlanLayout,
   },
 ];
 
+// join student with module table to find students' modules
+export function checkStudentModules(studentProfile) {
+  const matchingPlan = sampleStudentsModules.find(
+    (module) => module.studentId === studentProfile.studentId
+  );
+
+  return matchingPlan ? matchingPlan.modules : {};
+}
+
+// match the student profile link with the student module database to check for the module plan status
+// i assume the database format also have join table like this right
 export function checkPlanStatus(studentProfile) {
   const matchingPlan = sampleStudentsModules.find(
     (module) => module.studentId === studentProfile.studentId
   );
 
-  return matchingPlan ? matchingPlan.planStatus : "no plan";
+  return matchingPlan ? matchingPlan.planStatus : "";
 }
 
 // list of notifications to be mapped for admin user interface

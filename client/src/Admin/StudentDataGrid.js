@@ -1,63 +1,11 @@
 // Flag icon rendering not complete
 // using student profile as placeholder for the time being, until module page is complete
 import { DataGrid } from "@mui/x-data-grid";
-import {
-  Avatar,
-  Box,
-  Chip,
-  Typography,
-  IconButton,
-  Tooltip,
-} from "@mui/material";
+import { Avatar, Box, Chip, Typography } from "@mui/material";
 import { checkPlanStatus } from "./AdminConstants";
-import { orange } from "@mui/material/colors";
 import React, { useState } from "react";
-import UserProfileView from "../UserProfileView";
 import StudentModuleProfileView from "../StudentModuleProfileView";
-
-// for the "approved", "pending", "rejected" plan status
-const getStatusColor = (status) => {
-  if (status === "Approved") {
-    return (
-      <Chip
-        variant="filled"
-        color="success"
-        sx={{
-          color: "white",
-          textTransform: "uppercase",
-          fontWeight: 600,
-        }}
-        label={status}
-      />
-    );
-  } else if (status === "Pending") {
-    return (
-      <Chip
-        variant="filled"
-        sx={{
-          backgroundColor: orange[600],
-          color: "white",
-          textTransform: "uppercase",
-          fontWeight: 600,
-        }}
-        label={status}
-      />
-    );
-  } else {
-    return (
-      <Chip
-        variant="filled"
-        color="error"
-        sx={{
-          color: "white",
-          textTransform: "uppercase",
-          fontWeight: 600,
-        }}
-        label={status}
-      />
-    );
-  }
-};
+import { ModulePlanStatusChip } from "../Modules/SemesterModulePlans";
 
 // display of how student profiles will be mapped
 const StudentDataGrid = ({ studentList, color }) => {
@@ -65,17 +13,14 @@ const StudentDataGrid = ({ studentList, color }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const handleRowClick = (params) => {
+    console.log(params.row); // for checking
+    console.log(params.row.studentId); // for checking
     setSelectedRow(params.row);
     setOpenDialog(true);
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
-  };
-
-  // for the flagging feature, flagging is for those requiring further attention. like pending/need email to clarify, etc. idk
-  const handleActionButtonClick = () => {
-    console.log("hello!");
   };
 
   // styling the columns of the datagrid
@@ -208,8 +153,10 @@ const StudentDataGrid = ({ studentList, color }) => {
       field: "status",
       headerName: "Status",
       headerClassName: color ? "custom-datagrid-header" : "",
-      flex: 1,
-      renderCell: (params) => getStatusColor(checkPlanStatus(params.row)),
+      flex: 1.2,
+      renderCell: (params) => (
+        <ModulePlanStatusChip status={checkPlanStatus(params.row)} />
+      ),
     },
   ];
 
