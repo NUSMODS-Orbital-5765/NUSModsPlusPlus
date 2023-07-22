@@ -16,8 +16,12 @@ import {
   Autocomplete,
   TextField,
 } from "@mui/material";
+import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
 import SaveAltRoundedIcon from "@mui/icons-material/SaveAltRounded";
 import { getRecommendedPlan, sampleOptionsList } from "./ModuleConstants";
+import { AdminCommentsDialog } from "../StudentModuleProfileView";
+import { adminSampleProfile } from "../Admin/AdminConstants";
+import { sampleProfile } from "../Constants";
 
 // dialog for adding modules
 export const AddModuleDialog = ({
@@ -179,6 +183,14 @@ const ModulesDisplay = ({
   const [openAddModuleDialog, setOpenAddModuleDialog] = useState(false);
   const handleCloseAddModuleDialog = () => {
     setOpenAddModuleDialog(false);
+  };
+
+  const [openComments, setOpenComments] = useState(false);
+  const handleOpenComments = () => {
+    setOpenComments(true);
+  };
+  const handleCloseComments = () => {
+    setOpenComments(false);
   };
 
   const [selectedModules, setSelectedModules] = useState([]);
@@ -493,6 +505,32 @@ const ModulesDisplay = ({
           />
         </Fab>
       </Tooltip>
+      <Tooltip title="View Comments" placement="top">
+        <Fab
+          onClick={handleOpenComments}
+          color="primary"
+          sx={{
+            position: "fixed",
+            top: "8rem",
+            right: "3rem",
+            transition: "transform 0.2s ease",
+            "&:hover": {
+              transform: "scale(1.2)",
+            },
+          }}
+        >
+          <ChatRoundedIcon
+            sx={{ fontSize: "30px", fontWeight: 600, color: "white" }}
+          />
+        </Fab>
+      </Tooltip>
+      {/* change user and admin accordingly */}
+      <AdminCommentsDialog
+        adminUser={adminSampleProfile}
+        openDialog={openComments}
+        handleCloseDialog={handleCloseComments}
+        studentProfile={sampleProfile}
+      />
     </div>
   );
 };

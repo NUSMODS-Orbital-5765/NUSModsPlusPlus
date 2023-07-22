@@ -33,7 +33,8 @@ import { formatDate } from "./Constants";
 
 // admin comments dialog
 export const AdminCommentsDialog = ({
-  currentAdminUser,
+  adminUser,
+  viewer,
   openDialog,
   handleCloseDialog,
   studentProfile,
@@ -56,33 +57,36 @@ export const AdminCommentsDialog = ({
         <Typography sx={{ fontSize: "35px", fontWeight: 700 }}>
           Comments
         </Typography>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            marginTop: "20px",
-            marginBottom: "20px",
-            alignItems: "center",
-            justifyItems: "center",
-          }}
-        >
-          {/* use the currentAdminUser's profile */}
-          <Avatar alt="Sample Icon" src={commentsList[0].author.avatar} />
-          <TextField
-            sx={{ marginLeft: "20px", marginRight: "20px", width: "80%" }}
-            variant="filled"
-            label="Add a comment..."
-            onChange={(e) => setCommentContent(e.target.value)}
-            multiline
-            maxRows={4}
-          />
-          <Button variant="contained" onClick={handleSubmitComment}>
-            Post
-          </Button>
-        </Box>
+        {viewer === "admin" && (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              marginTop: "20px",
+              marginBottom: "20px",
+              alignItems: "center",
+              justifyItems: "center",
+            }}
+          >
+            {/* use the currentAdminUser's profile */}
+            <Avatar alt="Sample Icon" src={commentsList[0].author.avatar} />
+            <TextField
+              sx={{ marginLeft: "20px", marginRight: "20px", width: "80%" }}
+              variant="filled"
+              label="Add a comment..."
+              onChange={(e) => setCommentContent(e.target.value)}
+              multiline
+              maxRows={4}
+            />
+            <Button variant="contained" onClick={handleSubmitComment}>
+              Post
+            </Button>
+          </Box>
+        )}
         {commentsList.map((comment, index) => (
           <Box
             sx={{
+              marginTop: "20px",
               marginBottom: "20px",
               display: "flex",
               flexDirection: "column",
@@ -325,8 +329,9 @@ const StudentModuleProfileView = ({
           </Alert>
         </Snackbar>
         <AdminCommentsDialog
-          currentAdminUser={adminSampleProfile}
+          adminUser={adminSampleProfile}
           studentProfile={userProfile}
+          viewer="admin"
           openDialog={openCommentsDialog}
           handleCloseDialog={handleCloseCommentsDialog}
         />
