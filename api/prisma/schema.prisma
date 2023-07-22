@@ -120,23 +120,26 @@ model Event {
 }
 
 model Notification {
-  id         Int      @id @default(autoincrement())
-  timestamp  DateTime
-  content    String
-  type       String
-  author     User     @relation("from", fields: [userIdFrom], references: [id])
-  userIdFrom Int
-  target     User     @relation("to", fields: [userIdTo], references: [id])
-  userIdTo   Int
+  id          Int      @id @default(autoincrement())
+  timestamp   DateTime
+  content     String
+  type        String
+  author      User     @relation("from", fields: [userIdFrom], references: [id])
+  userIdFrom  Int
+  target      User     @relation("to", fields: [userIdTo], references: [id])
+  userIdTo    Int
   hiddenValue Json?
 }
 
 model ModulePlan {
-  id                 Int    @id @default(autoincrement())
-  owner              User   @relation(fields: [userId], references: [id])
-  GradRequirement    Json?
-  SemesterModulePlan Json?
-  status             String
-  userId             Int
-  AdminComment String
+  id                   Int     @id @default(autoincrement())
+  nanoid               String @unique
+  owner                User    @relation(fields: [userId], references: [id])
+  academicPlan         Json?
+  gradRequirementsDict Json?
+  semesterModulesDict  Json?
+  isDefault            Boolean @default(false)
+  status               String?
+  userId               Int
+  AdminComment         String?
 }

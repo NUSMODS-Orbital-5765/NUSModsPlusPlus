@@ -588,31 +588,38 @@ app.post("/post/add-comment", jsonParser, (request, response) => {
         });
 });
 
-app.post('/module-plan/save', [jsonParser,auth], (request, response) => {
+app.post('/module-plan/save-or-create', [jsonParser], (request, response) => {
 
-  let data = {}
-  if (request.body.GradRequirement) {
-    data.GradRequirement = request.body.GradRequirement
+  const modulePlanWithoutNanoID = {
+    owner: {connect: {username: request.body.owner}},
+    academicPlan: request.body.academicPlan,
+    gradRequirementsDict: request.body.gradRequirementsDict,
+    semesterModulesDict: request.body.semesterModulesDict,
   }
-  if (request.body.SemesterModulePlan) {
-    data.SemesterModulePlan = request.body.SemesterModulePlan
+  const modulePlanWithNanoID = {
+    nanoid: request.body.nanoid,
+    owner: {connect: {username: request.body.owner}},
+    academicPlan: request.body.academicPlan,
+    gradRequirementsDict: request.body.gradRequirementsDict,
+    semesterModulesDict: request.body.semesterModulesDict,
   }
   console.log("POST module save request")
-  prisma.modulePlan.update({
-    where: {id: request.body.modulePlanId},
-    data,
+  prisma.ModulePlan.upsert({
+    where: {nanoid: request.body.nanoid},
+    update: modulePlanWithoutNanoID,
+    create: modulePlanWithNanoID
   })
   .then(res => {
-    console.log("Delete Event Successfully");
+    console.log("Save-Create Module Plan Successfully");
     response.status(200).send({
-      message: `Save Module successfully`,
+      message: `Save-Create Module successfully`,
       res,
     });
   })
   .catch(error => {
     console.log(error);
     response.status(500).send({
-      message: "Error Saving Module",
+      message: "Error Save-Create Module",
       error,
     });
   })

@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import SaveAltRoundedIcon from "@mui/icons-material/SaveAltRounded";
 import { sampleOptionsList } from "./ModuleConstants";
-
+import { nanoid } from 'nanoid'
 // dialog for adding modules
 export const AddModuleDialog = ({
   openAddModuleDialog,
@@ -427,8 +427,15 @@ const ModulesDisplay = ({
 
   // handle saving of the grad requirements and semester modules together
   const handleSaveGradRequirements = () => {
-    console.log(newGradRequirements);
-    console.log(newSemesterModules);
+    console.log(
+      {
+        nanoid: nanoid(),
+        owner: localStorage.getItem("username"),
+        academicPlan: academicPlan,
+        gradRequirementsDict: newGradRequirements,
+        semesterModulesDict: newSemesterModules,
+      }
+    )
   };
 
   return (

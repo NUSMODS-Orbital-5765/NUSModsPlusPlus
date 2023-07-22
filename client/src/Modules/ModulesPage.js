@@ -239,7 +239,7 @@ const ModulesPage = () => {
   const [deleteAlert, setDeleteAlert] = useState(false);
 
   // track the current student list of student plans
-  const [planList, setPlanList] = useState(defaultStudentPlanList);
+  const [planList, setPlanList] = useState([]);
 
   // only add a new plan if the input is not empty, add to the planList for mapping.
   const handleAddPlan = (academicPlanInfo) => {
@@ -252,7 +252,8 @@ const ModulesPage = () => {
       },
     ]);
   };
-
+  // Retrieve module plan from the database
+  useEffect(()=>console.log(planList),[planList])
   // handle deleting a plan
   const handleDeletePlan = (index) => {
     if (index === 0) {
