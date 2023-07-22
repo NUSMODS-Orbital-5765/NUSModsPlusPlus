@@ -205,7 +205,7 @@ export const EachYearPlan = ({
           >
             {semesterModulesDict[currentYear][semester].map(
               (moduleObject, index) =>
-                moduleObject.hasOwnProperty("options") ? (
+                moduleObject.module.hasOwnProperty("options") ? (
                   <SelectModuleBox
                     isSelectable={false}
                     isRevertable={true}
@@ -238,6 +238,7 @@ const SemesterModulePlans = ({
   academicPlan,
   handleChooseModule,
   handleRevertModule,
+  handleRecommendedPlan,
   semesterModulesDict,
   isComplete,
   modulePlanStatus,
@@ -280,9 +281,10 @@ const SemesterModulePlans = ({
   };
 
   // plan recommendation dialog
-  const [useRecommended, setUseRecommended] = useState(false);
+  const [recommendedSuccess, setRecommendedSuccess] = useState(false);
   const handleUseRecommended = () => {
-    setUseRecommended(true);
+    handleRecommendedPlan();
+    setRecommendedSuccess(true);
   };
 
   // list of action buttons available
@@ -399,10 +401,6 @@ const SemesterModulePlans = ({
               )
           )}
         </Box>
-        <PlanRecommendationDialog
-          openDialog={useRecommended}
-          handleCloseDialog={() => setUseRecommended(false)}
-        />
         {/* snackbars and alerts that need to be shown accordingly */}
         <Snackbar
           open={validateSuccess}
@@ -459,81 +457,22 @@ const SemesterModulePlans = ({
             Your plan is incomplete!
           </Alert>
         </Snackbar>
+        <Snackbar
+          open={recommendedSuccess}
+          autoHideDuration={3000}
+          onClose={() => setRecommendedSuccess(false)}
+        >
+          <Alert
+            onClose={() => setRecommendedSuccess(false)}
+            variant="filled"
+            sx={{ color: "white" }}
+            severity="success"
+          >
+            Successfully replaced with recommended plan.
+          </Alert>
+        </Snackbar>
       </CardContent>
     </Card>
-  );
-};
-
-// plan recommendation dialog styling
-export const PlanRecommendationDialog = ({ openDialog, handleCloseDialog }) => {
-  // snackbar alert for successful replacement of recommended plan
-  const [recommendedSuccess, setRecommendedSuccess] = useState(false);
-  const handleRecommendedSuccess = () => {
-    setRecommendedSuccess(true);
-    handleCloseDialog();
-  };
-
-  return (
-    <div>
-      <Dialog sx={{ borderRadius: "10px" }} open={openDialog}>
-        <DialogContent sx={{ margin: "5px" }}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <Typography sx={{ fontSize: "35px", fontWeight: 700 }}>
-              Are you sure?
-            </Typography>
-            <IconButton>
-              <CloseRoundedIcon
-                color="error"
-                sx={{ fontSize: "30px" }}
-                onClick={handleCloseDialog}
-              />
-            </IconButton>
-          </Box>
-          <Typography sx={{ marginTop: "10px" }}>
-            This will erase all current semester/yearly plans.
-          </Typography>
-          <Box
-            sx={{
-              marginTop: "20px",
-              marginBottom: "10px",
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "flex-end",
-            }}
-          >
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleRecommendedSuccess}
-            >
-              Proceed
-            </Button>
-          </Box>
-        </DialogContent>
-      </Dialog>
-      <Snackbar
-        open={recommendedSuccess}
-        autoHideDuration={3000}
-        onClose={() => setRecommendedSuccess(false)}
-      >
-        <Alert
-          onClose={() => setRecommendedSuccess(false)}
-          variant="filled"
-          sx={{ color: "white" }}
-          severity="success"
-        >
-          Successfully replaced with recommended plan.
-        </Alert>
-      </Snackbar>
-    </div>
   );
 };
 

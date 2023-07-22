@@ -10,6 +10,7 @@ import {
   Alert,
 } from "@mui/material";
 import DriveFileMoveRoundedIcon from "@mui/icons-material/DriveFileMoveRounded";
+import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 import { FormatAcademicPlanDetails } from "./ModuleConstants";
 import { grey } from "@mui/material/colors";
 import ModuleBox from "./ModuleBox";
@@ -52,6 +53,7 @@ export const SelectedModulesAlert = ({
 const GradRequirements = ({
   planIndex,
   academicPlan,
+  handleResetChanges,
   handleChooseModule,
   handleSelectModule,
   handleDeselectModule,
@@ -208,6 +210,17 @@ const GradRequirements = ({
                 label="Draft"
               />
             )}
+            <Tooltip title="Reset to Last Saved" placement="top">
+              <IconButton
+                sx={{ marginLeft: "10px" }}
+                onClick={handleResetChanges}
+              >
+                <RestartAltRoundedIcon
+                  color="primary"
+                  sx={{ fontSize: "30px" }}
+                />
+              </IconButton>
+            </Tooltip>
           </Box>
           <Box sx={{ marginTop: "10px" }}>
             <FormatAcademicPlanDetails academicPlan={academicPlan} />

@@ -24,83 +24,38 @@ export const recommendedPlanLayout = {
   "Year 1": {
     "Semester 1": [
       {
-        code: "CS1010S",
-        name: "Programming Methodology",
+        requirement: "commonModules",
+        module: {
+          code: "CS1010S",
+          name: "Programming Methodology",
+        },
       },
       {
-        code: "MA2001",
-        name: "Linear Algebra I",
-      },
-      {
-        code: "MA2002",
-        name: "Calculus",
-      },
-      {
-        code: "CS1231S",
-        name: "Discrete Structures",
-      },
-      {
-        code: "DTK1234",
-        name: "Design Thinking",
+        requirement: "primaryDegreeModules",
+        module: {
+          code: "MA2001",
+          name: "Linear Algebra I",
+        },
       },
     ],
     "Semester 2": [
       {
-        code: "HSI1000",
-        name: "How Science Works, Why Science Works",
+        requirement: "commonModules",
+        module: {
+          code: "HSI1000",
+          name: "How Science Works, Why Science Works",
+        },
       },
       {
-        code: "HSS1000",
-        name: "Understanding Social Complexity",
-      },
-      {
-        code: "MA2104",
-        name: "Multivariable Calculus",
-      },
-      {
-        code: "ST2131",
-        name: "Probability",
-      },
-      {
-        code: "CS2030",
-        name: "Programming Methodology II",
+        requirement: "commonModules",
+        module: {
+          code: "HSS1000",
+          name: "Understanding Social Complexity",
+        },
       },
     ],
   },
-  "Year 2": {
-    "Semester 1": [
-      {
-        code: "HSA1000",
-        name: "Asian Interconnections",
-      },
-      {
-        code: "HSH1000",
-        name: "The Human Condition",
-      },
-      {
-        code: "CS2040",
-        name: "Data Structures and Algorithms",
-      },
-      {
-        code: "CS3243",
-        name: "Introduction to Artificial Intelligence",
-      },
-      {
-        code: "MA2108",
-        name: "Mathematical Analysis I",
-      },
-    ],
-    "Semester 2": [
-      {
-        code: "CS2103T",
-        name: "Software Engineering",
-      },
-      {
-        code: "MA2116",
-        name: "Probability",
-      },
-    ],
-  },
+  "Year 2": { "Semester 1": [], "Semester 2": [] },
   "Year 3": { "Semester 1": [], "Semester 2": [] },
   "Year 4": { "Semester 1": [], "Semester 2": [] },
 };

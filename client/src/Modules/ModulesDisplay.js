@@ -17,7 +17,7 @@ import {
   TextField,
 } from "@mui/material";
 import SaveAltRoundedIcon from "@mui/icons-material/SaveAltRounded";
-import { sampleOptionsList } from "./ModuleConstants";
+import { getRecommendedPlan, sampleOptionsList } from "./ModuleConstants";
 
 // dialog for adding modules
 export const AddModuleDialog = ({
@@ -373,23 +373,6 @@ const ModulesDisplay = ({
     setOpenDialog(false);
   };
 
-  const areSelectModulesEqual = (module1, module2) => {
-    if (module1.options.length !== module2.options.length) {
-      return false;
-    }
-
-    for (let i = 0; i < module1.options.length; i++) {
-      const option1 = module1.options[i];
-      const option2 = module2.options[i];
-
-      if (option1.code !== option2.code || option1.name !== option2.name) {
-        return false;
-      }
-    }
-
-    return true;
-  };
-
   // handle choose module function
   const handleChooseModule = (newModule) => {
     const moduleOptions = newModule.options;
@@ -425,6 +408,22 @@ const ModulesDisplay = ({
     });
   };
 
+  // handle reset plan to last saved
+  const handleResetChanges = () => {
+    setNewGradRequirements(gradRequirementsDict);
+    setNewSemesterModules(semesterModulesDict);
+  };
+
+  // handle autoallocate
+  const handleRecommendedPlan = () => {
+    const clearedRequirements = newGradRequirements.map((requirement) => ({
+      ...requirement,
+      modules: [],
+    }));
+    setNewGradRequirements(clearedRequirements);
+    setNewSemesterModules(getRecommendedPlan(academicPlan));
+  };
+
   // handle saving of the grad requirements and semester modules together
   const handleSaveGradRequirements = () => {
     console.log(newGradRequirements);
@@ -436,6 +435,7 @@ const ModulesDisplay = ({
       <GradRequirements
         planIndex={planIndex}
         academicPlan={academicPlan}
+        handleResetChanges={handleResetChanges}
         handleSelectModule={handleSelectModule}
         handleDeselectModule={handleDeselectModule}
         gradRequirementsDict={newGradRequirements}
@@ -448,6 +448,7 @@ const ModulesDisplay = ({
       <Box sx={{ marginTop: "35px" }}>
         <SemesterModulePlans
           academicPlan={academicPlan}
+          handleRecommendedPlan={handleRecommendedPlan}
           handleChooseModule={handleChooseModule}
           handleRevertModule={handleRevertModule}
           semesterModulesDict={newSemesterModules}
