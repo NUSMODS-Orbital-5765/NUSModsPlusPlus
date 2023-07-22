@@ -171,6 +171,7 @@ export const SemesterModulePlansDataGrid = ({
 // styling for each year plan
 export const EachYearPlan = ({
   currentYear,
+  disabled,
   handleChooseModule,
   semesterModulesDict,
   handleRevertModule,
@@ -208,7 +209,7 @@ export const EachYearPlan = ({
                 moduleObject.module.hasOwnProperty("options") ? (
                   <SelectModuleBox
                     isSelectable={false}
-                    isRevertable={true}
+                    isRevertable={disabled ? false : true}
                     handleChooseModule={handleChooseModule}
                     handleRevertModule={handleRevertModule}
                     key={index}
@@ -218,7 +219,7 @@ export const EachYearPlan = ({
                 ) : (
                   <ModuleBox
                     isSelectable={false}
-                    isRevertable={true}
+                    isRevertable={disabled ? false : true}
                     handleRevertModule={handleRevertModule}
                     key={index}
                     requirement={moduleObject.requirement}
@@ -239,38 +240,22 @@ const SemesterModulePlans = ({
   handleChooseModule,
   handleRevertModule,
   handleRecommendedPlan,
+  handleRequestApproval,
+  modulePlanStatus,
+  disabled,
   semesterModulesDict,
   isComplete,
-  modulePlanStatus,
 }) => {
-  // retrieve status from database and update status when the user requests for approval
-  const [newModulePlanStatus, setNewModulePlanStatus] =
-    useState(modulePlanStatus);
-
   // request approval
   const [requestSuccess, setRequestSuccess] = useState(false);
   const [requestError, setRequestError] = useState(false);
-  const [requestSubmitted, setRequestSubmitted] = useState(false);
   const handleRequest = () => {
     if (isComplete) {
       setRequestSuccess(true);
-      handleSubmitRequest();
-      setNewModulePlanStatus("Pending");
+      handleRequestApproval();
     } else {
       setRequestError(true);
     }
-  };
-
-  // handle saving plan into database with "pending" status
-  // doesnt matter default or not default lol maybe they want change major?
-  const handleSubmitRequest = () => {
-    setRequestSubmitted(true);
-    console.log({
-      student: sampleProfile, // replace with the current user
-      status: "Pending",
-      academicPlan: academicPlan,
-      semesterModules: semesterModulesDict,
-    });
   };
 
   // perform plan validation
@@ -357,8 +342,8 @@ const SemesterModulePlans = ({
                 }}
               />
             )}
-            {newModulePlanStatus && (
-              <ModulePlanStatusChip status={newModulePlanStatus} />
+            {modulePlanStatus && (
+              <ModulePlanStatusChip status={modulePlanStatus} />
             )}
           </Box>
           <Box
@@ -391,6 +376,7 @@ const SemesterModulePlans = ({
             (tab, index) =>
               currentTab === index && (
                 <EachYearPlan
+                  disabled={disabled}
                   academicPlan={academicPlan}
                   key={index}
                   currentYear={tabsList[index]}

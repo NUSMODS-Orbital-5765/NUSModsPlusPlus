@@ -16,6 +16,7 @@ import {
   Autocomplete,
   TextField,
 } from "@mui/material";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
 import SaveAltRoundedIcon from "@mui/icons-material/SaveAltRounded";
 import { getRecommendedPlan, sampleOptionsList } from "./ModuleConstants";
@@ -165,9 +166,11 @@ export const MoveModuleDialog = ({
 const ModulesDisplay = ({
   nanoid,
   academicPlan,
+  planStatus,
   gradRequirementsDict,
   semesterModulesDict,
   planIndex,
+  handleClosePlan,
 }) => {
   // set the state, this is because addition of 3k 4k modules is allowed
   const [newGradRequirements, setNewGradRequirements] =
@@ -427,6 +430,13 @@ const ModulesDisplay = ({
     setNewSemesterModules(semesterModulesDict);
   };
 
+  const [newModulePlanStatus, setNewModulePlanStatus] = useState(planStatus);
+  // handle submit request
+  const handleRequestApproval = () => {
+    setNewModulePlanStatus("Pending");
+    handleSaveGradRequirements();
+  };
+
   // handle autoallocate
   const handleRecommendedPlan = () => {
     const clearedRequirements = newGradRequirements.map((requirement) => ({
@@ -443,14 +453,21 @@ const ModulesDisplay = ({
       nanoid: nanoid,
       owner: localStorage.getItem("username"),
       academicPlan: academicPlan,
+      modulePlanStatus: newModulePlanStatus,
       gradRequirementsDict: newGradRequirements,
       semesterModulesDict: newSemesterModules,
     });
   };
 
+  const handleClickClose = () => {
+    handleSaveGradRequirements();
+    handleClosePlan();
+  };
+
   return (
     <div>
       <GradRequirements
+        disabled={newModulePlanStatus === "Pending"}
         planIndex={planIndex}
         academicPlan={academicPlan}
         handleResetChanges={handleResetChanges}
@@ -465,7 +482,10 @@ const ModulesDisplay = ({
       />
       <Box sx={{ marginTop: "35px" }}>
         <SemesterModulePlans
+          disabled={newModulePlanStatus === "Pending"}
+          modulePlanStatus={newModulePlanStatus}
           academicPlan={academicPlan}
+          handleRequestApproval={handleRequestApproval}
           handleRecommendedPlan={handleRecommendedPlan}
           handleChooseModule={handleChooseModule}
           handleRevertModule={handleRevertModule}
@@ -492,6 +512,23 @@ const ModulesDisplay = ({
         newModuleInfo={newModuleInfo}
         handleSubmitNewModule={handleSubmitNewModule}
       />
+      <Tooltip title="Close Plan" placement="top">
+        <Fab
+          color="error"
+          onClick={handleClickClose}
+          sx={{
+            position: "fixed",
+            top: "3rem",
+            right: "3rem",
+            transition: "transform 0.2s ease",
+            "&:hover": {
+              transform: "scale(1.2)",
+            },
+          }}
+        >
+          <CloseRoundedIcon sx={{ fontSize: "30px", fontWeight: 600 }} />
+        </Fab>
+      </Tooltip>
       <Tooltip title="Save Plan" placement="top">
         <Fab
           onClick={handleSaveGradRequirements}
@@ -517,7 +554,7 @@ const ModulesDisplay = ({
           color="primary"
           sx={{
             position: "fixed",
-            top: "8rem",
+            bottom: "8rem",
             right: "3rem",
             transition: "transform 0.2s ease",
             "&:hover": {

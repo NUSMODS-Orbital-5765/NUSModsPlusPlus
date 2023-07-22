@@ -62,6 +62,7 @@ const GradRequirements = ({
   handleMoveModules,
   handleDeleteModule,
   handleAddModule,
+  disabled,
 }) => {
   // styling for the required modules area
   const RequiredModules = () => {
@@ -95,7 +96,7 @@ const GradRequirements = ({
               {requirement.modules.map((moduleObject, index) =>
                 moduleObject.hasOwnProperty("options") ? (
                   <SelectModuleBox
-                    isSelectable={true}
+                    isSelectable={disabled ? false : true}
                     key={index}
                     requirement={requirement.name}
                     module={moduleObject}
@@ -107,7 +108,7 @@ const GradRequirements = ({
                   />
                 ) : (
                   <ModuleBox
-                    isSelectable={true}
+                    isSelectable={disabled ? false : true}
                     key={index}
                     requirement={requirement.name}
                     module={moduleObject}
@@ -213,10 +214,11 @@ const GradRequirements = ({
             <Tooltip title="Reset to Last Saved" placement="top">
               <IconButton
                 sx={{ marginLeft: "10px" }}
+                disabled={disabled}
                 onClick={handleResetChanges}
               >
                 <RestartAltRoundedIcon
-                  color="primary"
+                  color={disabled ? "default" : "primary"}
                   sx={{ fontSize: "30px" }}
                 />
               </IconButton>

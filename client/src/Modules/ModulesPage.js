@@ -19,7 +19,6 @@ import {
 import HeartBrokenRoundedIcon from "@mui/icons-material/HeartBrokenRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import React, { useState, useEffect } from "react";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import ModulesDisplay from "./ModulesDisplay";
 import {
@@ -85,6 +84,7 @@ export const ModulesPageHeader = ({ handleOpenDialog }) => {
 // export const ModuleDisplayCards
 export const ModuleDisplayCard = ({
   planIndex,
+  planStatus,
   academicPlan,
   gradRequirementsDict,
   semesterModulesDict,
@@ -148,30 +148,14 @@ export const ModuleDisplayCard = ({
           <Dialog open={openPlan} fullScreen>
             <DialogContent>
               <ModulesDisplay
+                handleClosePlan={handleClosePlan}
+                planStatus={planStatus}
                 academicPlan={academicPlan}
                 gradRequirementsDict={gradRequirementsDict}
                 semesterModulesDict={semesterModulesDict}
                 planIndex={planIndex}
               />
-              <Tooltip title="Close Plan" placement="top">
-                <Fab
-                  color="error"
-                  onClick={handleClosePlan}
-                  sx={{
-                    position: "fixed",
-                    top: "3rem",
-                    right: "3rem",
-                    transition: "transform 0.2s ease",
-                    "&:hover": {
-                      transform: "scale(1.2)",
-                    },
-                  }}
-                >
-                  <CloseRoundedIcon
-                    sx={{ fontSize: "30px", fontWeight: 600 }}
-                  />
-                </Fab>
-              </Tooltip>
+
               <Tooltip title="Delete Plan" placement="top">
                 <Fab
                   onClick={handleDeletePlan}
