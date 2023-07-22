@@ -14,8 +14,6 @@
     "@mui/material": "^5.13.1",
     "@mui/x-data-grid": "^6.5.0",
     "@mui/x-date-pickers": "^6.5.0",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.4.0",
     "date-fns": "^2.30.0",
@@ -62,5 +60,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^14.0.0",
+    "jest": "^27.5.1"
   }
 }
