@@ -65,13 +65,8 @@ export const RecentlyViewedProfiles = ({ viewedProfiles }) => {
 };
 
 // styling for flagged component
-const FlaggedProfiles = ({ flaggedProfiles }) => {
-  // for clearing all profiles
-  const [currentProfiles, setCurrentProfiles] = useState(flaggedProfiles);
-  const handleClearProfiles = () => {
-    setCurrentProfiles([]);
-  };
-
+// use a search to filter the "Pending" students within admin's home department
+export const PendingProfiles = ({ pendingProfiles }) => {
   return (
     <div>
       <Card
@@ -99,17 +94,10 @@ const FlaggedProfiles = ({ flaggedProfiles }) => {
                 fontWeight: "700",
               }}
             >
-              Flagged
+              Pending
             </Typography>
-            <Button
-              onClick={handleClearProfiles}
-              color="error"
-              variant="contained"
-            >
-              Clear All
-            </Button>
           </Box>
-          <StudentDataGrid color={true} studentList={currentProfiles} />
+          <StudentDataGrid color={true} studentList={pendingProfiles} />
         </CardContent>
       </Card>
     </div>
@@ -181,7 +169,7 @@ const AdminHomePage = () => {
           />
         </Box>
         <RecentlyViewedProfiles viewedProfiles={sampleStudentsList} />
-        <FlaggedProfiles flaggedProfiles={sampleStudentsList} />
+        <PendingProfiles pendingProfiles={sampleStudentsList} />
       </Box>
     </div>
   );
