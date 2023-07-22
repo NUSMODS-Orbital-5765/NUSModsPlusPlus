@@ -16,6 +16,7 @@ import {
   Fab,
   Grid,
 } from "@mui/material";
+import HeartBrokenRoundedIcon from "@mui/icons-material/HeartBrokenRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import React, { useState, useEffect } from "react";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
@@ -198,16 +199,6 @@ export const ModuleDisplayCard = ({
   );
 };
 
-// get the student plan list from the database
-// calls function getRequiredModules here to get the module plan
-export const defaultStudentPlanList = [
-  {
-    academicPlan: sampleAcademicPlan,
-    gradRequirementsDict: getRequiredModules(sampleAcademicPlan),
-    semesterModulesDict: emptyPlanLayout,
-  },
-];
-
 // main page component
 const ModulesPage = () => {
   // ensure that users don't attempt to leave the page without saving their stuff
@@ -239,18 +230,29 @@ const ModulesPage = () => {
   const [deleteAlert, setDeleteAlert] = useState(false);
 
   // track the current student list of student plans
-  const [planList, setPlanList] = useState(defaultStudentPlanList);
+  // start from nothing first
+  const [planList, setPlanList] = useState([]);
 
   // only add a new plan if the input is not empty, add to the planList for mapping.
   const handleAddPlan = (academicPlanInfo) => {
-    setPlanList((prevPlanList) => [
-      ...prevPlanList,
-      {
-        academicPlan: academicPlanInfo,
-        gradRequirementsDict: getRequiredModules(academicPlanInfo),
-        semesterModulesDict: emptyPlanLayout, // always begin with an empty plan layout
-      },
-    ]);
+    if (planList.length === 0) {
+      setPlanList([
+        {
+          academicPlan: academicPlanInfo,
+          gradRequirementsDict: getRequiredModules(academicPlanInfo),
+          semesterModulesDict: emptyPlanLayout,
+        },
+      ]);
+    } else {
+      setPlanList((prevPlanList) => [
+        ...prevPlanList,
+        {
+          academicPlan: academicPlanInfo,
+          gradRequirementsDict: getRequiredModules(academicPlanInfo),
+          semesterModulesDict: emptyPlanLayout, // always begin with an empty plan layout
+        },
+      ]);
+    }
   };
 
   // handle deleting a plan
@@ -267,7 +269,11 @@ const ModulesPage = () => {
 
   // function for clicking on "add" button
   const handleOpenDialog = () => {
-    setOpenDialog(true);
+    if (planList.length === 0) {
+      handleAddPlan(sampleAcademicPlan); // get the user's own academic plan
+    } else {
+      setOpenDialog(true);
+    }
   };
 
   return (
@@ -276,21 +282,30 @@ const ModulesPage = () => {
       <AppBarComponent />
       <Box className="remainingViewport">
         <ModulesPageHeader handleOpenDialog={handleOpenDialog} />
-        <Box sx={{ margin: "55px", marginBottom: "100px" }}>
-          <Grid sx={{ marginTop: "-65px" }} container spacing={7}>
-            {planList.map((plan, index) => (
-              <Grid item xs={6} key={index}>
-                <ModuleDisplayCard
-                  title={plan.title}
-                  planIndex={index}
-                  academicPlan={plan.academicPlan}
-                  gradRequirementsDict={plan.gradRequirementsDict}
-                  semesterModulesDict={plan.semesterModulesDict}
-                  handleDeletePlan={() => handleDeletePlan(index)}
-                />
-              </Grid>
-            ))}
-          </Grid>
+        <Box
+          sx={{
+            margin: "55px",
+            marginBottom: "100px",
+          }}
+        >
+          {planList.length === 0 ? (
+            <NoPlansPlaceholder />
+          ) : (
+            <Grid sx={{ marginTop: "-65px" }} container spacing={7}>
+              {planList.map((plan, index) => (
+                <Grid item xs={6} key={index}>
+                  <ModuleDisplayCard
+                    title={plan.title}
+                    planIndex={index}
+                    academicPlan={plan.academicPlan}
+                    gradRequirementsDict={plan.gradRequirementsDict}
+                    semesterModulesDict={plan.semesterModulesDict}
+                    handleDeletePlan={() => handleDeletePlan(index)}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          )}
           <Snackbar
             open={deleteAlert}
             autoHideDuration={3000}
@@ -315,6 +330,30 @@ const ModulesPage = () => {
         </Box>
       </Box>
     </div>
+  );
+};
+
+// no plans placeholder
+export const NoPlansPlaceholder = () => {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        justifyItems: "center",
+      }}
+    >
+      <HeartBrokenRoundedIcon
+        sx={{ fontSize: "100px", color: "text.secondary" }}
+      />
+      <Typography
+        sx={{ color: "text.secondary", fontSize: "50px", fontWeight: 700 }}
+      >
+        No Plans Yet
+      </Typography>
+    </Box>
   );
 };
 
