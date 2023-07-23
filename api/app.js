@@ -90,13 +90,15 @@ app.post("/register/admin",jsonParser, (request, response) => {
       console.log("Create Admin Object");
       const admin = {
         name: request.body.name,
-        staffId: request.body.staffId,
+        NUSId: request.body.staffId,
+        role: "ADMIN",
         username: request.body.username,
         password: hashedPassword,
         email: request.body.email,
-        faculty: request.body.faculty,
+        faculty: request.body.department,
         position: request.body.position,
       };
+
       if (request.body.code !== process.env.SECRET_CODE) {
         response.status(201).send({
         message: "Wrong Secret Code"
@@ -104,7 +106,7 @@ app.post("/register/admin",jsonParser, (request, response) => {
       return;}
 
       // save the new user
-      prisma.admin
+      prisma.user
         .create({ data: admin })
         // return success if the new user is added to the database successfully
         .then((result) => {

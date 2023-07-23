@@ -50,7 +50,8 @@ const AdminSignUpPage = () => {
     registerInfo.email === "",
     registerInfo.department === "",
     registerInfo.position === "",
-    registerInfo.code !== "adminuser123", // to check that the person is indeed an admin? just use this as a constant for all profiles
+    registerInfo.code === "", // to check that the person is indeed an admin? just use this as a constant for all profiles
+    //This will be check in back end to avoid bruteforce
   ];
 
   const handleRegisterInfo = (evt) => {
