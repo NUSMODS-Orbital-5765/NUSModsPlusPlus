@@ -7,6 +7,16 @@ import React, { useState } from "react";
 import UserProfileView from "../UserProfileView";
 import StudentModuleProfileView from "../StudentModuleProfileView";
 
+//max words for truncation
+export const truncateContent = (content) => {
+  const words = content.split(" ");
+  if (words.length <= 10) {
+    return content;
+  }
+  const truncatedWords = words.slice(0, 10);
+  return truncatedWords.join(" ") + "...";
+};
+
 // styling for admin notifications
 export const AdminDefaultNotif = ({ notif }) => {
   const [showProfile, setShowProfile] = useState(false);
@@ -15,16 +25,6 @@ export const AdminDefaultNotif = ({ notif }) => {
   };
   const handleHideProfile = () => {
     setShowProfile(false);
-  };
-
-  // max words for truncation
-  const truncateContent = (content) => {
-    const words = content.split(" ");
-    if (words.length <= 10) {
-      return content;
-    }
-    const truncatedWords = words.slice(0, 10);
-    return truncatedWords.join(" ") + "...";
   };
 
   // different notification style for different notification types
@@ -94,7 +94,7 @@ export const AdminDefaultNotif = ({ notif }) => {
                 },
               }}
               onClick={handleShowProfile}
-              alt="Admin Icon"
+              alt="Student Icon"
               src={notif.student.avatar}
             />
           </Tooltip>
