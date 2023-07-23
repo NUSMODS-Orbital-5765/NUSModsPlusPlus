@@ -33,6 +33,7 @@ import { grey } from "@mui/material/colors";
 import { FormatAcademicPlanTitle } from "./ModuleConstants";
 import ThumbDownRoundedIcon from "@mui/icons-material/ThumbDownRounded";
 import { nanoid } from "nanoid";
+import axios from "axios";
 // header for modules page
 export const ModulesPageHeader = ({ handleOpenDialog }) => {
   return (
@@ -88,6 +89,7 @@ export const ModuleDisplayCard = ({
   academicPlan,
   gradRequirementsDict,
   semesterModulesDict,
+  handleUpdatePlan,
   handleDeletePlan,
   nanoid,
 }) => {
@@ -96,8 +98,10 @@ export const ModuleDisplayCard = ({
     setOpenPlan(true);
   };
 
+  const [saveSuccess, setSaveSuccess] = useState(false);
   const handleClosePlan = () => {
     setOpenPlan(false);
+    setSaveSuccess(true);
   };
 
   return (
@@ -148,12 +152,14 @@ export const ModuleDisplayCard = ({
           <Dialog open={openPlan} fullScreen>
             <DialogContent>
               <ModulesDisplay
-                handleClosePlan={handleClosePlan}
+                planIndex={planIndex}
+                handleUpdatePlan={handleUpdatePlan}
                 planStatus={planStatus}
                 academicPlan={academicPlan}
+                handleClosePlan={handleClosePlan}
                 gradRequirementsDict={gradRequirementsDict}
                 semesterModulesDict={semesterModulesDict}
-                planIndex={planIndex}
+                nanoid={nanoid}
               />
 
               <Tooltip title="Delete Plan" placement="top">
@@ -180,6 +186,20 @@ export const ModuleDisplayCard = ({
           </Dialog>
         </CardContent>
       </Card>
+      <Snackbar
+        open={saveSuccess}
+        autoHideDuration={3000}
+        onClose={() => setSaveSuccess(false)}
+      >
+        <Alert
+          onClose={() => setSaveSuccess(false)}
+          variant="filled"
+          severity="success"
+          sx={{ color: "white" }}
+        >
+          Changes saved!
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
@@ -223,10 +243,11 @@ const ModulesPage = () => {
     if (planList.length === 0) {
       setPlanList([
         {
+          nanoid: nanoid(),
           academicPlan: academicPlanInfo,
           gradRequirementsDict: getRequiredModules(academicPlanInfo),
           semesterModulesDict: emptyPlanLayout,
-          modulePlanStatus: "",
+          status: "",
         },
       ]);
     } else {
@@ -237,13 +258,25 @@ const ModulesPage = () => {
           academicPlan: academicPlanInfo,
           gradRequirementsDict: getRequiredModules(academicPlanInfo),
           semesterModulesDict: emptyPlanLayout,
-          modulePlanStatus: "",
+          status: "",
         },
       ]);
     }
   };
   // Retrieve module plan from the database
-  useEffect(() => console.log(planList), [planList]);
+  useEffect(() => {
+    const ModulePlanGetAPI = `${process.env.REACT_APP_API_LINK}/module-plan/get`;
+
+    axios
+      .post(ModulePlanGetAPI, {
+        username: localStorage.getItem("username"),
+      })
+      .then((res) => {
+        console.log(res.data.planList);
+        setPlanList(res.data.planList);
+      })
+      .catch((err) => console.log(err));
+  }, []);
   // handle deleting a plan
   const handleDeletePlan = (index) => {
     if (index === 0) {
@@ -256,10 +289,38 @@ const ModulesPage = () => {
     }
   };
 
+  // function for updating a plan
+  const handleUpdatePlan = (newPlan, index) => {
+    const updatedPlans = [...planList];
+    updatedPlans[index] = newPlan;
+    setPlanList(updatedPlans);
+    console.log(updatedPlans);
+  };
+
   // function for clicking on "add" button
   const handleOpenDialog = () => {
     if (planList.length === 0) {
-      handleAddPlan(sampleAcademicPlan); // get the user's own academic plan
+      const username = localStorage.getItem("username");
+      const GETprofileURL = process.env.REACT_APP_API_LINK + "/profile/get";
+      axios
+        .get(GETprofileURL, {
+        params: {
+          username: username,
+        },
+      })
+      .then((res) => {
+        const user = res.data.user
+        const academicPlanInfo = {
+          faculty: user.faculty,
+          primaryDegree: user.primaryDegree,
+          secondDegree: user.secondDegree,
+          secondMajor: user.secondMajor,
+          minor: user.minor,
+          programme: user.programme,
+        }
+        handleAddPlan(academicPlanInfo);
+      })
+      .catch((err) => console.log(err));
     } else {
       setOpenDialog(true);
     }
@@ -286,11 +347,12 @@ const ModulesPage = () => {
                   <ModuleDisplayCard
                     title={plan.title}
                     planIndex={index}
-                    planStatus={plan.modulePlanStatus}
+                    planStatus={plan.status}
                     academicPlan={plan.academicPlan}
                     nanoid={plan.nanoid}
                     gradRequirementsDict={plan.gradRequirementsDict}
                     semesterModulesDict={plan.semesterModulesDict}
+                    handleUpdatePlan={handleUpdatePlan}
                     handleDeletePlan={() => handleDeletePlan(index)}
                   />
                 </Grid>

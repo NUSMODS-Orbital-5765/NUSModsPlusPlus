@@ -24,23 +24,10 @@ const HomePage = () => {
     }
   };
 
-  const [userFullName, setUserFullName] = useState("");
-  useEffect(() => {
-    const getNameAPI = `${process.env.REACT_APP_API_LINK}/homepage/get-name`;
+  const [userFullName, setUserFullName] = useState(
+    localStorage.getItem("name")
+  );
 
-    axios
-      .post(getNameAPI, { userId: localStorage.getItem("userId") })
-      .then((response) => {
-        if (response.data && response.data.res) {
-          setUserFullName(response.data.res.name);
-        }
-        //useNavigate need to be initalise at top
-        setUserFullName(response.data.res.name);
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
-  }, []);
   return (
     <div className="homepage">
       <LocalizationProvider dateAdapter={AdapterDayjs}>

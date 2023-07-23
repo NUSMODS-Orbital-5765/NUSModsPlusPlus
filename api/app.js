@@ -8,6 +8,7 @@ const cors = require("cors");
 const { request } = require("http");
 const { json } = require("body-parser");
 const { error } = require("console");
+const {validifyAllModulePlan, AutoAllocateModulePlan} = require("./autoAllocate/autoAllocate")
 dotenv.config();
 
 const app = express();
@@ -90,21 +91,24 @@ app.post("/register/admin",jsonParser, (request, response) => {
       console.log("Create Admin Object");
       const admin = {
         name: request.body.name,
-        staffId: request.body.staffId,
+        NUSId: request.body.staffId,
+        role: "ADMIN",
         username: request.body.username,
         password: hashedPassword,
         email: request.body.email,
-        faculty: request.body.faculty,
+        faculty: request.body.department,
         position: request.body.position,
       };
+
       if (request.body.code !== process.env.SECRET_CODE) {
+        console.log("Wrong Secret Code")
         response.status(201).send({
         message: "Wrong Secret Code"
       });
       return;}
 
       // save the new user
-      prisma.admin
+      prisma.user
         .create({ data: admin })
         // return success if the new user is added to the database successfully
         .then((result) => {
@@ -595,6 +599,7 @@ app.post('/module-plan/save-or-create', [jsonParser], (request, response) => {
     academicPlan: request.body.academicPlan,
     gradRequirementsDict: request.body.gradRequirementsDict,
     semesterModulesDict: request.body.semesterModulesDict,
+    status: request.body.status
   }
   const modulePlanWithNanoID = {
     nanoid: request.body.nanoid,
@@ -602,6 +607,7 @@ app.post('/module-plan/save-or-create', [jsonParser], (request, response) => {
     academicPlan: request.body.academicPlan,
     gradRequirementsDict: request.body.gradRequirementsDict,
     semesterModulesDict: request.body.semesterModulesDict,
+    status: request.body.status,
   }
   console.log("POST module save request")
   prisma.ModulePlan.upsert({
@@ -625,20 +631,66 @@ app.post('/module-plan/save-or-create', [jsonParser], (request, response) => {
   })
 })
 
+app.post("/module-plan/validate", jsonParser, (request, response) => {
+  console.log("validate Module Plan");
+  validifyAllModulePlan(request.body.semesterModulesDict)
+  .then(
+    failedList => {
+      console.log("Validate Sucessfully")
+      response.status(200).send({
+        message: "validate Successfully",
+        failedList,
+      });
+    }
+  )
+  .catch(
+    error => {
+      console.log(error);
+      response.status(500).send({
+        message: "Error validate Module Plan",
+        error,
+      });
+    }
+  )
+})
+app.post("/module-plan/auto-allocate", jsonParser, (request, response) => {
+  console.log("Auto Allocate Module Plan");
+  AutoAllocateModulePlan(request.body.gradRequirementsDict)
+  .then(
+    res => {
+      const [semesterModulesDict, unresolvedArray] = res;
+      response.status(200).send({
+        message: "Auto Allocate Successfully",
+        semesterModulesDict,
+        unresolvedArray
+      });
+    }
+  )
+  .catch(
+    error => {
+      console.log(error);
+      response.status(500).send({
+        message: "Error Allocating Module Plan",
+        error,
+      });
+    }
+  )
+})
 app.post("/module-plan/get", jsonParser, (request, response) => {
   console.log("Getting Module from username " + request.body.username);
   prisma.modulePlan.findMany({
     where: 
-      {user: 
+      {owner: 
         {username: request.body.username}
-      }
+      },
+    orderBy: {id: "asc"}
   })
-  .then(ModulePlan => {
+  .then(planList => {
     console.log("Getting Module Plan");
   
     response.status(200).send({
       message: "Getting Module Plan Successfully from username " + request.body.username,
-      ModulePlan,
+      planList,
     });
   })
   .catch(error => {
@@ -649,6 +701,7 @@ app.post("/module-plan/get", jsonParser, (request, response) => {
     });
   })
 })
+
 app.post("/notification/generate", jsonParser, (request, response) => {
   console.log("Create Notification Object");
   console.log(request.body)
@@ -715,10 +768,34 @@ app.post("/notification/get", jsonParser, (request, response) => {
         });
 });
 app.post("/module/get-requirement", jsonParser, (request, response) => {
-  console.log("Getting 3K-4K Module List");
+  console.log("Getting Module List");
   const prefixList = request.body.prefixList;
   const kLevel = request.body.kLevel;
-
+  if (prefixList.length === 0 && kLevel === "") {
+    prisma.module
+        .findMany({
+          select: {
+            moduleCode: true,
+            title: true
+          }
+        })
+        // return success if the new post is added to the database successfully
+        .then((result) => {
+          console.log("Getting Module List Successfully");
+          response.status(201).send({
+            message: "Getting Module List Successfull",
+            result,
+          });
+        })
+        // catch error if the new post wasn't added successfully to the database
+        .catch((error) => {
+          console.log(error);
+          response.status(500).send({
+            message: "Getting Module List Error",
+            error,
+          });
+        });
+  } else {
   const conditionArray = []
   for (let prefix of prefixList) {
     conditionArray.push( {moduleCode: {startsWith: prefix + kLevel}})
@@ -733,9 +810,9 @@ app.post("/module/get-requirement", jsonParser, (request, response) => {
         })
         // return success if the new post is added to the database successfully
         .then((result) => {
-          console.log("Getting 3K-4K Module List Successfully");
+          console.log(`Getting ${kLevel}K Module List Successfully`);
           response.status(201).send({
-            message: "Getting 3K-4K Module List Successfull",
+            message: `Getting ${kLevel}K Module List Successfull`,
             result,
           });
         })
@@ -743,10 +820,10 @@ app.post("/module/get-requirement", jsonParser, (request, response) => {
         .catch((error) => {
           console.log(error);
           response.status(500).send({
-            message: "Getting 3K-4K Module List Error",
+            message: `Getting ${kLevel}K Module List Error`,
             error,
           });
-        });
+        });}
 });
 app.get("/free-endpoint", (request, response) => {
   response.json({ message: "You are free to access me anytime" });
