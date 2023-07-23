@@ -459,20 +459,15 @@ const ModulesDisplay = ({
       gradRequirementsDict: newGradRequirements,
       semesterModulesDict: newSemesterModules,
     };
-    console.log(modulePlanData);
-    handleUpdatePlan(modulePlanData, planIndex);
-    handleClosePlan();
-
-    // nam i need u to change to saving the entire plan list instead
-    /* const ModuleCreateOrSaveGetAPI = `${process.env.REACT_APP_API_LINK}/module-plan/save-or-create`;
+    const ModuleCreateOrSaveGetAPI = `${process.env.REACT_APP_API_LINK}/module-plan/save-or-create`;
     console.log(modulePlanData);
     axios
       .post(ModuleCreateOrSaveGetAPI, modulePlanData)
       .then((res) => {
-        alert("Plan saved successfully");
+        handleUpdatePlan(modulePlanData, planIndex);
+        handleClosePlan();
       })
       .catch((err) => console.log(err));
-      */
   };
 
   return (
