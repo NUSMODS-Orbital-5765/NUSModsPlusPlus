@@ -184,6 +184,7 @@ const AdminHomePage = () => {
               information.
             </Typography>
             <Button
+              data-testid="navigate-button"
               sx={{ marginLeft: "30px", marginTop: "-10px" }}
               variant="contained"
               component={Link}
