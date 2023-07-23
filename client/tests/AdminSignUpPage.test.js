@@ -24,9 +24,7 @@ describe("AdminSignUpPage", () => {
 
   // testing logo render
   test("renders the component", () => {
-    expect(
-      screen.getByText("Welcome! Let's get you settled.")
-    ).toBeInTheDocument();
+    expect(screen.getByAltText("nusmods_logo")).toBeInTheDocument();
   });
 
   // testing form fields update

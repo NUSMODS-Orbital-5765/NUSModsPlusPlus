@@ -75,6 +75,7 @@ export const LogoComponent = ({ width }) => {
       }}
     >
       <img
+        alt="nusmods_logo"
         src={`${process.env.PUBLIC_URL}/nusmods_logo.png`}
         style={{ width: width }}
       />
