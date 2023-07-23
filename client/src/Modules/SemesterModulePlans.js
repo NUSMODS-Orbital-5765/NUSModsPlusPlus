@@ -160,57 +160,6 @@ export const SemesterModulePlansDataGrid = ({
     },
   }));
 
-  const columns = allYears.map((year) =>
-    allSemesters.map((semester) => ({
-      field: `${year}-${semester}`,
-      headerName: `Y${year.slice(-1)}S${semester.slice(-1)}`,
-      flex: 1,
-      valueGetter: (params) => {
-        const matchingModule = rows.find((row) => row.id === params.row.id);
-        const module = matchingModule
-          ? matchingModule[`${year}-${semester}`]
-          : null;
-        return module ? module.module : "";
-      },
-      renderCell: (params) => {
-        const moduleCode = params.value.code;
-        const moduleName = params.value.name;
-        return (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              maxWidth: "100px",
-            }}
-          >
-            <a
-              href={`https://nusmods.com/courses/${moduleCode}/`}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                fontSize: "16px",
-                fontWeight: 600,
-                color: "black",
-              }}
-            >
-              {moduleCode}
-            </a>
-            <Typography
-              sx={{
-                marginTop: "5px",
-                fontSize: "14px",
-                whiteSpace: "normal",
-                wordWrap: "break-word",
-              }}
-            >
-              {moduleName}
-            </Typography>
-          </Box>
-        );
-      },
-    }))
-  );
-  console.log(columns1);
 
   const rowsPerPage = 10;
 

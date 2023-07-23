@@ -74,7 +74,7 @@ export const AdminCommentsDialog = ({
         .then((res) => {
           alert("Successfully add comment");
           setCommentAddStatus(commentAddStatus + 1);
-          // generateNotification("comment", localStorage.getItem("username"), post.author.username,commentContent, {postId: post.id, commentId: res.data.id})
+          generateNotification("mention", localStorage.getItem("username"), studentProfile.username, commentContent, {nanoid: studentProfile.nanoid})
         })
         .catch((err) => console.log(err));
     }
@@ -207,6 +207,7 @@ const StudentModuleProfileView = ({
     .then((res) => {
       setNewPlanStatus("Approved");
       setApproveSuccess(true);
+      generateNotification("approve", localStorage.getItem("username"), userProfile.username, "", {nanoid: nanoid})
     })
     .catch((err) => console.log(err));
   };
@@ -221,6 +222,7 @@ const StudentModuleProfileView = ({
     .then((res) => {
       setNewPlanStatus("Rejected");
       setRejectSuccess(true);
+      generateNotification("reject", localStorage.getItem("username"), userProfile.username, "", {nanoid: nanoid})
     })
     .catch((err) => console.log(err));
 

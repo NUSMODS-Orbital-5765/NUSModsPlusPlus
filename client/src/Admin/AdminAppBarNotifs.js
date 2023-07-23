@@ -3,10 +3,11 @@ import { formatDate } from "../Constants";
 import { adminNotifsList } from "./AdminConstants";
 import AppBarNotifs from "../AppBar/AppBarNotifs";
 import { StudentProfileView } from "./StudentDataGrid";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import UserProfileView from "../UserProfileView";
 import StudentModuleProfileView from "../StudentModuleProfileView";
-
+import axios from "axios";
+import {parseISO} from "date-fns";
 // styling for admin notifications
 export const AdminDefaultNotif = ({ notif }) => {
   const [showProfile, setShowProfile] = useState(false);
@@ -41,7 +42,7 @@ export const AdminDefaultNotif = ({ notif }) => {
           <Typography component="span" fontWeight={400}>
             You mentioned{" "}
           </Typography>
-          {notif.student.username}
+          {notif.target.username}
         </Typography>
       );
     } else if (contentType === "approve") {
@@ -56,13 +57,31 @@ export const AdminDefaultNotif = ({ notif }) => {
           <Typography component="span" fontWeight={400}>
             You approved{" "}
           </Typography>
-          {notif.student.username}
+          {notif.target.username}
           <Typography component="span" fontWeight={400}>
             's plan
           </Typography>
         </Typography>
       );
-    }
+    } else if (contentType === "reject") {
+      return (
+        <Typography
+          sx={{
+            textTransform: "none",
+            fontWeight: 600,
+            color: "text.primary",
+          }}
+        >
+          <Typography component="span" fontWeight={400}>
+            You reject{" "}
+          </Typography>
+          {notif.target.username}
+          <Typography component="span" fontWeight={400}>
+            's plan
+          </Typography>
+        </Typography>
+      );
+    } 
   };
 
   return (
@@ -82,7 +101,7 @@ export const AdminDefaultNotif = ({ notif }) => {
             justifyItems: "center",
           }}
         >
-          <Tooltip title="View Profile" placement="top">
+          
             <Avatar
               sx={{
                 width: 70,
@@ -95,14 +114,9 @@ export const AdminDefaultNotif = ({ notif }) => {
               }}
               onClick={handleShowProfile}
               alt="Admin Icon"
-              src={notif.student.avatar}
+              src={""}
             />
-          </Tooltip>
-          <StudentModuleProfileView
-            userProfile={notif.student}
-            openDialog={showProfile}
-            handleCloseDialog={handleHideProfile}
-          />
+          
           <Box
             sx={{
               marginLeft: "10px",
@@ -121,7 +135,7 @@ export const AdminDefaultNotif = ({ notif }) => {
                 fontSize: "14px",
               }}
             >
-              {formatDate(notif.timestamp)}
+              {formatDate(parseISO(notif.timestamp))}
             </Typography>
           </Box>
         </Box>
@@ -148,7 +162,23 @@ export const AdminDefaultNotif = ({ notif }) => {
 
 // main component design
 const AdminAppBarNotifs = () => {
-  return <AppBarNotifs notifsList={adminNotifsList} appBarType="admin" />;
+  const [notificationList, setNotificationList] = useState([]);
+  const getNotification = async () => {
+    const notifsGetAPI = `${process.env.REACT_APP_API_LINK}/notification/get`;
+    try {
+      const notifsList = await axios.post(notifsGetAPI, {
+        username: localStorage.getItem("username"),
+        admin: true
+      });
+      setNotificationList(notifsList.data.result);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  useEffect(() => {
+    getNotification();
+  }, []);
+  return <AppBarNotifs notifsList={notificationList} appBarType="admin" />;
 };
 
 export default AdminAppBarNotifs;

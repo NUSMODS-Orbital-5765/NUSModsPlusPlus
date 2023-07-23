@@ -23,6 +23,7 @@ model User {
   password         String
   email            String         @unique
   faculty          String
+  department String?
   academicPlan     String?
   primaryDegree    String?
   secondDegree     String?

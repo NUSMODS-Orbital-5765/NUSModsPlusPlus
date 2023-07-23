@@ -11,6 +11,7 @@ Table User {
   password String [not null]
   email String [unique, not null]
   faculty String [not null]
+  department String
   academicPlan String
   primaryDegree String
   secondDegree String
