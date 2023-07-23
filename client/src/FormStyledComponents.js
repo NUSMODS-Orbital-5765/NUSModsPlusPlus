@@ -82,7 +82,7 @@ export function FormUsernameField({ defaultText, setfn, disabled }) {
     const value = event.target.value;
     setRequiredField(value);
 
-    const usernameRegex = /^(?=.*[A-Za-z\d])[A-Za-z\d@$!%*?&]{8,}$/;
+    const usernameRegex = /^[a-zA-Z0-9_]{8,}$/;
     const isError = !usernameRegex.test(value);
     setError(isError);
     if (!isError) {
@@ -103,7 +103,11 @@ export function FormUsernameField({ defaultText, setfn, disabled }) {
       }}
       required
       error={error}
-      helperText={error ? "Username must contain at least 8 characters" : ""}
+      helperText={
+        error
+          ? "Username must contain at least 8 characters, and no special characters"
+          : ""
+      }
     ></TextField>
   );
 }
@@ -161,7 +165,7 @@ export function FormPasswordField({ defaultText, setfn, disabled }) {
         error={passwordError}
         helperText={
           passwordError
-            ? "Password must contain at least 8 characters and at least one special character"
+            ? "Password must contain at least 8 characters, and at least one special character"
             : ""
         }
         InputProps={{

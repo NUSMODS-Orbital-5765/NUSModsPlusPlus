@@ -216,6 +216,8 @@ const AdminSignUpPage = () => {
             }}
           >
             <Button
+              data-testid="submit-button"
+              label="Submit"
               variant="contained"
               onClick={handleSubmit}
               disabled={!isFormComplete}
