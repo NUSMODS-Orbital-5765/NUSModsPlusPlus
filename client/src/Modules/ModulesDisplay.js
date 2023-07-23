@@ -458,13 +458,14 @@ const ModulesDisplay = ({
       })
       .then((res) => {
         setIsLoading(false);
+        setRecommendedSuccess(true);
         setNewGradRequirements(clearedRequirements);
         setNewSemesterModules(res.data.semesterModulesDict);
       })
       .catch((err) => {
         setIsLoading(false);
         console.log(err);
-        alert("Auto Allocate Failed");
+        setRecommendedError(true);
       });
   };
 
