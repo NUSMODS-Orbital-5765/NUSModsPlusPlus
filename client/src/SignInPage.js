@@ -174,6 +174,7 @@ const SignInPage = () => {
         localStorage.setItem("user-token", token);
         localStorage.setItem("username", data.username);
         localStorage.setItem("userId", data.userId);
+        localStorage.setItem("role", data.role)
 
         setTimeout(() => {
           navigate("/");
