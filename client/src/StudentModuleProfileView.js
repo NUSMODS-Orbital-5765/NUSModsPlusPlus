@@ -27,10 +27,14 @@ import {
   checkPlanStatus,
   checkStudentModules,
   sampleAdminComments,
+  sampleStudentsList,
 } from "./Admin/AdminConstants";
 import { red } from "@mui/material/colors";
 import { formatDate } from "./Constants";
-
+import {emptyPlanLayout, recommendedPlanLayout} from "./Modules/ModuleConstants"
+import { nanoid } from "nanoid";
+import axios from "axios";
+import generateNotification from "./libs/generateNotification";
 // admin comments dialog
 export const AdminCommentsDialog = ({
   adminUser,
@@ -39,18 +43,55 @@ export const AdminCommentsDialog = ({
   handleCloseDialog,
   studentProfile,
 }) => {
-  const [commentsList, setCommentsList] = useState(sampleAdminComments); // replace with database commentslist
+  const [commentsList, setCommentsList] = useState([]); // replace with database commentslist
   const [commentContent, setCommentContent] = useState("");
-
+  const [commentAddStatus, setCommentAddStatus] = useState(0);
   const handleAddComment = (event) => {
     setCommentContent(event.target.value);
   };
 
   // for admin to post comments for student
   const handleSubmitComment = () => {
-    console.log(commentContent);
+    const commentAddAdminAPI = `${process.env.REACT_APP_API_LINK}/admin/add-comment`;
+    if (commentContent === "") {
+      alert("Empty Comment");
+    } else {
+      axios
+        .post(
+          commentAddAdminAPI,
+          {
+            content: commentContent,
+            dateCreated: new Date(),
+            username: localStorage.getItem("username"),
+            nanoid: studentProfile.nanoid,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            },
+          }
+        )
+        .then((res) => {
+          alert("Successfully add comment");
+          setCommentAddStatus(commentAddStatus + 1);
+          // generateNotification("comment", localStorage.getItem("username"), post.author.username,commentContent, {postId: post.id, commentId: res.data.id})
+        })
+        .catch((err) => console.log(err));
+    }
   };
 
+  const commentModulePlanGetAPI = `${process.env.REACT_APP_API_LINK}/module-plan/get-comment`;
+  useEffect(() => {
+    axios
+      .post(commentModulePlanGetAPI, {
+        nanoid: studentProfile.nanoid,
+      })
+      .then((res) => {
+        console.log(res.data.commentsList);
+        setCommentsList(res.data.commentsList);
+      })
+      .catch((err) => console.log(err));
+  }, [commentAddStatus]);
   return (
     <Dialog open={openDialog} onClose={handleCloseDialog}>
       <DialogContent sx={{ margin: "10px" }}>
@@ -69,7 +110,7 @@ export const AdminCommentsDialog = ({
             }}
           >
             {/* use the currentAdminUser's profile */}
-            <Avatar alt="Sample Icon" src={commentsList[0].author.avatar} />
+            <Avatar alt="Sample Icon" src={localStorage.getItem("avatar")} />
             <TextField
               sx={{ marginLeft: "20px", marginRight: "20px", width: "80%" }}
               variant="filled"
@@ -145,10 +186,7 @@ const StudentModuleProfileView = ({
   const [newPlanStatus, setNewPlanStatus] = useState("");
   const [approveSuccess, setApproveSuccess] = useState(false);
   const [rejectSuccess, setRejectSuccess] = useState(false);
-
-  useEffect(() => {
-    setNewPlanStatus(checkPlanStatus(userProfile));
-  }, [userProfile]);
+  const [semesterModulesDict, setSemesterModulesDict] = useState(emptyPlanLayout);
 
   const handleOpenCommentsDialog = () => {
     setOpenCommentsDialog(true);
@@ -160,13 +198,32 @@ const StudentModuleProfileView = ({
 
   // for approving/rejecting plan
   const handleApprovePlan = () => {
-    setNewPlanStatus("Approved");
-    setApproveSuccess(true);
+    const ApprovalActionAdminAPI = `${process.env.REACT_APP_API_LINK}/admin/approve`;
+    axios
+    .post(ApprovalActionAdminAPI, {
+      nanoid: userProfile.nanoid,
+      status: "Approved"
+    })
+    .then((res) => {
+      setNewPlanStatus("Approved");
+      setApproveSuccess(true);
+    })
+    .catch((err) => console.log(err));
   };
 
   const handleRejectPlan = () => {
-    setNewPlanStatus("Rejected");
-    setRejectSuccess(true);
+    const ApprovalActionAdminAPI = `${process.env.REACT_APP_API_LINK}/admin/approve`;
+    axios
+    .post(ApprovalActionAdminAPI, {
+      nanoid: userProfile.nanoid,
+      status: "Rejected"
+    })
+    .then((res) => {
+      setNewPlanStatus("Rejected");
+      setRejectSuccess(true);
+    })
+    .catch((err) => console.log(err));
+
   };
 
   const handleClickClose = () => {
@@ -177,7 +234,14 @@ const StudentModuleProfileView = ({
     });
     handleCloseDialog();
   };
+  useEffect(()=>{
+    if (userProfile != null) {
+      setSemesterModulesDict(userProfile.semesterModulesDict);
+      setNewPlanStatus(userProfile.status);
+  }
+  }, [userProfile])
 
+  useEffect(()=>{console.log(semesterModulesDict)},[semesterModulesDict])
   return (
     <Dialog
       fullScreen
@@ -222,7 +286,7 @@ const StudentModuleProfileView = ({
           </Card>
           <Box sx={{ flex: "60%" }}>
             <SemesterModulePlansDataGrid
-              semesterModulesDict={checkStudentModules(userProfile)}
+              semesterModulesDict={semesterModulesDict}
               modulePlanStatus={newPlanStatus}
             />
           </Box>

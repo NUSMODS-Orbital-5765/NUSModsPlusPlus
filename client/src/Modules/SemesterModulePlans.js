@@ -69,7 +69,7 @@ export const SemesterModulePlansDataGrid = ({
       flex: 1,
       valueGetter: (params) => {
         const module = semesterModulesDict[year][semester][params.row.id];
-        return module ? module : "";
+        return module ? module.module : "";
       },
       renderCell: (params) => {
         const moduleCode = params.value.code;

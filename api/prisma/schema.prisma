@@ -28,7 +28,7 @@ model User {
   secondDegree     String?
   secondMajor      String?
   programme        String?
-  position String?
+  position         String?
   minor            String[]
   interests        String[]
   avatar           String?
@@ -57,12 +57,14 @@ model Post {
 }
 
 model Comment {
-  id          Int      @id @default(autoincrement())
-  dateCreated DateTime
-  author      User     @relation(fields: [authorId], references: [id])
-  content     String
-  post        Post[]
-  authorId    Int
+  id           Int         @id @default(autoincrement())
+  dateCreated  DateTime
+  author       User        @relation(fields: [authorId], references: [id])
+  content      String
+  post         Post[]
+  authorId     Int
+  ModulePlan   ModulePlan? @relation(fields: [modulePlanId], references: [nanoid])
+  modulePlanId String?
 }
 
 model Programme {
@@ -133,14 +135,14 @@ model Notification {
 }
 
 model ModulePlan {
-  id                   Int     @id @default(autoincrement())
-  nanoid               String @unique
-  owner                User    @relation(fields: [userId], references: [id])
+  id                   Int       @id @default(autoincrement())
+  nanoid               String    @unique
+  owner                User      @relation(fields: [userId], references: [id])
   academicPlan         Json?
   gradRequirementsDict Json?
   semesterModulesDict  Json?
-  isDefault            Boolean @default(false)
+  isDefault            Boolean   @default(false)
   status               String?
   userId               Int
-  AdminComment         String?
+  AdminComment         Comment[]
 }

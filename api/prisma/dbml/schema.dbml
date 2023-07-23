@@ -51,6 +51,8 @@ Table Comment {
   content String [not null]
   post Post [not null]
   authorId Int [not null]
+  ModulePlan ModulePlan
+  modulePlanId String
 }
 
 Table Programme {
@@ -130,12 +132,14 @@ Table ModulePlan {
   isDefault Boolean [not null, default: false]
   status String
   userId Int [not null]
-  AdminComment String
+  AdminComment Comment [not null]
 }
 
 Ref: Post.PostAuthorId > User.id
 
 Ref: Comment.authorId > User.id
+
+Ref: Comment.modulePlanId > ModulePlan.nanoid
 
 Ref: Programme.commonModuleGroupId > CommonModuleGroup.id
 
