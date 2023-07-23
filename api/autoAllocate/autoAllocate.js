@@ -265,6 +265,7 @@ function addingCoreModule(coreModPriority, numberOfSems, maxwWorkLoadSem1, maxWo
         }
 
     }
+    return unresolvedArray
 }
 // filter exemption mod
 // sort by K-level (1XXX is before 2XXX)
@@ -339,11 +340,11 @@ async function autoAllocateTimetable(rawListOfModule, numberOfSems, isallowedSem
 
 
         const coreModPriority = sortable.filter(e=>!rawListOfModule.commonModule.includes(e[0]))
-        addingCoreModule(coreModPriority, numberOfSems, maxwWorkLoadSem1, maxWorkLoad, timetable, CreditList, preqTreeList);
+        const unresolvedArray = addingCoreModule(coreModPriority, numberOfSems, maxwWorkLoadSem1, maxWorkLoad, timetable, CreditList, preqTreeList);
 
 
 
-        return [timetable, TitleList]
+        return [timetable, TitleList, unresolvedArray]
 
     }
     catch (e) {
@@ -361,7 +362,7 @@ async function AutoAllocateModulePlan(gradRequirementsDict) {
     try {
         let rawModuleList = { commonModule: [], coreModule: [] };
         let whichGroupTheModuleBelong = {}
-        for (group of gradRequirementsDict) {
+        for (let group of gradRequirementsDict) {
             if (group.name === "commonModules") {
                 rawModuleList["commonModule"].push(...group.modules.map(e => e.code));
             } else {
@@ -369,7 +370,7 @@ async function AutoAllocateModulePlan(gradRequirementsDict) {
             }
             group.modules.map(e=>whichGroupTheModuleBelong[e.code] = group.name)
         }
-        const [timetable, TitleList] = await autoAllocateTimetable(rawModuleList, 8, false)
+        const [timetable, TitleList, unresolvedArray] = await autoAllocateTimetable(rawModuleList, 8, false)
 
 
         const semesterModulesDict = {
@@ -393,7 +394,7 @@ async function AutoAllocateModulePlan(gradRequirementsDict) {
         semesterModulesDict["Year 3"]["Semester 2"].push(...timetable[6].map(setUpModuleFormat))
         semesterModulesDict["Year 4"]["Semester 1"].push(...timetable[7].map(setUpModuleFormat))
         semesterModulesDict["Year 4"]["Semester 2"].push(...timetable[8].map(setUpModuleFormat))
-        return semesterModulesDict
+        return [semesterModulesDict, unresolvedArray]
     }
     catch (e) {
         console.log(e)
