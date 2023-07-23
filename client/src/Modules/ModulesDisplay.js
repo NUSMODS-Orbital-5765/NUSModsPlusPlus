@@ -438,6 +438,7 @@ const ModulesDisplay = ({
   // handle submit request
   const handleRequestApproval = () => {
     setNewModulePlanStatus("Pending");
+    handleClickClose();
   };
 
   const [recommendedSuccess, setRecommendedSuccess] = useState(false);

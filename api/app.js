@@ -596,6 +596,7 @@ app.post('/module-plan/save-or-create', [jsonParser], (request, response) => {
     academicPlan: request.body.academicPlan,
     gradRequirementsDict: request.body.gradRequirementsDict,
     semesterModulesDict: request.body.semesterModulesDict,
+    status: request.body.status
   }
   const modulePlanWithNanoID = {
     nanoid: request.body.nanoid,
@@ -603,6 +604,7 @@ app.post('/module-plan/save-or-create', [jsonParser], (request, response) => {
     academicPlan: request.body.academicPlan,
     gradRequirementsDict: request.body.gradRequirementsDict,
     semesterModulesDict: request.body.semesterModulesDict,
+    status: request.body.status,
   }
   console.log("POST module save request")
   prisma.ModulePlan.upsert({
@@ -671,32 +673,6 @@ app.post("/module-plan/auto-allocate", jsonParser, (request, response) => {
     }
   )
 })
-app.post("/module-plan/get", jsonParser, (request, response) => {
-  console.log("Getting Module from username " + request.body.username);
-  prisma.modulePlan.findMany({
-    where: 
-      {owner: 
-        {username: request.body.username}
-      },
-    orderBy: {id: "asc"}
-  })
-  .then(planList => {
-    console.log("Getting Module Plan");
-  
-    response.status(200).send({
-      message: "Getting Module Plan Successfully from username " + request.body.username,
-      planList,
-    });
-  })
-  .catch(error => {
-    console.log(error);
-    response.status(500).send({
-      message: "Error Getting Module Plan",
-      error,
-    });
-  })
-})
-
 app.post("/module-plan/get", jsonParser, (request, response) => {
   console.log("Getting Module from username " + request.body.username);
   prisma.modulePlan.findMany({

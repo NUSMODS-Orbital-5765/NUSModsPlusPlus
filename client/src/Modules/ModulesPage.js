@@ -247,7 +247,7 @@ const ModulesPage = () => {
           academicPlan: academicPlanInfo,
           gradRequirementsDict: getRequiredModules(academicPlanInfo),
           semesterModulesDict: emptyPlanLayout,
-          modulePlanStatus: "",
+          status: "",
         },
       ]);
     } else {
@@ -258,7 +258,7 @@ const ModulesPage = () => {
           academicPlan: academicPlanInfo,
           gradRequirementsDict: getRequiredModules(academicPlanInfo),
           semesterModulesDict: emptyPlanLayout,
-          modulePlanStatus: "",
+          status: "",
         },
       ]);
     }
@@ -277,7 +277,6 @@ const ModulesPage = () => {
       })
       .catch((err) => console.log(err));
   }, []);
-  useEffect(() => console.log(planList), [planList]);
   // handle deleting a plan
   const handleDeletePlan = (index) => {
     if (index === 0) {
@@ -301,7 +300,27 @@ const ModulesPage = () => {
   // function for clicking on "add" button
   const handleOpenDialog = () => {
     if (planList.length === 0) {
-      handleAddPlan(sampleAcademicPlan); // get the user's own academic plan
+      const username = localStorage.getItem("username");
+      const GETprofileURL = process.env.REACT_APP_API_LINK + "/profile/get";
+      axios
+        .get(GETprofileURL, {
+        params: {
+          username: username,
+        },
+      })
+      .then((res) => {
+        const user = res.data.user
+        const academicPlanInfo = {
+          faculty: user.faculty,
+          primaryDegree: user.primaryDegree,
+          secondDegree: user.secondDegree,
+          secondMajor: user.secondMajor,
+          minor: user.minor,
+          programme: user.programme,
+        }
+        handleAddPlan(academicPlanInfo);
+      })
+      .catch((err) => console.log(err));
     } else {
       setOpenDialog(true);
     }
@@ -328,7 +347,7 @@ const ModulesPage = () => {
                   <ModuleDisplayCard
                     title={plan.title}
                     planIndex={index}
-                    planStatus={plan.modulePlanStatus}
+                    planStatus={plan.status}
                     academicPlan={plan.academicPlan}
                     nanoid={plan.nanoid}
                     gradRequirementsDict={plan.gradRequirementsDict}
