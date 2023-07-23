@@ -73,11 +73,39 @@ export const sampleAcademicPlan = {
 // placeholder function for getting academic requirements
 // i assume the plan that we get when we enter a sample academic plan is in this format..hahaha
 export function getRequiredModules(academicPlan) {
-  if (academicPlan.primaryDegree === "Data Science and Analytics") {
-    return draftAcademicRequirements;
-  } else {
-    return sampleAcademicRequirements;
+  const gradRequirements = [];
+
+  gradRequirements.push(
+    {
+      name: "commonModules",
+      modules: [],
+    },
+    {
+      name: "primaryDegreeModules",
+      modules: [],
+    }
+  );
+
+  if (academicPlan.secondDegree) {
+    gradRequirements.push({
+      name: "secondDegreeModules",
+      modules: [],
+    });
+  } else if (academicPlan.secondMajor) {
+    gradRequirements.push({
+      name: "secondMajorModules",
+      modules: [],
+    });
   }
+
+  if (academicPlan.minor && academicPlan.minor.length > 0) {
+    gradRequirements.push({
+      name: "minorModules",
+      modules: [],
+    });
+  }
+
+  return gradRequirements;
 }
 
 // placeholder function for getting recommended plan

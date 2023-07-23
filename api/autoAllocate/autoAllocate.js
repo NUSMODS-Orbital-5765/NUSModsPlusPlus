@@ -10,6 +10,7 @@ const axios = require("axios");
 const fs = require('fs');
 const { off } = require("process");
 const { stringify } = require("querystring");
+const prisma = require("../db/prisma");
 dotenv.config();
 
 // axios.get("https://api.nusmods.com/v2/2021-2022/moduleList.json")
@@ -133,23 +134,24 @@ function validify (prevSems, preqTreeList, module) {
 }
 
 // Go through the whole time table and return modules that has error
-function validifyAll (allSems, preqTreeList) {
+async function validifyAll (allSems) {
+    const modules = await prisma.module.findMany() 
+    const preqTreeList = modules.reduce((a, v) => ({ ...a, [v.moduleCode]: v.prereqTree}), {}) 
     let failed = []
     for (let index = allSems.length -1 ; index > -1; index--) {
-        console.log(`Checking sem ${index}`)
+        // console.log(`Checking sem ${index}`)
         const thisSem = allSems[index];
-        console.log(JSON.stringify(thisSem));
+        // console.log(JSON.stringify(thisSem));
         for (const module of thisSem) {
-            console.log(`Checking module ${module}`)
+            // console.log(`Checking module ${module}`)
             if (validify(allSems.slice(0,index),preqTreeList,module)===false) {
-                console.log(`Validify ${module} failed`)
+                // console.log(`Validify ${module} failed`)
                 failed.push(module)
             }
         }
         
     }
-    console.log(failed);
-    return true
+    return failed
 }
 
 // Check if any mod is SUable
@@ -196,7 +198,17 @@ function getPriority(moduleList, preqTreeList) {
 }
 //Add common curriculum to timetable
 function addingCommomModule(commonModpriority, timetable, numberOfSems) {
-    const convertCommonMod = { 
+    const convertCommonMod = {
+        0: [0],
+        1: [1],
+        2: [1, 1],
+        3: [1, 1, 1],
+        4: [2, 1, 1],
+        5: [2, 1, 1, 1],
+        6: [2, 1, 1, 1, 1],
+        7: [2, 2, 1, 1, 1],
+        8: [3, 2, 1, 1, 1],
+        9: [3, 2, 2, 1, 1],
         10: [3, 3, 2, 1, 1],
         11: [4, 3, 2, 1, 1],
         12: [4, 3 ,2, 2, 1],
@@ -227,7 +239,7 @@ function addingCoreModule(coreModPriority, numberOfSems, maxwWorkLoadSem1, maxWo
             let maxWorkLoadThisSem = (sem === 0) ? maxwWorkLoadSem1 : maxWorkLoad;
             if (getTotalWorkload(timetable[sem + 1], CreditList) + getModuleMC(module, CreditList) <= maxWorkLoadThisSem) {
                 if (validify(timetable.slice(0, sem + 1), preqTreeList, module)) {
-                    console.log(`Adding Module ${module} to sem ${sem + 1}`);
+                    // console.log(`Adding Module ${module} to sem ${sem + 1}`);
                     timetable[sem + 1].push(module);
                     flag = false;
                     break;
@@ -240,7 +252,7 @@ function addingCoreModule(coreModPriority, numberOfSems, maxwWorkLoadSem1, maxWo
                 let maxWorkLoadThisSem = (sem === 0) ? maxwWorkLoadSem1 : maxWorkLoad;
                 if (getTotalWorkload(timetable[sem + 1], CreditList) + getModuleMC(module, CreditList) <= maxWorkLoadThisSem) {
                     if (validify(timetable.slice(0, sem + 1), preqTreeList, unresolvedModule)) {
-                        console.log(`Adding Module ${unresolvedModule} to sem ${sem + 1}`);
+                        // console.log(`Adding Module ${unresolvedModule} to sem ${sem + 1}`);
                         timetable[sem + 1].push(unresolvedModule);
                         unresolvedArray = unresolvedArray.filter(e => e != unresolvedModule);
                         break;
@@ -253,6 +265,7 @@ function addingCoreModule(coreModPriority, numberOfSems, maxwWorkLoadSem1, maxWo
         }
 
     }
+    return unresolvedArray
 }
 // filter exemption mod
 // sort by K-level (1XXX is before 2XXX)
@@ -295,53 +308,110 @@ function getMaxWorkLoadperSem(totalWorkload, numberOfSems, isallowedSem1Overload
         return [22, maxWorkLoad]
     }
 }
-function autoAllocateTimetable(rawListOfModule, numberOfSems, isallowedSem1Overload ) {
-const rawData = fs.readFileSync("AllModuleDetails.json"); 
-const modules = (JSON.parse(rawData))
-const CreditList = modules.reduce((a, v) => ({ ...a, [v.moduleCode]: v.moduleCredit }), {}) 
-const preqTreeList = modules.reduce((a, v) => ({ ...a, [v.moduleCode]: v.prereqTree}), {}) 
-// const fulfillReqList = modules.reduce((a, v) => ({ ...a, [v.moduleCode]: v.fulfillRequirements}), {}) 
+async function autoAllocateTimetable(rawListOfModule, numberOfSems, isallowedSem1Overload ) {
+    try{
+        const modules = await prisma.module.findMany()
+        const TitleList = modules.reduce((a, v) => ({ ...a, [v.moduleCode]: v.title }), {}) 
+        const CreditList = modules.reduce((a, v) => ({ ...a, [v.moduleCode]: v.moduleCredit }), {}) 
+        const preqTreeList = modules.reduce((a, v) => ({ ...a, [v.moduleCode]: v.prereqTree}), {}) 
+        // const fulfillReqList = modules.reduce((a, v) => ({ ...a, [v.moduleCode]: v.fulfillRequirements}), {}) 
 
-// List of Modules Taken
-const fullModuleList = Object.values(rawListOfModule).flat();
-
-
-const totalWorkload = (getTotalWorkload(fullModuleList,CreditList))
-//Get max workload per sem
-const [maxwWorkLoadSem1, maxWorkLoad] = getMaxWorkLoadperSem(totalWorkload,numberOfSems,isallowedSem1Overload)
+        // List of Modules Taken
+        const fullModuleList = Object.values(rawListOfModule).flat();
 
 
-const exemption = ["ES1000", "ES1103", "MA1301"]
-const priorityList = getPriority(fullModuleList, preqTreeList)
-const priorityListWithMC = addModuleMC(priorityList,CreditList)
-const sortable = sortModulePriorty(priorityListWithMC, exemption)
-// console.log(sortable)
-const commonModpriority = sortable.filter(e=>rawListOfModule.commonModule.includes(e[0]))
-
-const timetable = []
-
-// Add exemption mod as Sem 0
-timetable.push(exemption);
-addingCommomModule(commonModpriority, timetable, numberOfSems);
+        const totalWorkload = (getTotalWorkload(fullModuleList,CreditList))
+        //Get max workload per sem
+        const [maxwWorkLoadSem1, maxWorkLoad] = getMaxWorkLoadperSem(totalWorkload,numberOfSems,isallowedSem1Overload)
 
 
-const coreModPriority = sortable.filter(e=>rawListOfModule.coreModule.includes(e[0]))
-addingCoreModule(coreModPriority, numberOfSems, maxwWorkLoadSem1, maxWorkLoad, timetable, CreditList, preqTreeList);
+        const exemption = ["ES1000", "ES1103", "MA1301"]
+        const priorityList = getPriority(fullModuleList, preqTreeList)
+        const priorityListWithMC = addModuleMC(priorityList,CreditList)
+        const sortable = sortModulePriorty(priorityListWithMC, exemption)
+        // console.log(sortable)
+        const commonModpriority = sortable.filter(e=>rawListOfModule.commonModule.includes(e[0]))
 
-return timetable
+        const timetable = []
+
+        // Add exemption mod as Sem 0
+        timetable.push(exemption);
+        addingCommomModule(commonModpriority, timetable, numberOfSems);
+
+
+        const coreModPriority = sortable.filter(e=>!rawListOfModule.commonModule.includes(e[0]))
+        const unresolvedArray = addingCoreModule(coreModPriority, numberOfSems, maxwWorkLoadSem1, maxWorkLoad, timetable, CreditList, preqTreeList);
+
+
+
+        return [timetable, TitleList, unresolvedArray]
+
+    }
+    catch (e) {
+        console.log(e);
+    }
 }
-console.log(autoAllocateTimetable(rawListOfModule, 8, false))
-
-function checkMissingModule (rawListOfModule) {
-    const rawData = fs.readFileSync("AllModuleDetails.json"); 
-    const modules = (JSON.parse(rawData))
-    const CreditList = modules.reduce((a, v) => ({ ...a, [v.moduleCode]: v.moduleCredit }), {}) 
-    const fullModuleList = Object.values(rawListOfModule).flat();
-    const fullModule = modules.map(e=>e.moduleCode)
-    fullModuleList.filter(e => !(fullModule.includes(e)))
-}
+// autoAllocateTimetable(rawListOfModule, 8, false)
+// .then(result => console.log(result))
 
 // checkMissingModule(rawListOfModule)
 
 
 
+async function AutoAllocateModulePlan(gradRequirementsDict) {
+    try {
+        let rawModuleList = { commonModule: [], coreModule: [] };
+        let whichGroupTheModuleBelong = {}
+        for (let group of gradRequirementsDict) {
+            if (group.name === "commonModules") {
+                rawModuleList["commonModule"].push(...group.modules.map(e => e.code));
+            } else {
+                rawModuleList["coreModule"].push(...group.modules.map(e => e.code));
+            }
+            group.modules.map(e=>whichGroupTheModuleBelong[e.code] = group.name)
+        }
+        const [timetable, TitleList, unresolvedArray] = await autoAllocateTimetable(rawModuleList, 8, false)
+
+
+        const semesterModulesDict = {
+            "Year 1": {"Semester 1": [], "Semester 2":[]},
+            "Year 2": {"Semester 1": [], "Semester 2":[]},
+            "Year 3": {"Semester 1": [], "Semester 2":[]},
+            "Year 4": {"Semester 1": [], "Semester 2":[]}
+        }
+        const setUpModuleFormat = (code) => {
+            return {
+                module: {code: code, name: TitleList[code]},
+                requirement: whichGroupTheModuleBelong[code]
+            }
+        }
+        // Hard code pls forgive me
+        semesterModulesDict["Year 1"]["Semester 1"].push(...timetable[1].map(setUpModuleFormat))
+        semesterModulesDict["Year 1"]["Semester 2"].push(...timetable[2].map(setUpModuleFormat))
+        semesterModulesDict["Year 2"]["Semester 1"].push(...timetable[3].map(setUpModuleFormat))
+        semesterModulesDict["Year 2"]["Semester 2"].push(...timetable[4].map(setUpModuleFormat))
+        semesterModulesDict["Year 3"]["Semester 1"].push(...timetable[5].map(setUpModuleFormat))
+        semesterModulesDict["Year 3"]["Semester 2"].push(...timetable[6].map(setUpModuleFormat))
+        semesterModulesDict["Year 4"]["Semester 1"].push(...timetable[7].map(setUpModuleFormat))
+        semesterModulesDict["Year 4"]["Semester 2"].push(...timetable[8].map(setUpModuleFormat))
+        return [semesterModulesDict, unresolvedArray]
+    }
+    catch (e) {
+        console.log(e)
+    }
+}
+
+async function validifyAllModulePlan (semesterModulesDict) {
+    let allSems = [["MA1301","ES1000","ES1103"]];
+    const moduleYearList = Object.values(semesterModulesDict);
+    for (let year of moduleYearList) {
+        const moduleSem1 = year["Semester 1"].map(e=>e.module.code);
+        const moduleSem2 = year["Semester 2"].map(e=>e.module.code);
+        allSems.push(moduleSem1)
+        allSems.push(moduleSem2)
+    }
+    const result = await validifyAll(allSems)
+    return result
+}
+
+module.exports = {validifyAllModulePlan, AutoAllocateModulePlan}

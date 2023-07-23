@@ -176,6 +176,7 @@ const SignInPage = () => {
         localStorage.setItem("userId", data.userId);
         localStorage.setItem("role", data.role);
         localStorage.setItem("avatar", data.avatar);
+        localStorage.setItem("name", data.name);
 
         setTimeout(() => {
           navigate("/");

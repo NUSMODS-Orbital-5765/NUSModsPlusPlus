@@ -15,15 +15,19 @@ import {
   Fab,
   Autocomplete,
   TextField,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
-import SaveAltRoundedIcon from "@mui/icons-material/SaveAltRounded";
 import { getRecommendedPlan, sampleOptionsList } from "./ModuleConstants";
 import { AdminCommentsDialog } from "../StudentModuleProfileView";
 import { adminSampleProfile } from "../Admin/AdminConstants";
 import { sampleProfile } from "../Constants";
-import { nanoid } from "nanoid";
+import axios from "axios";
+import getModuleList from "../libs/getModuleList";
+import LoadingBackdrop from "./LoadingBackdrop";
+
 // dialog for adding modules
 export const AddModuleDialog = ({
   openAddModuleDialog,
@@ -33,12 +37,17 @@ export const AddModuleDialog = ({
   handleSubmitNewModule,
 }) => {
   const [newModuleObject, setNewModuleObject] = useState({});
-
+  const [optionsList, setOptionsList] = useState();
+  const [detailedOptionsList, setDetailOptionsList] = useState();
   // placeholder fn, get options for selecting a new module
-  function getOptions(academicPlan, newModuleInfo) {
-    // new module gives the primarydeg, seconddeg/etc and also gives 3k/4k req.
-    return sampleOptionsList.map((module) => module.code);
-  }
+  useEffect(() => {
+    getModuleList([], "")
+      .then((moduleList) => {
+        setOptionsList(moduleList.map((e) => e.moduleCode));
+        setDetailOptionsList(moduleList);
+      })
+      .catch((error) => console.log(error));
+  }, []);
 
   const handleClickSubmitNewModule = () => {
     handleCloseAddModuleDialog();
@@ -60,13 +69,17 @@ export const AddModuleDialog = ({
         </Typography>
         <Autocomplete
           sx={{ marginTop: "20px", maxHeight: "40vh" }}
-          onChange={(event, value) =>
-            setNewModuleObject(
-              sampleOptionsList.find((module) => module.code === value)
-            )
-          }
+          onChange={(event, value) => {
+            const moduleObject = detailedOptionsList.find(
+              (module) => module.moduleCode === value
+            );
+            setNewModuleObject({
+              name: moduleObject.title,
+              code: moduleObject.moduleCode,
+            });
+          }}
           disablePortal
-          options={getOptions(academicPlan, newModuleInfo)}
+          options={optionsList}
           fullWidth
           renderInput={(params) => (
             <TextField {...params} label="Select Module" />
@@ -171,6 +184,7 @@ const ModulesDisplay = ({
   semesterModulesDict,
   planIndex,
   handleClosePlan,
+  handleUpdatePlan,
 }) => {
   // set the state, this is because addition of 3k 4k modules is allowed
   const [newGradRequirements, setNewGradRequirements] =
@@ -248,6 +262,7 @@ const ModulesDisplay = ({
     }
   };
 
+  // for reverting module
   const handleRevertModule = (moduleObject, requirement) => {
     const moduleMatches = (module1, module2) => {
       return module1.code === module2.code && module1.name === module2.name;
@@ -273,39 +288,28 @@ const ModulesDisplay = ({
       requirement: requirement,
     };
 
-    const updatedModulesArray = newGradRequirements[
-      requirementIndex
-    ].modules.filter((mod) => !moduleMatches(mod, moduleToRemove.module));
-
     const updatedGradRequirements = [...newGradRequirements];
-    updatedGradRequirements[requirementIndex].modules = updatedModulesArray;
+    updatedGradRequirements[requirementIndex].modules.push(
+      moduleToRemove.module
+    );
     setNewGradRequirements(updatedGradRequirements);
 
     const updatedMovedModules = { ...newSemesterModules };
 
-    const semesterModulesArray =
-      updatedMovedModules[destinationYear]?.[destinationSemester];
-
-    if (semesterModulesArray) {
-      const updatedSemesterModules = semesterModulesArray.filter(
-        (mod) => !moduleObjectMatches(mod, moduleToRemove)
-      );
-
-      updatedMovedModules[destinationYear][destinationSemester] =
-        updatedSemesterModules;
-      setNewSemesterModules(updatedMovedModules);
+    for (const yearKey in updatedMovedModules) {
+      const semesters = updatedMovedModules[yearKey];
+      for (const semesterKey in semesters) {
+        const semesterModulesArray = semesters[semesterKey];
+        if (semesterModulesArray) {
+          const updatedSemesterModules = semesterModulesArray.filter(
+            (mod) => !moduleObjectMatches(mod, moduleToRemove) // with the requirement
+          );
+          updatedMovedModules[yearKey][semesterKey] = updatedSemesterModules;
+        }
+      }
     }
 
-    const targetRequirementIndex = updatedGradRequirements.findIndex(
-      (req) => req.name === moduleToRemove.requirement
-    );
-
-    if (targetRequirementIndex !== -1) {
-      updatedGradRequirements[targetRequirementIndex].modules.push(
-        moduleToRemove.module
-      );
-      setNewGradRequirements(updatedGradRequirements);
-    }
+    setNewSemesterModules(updatedMovedModules);
   };
 
   const handleDeleteModule = (moduleInput) => {
@@ -434,33 +438,56 @@ const ModulesDisplay = ({
   // handle submit request
   const handleRequestApproval = () => {
     setNewModulePlanStatus("Pending");
-    handleSaveGradRequirements();
+    handleClickClose();
   };
 
+  const [recommendedSuccess, setRecommendedSuccess] = useState(false);
+  const [recommendedError, setRecommendedError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   // handle autoallocate
   const handleRecommendedPlan = () => {
+    setIsLoading(true);
     const clearedRequirements = newGradRequirements.map((requirement) => ({
       ...requirement,
       modules: [],
     }));
-    setNewGradRequirements(clearedRequirements);
-    setNewSemesterModules(getRecommendedPlan(academicPlan));
+    const ModulePlanAutoAllocateAPI = `${process.env.REACT_APP_API_LINK}/module-plan/auto-allocate`;
+
+    axios
+      .post(ModulePlanAutoAllocateAPI, {
+        gradRequirementsDict: gradRequirementsDict,
+      })
+      .then((res) => {
+        setIsLoading(false);
+        setRecommendedSuccess(true);
+        setNewGradRequirements(clearedRequirements);
+        setNewSemesterModules(res.data.semesterModulesDict);
+      })
+      .catch((err) => {
+        setIsLoading(false);
+        console.log(err);
+        setRecommendedError(true);
+      });
   };
 
   // handle saving of the grad requirements and semester modules together
-  const handleSaveGradRequirements = () => {
-    console.log({
+  const handleClickClose = () => {
+    const modulePlanData = {
       nanoid: nanoid,
       owner: localStorage.getItem("username"),
       academicPlan: academicPlan,
-      modulePlanStatus: newModulePlanStatus,
+      status: newModulePlanStatus,
       gradRequirementsDict: newGradRequirements,
       semesterModulesDict: newSemesterModules,
-    });
-  };
-
-  const handleClickClose = () => {
-    handleSaveGradRequirements();
+    };
+    const ModuleCreateOrSaveGetAPI = `${process.env.REACT_APP_API_LINK}/module-plan/save-or-create`;
+    console.log(modulePlanData);
+    axios
+      .post(ModuleCreateOrSaveGetAPI, modulePlanData)
+      .then((res) => {
+        handleUpdatePlan(modulePlanData, planIndex);
+      })
+      .catch((err) => console.log(err));
     handleClosePlan();
   };
 
@@ -529,25 +556,6 @@ const ModulesDisplay = ({
           <CloseRoundedIcon sx={{ fontSize: "30px", fontWeight: 600 }} />
         </Fab>
       </Tooltip>
-      <Tooltip title="Save Plan" placement="top">
-        <Fab
-          onClick={handleSaveGradRequirements}
-          color="success"
-          sx={{
-            position: "fixed",
-            top: "3rem",
-            right: "8rem",
-            transition: "transform 0.2s ease",
-            "&:hover": {
-              transform: "scale(1.2)",
-            },
-          }}
-        >
-          <SaveAltRoundedIcon
-            sx={{ fontSize: "30px", fontWeight: 600, color: "white" }}
-          />
-        </Fab>
-      </Tooltip>
       <Tooltip title="View Comments" placement="top">
         <Fab
           onClick={handleOpenComments}
@@ -574,6 +582,35 @@ const ModulesDisplay = ({
         handleCloseDialog={handleCloseComments}
         studentProfile={sampleProfile}
       />
+      <Snackbar
+        open={recommendedSuccess}
+        autoHideDuration={3000}
+        onClose={() => setRecommendedSuccess(false)}
+      >
+        <Alert
+          onClose={() => setRecommendedSuccess(false)}
+          variant="filled"
+          sx={{ color: "white" }}
+          severity="success"
+        >
+          Auto-allocation successful!
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={recommendedError}
+        autoHideDuration={3000}
+        onClose={() => setRecommendedError(false)}
+      >
+        <Alert
+          onClose={() => setRecommendedError(false)}
+          variant="filled"
+          sx={{ color: "white" }}
+          severity="error"
+        >
+          Auto-allocation failed!
+        </Alert>
+      </Snackbar>
+      {isLoading && <LoadingBackdrop />}
     </div>
   );
 };

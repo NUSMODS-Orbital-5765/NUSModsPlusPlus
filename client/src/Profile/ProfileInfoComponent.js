@@ -254,10 +254,10 @@ const ProfileInfoComponent = () => {
           username: username,
         },
       })
-      .then((user) => {
-        setUserProfile(user.data.user);
+      .then((res) => {
+        setUserProfile(res.data.user);
         setIsFetch(true);
-        console.log(user.data.user);
+        console.log(res.data.user);
       })
       .catch((err) => console.log(err));
   }, []);
