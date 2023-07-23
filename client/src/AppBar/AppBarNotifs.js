@@ -95,7 +95,7 @@ export const DefaultNotif = ({ notif, handleCloseDrawer }) => {
     } else if (type === "mention") {
       return "mentioned you";
     } else if (type === "reject") {
-      return "rejected you"
+      return "rejected your plan";
     }
   };
 
