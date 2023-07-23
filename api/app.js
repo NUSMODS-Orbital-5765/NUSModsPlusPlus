@@ -171,6 +171,9 @@ app.post("/login", jsonParser, (request, response) => {
             message: "Login User Successful at "+user.username,
             username: user.username,
             userId: user.id,
+            role: user.role,
+            avatar: user.avatar,
+            name: user.name,
             token,
           });
         })
@@ -824,6 +827,43 @@ app.post("/module/get-requirement", jsonParser, (request, response) => {
             error,
           });
         });}
+});
+
+app.post("/admin/get-module-plan", jsonParser, (request, response) => {
+  console.log("Getting Module Plan Admin-side");
+  const statusList = request.body.status;
+  const conditionArray = []
+  for (let status of statusList) {
+    conditionArray.push( {status: status})
+  }
+  prisma.modulePlan
+        .findMany(
+          {
+          where: { OR: conditionArray},
+          select: {
+            owner: true
+          },
+          orderBy: {
+            id: "asc",
+          }
+        }
+        )
+        // return success if the new post is added to the database successfully
+        .then((result) => {
+          console.log("Getting Module Plan Admin-side Successfully");
+          response.status(201).send({
+            message: "Getting Module Plan Admin-side Successfull",
+            result,
+          });
+        })
+        // catch error if the new post wasn't added successfully to the database
+        .catch((error) => {
+          console.log(error);
+          response.status(500).send({
+            message: "Getting Module Plan Admin-side Error",
+            error,
+          });
+        });
 });
 app.get("/free-endpoint", (request, response) => {
   response.json({ message: "You are free to access me anytime" });
