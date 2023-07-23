@@ -1,8 +1,9 @@
+// unit
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/dom";
 import "@testing-library/jest-dom/extend-expect";
-import DrawerComponent from "./DrawerComponent";
+import DrawerComponent from "../Drawer/DrawerComponent";
 
 // custom mock link that leads to a component (cannot use <a><href>)
 const MockLink = ({ to, onClick, children }) => (
@@ -16,13 +17,14 @@ jest.mock("react-router-dom", () => ({
   Link: MockLink,
 }));
 
+// define mock constants for the drawer component
+const tabsList = [
+  { text: "Tab 1", icon: "Icon 1", link: "/tab1" },
+  { text: "Tab 2", icon: "Icon 2", link: "/tab2" },
+];
+
 // render component before each test
 beforeEach(() => {
-  const tabsList = [
-    { text: "Tab 1", icon: "Icon 1", link: "/tab1" },
-    { text: "Tab 2", icon: "Icon 2", link: "/tab2" },
-  ];
-
   render(<DrawerComponent defaultTab={1} tabsList={tabsList} />);
 });
 

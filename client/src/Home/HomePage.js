@@ -30,6 +30,9 @@ const HomePage = () => {
     axios
       .post(getNameAPI, { userId: localStorage.getItem("userId") })
       .then((response) => {
+        if (response.data && response.data.res) {
+          setUserFullName(response.data.res.name);
+        }
         //useNavigate need to be initalise at top
         setUserFullName(response.data.res.name);
       })
@@ -86,6 +89,7 @@ const HomePage = () => {
                 sx={{ margin: "30px", marginTop: "-10px" }}
                 variant="contained"
                 onClick={showNextQuote}
+                data-testid="quote-button"
               >
                 Next quote
               </Button>

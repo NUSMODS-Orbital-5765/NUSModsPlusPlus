@@ -1,6 +1,7 @@
 import { Box, LinearProgress, Typography } from "@mui/material";
 import { ProgressBar } from "../StyledComponents";
 import { getTodayEvents, isEventOver } from "./HomePageTimetable";
+import React from "react";
 
 const HomePageEventProgressBar = ({ todayEvents }) => {
   const todayEventsList = getTodayEvents();

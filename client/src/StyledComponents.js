@@ -218,13 +218,6 @@ export const SearchBar = ({ label, searchRecommendations, width }) => {
     }
   };
 
-  // handle case where arrow button is clicked
-  const handleArrowButtonPress = () => {
-    const inputElement = document.getElementById("search-input");
-    const selectedOption = inputElement.value;
-    handleKeyDown(selectedOption);
-  };
-
   return (
     <Box
       sx={{
@@ -238,7 +231,7 @@ export const SearchBar = ({ label, searchRecommendations, width }) => {
         sx={{ marginTop: "20px", marginRight: "10px", color: "text.primary" }}
       />
       <Autocomplete
-        id="search-input"
+        data-testid="search-input"
         freeSolo
         options={searchRecommendations}
         getOptionLabel={(option) => option.option}
@@ -253,27 +246,6 @@ export const SearchBar = ({ label, searchRecommendations, width }) => {
           />
         )}
       />
-      <Tooltip title="Search" placement="top">
-        <IconButton
-          sx={{
-            marginTop: "20px",
-            marginLeft: "10px",
-            "&:hover": {
-              backgroundColor: "transparent",
-              transform: "translateX(5px)",
-              transition: "transform 0.1s",
-            },
-          }}
-          onClick={handleArrowButtonPress}
-        >
-          <ArrowForwardRoundedIcon
-            color="primary"
-            sx={{
-              fontSize: "30px",
-            }}
-          />
-        </IconButton>
-      </Tooltip>
     </Box>
   );
 };

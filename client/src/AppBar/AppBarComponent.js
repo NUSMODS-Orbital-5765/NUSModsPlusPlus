@@ -17,13 +17,17 @@ function AppBarComponent(props) {
   const getNotification = async () => {
     const notifsGetAPI = `${process.env.REACT_APP_API_LINK}/notification/get`;
     try {
-      const notifsList = await axios.post(notifsGetAPI, {username: localStorage.getItem("username")})
+      const notifsList = await axios.post(notifsGetAPI, {
+        username: localStorage.getItem("username"),
+      });
       setNotificationList(notifsList.data.result);
     } catch (e) {
       console.log(e);
     }
   };
-  useEffect(() => {getNotification()},[])
+  useEffect(() => {
+    getNotification();
+  }, []);
   useEffect(() => {
     const intervalCall = setInterval(() => {
       getNotification();
@@ -31,7 +35,8 @@ function AppBarComponent(props) {
     return () => {
       // clean up
       clearInterval(intervalCall);
-    }}, []);
+    };
+  }, []);
   return (
     <SearchBarScroll {...props}>
       <AppBar
@@ -55,7 +60,7 @@ function AppBarComponent(props) {
             }}
           >
             <SearchBar
-              label="Search this site..."
+              label="Search + Enter"
               width="70ch"
               searchRecommendations={siteRecommendations}
             />
@@ -67,7 +72,10 @@ function AppBarComponent(props) {
                 flexDirection: "row",
               }}
             >
-              <AppBarNotifs notifsList={notificationList} appBarType="student" />
+              <AppBarNotifs
+                notifsList={notificationList}
+                appBarType="student"
+              />
               <AppBarAvatar
                 userProfile={sampleProfile}
                 avatarItems={avatarItems}
