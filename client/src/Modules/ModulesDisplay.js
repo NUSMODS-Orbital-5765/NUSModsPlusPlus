@@ -275,24 +275,21 @@ const ModulesDisplay = ({
       requirement: requirement,
     };
 
-    const updatedModulesArray = newGradRequirements[
-      requirementIndex
-    ].modules.filter((mod) => !moduleMatches(mod, moduleToRemove.module));
-
     const updatedGradRequirements = [...newGradRequirements];
-    updatedGradRequirements[requirementIndex].modules = updatedModulesArray;
+    updatedGradRequirements[requirementIndex].modules.push(
+      moduleToRemove.module
+    );
     setNewGradRequirements(updatedGradRequirements);
 
     const updatedMovedModules = { ...newSemesterModules };
 
-    // Loop through each year and semester in the semesterModulesDict
     for (const yearKey in updatedMovedModules) {
       const semesters = updatedMovedModules[yearKey];
       for (const semesterKey in semesters) {
         const semesterModulesArray = semesters[semesterKey];
         if (semesterModulesArray) {
           const updatedSemesterModules = semesterModulesArray.filter(
-            (mod) => !moduleObjectMatches(mod, moduleToRemove)
+            (mod) => !moduleObjectMatches(mod, moduleToRemove) // with the requirement
           );
           updatedMovedModules[yearKey][semesterKey] = updatedSemesterModules;
         }
@@ -440,13 +437,16 @@ const ModulesDisplay = ({
 
     axios
       .post(ModulePlanAutoAllocateAPI, {
-        gradRequirementsDict: gradRequirementsDict
+        gradRequirementsDict: gradRequirementsDict,
       })
       .then((res) => {
         setNewGradRequirements(clearedRequirements);
         setNewSemesterModules(res.data.semesterModulesDict);
       })
-      .catch((err) => {console.log(err); alert("Auto Allocate Failed")});
+      .catch((err) => {
+        console.log(err);
+        alert("Auto Allocate Failed");
+      });
   };
 
   // handle saving of the grad requirements and semester modules together
