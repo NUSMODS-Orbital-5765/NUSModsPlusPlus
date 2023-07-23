@@ -16,6 +16,7 @@ Table User {
   secondDegree String
   secondMajor String
   programme String
+  position String
   minor String[] [not null]
   interests String[] [not null]
   avatar String
