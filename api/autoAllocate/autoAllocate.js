@@ -139,13 +139,13 @@ async function validifyAll (allSems) {
     const preqTreeList = modules.reduce((a, v) => ({ ...a, [v.moduleCode]: v.prereqTree}), {}) 
     let failed = []
     for (let index = allSems.length -1 ; index > -1; index--) {
-        console.log(`Checking sem ${index}`)
+        // console.log(`Checking sem ${index}`)
         const thisSem = allSems[index];
-        console.log(JSON.stringify(thisSem));
+        // console.log(JSON.stringify(thisSem));
         for (const module of thisSem) {
-            console.log(`Checking module ${module}`)
+            // console.log(`Checking module ${module}`)
             if (validify(allSems.slice(0,index),preqTreeList,module)===false) {
-                console.log(`Validify ${module} failed`)
+                // console.log(`Validify ${module} failed`)
                 failed.push(module)
             }
         }
@@ -404,9 +404,8 @@ async function validifyAllModulePlan (semesterModulesDict) {
         allSems.push(moduleSem1)
         allSems.push(moduleSem2)
     }
-    console.log(allSems)
     const result = await validifyAll(allSems)
-    console.log(result)
+    return result
 }
 
 module.exports = {validifyAllModulePlan, AutoAllocateModulePlan}
