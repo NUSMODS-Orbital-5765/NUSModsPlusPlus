@@ -626,13 +626,14 @@ app.post('/module-plan/save-or-create', [jsonParser], (request, response) => {
   })
 })
 
-app.post("/module-plan/validify", jsonParser, (request, response) => {
-  console.log("Validify Module Plan");
+app.post("/module-plan/validate", jsonParser, (request, response) => {
+  console.log("validate Module Plan");
   validifyAllModulePlan(request.body.semesterModulesDict)
   .then(
     failedList => {
+      console.log("Validate Sucessfully")
       response.status(200).send({
-        message: "Validify Successfully",
+        message: "validate Successfully",
         failedList,
       });
     }
@@ -641,7 +642,7 @@ app.post("/module-plan/validify", jsonParser, (request, response) => {
     error => {
       console.log(error);
       response.status(500).send({
-        message: "Error Getting Module Plan",
+        message: "Error validate Module Plan",
         error,
       });
     }

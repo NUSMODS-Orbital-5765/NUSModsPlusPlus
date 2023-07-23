@@ -24,7 +24,7 @@ import SelectModuleBox from "./SelectModuleBox";
 import { sampleProfile } from "../Constants";
 import { orange, red } from "@mui/material/colors";
 import { DataGrid } from "@mui/x-data-grid";
-
+import axios from "axios";
 // styling for module plan chips
 export const ModulePlanStatusChip = ({ status }) => {
   function getChipColor(status) {
@@ -261,8 +261,27 @@ const SemesterModulePlans = ({
   // perform plan validation
   const [validateSuccess, setValidateSuccess] = useState(false);
   const [validateError, setValidateError] = useState(false);
+  const [validateErrorContent, setValidateErrorContent] = useState();
   const handleValidatePlan = () => {
-    setValidateSuccess(true);
+    const ModulePlanValidateAPI = `${process.env.REACT_APP_API_LINK}/module-plan/validate`;
+
+    axios
+      .post(ModulePlanValidateAPI, {
+        semesterModulesDict: semesterModulesDict
+      })
+      .then((res) => {
+        const failedList = res.data.failedList;
+        console.log(`failed list = ${failedList}`);
+        if (failedList.length === 0) {
+          setValidateSuccess(true);
+        }
+        else {
+          setValidateError(true)
+          setValidateErrorContent(failedList)
+        }
+      })
+      .catch((err) => console.log(err));
+    
   };
 
   // plan recommendation dialog
@@ -412,7 +431,7 @@ const SemesterModulePlans = ({
             variant="filled"
             severity="error"
           >
-            Please address the following issues:
+            {`Please address the following issues: ${validateErrorContent}`}
           </Alert>
         </Snackbar>
         <Snackbar

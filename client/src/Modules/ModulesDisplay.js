@@ -444,8 +444,17 @@ const ModulesDisplay = ({
       ...requirement,
       modules: [],
     }));
-    setNewGradRequirements(clearedRequirements);
-    setNewSemesterModules(getRecommendedPlan(academicPlan));
+    const ModulePlanAutoAllocateAPI = `${process.env.REACT_APP_API_LINK}/module-plan/auto-allocate`;
+
+    axios
+      .post(ModulePlanAutoAllocateAPI, {
+        gradRequirementsDict: gradRequirementsDict
+      })
+      .then((res) => {
+        setNewGradRequirements(clearedRequirements);
+        setNewSemesterModules(res.data.semesterModulesDict);
+      })
+      .catch((err) => {console.log(err); alert("Auto Allocate Failed")});
   };
 
   // handle saving of the grad requirements and semester modules together
