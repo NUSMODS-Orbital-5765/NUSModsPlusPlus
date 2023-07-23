@@ -11,6 +11,7 @@ import HomePageProgressBar from "./HomePageProgressBar";
 import HomePageRecommendedPosts from "./HomePageRecommendedPosts";
 import { combinedItems } from "./HomePageStyledComponents";
 import axios from "axios";
+import HomePageTimetable from "./HomePageTimetable";
 
 const HomePage = () => {
   // testing out the quotes for new UI
@@ -43,8 +44,12 @@ const HomePage = () => {
   return (
     <div className="homepage">
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <AppBarComponent />
-        <DrawerComponent defaultTab={1} tabsList={combinedItems} />
+        <AppBarComponent data-testid="app-bar" />
+        <DrawerComponent
+          data-testid="drawer"
+          defaultTab={1}
+          tabsList={combinedItems}
+        />
         <Box
           className="remainingViewport"
           sx={{
@@ -83,7 +88,7 @@ const HomePage = () => {
                   color: "#004d80",
                 }}
               >
-                {quotesList[currentQuote]}
+                <span data-testid="quote-text">{quotesList[currentQuote]}</span>
               </Typography>
               <Button
                 sx={{ margin: "30px", marginTop: "-10px" }}
@@ -109,14 +114,14 @@ const HomePage = () => {
             }}
           >
             <Box sx={{ width: "50%" }}>
-              <HomePageProgressBar />
+              <HomePageProgressBar data-testid="home-page-progress-bar" />
             </Box>
             <Box sx={{ width: "50%" }}>
-              <HomePageRecommendedPosts />
+              <HomePageRecommendedPosts data-testid="home-page-recommended-posts" />
             </Box>
           </Box>
+          <HomePageTimetable data-testid="home-page-timetable" />
         </Box>
-        <HomePageShortcuts />
       </LocalizationProvider>
     </div>
   );

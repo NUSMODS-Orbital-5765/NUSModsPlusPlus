@@ -1,11 +1,9 @@
 // NEED TO RETRIEVE ITEMS FROM DATABASE AND SORT.
 // COMPLETE
 import { Box, Tooltip, IconButton } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
-import HomePageTimetable from "./HomePageTimetable";
-import HomePageRecommendedPosts from "./HomePageRecommendedPosts";
 
 // styling for arrow button to go to related page
 export const SeeMoreArrowButton = ({ pageName }) => {
@@ -34,22 +32,3 @@ export const SeeMoreArrowButton = ({ pageName }) => {
     </Tooltip>
   );
 };
-
-// main page
-const HomePageShortcuts = () => {
-  return (
-    <Box
-      className="remainingViewport"
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyItems: "center",
-      }}
-    >
-      <HomePageTimetable />
-    </Box>
-  );
-};
-
-export default HomePageShortcuts;

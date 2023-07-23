@@ -187,16 +187,15 @@ export const EventCard = ({ event }) => {
 // styling for daily timeline
 export const TodayTimeline = ({ eventsList }) => {
   // sort the events by time for currentday
-  const sortedEventsList =
-    eventsList.length !== 0
-      ? eventsList.sort((a, b) => {
-          const timeA = parseTime(a.time);
-          const timeB = parseTime(b.time);
-          if (timeA < timeB) return -1;
-          if (timeA > timeB) return 1;
-          return 0;
-        })
-      : [];
+  const sortedEventsList = eventsList
+    ? eventsList.sort((a, b) => {
+        const timeA = parseTime(a.time);
+        const timeB = parseTime(b.time);
+        if (timeA < timeB) return -1;
+        if (timeA > timeB) return 1;
+        return 0;
+      })
+    : [];
 
   return (
     <Card
