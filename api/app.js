@@ -836,10 +836,23 @@ app.post("/admin/get-module-plan", jsonParser, (request, response) => {
   for (let status of statusList) {
     conditionArray.push( {status: status})
   }
+  let where = {};
+  if (request.body.status.length !== 0) {
+    where["OR"] = conditionArray
+  }
+  console.log(JSON.stringify({
+    where,
+    select: {
+      owner: true
+    },
+    orderBy: {
+      id: "asc",
+    }
+  }))
   prisma.modulePlan
         .findMany(
           {
-          where: { OR: conditionArray},
+          where,
           select: {
             owner: true
           },
