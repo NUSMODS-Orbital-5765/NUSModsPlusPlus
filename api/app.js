@@ -8,6 +8,7 @@ const cors = require("cors");
 const { request } = require("http");
 const { json } = require("body-parser");
 const { error } = require("console");
+const {validifyAllModulePlan, AutoAllocateModulePlan} = require("./autoAllocate/autoAllocate")
 dotenv.config();
 
 const app = express();
@@ -625,20 +626,63 @@ app.post('/module-plan/save-or-create', [jsonParser], (request, response) => {
   })
 })
 
+app.post("/module-plan/validify", jsonParser, (request, response) => {
+  console.log("Validify Module Plan");
+  validifyAllModulePlan(request.body.semesterModulesDict)
+  .then(
+    failedList => {
+      response.status(200).send({
+        message: "Validify Successfully",
+        failedList,
+      });
+    }
+  )
+  .catch(
+    error => {
+      console.log(error);
+      response.status(500).send({
+        message: "Error Getting Module Plan",
+        error,
+      });
+    }
+  )
+})
+app.post("/module-plan/auto-allocate", jsonParser, (request, response) => {
+  console.log("Auto Allocate Module Plan");
+  AutoAllocateModulePlan(request.body.gradRequirementsDict)
+  .then(
+    semesterModulesDict => {
+      response.status(200).send({
+        message: "Auto Allocate Successfully",
+        semesterModulesDict,
+      });
+    }
+  )
+  .catch(
+    error => {
+      console.log(error);
+      response.status(500).send({
+        message: "Error Allocating Module Plan",
+        error,
+      });
+    }
+  )
+})
 app.post("/module-plan/get", jsonParser, (request, response) => {
   console.log("Getting Module from username " + request.body.username);
   prisma.modulePlan.findMany({
     where: 
-      {user: 
+      {owner: 
         {username: request.body.username}
-      }
+      },
+    orderBy: {id: "asc"}
   })
-  .then(ModulePlan => {
+  .then(planList => {
     console.log("Getting Module Plan");
   
     response.status(200).send({
       message: "Getting Module Plan Successfully from username " + request.body.username,
-      ModulePlan,
+      planList,
     });
   })
   .catch(error => {
@@ -649,6 +693,33 @@ app.post("/module-plan/get", jsonParser, (request, response) => {
     });
   })
 })
+
+app.post("/module-plan/get", jsonParser, (request, response) => {
+  console.log("Getting Module from username " + request.body.username);
+  prisma.modulePlan.findMany({
+    where: 
+      {owner: 
+        {username: request.body.username}
+      },
+    orderBy: {id: "asc"}
+  })
+  .then(planList => {
+    console.log("Getting Module Plan");
+  
+    response.status(200).send({
+      message: "Getting Module Plan Successfully from username " + request.body.username,
+      planList,
+    });
+  })
+  .catch(error => {
+    console.log(error);
+    response.status(500).send({
+      message: "Error Getting Module Plan",
+      error,
+    });
+  })
+})
+
 app.post("/notification/generate", jsonParser, (request, response) => {
   console.log("Create Notification Object");
   console.log(request.body)

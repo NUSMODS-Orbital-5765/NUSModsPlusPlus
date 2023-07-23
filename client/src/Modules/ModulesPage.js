@@ -33,6 +33,7 @@ import { grey } from "@mui/material/colors";
 import { FormatAcademicPlanTitle } from "./ModuleConstants";
 import ThumbDownRoundedIcon from "@mui/icons-material/ThumbDownRounded";
 import { nanoid } from "nanoid";
+import axios from "axios";
 // header for modules page
 export const ModulesPageHeader = ({ handleOpenDialog }) => {
   return (
@@ -154,6 +155,7 @@ export const ModuleDisplayCard = ({
                 gradRequirementsDict={gradRequirementsDict}
                 semesterModulesDict={semesterModulesDict}
                 planIndex={planIndex}
+                nanoid={nanoid}
               />
 
               <Tooltip title="Delete Plan" placement="top">
@@ -244,7 +246,20 @@ const ModulesPage = () => {
     }
   };
   // Retrieve module plan from the database
-  useEffect(() => console.log(planList), [planList]);
+  useEffect(()=>{
+    const ModulePlanGetAPI = `${process.env.REACT_APP_API_LINK}/module-plan/get`;
+
+    axios
+      .post(ModulePlanGetAPI, {
+        username: localStorage.getItem("username")
+      })
+      .then((res) => {
+        console.log(res.data.planList)
+        setPlanList(res.data.planList)
+      })
+      .catch((err) => console.log(err));
+  }, []);
+  useEffect(()=>console.log(planList),[planList])
   // handle deleting a plan
   const handleDeletePlan = (index) => {
     if (index === 0) {

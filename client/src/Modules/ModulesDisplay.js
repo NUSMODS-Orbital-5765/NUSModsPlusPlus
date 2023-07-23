@@ -23,7 +23,8 @@ import { getRecommendedPlan, sampleOptionsList } from "./ModuleConstants";
 import { AdminCommentsDialog } from "../StudentModuleProfileView";
 import { adminSampleProfile } from "../Admin/AdminConstants";
 import { sampleProfile } from "../Constants";
-import { nanoid } from "nanoid";
+import axios from "axios";
+
 // dialog for adding modules
 export const AddModuleDialog = ({
   openAddModuleDialog,
@@ -449,18 +450,27 @@ const ModulesDisplay = ({
 
   // handle saving of the grad requirements and semester modules together
   const handleSaveGradRequirements = () => {
-    console.log({
+    const modulePlanData = {
       nanoid: nanoid,
       owner: localStorage.getItem("username"),
       academicPlan: academicPlan,
-      modulePlanStatus: newModulePlanStatus,
+      status: newModulePlanStatus,
       gradRequirementsDict: newGradRequirements,
       semesterModulesDict: newSemesterModules,
-    });
+    };
+    const ModuleCreateOrSaveGetAPI = `${process.env.REACT_APP_API_LINK}/module-plan/save-or-create`;
+    console.log(modulePlanData)
+    axios
+      .post(ModuleCreateOrSaveGetAPI, modulePlanData)
+      .then((res) => {
+        alert("Saved Plan Successfully")
+      })
+      .catch((err) => console.log(err));
   };
 
   const handleClickClose = () => {
-    handleSaveGradRequirements();
+    // handleSaveGradRequirements();
+    // No save when close plan to avoid annoying pop up, maybe can be fixed with another smaller "Save before leave"
     handleClosePlan();
   };
 
