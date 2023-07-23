@@ -60,6 +60,48 @@ export const recommendedPlanLayout = {
   "Year 4": { "Semester 1": [], "Semester 2": [] },
 };
 
+/*
+export const recommendedPlanLayout = {
+  "Year 1": {
+    "Semester 1": [
+      {
+        requirement: "commonModules",
+        module: {
+          code: "CS1010S",
+          name: "Programming Methodology",
+        },
+      },
+      {
+        requirement: "primaryDegreeModules",
+        module: {
+          code: "MA2001",
+          name: "Linear Algebra I",
+        },
+      },
+    ],
+    "Semester 2": [
+      {
+        requirement: "commonModules",
+        module: {
+          code: "HSI1000",
+          name: "How Science Works, Why Science Works",
+        },
+      },
+      {
+        requirement: "commonModules",
+        module: {
+          code: "HSS1000",
+          name: "Understanding Social Complexity",
+        },
+      },
+    ],
+  },
+  "Year 2": { "Semester 1": [], "Semester 2": [] },
+  "Year 3": { "Semester 1": [], "Semester 2": [] },
+  "Year 4": { "Semester 1": [], "Semester 2": [] },
+};
+*/
+
 // sample student profile with academic plan extracted
 export const sampleAcademicPlan = {
   faculty: "Faculty of Science",

@@ -62,14 +62,80 @@ export const SemesterModulePlansDataGrid = ({
   const allYears = Object.keys(semesterModulesDict);
   const allSemesters = Object.keys(semesterModulesDict[allYears[0]]);
 
-  const columns = allYears.reduce((cols, year) => {
-    const semesterColumns = allSemesters.map((semester) => ({
+  const rows1 = [
+    {
+      id: 0,
+      "Year 1 - Semester 1": {
+        module: { code: "CS1010S", name: "Programming Methodology" },
+        requirement: "commonModules",
+      },
+      "Year 1 - Semester 2": {
+        module: {
+          code: "HSI1000",
+          name: "How Science Works, Why Science Works",
+        },
+        requirement: "commonModules",
+      },
+    },
+    {
+      id: 1,
+      "Year 1 - Semester 1": {
+        module: { code: "MA2001", name: "Linear Algebra" },
+        requirement: "primaryDegreeModules",
+      },
+      "Year 1 - Semester 2": {
+        module: {
+          code: "HSS1000",
+          name: "Social Sciences",
+        },
+        requirement: "primaryDegreeModules",
+      },
+    },
+  ];
+
+  const rows = Object.keys(semesterModulesDict["Year 1"]["Semester 1"]).map(
+    (index) => {
+      const row = { id: parseInt(index) };
+      Object.keys(semesterModulesDict).forEach((year) => {
+        Object.keys(semesterModulesDict[year]).forEach((semester, semIndex) => {
+          const field = `${year} - Semester ${semIndex + 1}`;
+          const moduleData = semesterModulesDict[year][semester][index];
+          row[field] = moduleData ? moduleData.module : {};
+        });
+      });
+      return row;
+    }
+  );
+
+  console.log(rows);
+
+  const columns1 = [
+    "Year 1 - Semester 1",
+    "Year 1 - Semester 2",
+    "Year 2 - Semester 1",
+    "Year 2 - Semester 2",
+    "Year 3 - Semester 1",
+    "Year 3 - Semester 2",
+    "Year 4 - Semester 1",
+    "Year 4 - Semester 2",
+  ].map((field, index) => ({
+    field,
+    headerName: `Y${Math.floor(index / 2) + 1}S${(index % 2) + 1}`,
+    flex: 1,
+    renderCell: (params) => <div>{params.value}</div>,
+  }));
+
+  const columns = allYears.map((year) =>
+    allSemesters.map((semester) => ({
       field: `${year}-${semester}`,
       headerName: `Y${year.slice(-1)}S${semester.slice(-1)}`,
       flex: 1,
       valueGetter: (params) => {
-        const module = semesterModulesDict[year][semester][params.row.id];
-        return module ? module : "";
+        const matchingModule = rows.find((row) => row.id === params.row.id);
+        const module = matchingModule
+          ? matchingModule[`${year}-${semester}`]
+          : null;
+        return module ? module.module : "";
       },
       renderCell: (params) => {
         const moduleCode = params.value.code;
@@ -107,24 +173,9 @@ export const SemesterModulePlansDataGrid = ({
           </Box>
         );
       },
-    }));
-
-    return [...cols, ...semesterColumns];
-  }, []);
-
-  const rows = [];
-  allYears.forEach((year) => {
-    allSemesters.forEach((semester, index) => {
-      semesterModulesDict[year][semester].forEach((module) => {
-        rows.push({
-          id: rows.length + 1,
-          year: year,
-          semester: semester,
-          [`${year}-${semester}`]: module,
-        });
-      });
-    });
-  });
+    }))
+  );
+  console.log(columns1);
 
   const rowsPerPage = 10;
 
@@ -159,7 +210,7 @@ export const SemesterModulePlansDataGrid = ({
           <div style={{ marginTop: "20px", height: 1000, width: "100%" }}>
             <DataGrid
               rows={rows}
-              columns={columns}
+              columns={columns1}
               disableRowSelectionOnClick
               rowHeight={150}
             />
