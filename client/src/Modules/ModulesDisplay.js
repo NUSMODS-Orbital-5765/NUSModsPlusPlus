@@ -40,14 +40,14 @@ export const AddModuleDialog = ({
   const [optionsList, setOptionsList] = useState();
   const [detailedOptionsList, setDetailOptionsList] = useState();
   // placeholder fn, get options for selecting a new module
-  useEffect(()=>{
-    getModuleList([],"")
-    .then(moduleList=>{
-      setOptionsList(moduleList.map(e=>e.moduleCode));
-      setDetailOptionsList(moduleList);
-    })
-    .catch(error => console.log(error))
-  },[])
+  useEffect(() => {
+    getModuleList([], "")
+      .then((moduleList) => {
+        setOptionsList(moduleList.map((e) => e.moduleCode));
+        setDetailOptionsList(moduleList);
+      })
+      .catch((error) => console.log(error));
+  }, []);
 
   const handleClickSubmitNewModule = () => {
     handleCloseAddModuleDialog();
@@ -70,10 +70,14 @@ export const AddModuleDialog = ({
         <Autocomplete
           sx={{ marginTop: "20px", maxHeight: "40vh" }}
           onChange={(event, value) => {
-            const moduleObject = detailedOptionsList.find((module) => module.moduleCode === value);
-            setNewModuleObject({name: moduleObject.title, code: moduleObject.moduleCode})
-            }
-          }
+            const moduleObject = detailedOptionsList.find(
+              (module) => module.moduleCode === value
+            );
+            setNewModuleObject({
+              name: moduleObject.title,
+              code: moduleObject.moduleCode,
+            });
+          }}
           disablePortal
           options={optionsList}
           fullWidth
@@ -480,9 +484,9 @@ const ModulesDisplay = ({
       .post(ModuleCreateOrSaveGetAPI, modulePlanData)
       .then((res) => {
         handleUpdatePlan(modulePlanData, planIndex);
-        handleClosePlan();
       })
       .catch((err) => console.log(err));
+    handleClosePlan();
   };
 
   return (
