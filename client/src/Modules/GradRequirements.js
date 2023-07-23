@@ -142,6 +142,7 @@ const GradRequirements = ({
                     variant="outlined"
                     color="error"
                     sx={{
+                      marginBottom: "20px",
                       fontWeight: 600,
                       width: "230px",
                       height: "100px",
@@ -154,6 +155,20 @@ const GradRequirements = ({
                   </Button>
                 </Box>
               )}
+              <Button
+                variant="outlined"
+                color="primary"
+                sx={{
+                  fontWeight: 600,
+                  width: "230px",
+                  height: "100px",
+                  borderRadius: "10px",
+                  border: "1px dashed",
+                }}
+                onClick={() => handleAddModule("any", requirement.name)} // change to map the optionsList or something
+              >
+                Add Module
+              </Button>
             </CardContent>
           </Card>
         ))}

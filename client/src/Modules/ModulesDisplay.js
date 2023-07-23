@@ -18,7 +18,6 @@ import {
 } from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
-import SaveAltRoundedIcon from "@mui/icons-material/SaveAltRounded";
 import { getRecommendedPlan, sampleOptionsList } from "./ModuleConstants";
 import { AdminCommentsDialog } from "../StudentModuleProfileView";
 import { adminSampleProfile } from "../Admin/AdminConstants";
@@ -172,6 +171,7 @@ const ModulesDisplay = ({
   semesterModulesDict,
   planIndex,
   handleClosePlan,
+  handleUpdatePlan,
 }) => {
   // set the state, this is because addition of 3k 4k modules is allowed
   const [newGradRequirements, setNewGradRequirements] =
@@ -249,6 +249,7 @@ const ModulesDisplay = ({
     }
   };
 
+  // for reverting module
   const handleRevertModule = (moduleObject, requirement) => {
     const moduleMatches = (module1, module2) => {
       return module1.code === module2.code && module1.name === module2.name;
@@ -284,29 +285,21 @@ const ModulesDisplay = ({
 
     const updatedMovedModules = { ...newSemesterModules };
 
-    const semesterModulesArray =
-      updatedMovedModules[destinationYear]?.[destinationSemester];
-
-    if (semesterModulesArray) {
-      const updatedSemesterModules = semesterModulesArray.filter(
-        (mod) => !moduleObjectMatches(mod, moduleToRemove)
-      );
-
-      updatedMovedModules[destinationYear][destinationSemester] =
-        updatedSemesterModules;
-      setNewSemesterModules(updatedMovedModules);
+    // Loop through each year and semester in the semesterModulesDict
+    for (const yearKey in updatedMovedModules) {
+      const semesters = updatedMovedModules[yearKey];
+      for (const semesterKey in semesters) {
+        const semesterModulesArray = semesters[semesterKey];
+        if (semesterModulesArray) {
+          const updatedSemesterModules = semesterModulesArray.filter(
+            (mod) => !moduleObjectMatches(mod, moduleToRemove)
+          );
+          updatedMovedModules[yearKey][semesterKey] = updatedSemesterModules;
+        }
+      }
     }
 
-    const targetRequirementIndex = updatedGradRequirements.findIndex(
-      (req) => req.name === moduleToRemove.requirement
-    );
-
-    if (targetRequirementIndex !== -1) {
-      updatedGradRequirements[targetRequirementIndex].modules.push(
-        moduleToRemove.module
-      );
-      setNewGradRequirements(updatedGradRequirements);
-    }
+    setNewSemesterModules(updatedMovedModules);
   };
 
   const handleDeleteModule = (moduleInput) => {
@@ -435,7 +428,6 @@ const ModulesDisplay = ({
   // handle submit request
   const handleRequestApproval = () => {
     setNewModulePlanStatus("Pending");
-    handleSaveGradRequirements();
   };
 
   // handle autoallocate
@@ -449,7 +441,7 @@ const ModulesDisplay = ({
   };
 
   // handle saving of the grad requirements and semester modules together
-  const handleSaveGradRequirements = () => {
+  const handleClickClose = () => {
     const modulePlanData = {
       nanoid: nanoid,
       owner: localStorage.getItem("username"),
@@ -458,20 +450,20 @@ const ModulesDisplay = ({
       gradRequirementsDict: newGradRequirements,
       semesterModulesDict: newSemesterModules,
     };
-    const ModuleCreateOrSaveGetAPI = `${process.env.REACT_APP_API_LINK}/module-plan/save-or-create`;
-    console.log(modulePlanData)
+    console.log(modulePlanData);
+    handleUpdatePlan(modulePlanData, planIndex);
+    handleClosePlan();
+
+    // nam i need u to change to saving the entire plan list instead
+    /* const ModuleCreateOrSaveGetAPI = `${process.env.REACT_APP_API_LINK}/module-plan/save-or-create`;
+    console.log(modulePlanData);
     axios
       .post(ModuleCreateOrSaveGetAPI, modulePlanData)
       .then((res) => {
-        alert("Saved Plan Successfully")
+        alert("Plan saved successfully");
       })
       .catch((err) => console.log(err));
-  };
-
-  const handleClickClose = () => {
-    // handleSaveGradRequirements();
-    // No save when close plan to avoid annoying pop up, maybe can be fixed with another smaller "Save before leave"
-    handleClosePlan();
+      */
   };
 
   return (
@@ -537,25 +529,6 @@ const ModulesDisplay = ({
           }}
         >
           <CloseRoundedIcon sx={{ fontSize: "30px", fontWeight: 600 }} />
-        </Fab>
-      </Tooltip>
-      <Tooltip title="Save Plan" placement="top">
-        <Fab
-          onClick={handleSaveGradRequirements}
-          color="success"
-          sx={{
-            position: "fixed",
-            top: "3rem",
-            right: "8rem",
-            transition: "transform 0.2s ease",
-            "&:hover": {
-              transform: "scale(1.2)",
-            },
-          }}
-        >
-          <SaveAltRoundedIcon
-            sx={{ fontSize: "30px", fontWeight: 600, color: "white" }}
-          />
         </Fab>
       </Tooltip>
       <Tooltip title="View Comments" placement="top">
