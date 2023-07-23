@@ -652,10 +652,12 @@ app.post("/module-plan/auto-allocate", jsonParser, (request, response) => {
   console.log("Auto Allocate Module Plan");
   AutoAllocateModulePlan(request.body.gradRequirementsDict)
   .then(
-    semesterModulesDict => {
+    res => {
+      const [semesterModulesDict, unresolvedArray] = res;
       response.status(200).send({
         message: "Auto Allocate Successfully",
         semesterModulesDict,
+        unresolvedArray
       });
     }
   )
