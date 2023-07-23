@@ -25,6 +25,8 @@ import { sampleProfile } from "../Constants";
 import { orange, red } from "@mui/material/colors";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
+import LoadingBackdrop from "./LoadingBackdrop";
+
 // styling for module plan chips
 export const ModulePlanStatusChip = ({ status }) => {
   function getChipColor(status) {
@@ -260,35 +262,29 @@ const SemesterModulePlans = ({
 
   // perform plan validation
   const [validateSuccess, setValidateSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [validateError, setValidateError] = useState(false);
   const [validateErrorContent, setValidateErrorContent] = useState();
   const handleValidatePlan = () => {
+    setIsLoading(true);
     const ModulePlanValidateAPI = `${process.env.REACT_APP_API_LINK}/module-plan/validate`;
 
     axios
       .post(ModulePlanValidateAPI, {
-        semesterModulesDict: semesterModulesDict
+        semesterModulesDict: semesterModulesDict,
       })
       .then((res) => {
+        setIsLoading(false);
         const failedList = res.data.failedList;
         console.log(`failed list = ${failedList}`);
         if (failedList.length === 0) {
           setValidateSuccess(true);
-        }
-        else {
-          setValidateError(true)
-          setValidateErrorContent(failedList)
+        } else {
+          setValidateError(true);
+          setValidateErrorContent(failedList);
         }
       })
       .catch((err) => console.log(err));
-    
-  };
-
-  // plan recommendation dialog
-  const [recommendedSuccess, setRecommendedSuccess] = useState(false);
-  const handleUseRecommended = () => {
-    handleRecommendedPlan();
-    setRecommendedSuccess(true);
   };
 
   // list of action buttons available
@@ -300,7 +296,7 @@ const SemesterModulePlans = ({
     },
     {
       tooltip: "Auto-allocate Modules",
-      handleClick: handleUseRecommended,
+      handleClick: handleRecommendedPlan,
       icon: (
         <AutoAwesomeRoundedIcon color="primary" sx={{ fontSize: "30px" }} />
       ),
@@ -462,20 +458,7 @@ const SemesterModulePlans = ({
             Your plan is incomplete!
           </Alert>
         </Snackbar>
-        <Snackbar
-          open={recommendedSuccess}
-          autoHideDuration={3000}
-          onClose={() => setRecommendedSuccess(false)}
-        >
-          <Alert
-            onClose={() => setRecommendedSuccess(false)}
-            variant="filled"
-            sx={{ color: "white" }}
-            severity="success"
-          >
-            Successfully replaced with recommended plan.
-          </Alert>
-        </Snackbar>
+        {isLoading && <LoadingBackdrop />}
       </CardContent>
     </Card>
   );

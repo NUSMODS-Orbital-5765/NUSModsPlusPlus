@@ -15,6 +15,8 @@ import {
   Fab,
   Autocomplete,
   TextField,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ChatRoundedIcon from "@mui/icons-material/ChatRounded";
@@ -23,6 +25,7 @@ import { AdminCommentsDialog } from "../StudentModuleProfileView";
 import { adminSampleProfile } from "../Admin/AdminConstants";
 import { sampleProfile } from "../Constants";
 import axios from "axios";
+import LoadingBackdrop from "./LoadingBackdrop";
 
 // dialog for adding modules
 export const AddModuleDialog = ({
@@ -427,8 +430,12 @@ const ModulesDisplay = ({
     setNewModulePlanStatus("Pending");
   };
 
+  const [recommendedSuccess, setRecommendedSuccess] = useState(false);
+  const [recommendedError, setRecommendedError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   // handle autoallocate
   const handleRecommendedPlan = () => {
+    setIsLoading(true);
     const clearedRequirements = newGradRequirements.map((requirement) => ({
       ...requirement,
       modules: [],
@@ -440,10 +447,12 @@ const ModulesDisplay = ({
         gradRequirementsDict: gradRequirementsDict,
       })
       .then((res) => {
+        setIsLoading(false);
         setNewGradRequirements(clearedRequirements);
         setNewSemesterModules(res.data.semesterModulesDict);
       })
       .catch((err) => {
+        setIsLoading(false);
         console.log(err);
         alert("Auto Allocate Failed");
       });
@@ -561,6 +570,35 @@ const ModulesDisplay = ({
         handleCloseDialog={handleCloseComments}
         studentProfile={sampleProfile}
       />
+      <Snackbar
+        open={recommendedSuccess}
+        autoHideDuration={3000}
+        onClose={() => setRecommendedSuccess(false)}
+      >
+        <Alert
+          onClose={() => setRecommendedSuccess(false)}
+          variant="filled"
+          sx={{ color: "white" }}
+          severity="success"
+        >
+          Auto-allocation successful!
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={recommendedError}
+        autoHideDuration={3000}
+        onClose={() => setRecommendedError(false)}
+      >
+        <Alert
+          onClose={() => setRecommendedError(false)}
+          variant="filled"
+          sx={{ color: "white" }}
+          severity="error"
+        >
+          Auto-allocation failed!
+        </Alert>
+      </Snackbar>
+      {isLoading && <LoadingBackdrop />}
     </div>
   );
 };
