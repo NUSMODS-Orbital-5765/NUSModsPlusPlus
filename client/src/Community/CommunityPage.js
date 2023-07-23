@@ -1,6 +1,6 @@
 //COMPLETE
 import AppBarComponent from "../AppBar/AppBarComponent";
-import DrawerComponent from "../DrawerComponent";
+import DrawerComponent from "../Drawer/DrawerComponent";
 import UploadPost from "../UploadPost/UploadPost";
 import CommunityDefaultPost from "./CommunityDefaultPost";
 import axios from "axios";

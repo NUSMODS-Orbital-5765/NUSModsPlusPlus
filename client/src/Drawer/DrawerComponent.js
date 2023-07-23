@@ -1,8 +1,8 @@
 //COMPLETE
 import { Drawer, Typography, Divider, Tabs, Tab } from "@mui/material";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { SectionHeader } from "./Home/HomePageStyledComponents";
+import { SectionHeader } from "../Home/HomePageStyledComponents";
 
 // main menu
 const DrawerComponent = ({ defaultTab, tabsList }) => {
@@ -52,6 +52,7 @@ const DrawerComponent = ({ defaultTab, tabsList }) => {
                       fontWeight: 500,
                       color: selectedTab === index ? "#1a90ff" : "text.primary",
                     }}
+                    role="heading"
                   >
                     {item.icon}
                     <span style={{ marginLeft: "15px" }}>{item.text}</span>
@@ -78,7 +79,7 @@ const DrawerComponent = ({ defaultTab, tabsList }) => {
     >
       <img
         src="/nusmods_logo.png"
-        alt="NUSMods logo"
+        alt="nusmods_logo"
         style={{
           marginLeft: "20px",
           marginRight: "20px",

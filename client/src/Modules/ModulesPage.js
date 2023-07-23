@@ -1,5 +1,5 @@
 import AppBarComponent from "../AppBar/AppBarComponent";
-import DrawerComponent from "../DrawerComponent";
+import DrawerComponent from "../Drawer/DrawerComponent";
 import {
   Box,
   Typography,

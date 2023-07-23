@@ -1,4 +1,4 @@
-import DrawerComponent from "../DrawerComponent";
+import DrawerComponent from "../Drawer/DrawerComponent";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import FaceRoundedIcon from "@mui/icons-material/FaceRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";

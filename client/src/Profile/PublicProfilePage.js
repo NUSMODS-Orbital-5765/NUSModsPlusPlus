@@ -1,5 +1,5 @@
 import AppBarComponent from "../AppBar/AppBarComponent";
-import DrawerComponent from "../DrawerComponent";
+import DrawerComponent from "../Drawer/DrawerComponent";
 import { samplePosts, sampleProfile } from "../Constants";
 import { SortAndFilter } from "../Community/CommunityPage";
 import PostsList from "../Community/PostsList";

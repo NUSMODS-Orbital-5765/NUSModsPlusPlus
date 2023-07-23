@@ -3,7 +3,7 @@
 // date picker might want to add date range as well
 // MUST BE ABLE TO IMPORT TIMETABLE.
 import AppBarComponent from "../AppBar/AppBarComponent";
-import DrawerComponent from "../DrawerComponent";
+import DrawerComponent from "../Drawer/DrawerComponent";
 import {
   Box,
   Card,

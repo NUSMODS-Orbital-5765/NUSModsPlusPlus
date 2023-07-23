@@ -1,6 +1,6 @@
 //COMPLETE
 import AppBarComponent from "../AppBar/AppBarComponent";
-import DrawerComponent from "../DrawerComponent";
+import DrawerComponent from "../Drawer/DrawerComponent";
 import HomePageShortcuts from "./HomePageShortcuts";
 import { Typography, Box, Button, Avatar } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
