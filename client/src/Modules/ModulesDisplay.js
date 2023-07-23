@@ -23,6 +23,7 @@ import { AdminCommentsDialog } from "../StudentModuleProfileView";
 import { adminSampleProfile } from "../Admin/AdminConstants";
 import { sampleProfile } from "../Constants";
 import axios from "axios";
+import getModuleList from "../libs/getModuleList";
 
 // dialog for adding modules
 export const AddModuleDialog = ({
@@ -33,12 +34,17 @@ export const AddModuleDialog = ({
   handleSubmitNewModule,
 }) => {
   const [newModuleObject, setNewModuleObject] = useState({});
-
+  const [optionsList, setOptionsList] = useState();
+  const [detailedOptionsList, setDetailOptionsList] = useState();
   // placeholder fn, get options for selecting a new module
-  function getOptions(academicPlan, newModuleInfo) {
-    // new module gives the primarydeg, seconddeg/etc and also gives 3k/4k req.
-    return sampleOptionsList.map((module) => module.code);
-  }
+  useEffect(()=>{
+    getModuleList([],"")
+    .then(moduleList=>{
+      setOptionsList(moduleList.map(e=>e.moduleCode));
+      setDetailOptionsList(moduleList);
+    })
+    .catch(error => console.log(error))
+  },[])
 
   const handleClickSubmitNewModule = () => {
     handleCloseAddModuleDialog();
@@ -60,13 +66,13 @@ export const AddModuleDialog = ({
         </Typography>
         <Autocomplete
           sx={{ marginTop: "20px", maxHeight: "40vh" }}
-          onChange={(event, value) =>
-            setNewModuleObject(
-              sampleOptionsList.find((module) => module.code === value)
-            )
+          onChange={(event, value) => {
+            const moduleObject = detailedOptionsList.find((module) => module.moduleCode === value);
+            setNewModuleObject({name: moduleObject.title, code: moduleObject.moduleCode})
+            }
           }
           disablePortal
-          options={getOptions(academicPlan, newModuleInfo)}
+          options={optionsList}
           fullWidth
           renderInput={(params) => (
             <TextField {...params} label="Select Module" />

@@ -199,6 +199,11 @@ function getPriority(moduleList, preqTreeList) {
 //Add common curriculum to timetable
 function addingCommomModule(commonModpriority, timetable, numberOfSems) {
     const convertCommonMod = {
+        0: [0],
+        1: [1],
+        2: [1, 1],
+        3: [1, 1, 1],
+        4: [2, 1, 1],
         5: [2, 1, 1, 1],
         6: [2, 1, 1, 1, 1],
         7: [2, 2, 1, 1, 1],

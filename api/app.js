@@ -787,10 +787,34 @@ app.post("/notification/get", jsonParser, (request, response) => {
         });
 });
 app.post("/module/get-requirement", jsonParser, (request, response) => {
-  console.log("Getting 3K-4K Module List");
+  console.log("Getting Module List");
   const prefixList = request.body.prefixList;
   const kLevel = request.body.kLevel;
-
+  if (prefixList.length === 0 && kLevel === "") {
+    prisma.module
+        .findMany({
+          select: {
+            moduleCode: true,
+            title: true
+          }
+        })
+        // return success if the new post is added to the database successfully
+        .then((result) => {
+          console.log("Getting Module List Successfully");
+          response.status(201).send({
+            message: "Getting Module List Successfull",
+            result,
+          });
+        })
+        // catch error if the new post wasn't added successfully to the database
+        .catch((error) => {
+          console.log(error);
+          response.status(500).send({
+            message: "Getting Module List Error",
+            error,
+          });
+        });
+  } else {
   const conditionArray = []
   for (let prefix of prefixList) {
     conditionArray.push( {moduleCode: {startsWith: prefix + kLevel}})
@@ -805,9 +829,9 @@ app.post("/module/get-requirement", jsonParser, (request, response) => {
         })
         // return success if the new post is added to the database successfully
         .then((result) => {
-          console.log("Getting 3K-4K Module List Successfully");
+          console.log(`Getting ${kLevel}K Module List Successfully`);
           response.status(201).send({
-            message: "Getting 3K-4K Module List Successfull",
+            message: `Getting ${kLevel}K Module List Successfull`,
             result,
           });
         })
@@ -815,10 +839,10 @@ app.post("/module/get-requirement", jsonParser, (request, response) => {
         .catch((error) => {
           console.log(error);
           response.status(500).send({
-            message: "Getting 3K-4K Module List Error",
+            message: `Getting ${kLevel}K Module List Error`,
             error,
           });
-        });
+        });}
 });
 app.get("/free-endpoint", (request, response) => {
   response.json({ message: "You are free to access me anytime" });

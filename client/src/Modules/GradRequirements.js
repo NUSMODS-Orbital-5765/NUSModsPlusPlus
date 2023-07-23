@@ -119,7 +119,7 @@ const GradRequirements = ({
                   />
                 )
               )}
-              {(requirement.name === "primaryDegreeModules" ||
+              {/* {(requirement.name === "primaryDegreeModules" ||
                 requirement.name === "secondMajorModules" ||
                 requirement.name === "secondDegreeModules") && (
                 <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -154,7 +154,7 @@ const GradRequirements = ({
                     Add 4k Module
                   </Button>
                 </Box>
-              )}
+              )} */}
               <Button
                 variant="outlined"
                 color="primary"
