@@ -122,7 +122,42 @@ export const SemesterModulePlansDataGrid = ({
     field,
     headerName: `Y${Math.floor(index / 2) + 1}S${(index % 2) + 1}`,
     flex: 1,
-    renderCell: (params) => <div>{params.value}</div>,
+    renderCell: (params) => {
+      const moduleCode = params.value.code;
+      const moduleName = params.value.name;
+      return (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            maxWidth: "100px",
+          }}
+        >
+          <a
+            href={`https://nusmods.com/courses/${moduleCode}/`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              fontSize: "16px",
+              fontWeight: 600,
+              color: "black",
+            }}
+          >
+            {moduleCode}
+          </a>
+          <Typography
+            sx={{
+              marginTop: "5px",
+              fontSize: "14px",
+              whiteSpace: "normal",
+              wordWrap: "break-word",
+            }}
+          >
+            {moduleName}
+          </Typography>
+        </Box>
+      );
+    },
   }));
 
   const columns = allYears.map((year) =>
