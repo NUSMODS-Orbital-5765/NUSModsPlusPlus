@@ -4,9 +4,7 @@ import "@testing-library/dom";
 import "@testing-library/jest-dom/extend-expect";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import AdminPublicProfilePage, {
-  AdminPublicProfileView,
-} from "../../Admin/AdminPublicProfilePage";
+import { AdminPublicProfileView } from "../../Admin/AdminPublicProfilePage";
 
 // mock the problematic components
 jest.mock("../../Admin/AdminAppBar", () => () => <div>Mocked AdminAppBar</div>);

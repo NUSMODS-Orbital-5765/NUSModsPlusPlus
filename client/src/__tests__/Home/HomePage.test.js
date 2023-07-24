@@ -1,9 +1,9 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import HomePage from "../Home/HomePage";
+import HomePage from "../../Home/HomePage";
 import { MemoryRouter } from "react-router-dom";
-import { quotesList } from "../Constants";
+import { quotesList } from "../../Constants";
 
 // mock any external dependencies
 jest.mock("../AppBar/AppBarComponent", () => {

@@ -147,6 +147,7 @@ export const adminSampleProfile = {
   name: "Admin 1",
   avatar: "/sample-admin-icon.png",
   staffId: "s1234567",
+  NUSId: "s1234567",
   username: "admin_1",
   password: "admin_password!",
   email: "admin1@gmail.com",
