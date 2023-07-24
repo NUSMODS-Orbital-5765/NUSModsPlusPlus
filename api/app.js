@@ -286,7 +286,7 @@ app.post("/post/top",jsonParser, (request, response) => {
       }
     },
     orderBy: {
-      dateCreated: "desc",
+      likeAmount: "desc",
     },
     include: {
       author: true,
@@ -540,7 +540,7 @@ app.post ("/post/like", [jsonParser,auth], (request, response) => {
 app.post("/post/get-comment", jsonParser, (request, response) => {
   console.log("Getting Comment from Post " + request.body.postId);
   prisma.comment.findMany({
-    where: {post: {every: {id: request.body.postId}}},
+    where: {post: {id: request.body.postId}},
     include: {author: {
         select: {
           username: true,

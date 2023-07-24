@@ -23,7 +23,7 @@ model User {
   password         String
   email            String         @unique
   faculty          String
-  department String?
+  department       String?
   academicPlan     String?
   primaryDegree    String?
   secondDegree     String?
@@ -62,10 +62,11 @@ model Comment {
   dateCreated  DateTime
   author       User        @relation(fields: [authorId], references: [id])
   content      String
-  post         Post[]
+  post         Post?       @relation(fields: [postId], references: [id])
   authorId     Int
   ModulePlan   ModulePlan? @relation(fields: [modulePlanId], references: [nanoid])
   modulePlanId String?
+  postId       Int?
 }
 
 model Programme {
