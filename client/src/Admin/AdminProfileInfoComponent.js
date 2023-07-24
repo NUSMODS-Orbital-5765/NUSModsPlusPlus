@@ -163,6 +163,7 @@ const AdminProfileInfoComponentFrame = ({ userProfile }) => {
     </Box>
   );
 };
+
 const AdminProfileInfoComponent = () => {
   const [isFetch, setIsFetch] = useState(false);
   const [userProfile, setUserProfile] = useState();
@@ -182,9 +183,8 @@ const AdminProfileInfoComponent = () => {
       })
       .catch((err) => console.log(err));
   }, []);
-  return(
-    isFetch &&
-  <AdminProfileInfoComponentFrame userProfile={userProfile} />
+  return (
+    isFetch && <AdminProfileInfoComponentFrame userProfile={userProfile} />
   );
-}
+};
 export default AdminProfileInfoComponent;
