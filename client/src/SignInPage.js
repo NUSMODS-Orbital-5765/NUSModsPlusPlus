@@ -24,6 +24,7 @@ import React, { useState, useEffect } from "react";
 import { LogoComponent, WelcomeCarousel } from "./StyledComponents";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { da } from "date-fns/locale";
 
 // sign up dialog
 export const SignUpDialog = () => {
@@ -180,9 +181,14 @@ const SignInPage = () => {
         localStorage.setItem("department", data.department);
         localStorage.setItem("primaryDegree", data.primaryDegree);
 
-        setTimeout(() => {
+        if (data.role === "ADMIN") {
+          setTimeout(() => {
+            navigate("/admin");
+          }, 500);
+        } else {setTimeout(() => {
           navigate("/");
         }, 500);
+      }
       })
       .catch((error) => {
         alert(error);
