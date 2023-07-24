@@ -234,26 +234,7 @@ const EventsPlannerPage = () => {
               }}
             >
               <PageHeaderNoSubtitle header="Events" />
-              <Tooltip title="Switch to tasks" placement="top">
-                <IconButton
-                  component={Link}
-                  to="/planner-tasks"
-                  sx={{
-                    "&:hover": {
-                      backgroundColor: "transparent",
-                      transform: "translateX(5px)",
-                      transition: "transform 0.1s",
-                    },
-                  }}
-                >
-                  <NavigateNextRoundedIcon
-                    sx={{
-                      color: "#536DFE",
-                      fontSize: "40px",
-                    }}
-                  />
-                </IconButton>
-              </Tooltip>
+              
             </Box>
           </CardContent>
           <CardContent>
