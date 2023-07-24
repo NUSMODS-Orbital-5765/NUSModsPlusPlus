@@ -50,6 +50,7 @@ export const RecentlyViewedProfiles = ({ viewedProfiles }) => {
               Recently Viewed
             </Typography>
             <Button
+              data-testid="clear-button"
               onClick={handleClearProfiles}
               color="error"
               variant="contained"
@@ -57,7 +58,11 @@ export const RecentlyViewedProfiles = ({ viewedProfiles }) => {
               Clear All
             </Button>
           </Box>
-          <StudentDataGrid color={false} studentList={currentProfiles} />
+          <StudentDataGrid
+            data-testid="data-grid"
+            color={false}
+            studentList={currentProfiles}
+          />
         </CardContent>
       </Card>
     </div>
