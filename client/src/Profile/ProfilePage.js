@@ -77,7 +77,7 @@ const ProfilePage = ({ selectedTab }) => {
   // handling public vs private profile
   const [publicProfile, setPublicProfile] = useState(false);
   const togglePublicProfile = () => {
-    setPublicProfile(!publicProfile);
+    setPublicProfile(false);
   };
 
   // styling the switch component to toggle between public and private profile
