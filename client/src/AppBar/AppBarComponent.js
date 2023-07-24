@@ -76,10 +76,7 @@ function AppBarComponent(props) {
                 notifsList={notificationList}
                 appBarType="student"
               />
-              <AppBarAvatar
-                userProfile={sampleProfile}
-                avatarItems={avatarItems}
-              />
+              <AppBarAvatar avatarItems={avatarItems} />
             </Box>
           </Box>
         </Toolbar>

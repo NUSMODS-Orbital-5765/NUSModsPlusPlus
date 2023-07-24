@@ -6,19 +6,19 @@ import { MemoryRouter } from "react-router-dom";
 import { quotesList } from "../../Constants";
 
 // mock any external dependencies
-jest.mock("../AppBar/AppBarComponent", () => {
+jest.mock("../../AppBar/AppBarComponent", () => {
   return jest.fn(() => <div>Mocked AppBarComponent</div>);
 });
 
-jest.mock("../Drawer/DrawerComponent", () => {
+jest.mock("../../Drawer/DrawerComponent", () => {
   return jest.fn(() => <div>Mocked DrawerComponent</div>);
 });
 
-jest.mock("../Home/HomePageProgressBar", () => {
+jest.mock("../../Home/HomePageProgressBar", () => {
   return jest.fn(() => <div>Mocked HomePageProgressBar</div>);
 });
 
-jest.mock("../Home/HomePageRecommendedPosts", () => {
+jest.mock("../../Home/HomePageRecommendedPosts", () => {
   return jest.fn(() => <div>Mocked HomePageRecommendedPosts</div>);
 });
 
@@ -67,9 +67,15 @@ describe("HomePage", () => {
   });
 
   // test for the next quote button
-  test("renders the correct username", () => {
+  test("clicking next quote button updates the quote", () => {
     render(<HomePage />);
-    const usernameElement = screen.getByText("Welcome Back, John Doe");
-    expect(usernameElement).toBeInTheDocument();
+    const currentQuote = screen.getByText(quotesList[0]);
+    expect(currentQuote).toBeInTheDocument();
+
+    const nextQuoteButton = screen.getByTestId("quote-button");
+    fireEvent.click(nextQuoteButton);
+    expect(screen.queryByText(quotesList[0])).toBeNull();
+
+    expect(screen.getByText(quotesList[1])).toBeInTheDocument();
   });
 });
