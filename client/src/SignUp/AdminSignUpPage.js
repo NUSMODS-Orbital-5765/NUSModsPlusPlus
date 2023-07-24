@@ -79,7 +79,6 @@ const AdminSignUpPage = () => {
   const handleSubmit = () => {
     const registerInfoOnly = { ...registerInfo };
     delete registerInfoOnly.confirmPassword;
-    delete registerInfoOnly.code;
     axios
       .post(adminRegisterAPI, registerInfoOnly)
       .then((response) => {

@@ -102,7 +102,7 @@ app.post("/register/admin",jsonParser, (request, response) => {
 
       if (request.body.code !== process.env.SECRET_CODE) {
         console.log("Wrong Secret Code")
-        response.status(201).send({
+        response.status(500).send({
         message: "Wrong Secret Code"
       });
       return;}
@@ -746,10 +746,7 @@ app.post("/notification/get", jsonParser, (request, response) => {
   if (request.body.admin === true) {
     where = {author: {is: {username: request.body.username}}}
   } else {
-    where = { OR: [
-      {author: {is: {username: request.body.username}}},
-      {target: {is: {username: request.body.username}}}
-    ]}
+    where = {target: {is: {username: request.body.username}}}
   }
   prisma.notification
         .findMany({

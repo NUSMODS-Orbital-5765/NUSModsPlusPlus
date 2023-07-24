@@ -227,7 +227,7 @@ const CommunityDefaultPost = (props) => {
   const [totalLikes, setTotalLikes] = useState(post.likeAmount)
   const [extensionOpen, setExtensionOpen] = useState(false);
   const [arrowDirection, setArrowDirection] = useState("down");
-  const [liked, setLiked] = useState(likedList.includes("username"));
+  const [liked, setLiked] = useState(likedList.includes(localStorage.getItem("username")));
   const [viewed, setViewed] = useState(false);
   
   // function for toggling the like button (need to update in database)
