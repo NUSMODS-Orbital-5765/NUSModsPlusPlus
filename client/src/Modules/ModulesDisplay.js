@@ -470,25 +470,26 @@ const ModulesDisplay = ({
   };
 
   // handle saving of the grad requirements and semester modules together
-  const handleClickClose = (status) => {
+  const handleClickClose = (statusString) => {
     
     const modulePlanData = {
       nanoid: nanoid,
       owner: localStorage.getItem("username"),
       academicPlan: academicPlan,
-      status: status,
+      "status": statusString,
       gradRequirementsDict: newGradRequirements,
-      semesterModulesDict: newSemesterModules,
+      semesterModulesDict: newSemesterModules
     };
     const ModuleCreateOrSaveGetAPI = `${process.env.REACT_APP_API_LINK}/module-plan/save-or-create`;
-    console.log(modulePlanData);
     axios
       .post(ModuleCreateOrSaveGetAPI, modulePlanData)
       .then((res) => {
+        
         handleUpdatePlan(modulePlanData, planIndex);
       })
       .catch((err) => console.log(err));
-    handleClosePlan();
+      
+      handleClosePlan();
   };
 
   return (
@@ -542,7 +543,7 @@ const ModulesDisplay = ({
       <Tooltip title="Close Plan" placement="top">
         <Fab
           color="error"
-          onClick={handleClickClose}
+          onClick={e=>handleClickClose()}
           sx={{
             position: "fixed",
             top: "3rem",
