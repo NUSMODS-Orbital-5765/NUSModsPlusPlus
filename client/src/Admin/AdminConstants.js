@@ -84,7 +84,14 @@ export const sampleStudentsModules = [
 
 // join student with module table to find students' modules
 export function checkStudentModules(studentProfile) {
-  return recommendedPlanLayout
+  if (studentProfile) {
+    const matchingPlan = sampleStudentsModules.find(
+      (module) => module.studentId === studentProfile.studentId
+    );
+    return matchingPlan ? matchingPlan.modules : "";
+  } else {
+    return "";
+  }
 }
 
 // match the student profile link with the student module database to check for the module plan status
