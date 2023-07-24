@@ -3,6 +3,7 @@ import { PublicProfileView } from "./Profile/PublicProfilePage";
 import { Dialog, DialogContent, Fab, Tooltip } from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { SlideUpTransition } from "./StyledComponents";
+import React from "react";
 
 // styling for dialog that admin sees when they click on a row of the datagrid.
 const UserProfileView = ({

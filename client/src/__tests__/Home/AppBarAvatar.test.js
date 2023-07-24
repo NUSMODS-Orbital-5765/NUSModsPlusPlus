@@ -60,7 +60,7 @@ describe("AppBarAvatar", () => {
   });
 
   // ensure that the avatarItems have the correct href and are rendered in the menu
-  test("menu opens on avatar click", () => {
+  test("menu items are correctly rendered", () => {
     // mock the local storage to retrieve name and username
     // picture still cannot be retrieved, so just checking for presence of sample icon
     localStorage.setItem("name", "John Doe");

@@ -74,7 +74,7 @@ export const AdminDefaultNotif = ({ notif }) => {
           }}
         >
           <Typography component="span" fontWeight={400}>
-            You reject{" "}
+            You rejected{" "}
           </Typography>
           {notif.target.username}
           <Typography component="span" fontWeight={400}>
