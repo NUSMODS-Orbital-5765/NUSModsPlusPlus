@@ -746,10 +746,7 @@ app.post("/notification/get", jsonParser, (request, response) => {
   if (request.body.admin === true) {
     where = {author: {is: {username: request.body.username}}}
   } else {
-    where = { OR: [
-      {author: {is: {username: request.body.username}}},
-      {target: {is: {username: request.body.username}}}
-    ]}
+    where = {target: {is: {username: request.body.username}}}
   }
   prisma.notification
         .findMany({
