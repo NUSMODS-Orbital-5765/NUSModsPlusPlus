@@ -31,35 +31,35 @@ const App = () => {
         <Route path="/admin/sign-up" element={<AdminSignUpPage />} />
 
         {/* student pages */}
-        <Route path="/" element={<HomePage />} />
-        <Route path="/planner-events" element={<EventsPlannerPage />} />
+        <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+        <Route path="/planner-events" element={<ProtectedRoute><EventsPlannerPage /></ProtectedRoute>} />
         <Route path="/modules" element={<ModulesPage />} />
-        <Route path="/profile" element={<ProfilePage selectedTab={0} />} />
+        <Route path="/profile" element={<ProtectedRoute><ProfilePage selectedTab={0} /></ProtectedRoute>} />
         <Route
           path="/profile/my-posts"
-          element={<ProfilePage selectedTab={1} />}
+          element={<ProtectedRoute><ProfilePage selectedTab={1} /></ProtectedRoute>}
         />
         <Route
           path="/profile/liked-posts"
-          element={<ProfilePage selectedTab={2} />}
+          element={<ProtectedRoute><ProfilePage selectedTab={2} /></ProtectedRoute>}
         />
         <Route
           path="/profile/account"
-          element={<ProfilePage selectedTab={3} />}
+          element={<ProtectedRoute><ProfilePage selectedTab={3} /></ProtectedRoute>}
         />
         <Route
           path="/profile/public"
           element={<PublicProfilePage sampleProfile={sampleProfile} />}
         />
         <Route path="/calculator" element={<GPACalculatorPage />} />
-        <Route path="/community" element={<CommunityPage />} />
+        <Route path="/community" element={<ProtectedRoute><CommunityPage /></ProtectedRoute>} />
 
         {/*admin pages */}
-        <Route path="/admin" element={<AdminHomePage />} />
-        <Route path="/admin/students" element={<AdminStudentsPage />} />
+        <Route path="/admin" element={<ProtectedRoute><AdminHomePage /></ProtectedRoute>} />
+        <Route path="/admin/students" element={<ProtectedRoute><AdminStudentsPage /></ProtectedRoute>} />
         <Route
           path="/admin/profile"
-          element={<AdminProfilePage selectedTab={0} />}
+          element={<ProtectedRoute><AdminProfilePage selectedTab={0} /></ProtectedRoute>}
         />
         <Route
           path="/admin/profile/public"
@@ -67,7 +67,7 @@ const App = () => {
         />
         <Route
           path="/admin/profile/account"
-          element={<AdminProfilePage selectedTab={1} />}
+          element={<ProtectedRoute><AdminProfilePage selectedTab={1} /></ProtectedRoute>}
         />
       </Routes>
     </LocalizationProvider>
