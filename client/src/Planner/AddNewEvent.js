@@ -79,11 +79,8 @@ const AddNewEvent = () => {
       id: events.length + 1,
       ...newEvent,
     };
-    console.log(newEvent);
     const newEvents = [...events, newEvent];
     setEvents(newEvents);
-    console.log(newEvents);
-    handleCloseDialog();
 
     const AddEventAPI = `${process.env.REACT_APP_API_LINK}/event/add`;
 
@@ -98,6 +95,7 @@ const AddNewEvent = () => {
         newEventObject.eventId = response.data.res.id;
         setEvents((prevEvents) => [...prevEvents, newEventObject]);
         setOpenDialog(false);
+        window.location.reload(false);
       })
       .catch((error) => {
         console.log(error);

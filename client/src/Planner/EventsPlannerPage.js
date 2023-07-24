@@ -18,6 +18,11 @@ import { PageHeader, PageHeaderNoSubtitle } from "../StyledComponents";
 import AddNewEvent from "./AddNewEvent";
 import { Link } from "react-router-dom";
 import { combinedItems } from "../Home/HomePageStyledComponents";
+import { priorityColors } from "../Constants";
+import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
+import { DataGrid } from '@mui/x-data-grid';
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 export const EventsPageHeader = () => {
   return (
@@ -67,9 +72,9 @@ export const EventsPageHeader = () => {
   );
 };
 
-/*
-// styling for events data grid (i need it here cause i want to delete events)
-export const EventsDataGrid = ({ eventsList }) => {
+
+
+export const EventsDataGrid = ({ eventsList , handleDeleteEvent}) => {
   const columns = [
     {
       field: "id",
@@ -144,14 +149,60 @@ export const EventsDataGrid = ({ eventsList }) => {
 
   return (
     <Box sx={{ height: 400, width: "100%" }}>
-      <DataGrid sx={{ fontSize: "15px" }} rows={events} columns={columns} />
+      <DataGrid sx={{ fontSize: "15px" }} rows={eventsList} columns={columns} />
     </Box>
   );
 };
-*/
+
 
 // main component
 const EventsPlannerPage = () => {
+  const [events,setEvents] = useState([]);
+  
+  const handleDeleteEvent = (id, eventId) => {
+    const DeleteEventAPI = `${process.env.REACT_APP_API_LINK}/event/delete`;
+    const deleteJsonBody = {eventId: eventId};
+    axios
+      .post(DeleteEventAPI, deleteJsonBody, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("user-token")}` }
+    })
+      .then((response) => {
+        alert("Delete Event Successfully");
+        setEvents((prevEvents) => prevEvents.filter((event) => event.id !== id));
+      })
+      .catch((error) => {
+        console.log(error);
+        //undo the insertion
+        alert("Event Delete Failed" + error.message);
+      });
+  };
+  
+  useEffect(()=> {
+    const GetEventAPI = `${process.env.REACT_APP_API_LINK}/event/get`;
+    axios
+    .get(GetEventAPI, {
+      params:{userId:localStorage.getItem("userId")},
+      headers: { Authorization: `Bearer ${localStorage.getItem("user-token")}` }
+  })
+    .then((response) => {
+      const postedEvents = response.data.events;
+      let count = 1;
+      postedEvents.map(event=>{
+        event.eventId = event.id;
+        event.id = count;
+        delete event.userId;
+        count++;
+      });
+      console.log(postedEvents)
+      setEvents((prevEvents) => postedEvents);
+    })
+    .catch((error) => {
+      console.log(error);
+      //undo the insertion
+      alert("Event added Failed " + error.message);
+      })}
+      ,[]
+    )
   return (
     <div className="homepage">
       <AppBarComponent />
@@ -205,7 +256,11 @@ const EventsPlannerPage = () => {
               </Tooltip>
             </Box>
           </CardContent>
+          <CardContent>
+            <EventsDataGrid eventsList={events} handleDeleteEvent={handleDeleteEvent}/>
+          </CardContent>
         </Card>
+        
       </Box>
     </div>
   );
