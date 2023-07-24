@@ -51,6 +51,7 @@ export const RecentlyViewedProfiles = ({ viewedProfiles }) => {
               Recently Viewed
             </Typography>
             <Button
+              data-testid="clear-button"
               onClick={handleClearProfiles}
               color="error"
               variant="contained"
@@ -107,35 +108,40 @@ export const PendingProfiles = ({ pendingProfiles }) => {
 
 // styling for admin home page
 const AdminHomePage = () => {
-
   const [viewedProfiles, setViewedProfiles] = useState([]);
   const [pendingProfiles, setPendingProfiles] = useState([]);
-  useEffect(()=>{
-    const adminModulePlanGetAPI = `${process.env.REACT_APP_API_LINK}/admin/get-profile-with-status`
+  useEffect(() => {
+    const adminModulePlanGetAPI = `${process.env.REACT_APP_API_LINK}/admin/get-profile-with-status`;
     axios
-    .post(adminModulePlanGetAPI, {status: ["Pending"]})
-    .then(response => {
-      setPendingProfiles(response.data.result.map(e=>{
-        let profile = e.owner;
-        profile["status"]=e.status;
-        profile["semesterModulesDict"]=e.semesterModulesDict;
-        profile["nanoid"]=e.nanoid;
-        return profile;}))
-    })
-    .catch(error=>console.log(error))
+      .post(adminModulePlanGetAPI, { status: ["Pending"] })
+      .then((response) => {
+        setPendingProfiles(
+          response.data.result.map((e) => {
+            let profile = e.owner;
+            profile["status"] = e.status;
+            profile["semesterModulesDict"] = e.semesterModulesDict;
+            profile["nanoid"] = e.nanoid;
+            return profile;
+          })
+        );
+      })
+      .catch((error) => console.log(error));
     axios
-    .post(adminModulePlanGetAPI, {status: ["Approved","Rejected"]})
-    .then(response => {
-      setViewedProfiles(response.data.result.map(e=>{
-        let profile = e.owner;
-        profile["status"]=e.status;
-        profile["semesterModulesDict"]=e.semesterModulesDict;
-        profile["nanoid"]=e.nanoid;
-        return profile;}))
-    })
-    .catch(error=>console.log(error))
-  },[])
-  useEffect(()=>console.log(viewedProfiles),[viewedProfiles])
+      .post(adminModulePlanGetAPI, { status: ["Approved", "Rejected"] })
+      .then((response) => {
+        setViewedProfiles(
+          response.data.result.map((e) => {
+            let profile = e.owner;
+            profile["status"] = e.status;
+            profile["semesterModulesDict"] = e.semesterModulesDict;
+            profile["nanoid"] = e.nanoid;
+            return profile;
+          })
+        );
+      })
+      .catch((error) => console.log(error));
+  }, []);
+  useEffect(() => console.log(viewedProfiles), [viewedProfiles]);
   return (
     <div className="homepage">
       <AdminAppBar />
