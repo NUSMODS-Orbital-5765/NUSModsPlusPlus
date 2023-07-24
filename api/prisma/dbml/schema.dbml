@@ -5,20 +5,28 @@
 Table User {
   id Int [pk, increment]
   name String [not null]
-  studentId String [unique, not null]
+  role String [not null]
+  NUSId String [unique, not null]
   username String [unique, not null]
   password String [not null]
   email String [unique, not null]
   faculty String [not null]
-  primaryMajor String [not null]
-  secondaryMajor String
-  minors String
-  programme String [not null]
+  department String
+  academicPlan String
+  primaryDegree String
+  secondDegree String
+  secondMajor String
+  programme String
+  position String
+  minor String[] [not null]
   interests String[] [not null]
   avatar String
   Post Post [not null]
   Comment Comment [not null]
   Event Event [not null]
+  NotificationFrom Notification [not null]
+  NotificationTo Notification [not null]
+  ModulePlan ModulePlan [not null]
 }
 
 Table Post {
@@ -31,90 +39,66 @@ Table Post {
   upload_file String[] [not null]
   tags String[] [not null]
   author User [not null]
-  authorId Int [not null]
-  likes Int [not null, default: 0]
-  comment Int [not null, default: 0]
+  PostAuthorId Int [not null]
+  like String[] [not null]
+  likeAmount Int [not null, default: 0]
+  Comment Comment [not null]
 }
 
 Table Comment {
   id Int [pk, increment]
+  dateCreated DateTime [not null]
   author User [not null]
+  content String [not null]
+  post Post
   authorId Int [not null]
-}
-
-Table Faculty {
-  id Int [pk, increment]
-  name String [not null]
-  Major Major [not null]
-  Minor Minor [not null]
-  CommonModule CommonModule [not null]
-}
-
-Table Major {
-  id Int [pk, increment]
-  name String [not null]
-  faculty Faculty [not null]
-  facultyId Int [not null]
-  requirement ModuleGroup [not null]
-  Programme Programme [not null]
-}
-
-Table Minor {
-  id Int [pk, increment]
-  name String [not null]
-  faculty Faculty [not null]
-  facultyId Int [not null]
-  requirement ModuleGroup [not null]
-}
-
-Table CommonModule {
-  id Int [pk, increment]
-  name String [not null]
-  faculty Faculty [not null]
-  requirement ModuleGroup [not null]
-  facultyId Int [not null]
-  Programme Programme [not null]
+  ModulePlan ModulePlan
+  modulePlanId String
+  postId Int
 }
 
 Table Programme {
   id Int [pk, increment]
   name String [not null]
-  commonMod CommonModule [not null]
-  major Major [not null]
-  majorId Int [not null]
-  commonModuleId Int [not null]
+  combination String[] [not null]
+  commonModule CommonModuleGroup [not null]
+  coreModule CoreModuleGroup [not null]
+  commonModuleGroupId Int [not null]
+}
+
+Table CoreModuleGroup {
+  id Int [pk, increment]
+  name String [not null]
+  faculty String
+  rules Json [not null]
+  programme Programme [not null]
+}
+
+Table CommonModuleGroup {
+  id Int [pk, increment]
+  name String [not null]
+  faculty String [not null]
+  rules Json [not null]
+  Programme Programme [not null]
 }
 
 Table Module {
   id Int [pk, increment]
-  title String [not null]
-  moduleCode String [not null]
+  acadYear String [not null]
+  preclusion String
   description String [not null]
-  moduleCredit Int [not null]
+  title String [not null]
   department String [not null]
   faculty String [not null]
-  professor String[] [not null]
-  semester Semester [not null]
-  prequesiteTree Json
-  SUablity Boolean [not null]
-  preclusion String[] [not null]
-  semesterId Int [not null]
-  moduleGroupList ModuleGroup [not null]
-}
-
-Table Semester {
-  id Int [pk, increment]
-  semesterCode String [not null]
-  Module Module [not null]
-}
-
-Table ModuleGroup {
-  id Int [pk, increment]
-  title String [not null]
-  moduleList Module [not null]
-  major Major [not null]
-  minor Minor [not null]
-  CommonModule CommonModule [not null]
+  workload String
+  attributes Json
+  prerequisite String
+  moduleCredit String [not null]
+  moduleCode String [not null]
+  prereqTree Json
+  aliases String[] [not null]
+  corequisite String
+  fulfillRequirements String[] [not null]
 }
 
 Table Event {
@@ -128,20 +112,45 @@ Table Event {
   userId Int [not null]
 }
 
-Ref: Post.authorId > User.id
+Table Notification {
+  id Int [pk, increment]
+  timestamp DateTime [not null]
+  content String [not null]
+  type String [not null]
+  author User [not null]
+  userIdFrom Int [not null]
+  target User [not null]
+  userIdTo Int [not null]
+  hiddenValue Json
+}
+
+Table ModulePlan {
+  id Int [pk, increment]
+  nanoid String [unique, not null]
+  owner User [not null]
+  academicPlan Json
+  gradRequirementsDict Json
+  semesterModulesDict Json
+  isDefault Boolean [not null, default: false]
+  status String
+  userId Int [not null]
+  AdminComment Comment [not null]
+}
+
+Ref: Post.PostAuthorId > User.id
 
 Ref: Comment.authorId > User.id
 
-Ref: Major.facultyId > Faculty.id
+Ref: Comment.postId > Post.id
 
-Ref: Minor.facultyId > Faculty.id
+Ref: Comment.modulePlanId > ModulePlan.nanoid
 
-Ref: CommonModule.facultyId > Faculty.id
-
-Ref: Programme.commonModuleId > CommonModule.id
-
-Ref: Programme.majorId > Major.id
-
-Ref: Module.semesterId > Semester.id
+Ref: Programme.commonModuleGroupId > CommonModuleGroup.id
 
 Ref: Event.userId > User.id
+
+Ref: Notification.userIdFrom > User.id
+
+Ref: Notification.userIdTo > User.id
+
+Ref: ModulePlan.userId > User.id

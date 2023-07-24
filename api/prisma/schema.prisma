@@ -15,26 +15,34 @@ datasource db {
 }
 
 model User {
-  id             Int       @id @default(autoincrement())
-  name           String
-  studentId      String    @unique
-  username       String    @unique
-  password       String
-  email          String    @unique
-  faculty        String
-  primaryMajor   String
-  secondaryMajor String?
-  minors         String?
-  programme      String
-  interests      String[]
-  avatar         String?
-  Post           Post[]
-  Comment        Comment[]
-  Event          Event[]
+  id               Int            @id @default(autoincrement())
+  name             String
+  role             String
+  NUSId            String         @unique
+  username         String         @unique
+  password         String
+  email            String         @unique
+  faculty          String
+  department       String?
+  academicPlan     String?
+  primaryDegree    String?
+  secondDegree     String?
+  secondMajor      String?
+  programme        String?
+  position         String?
+  minor            String[]
+  interests        String[]
+  avatar           String?
+  Post             Post[]         @relation("createdPost")
+  Comment          Comment[]
+  Event            Event[]
+  NotificationFrom Notification[] @relation("from")
+  NotificationTo   Notification[] @relation("to")
+  ModulePlan       ModulePlan[]
 }
 
 model Post {
-  id           Int      @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
   title        String
   dateCreated  DateTime
   relatedMajor String?
@@ -42,91 +50,67 @@ model Post {
   content      String
   upload_file  String[]
   tags         String[]
-  author       User     @relation(fields: [authorId], references: [id])
-  authorId     Int
-  likes        Int      @default(0)
-  comment      Int      @default(0)
+  author       User      @relation("createdPost", fields: [PostAuthorId], references: [id])
+  PostAuthorId Int
+  like         String[]
+  likeAmount   Int       @default(0)
+  Comment      Comment[]
 }
 
 model Comment {
-  id       Int  @id @default(autoincrement())
-  author   User @relation(fields: [authorId], references: [id])
-  authorId Int
-}
-
-model Faculty {
-  id           Int            @id @default(autoincrement())
-  name         String
-  Major        Major[]
-  Minor        Minor[]
-  CommonModule CommonModule[]
-}
-
-model Major {
-  id          Int           @id @default(autoincrement())
-  name        String
-  faculty     Faculty       @relation(fields: [facultyId], references: [id])
-  facultyId   Int
-  requirement ModuleGroup[]
-  Programme   Programme[]
-}
-
-model Minor {
-  id          Int           @id @default(autoincrement())
-  name        String
-  faculty     Faculty       @relation(fields: [facultyId], references: [id])
-  facultyId   Int
-  requirement ModuleGroup[]
-}
-
-model CommonModule {
-  id          Int           @id @default(autoincrement())
-  name        String
-  faculty     Faculty       @relation(fields: [facultyId], references: [id])
-  requirement ModuleGroup[]
-  facultyId   Int
-  Programme   Programme[]
+  id           Int         @id @default(autoincrement())
+  dateCreated  DateTime
+  author       User        @relation(fields: [authorId], references: [id])
+  content      String
+  post         Post?       @relation(fields: [postId], references: [id])
+  authorId     Int
+  ModulePlan   ModulePlan? @relation(fields: [modulePlanId], references: [nanoid])
+  modulePlanId String?
+  postId       Int?
 }
 
 model Programme {
-  id             Int          @id @default(autoincrement())
-  name           String
-  commonMod      CommonModule @relation(fields: [commonModuleId], references: [id])
-  major          Major        @relation(fields: [majorId], references: [id])
-  majorId        Int
-  commonModuleId Int
+  id                  Int               @id @default(autoincrement())
+  name                String
+  combination         String[]
+  commonModule        CommonModuleGroup @relation(fields: [commonModuleGroupId], references: [id])
+  coreModule          CoreModuleGroup[]
+  commonModuleGroupId Int
+}
+
+model CoreModuleGroup {
+  id        Int         @id @default(autoincrement())
+  name      String
+  faculty   String?
+  rules     Json
+  programme Programme[]
+}
+
+model CommonModuleGroup {
+  id        Int         @id @default(autoincrement())
+  name      String
+  faculty   String
+  rules     Json
+  Programme Programme[]
 }
 
 model Module {
-  id              Int           @id @default(autoincrement())
-  title           String
-  moduleCode      String
-  description     String
-  moduleCredit    Int
-  department      String
-  faculty         String
-  professor       String[]
-  semester        Semester      @relation(fields: [semesterId], references: [id])
-  prequesiteTree  Json?
-  SUablity        Boolean
-  preclusion      String[]
-  semesterId      Int
-  moduleGroupList ModuleGroup[]
-}
-
-model Semester {
-  id           Int      @id @default(autoincrement())
-  semesterCode String
-  Module       Module[]
-}
-
-model ModuleGroup {
-  id           Int            @id @default(autoincrement())
-  title        String
-  moduleList   Module[]
-  major        Major[]
-  minor        Minor[]
-  CommonModule CommonModule[]
+  id                  Int      @id @default(autoincrement())
+  acadYear            String
+  preclusion          String?
+  description         String
+  title               String
+  department          String
+  faculty             String
+  workload            String?
+  attributes          Json?
+  prerequisite        String?
+  moduleCredit        String
+  moduleCode          String
+  prereqTree          Json?
+  aliases             String[]
+  corequisite         String?
+  fulfillRequirements String[]
 }
 
 model Event {
@@ -138,4 +122,29 @@ model Event {
   priority Int
   user     User   @relation(fields: [userId], references: [id])
   userId   Int
+}
+
+model Notification {
+  id          Int      @id @default(autoincrement())
+  timestamp   DateTime
+  content     String
+  type        String
+  author      User     @relation("from", fields: [userIdFrom], references: [id])
+  userIdFrom  Int
+  target      User     @relation("to", fields: [userIdTo], references: [id])
+  userIdTo    Int
+  hiddenValue Json?
+}
+
+model ModulePlan {
+  id                   Int       @id @default(autoincrement())
+  nanoid               String    @unique
+  owner                User      @relation(fields: [userId], references: [id])
+  academicPlan         Json?
+  gradRequirementsDict Json?
+  semesterModulesDict  Json?
+  isDefault            Boolean   @default(false)
+  status               String?
+  userId               Int
+  AdminComment         Comment[]
 }

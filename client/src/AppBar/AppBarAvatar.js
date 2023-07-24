@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { sampleProfile } from "../Constants";
 import React, { useState } from "react";
 import {
   Avatar,
@@ -10,112 +9,98 @@ import {
   MenuItem,
   Badge,
   Divider,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
-import { generalItems } from "../Home/HomePageStyledComponents";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
+import CreateRoundedIcon from "@mui/icons-material/CreateRounded";
 
-const AppBarAvatar = () => {
-  const [AnchorMenu, setAnchorMenu] = useState(null);
+// list of controls available
+export const avatarItems = [
+  { label: "Profile", icon: <SettingsRoundedIcon />, link: "/profile" },
+  { label: "My Posts", icon: <CreateRoundedIcon />, link: "/profile/my-posts" },
+  {
+    label: "Liked Posts",
+    icon: <FavoriteRoundedIcon />,
+    link: "/profile/liked-posts",
+  },
+  { label: "Logout", icon: <LogoutRoundedIcon />, link: "/sign-in" },
+];
 
-  const handleOpen = (event) => {
-    setAnchorMenu(event.currentTarget);
+const AppBarAvatar = ({ userProfile, avatarItems }) => {
+  // opening the menu
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleOpenMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
   };
 
-  const handleClose = () => {
-    setAnchorMenu(null);
-  };
   return (
     <div>
       <IconButton
-        onClick={handleOpen}
+        onClick={handleOpenMenu}
         sx={{ margin: "20px", marginLeft: "10px" }}
       >
         <Badge
           overlap="circular"
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }} // this one is just to show whether the person is logged in or not, maybe not important lol can delete if necessary
           variant="dot"
           color="success"
         >
           <Avatar
             sx={{ width: 50, height: 50 }}
             alt="Sample Icon"
-            src="sample_icon.png"
+            src={userProfile.avatar}
           />
         </Badge>
       </IconButton>
       <Menu
-        open={Boolean(AnchorMenu)}
-        anchorEl={AnchorMenu}
-        onClose={handleClose}
+        sx={{ borderRadius: "10px" }}
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleCloseMenu}
       >
-        <Typography
+        <Box
           sx={{
-            margin: "20px",
-            marginBottom: "10px",
-            fontSize: "14px",
-            fontWeight: "600",
-          }}
-          color="text.secondary"
-        >
-          USER
-        </Typography>
-        <Typography
-          sx={{
-            marginRight: "20px",
-            marginLeft: "20px",
-            fontSize: "18px",
-            fontWeight: "600",
+            margin: "10px",
+            marginRight: "30px",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyItems: "center",
           }}
         >
-          {sampleProfile["Name"]}
-        </Typography>
-        <Typography
-          sx={{
-            marginRight: "20px",
-            marginLeft: "20px",
-            marginBottom: "10px",
-            fontSize: "18px",
-            fontWeight: "600",
-          }}
-          color="text.secondary"
-        >
-          Signed in as{" "}
-          <span style={{ textDecoration: "underline" }}>
-            {sampleProfile["Username"]}
-          </span>
-        </Typography>
-        <Divider light />
-        <Typography
-          sx={{
-            margin: "20px",
-            marginBottom: "10px",
-            fontWeight: "600",
-            fontSize: "14px",
-          }}
-          color="text.secondary"
-        >
-          OPTIONS
-        </Typography>
-        <Box>
-          {generalItems.map((item, index) => (
-            <MenuItem
-              key={index}
-              onClick={handleClose}
-              component={Link}
-              to={item.link}
-            >
-              {item.icon}
-              <span
-                style={{
-                  fontSize: "17px",
-                  marginLeft: "10px",
-                  fontWeight: 500,
-                }}
-              >
-                {item.text}
+          <Avatar sx={{ width: 70, height: 70 }} src={userProfile.avatar} />
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography sx={{ fontSize: "20px", fontWeight: 600 }}>
+              {localStorage.getItem("name")}
+            </Typography>
+            <Typography color="text.secondary">
+              Signed in as{" "}
+              <span style={{ textDecoration: "underline" }}>
+                {localStorage.getItem("username")}
               </span>
-            </MenuItem>
-          ))}
+            </Typography>
+          </Box>
         </Box>
+        <Divider />
+        {avatarItems.map((item, index) => (
+          <Link
+            key={index}
+            to={item.link}
+            onClick={handleCloseMenu}
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <MenuItem sx={{ margin: "10px", borderRadius: "10px" }}>
+              <ListItemIcon sx={{ color: "black" }}>{item.icon}</ListItemIcon>
+              <ListItemText>{item.label}</ListItemText>
+            </MenuItem>
+          </Link>
+        ))}
       </Menu>
     </div>
   );

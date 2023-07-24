@@ -3,11 +3,12 @@
 // PROBLEMS: have a "show recommendation" button that points out which modules are doing poorly/ potential s/u recommendation
 // PROBLEMS: use react context to keep track of yearly and overall cumulative GPA.
 import AppBarComponent from "../AppBar/AppBarComponent";
-import DrawerComponent from "../DrawerComponent";
+import DrawerComponent from "../Drawer/DrawerComponent";
 import { Card, CardContent, Box, Typography } from "@mui/material";
 import { PageHeader } from "../StyledComponents";
 import GPACalculatorTabs from "./GPACalculatorTabs";
 import { GPACalculatorViewList } from "../Constants";
+import { combinedItems } from "../Home/HomePageStyledComponents";
 
 // calculation of yearly cumulative GPA
 export const YearCumulativeGPA = () => {
@@ -31,7 +32,7 @@ const GPACalculatorPage = () => {
   return (
     <div className="homepage">
       <AppBarComponent />
-      <DrawerComponent defaultTab={4} />
+      <DrawerComponent defaultTab={4} tabsList={combinedItems} />
       <Box
         className="remainingViewport"
         sx={{

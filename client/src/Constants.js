@@ -1,4 +1,4 @@
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, addDays } from "date-fns";
 import { red, orange, yellow } from "@mui/material/colors";
 
 // list of nus faculties
@@ -90,6 +90,7 @@ export const majorList = Array.from(new Set(Object.values(majorDict).flat()));
 
 // list of special programmes available (tbc, include scholarships)
 export const progsList = ["SEP", "NOC", "UTCP", "RVRC", "NUS College"];
+export const acadPlanList = ["Single Degree", "Double Degree", "Double Major"];
 
 export const interestsDict = {
   "module related": ["easy to score", "light workload"],
@@ -100,53 +101,55 @@ export const interestsDict = {
 
 // sample personal details for user profile setup. meant to extract from database
 export const sampleProfile = {
-  Name: "Hannah Tan",
-  StudentID: "A1234567B",
-  Username: "h_student",
-  Password: "h_student_1",
-  Faculty: "School of Computing",
-  Major: "Information Systems",
-  "Second Major": "Economics",
-  Minor: "", // or null?
-  "Special Programme": "RVRC",
-  Interests: ["easy to score", "finance", "machine learning"],
+  name: "Hannah Tan",
+  avatar: "/sample_icon.png",
+  studentId: "12345678",
+  username: "hannah_tan",
+  password: "hannah123",
+  email: "hannah@gmail.com",
+  faculty: "School of Computing",
+  primaryDegree: "Information Systems",
+  secondDegree: "",
+  secondMajor: "Economics",
+  minor: ["Geography", "History"],
+  programme: "RVRC",
 };
 
 // samplePosts list should be updated when a new post is uploaded.
 // posts should take note of the time and author upon upload.
-export const currentDay = new Date();
-export const nextDay = new Date();
-nextDay.setDate(currentDay.getDate() + 1);
-export const followingDay = new Date();
-followingDay.setDate(nextDay.getDate() + 1);
+export const today = new Date();
+export const yesterday = new Date();
+yesterday.setDate(today.getDate() - 1);
+export const twoDaysAgo = new Date();
+twoDaysAgo.setDate(twoDaysAgo.getDate() - 1);
 
 // each post should have a list of comments, but i'm just using one comment list for each post for simplicity
 export const sampleComments = [
   {
-    timestamp: currentDay,
+    timestamp: today,
     content:
       "Curabitur lacinia commodo metus, sed varius felis scelerisque eu. In sit amet nibh sem. Vivamus nec aliquam sapien, eu semper dolor. Duis rhoncus vulputate cursus. In vel gravida orci, et dapibus nunc. Praesent eu erat porta, varius tellus in, vulputate mi. Pellentesque dapibus turpis velit, vitae convallis nisi porttitor sit amet. Cras a posuere metus, pharetra facilisis justo.",
     author: "ryan123",
-    avatar: "profilepic_1.png",
+    avatar: "/profilepic_1.png",
   },
   {
-    timestamp: nextDay,
+    timestamp: yesterday,
     content: "Nullam egestas at ex nec fermentum. Cras a tellus quis.",
     author: "nam1nam",
-    avatar: "profilepic_1.png",
+    avatar: "/profilepic_1.png",
   },
   {
-    timestamp: followingDay,
+    timestamp: twoDaysAgo,
     content:
       "Duis tincidunt nec est id efficitur. Ut porttitor fermentum dictum.",
     author: "joannee",
-    avatar: "profilepic_2.png",
+    avatar: "/profilepic_2.png",
   },
 ];
 
 export const samplePosts = [
   {
-    timestamp: currentDay, // it's not in the form, but should record time and date of upload once button is pressed
+    dateCreated: today, // it's not in the form, but should record time and date of upload once button is pressed
     title: "Recent changes to the MA2001 curriculum",
     category: "Study Guide",
     related_major: "Mathematics",
@@ -155,12 +158,12 @@ export const samplePosts = [
     upload_file: "", // possible to store the filepreviewURL so can download the file on click?
     tags: ["Mathematics", "homework"],
     author: "ryan123", // this should be a user object, which connects to a profile (will set up later lol)
-    avatar: "profilepic_1.png", // this should be stored as a filepreviewURL (as above) and linked to user profile directly
+    avatar: "/profilepic_1.png", // this should be stored as a filepreviewURL (as above) and linked to user profile directly
     likes: 195,
     comments: 5,
   },
   {
-    timestamp: nextDay,
+    dateCreated: yesterday,
     title: "Mindmaps that I used for EC1101E revision",
     category: "Notes",
     related_major: "Economics",
@@ -169,12 +172,12 @@ export const samplePosts = [
     upload_file: "EconsNotes.pdf",
     tags: ["Economics", "homework", "homework help"],
     author: "nam1nam",
-    avatar: "profilepic_1.png",
+    avatar: "/profilepic_1.png",
     likes: 200,
     comments: 1,
   },
   {
-    timestamp: followingDay,
+    dateCreated: twoDaysAgo,
     title: "Why is CS2040 so hard??",
     category: "Module Review",
     related_major: "Computer Science",
@@ -183,12 +186,12 @@ export const samplePosts = [
     upload_file: "",
     tags: ["Computer Science", "csmods", "java"],
     author: "joannee",
-    avatar: "profilepic_2.png",
+    avatar: "/profilepic_2.png",
     likes: 39,
     comments: 3,
   },
   {
-    timestamp: followingDay,
+    dateCreated: twoDaysAgo,
     title: "Why is CS2040 so hard??",
     category: "Module Review",
     related_major: "Computer Science",
@@ -197,12 +200,12 @@ export const samplePosts = [
     upload_file: "",
     tags: ["Computer Science", "csmods", "java"],
     author: "joannee",
-    avatar: "profilepic_2.png",
+    avatar: "/profilepic_2.png",
     likes: 39,
     comments: 3,
   },
   {
-    timestamp: followingDay,
+    dateCreated: yesterday,
     title: "Why is CS2040 so hard??",
     category: "Module Review",
     related_major: "Computer Science",
@@ -211,12 +214,12 @@ export const samplePosts = [
     upload_file: "",
     tags: ["Computer Science", "csmods", "java"],
     author: "joannee",
-    avatar: "profilepic_2.png",
+    avatar: "/profilepic_2.png",
     likes: 39,
     comments: 3,
   },
   {
-    timestamp: nextDay,
+    dateCreated: yesterday,
     title: "Mindmaps that I used for EC1101E revision",
     category: "Notes",
     related_major: "Economics",
@@ -225,7 +228,7 @@ export const samplePosts = [
     upload_file: "EconsNotes.pdf",
     tags: ["Economics", "homework", "homework help"],
     author: "nam1nam",
-    avatar: "profilepic_1.png",
+    avatar: "/profilepic_1.png",
     likes: 200,
     comments: 1,
   },
@@ -248,28 +251,132 @@ export const formatDate = (dateTime) => {
   return formatDistanceToNow(dateTime, { addSuffix: true });
 };
 
+// function for checking if notification was today (00:00 to 23:59)
+export function isToday(timestamp) {
+  const today = new Date();
+
+  // datetime object 12am today
+  const startOfDay = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+    0,
+    0,
+    0
+  );
+
+  // datetime object 11:59pm today
+  const endOfDay = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+    23,
+    59,
+    59
+  );
+
+  const notificationTime = new Date(timestamp);
+
+  return notificationTime >= startOfDay && notificationTime <= endOfDay;
+}
+
+// function for checking if occurred this week (00:00 Monday to 23:59 Sunday)
+export const isThisWeek = (timestamp) => {
+  const currentDate = new Date();
+  const firstDayOfWeek = new Date(
+    currentDate.setDate(currentDate.getDate() - currentDate.getDay())
+  );
+  const lastDayOfWeek = new Date(
+    currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 6)
+  );
+
+  return timestamp >= firstDayOfWeek && timestamp <= lastDayOfWeek;
+};
+
+// sample profile list
+export const sampleProfileList = [
+  {
+    name: "Admin 1",
+    avatar: "/sample-admin-icon.png",
+    staffId: "s1234567",
+    username: "admin_1",
+    password: "admin_password!",
+    email: "admin1@gmail.com",
+    department: "School of Computing",
+    position: "Faculty Administrator",
+  },
+  {
+    name: "Ryan Wong",
+    avatar: "/profilepic_1.png",
+    studentId: "e5557777",
+    username: "ryan123",
+    password: "ryan123",
+    email: "ryan_wong@gmail.com",
+    faculty: "School of Business",
+    primaryDegree: "Business Administration",
+    secondDegree: "Economics",
+    secondMajor: "",
+    minor: ["Statistics", "Mathematics"],
+    programme: "NUS College",
+  },
+  {
+    name: "Nguyen Xuan Nam",
+    avatar: "/profilepic_1.png",
+    studentId: "e1234567",
+    username: "nam1nam",
+    password: "nam123",
+    email: "namnam@gmail.com",
+    faculty: "Faculty of Science",
+    primaryDegree: "Data Science and Analytics",
+    secondDegree: "",
+    secondMajor: "Computer Science",
+    minor: ["Mathematics"],
+    programme: "",
+  },
+  {
+    name: "Admin 2",
+    avatar: "/sample-admin-icon.png",
+    staffId: "s2244395",
+    username: "admin_2",
+    password: "admin_password!",
+    email: "admin2@gmail.com",
+    department: "NUS College",
+    position: "Faculty Administrator",
+  },
+];
+
 // sample notifs list
 export const notifsList = [
   {
-    timestamp: currentDay,
-    avatar: "profilepic_2.png",
-    author: "admin 1",
+    timestamp: today,
+    author: sampleProfileList[0], // sample admin profile
     content: "You are not approved for exemption from MA2001.",
-    type: "comment",
+    type: "mention",
   },
   {
-    timestamp: nextDay,
-    avatar: "profilepic_1.png",
-    author: "admin 2",
+    timestamp: yesterday,
+    author: sampleProfileList[0], // sample admin profile
     content: "You are missing two core modules: BT2101 and BT2102.",
-    type: "comment",
+    type: "mention",
   },
   {
-    timestamp: followingDay,
-    avatar: "profilepic_2.png",
-    author: "admin 3",
-    content: "Your 2022/2023 Sem 1 Plan is successful.",
+    timestamp: twoDaysAgo,
+    author: sampleProfileList[3], // sample admin profile
+    content: "",
     type: "approve",
+  },
+  {
+    timestamp: yesterday,
+    author: sampleProfileList[1], // sample student profile
+    content: "",
+    type: "like",
+  },
+  {
+    timestamp: twoDaysAgo,
+    author: sampleProfileList[2], // sample student profile
+    content:
+      "Amazing post! Really insightful and covered all the necessary details. On that note, I would like to add that the curriculum board has discussed and intended for the new curriculum to be released much earlier.",
+    type: "comment",
   },
 ];
 
@@ -378,177 +485,129 @@ export const priorityValues = {
   Low: 1,
 };
 
-// list of sample day events for homepage timetable
-export const sampleDayEvents = [
+// get today's date
+export function todayDate() {
+  const today = new Date();
+  const day = String(today.getDate()).padStart(2, "0");
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  // padstart helps to ensure the string is a certain number of digits by adding zeros in front
+  const year = today.getFullYear();
+  return `${day}-${month}-${year}`;
+  // template literals ${} directly convert these numbers to strings.
+}
+
+// get the current time
+export function currentTime() {
+  const currentTime = new Date().toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+// list of sample week events for homepage timetable
+// need to extract from database, filter by current week
+export const sampleWeekEvents = [
+  {
+    name: "MA2001 Tutorial",
+    date: "18-07-2023",
+    time: "2:00 PM",
+    category: "MA2001",
+    priority: 4,
+  },
+  {
+    name: "Dinner with Amy",
+    date: "19-07-2023",
+    time: "5:00 PM",
+    category: "Personal",
+    priority: 1,
+  },
+
+  {
+    name: "BT2102 Lab",
+    date: "20-07-2023",
+    time: "1:00 PM",
+    category: "BT2102",
+    priority: 3,
+  },
+  {
+    name: "NTW Lesson",
+    date: "21-07-2023",
+    time: "4:00 PM",
+    category: "NTW2004",
+    priority: 3,
+  },
+  {
+    name: "Dinner",
+    date: "21-07-2023",
+    time: "6:30 PM",
+    category: "Personal",
+    priority: 1,
+  },
+
+  {
+    name: "Consult with Prof",
+    date: "21-07-2023",
+    time: "9:00 AM",
+    category: "NTW2004",
+    priority: 3,
+  },
+  {
+    name: "EC1101 tutorial 9",
+    date: "21-07-2023",
+    time: "4:00 PM",
+    category: "EC1101E",
+    priority: 3,
+  },
+
   {
     name: "Lunch with Lauren",
-    date: "22-06-2003",
+    date: "22-07-2023",
     time: "12:30 PM",
     category: "Personal",
     priority: 1,
   },
   {
     name: "CS2030 Lab",
-    date: "22-06-2003",
+    date: "22-07-2023",
     time: "2:00 PM",
     category: "CS2030",
     priority: 4,
   },
   {
     name: "Team Meeting",
-    date: "22-06-2003",
+    date: "22-07-2023",
     time: "5:00 PM",
     category: "Personal",
     priority: 3,
   },
   {
     name: "Suite Dinner",
-    date: "22-06-2003",
+    date: "22-07-2023",
     time: "6:00 PM",
     category: "Personal",
     priority: 1,
   },
   {
     name: "Submit NTW essay",
-    date: "22-06-2003",
+    date: "22-07-2023",
     time: "11:00 PM",
     category: "NTW2004",
     priority: 4,
   },
-];
 
-// list of sample week events for homepage timetable
-// need to extract from database
-export const sampleWeekEvents = [
   {
-    day: "Monday",
-    events: [
-      {
-        name: "Lunch",
-        date: "19-06-2003",
-        time: "12:30 PM",
-        category: "Personal",
-        priority: 1,
-      },
-      {
-        name: "MA2001 Tutorial",
-        date: "19-06-2003",
-        time: "2:00 PM",
-        category: "MA2001",
-        priority: 4,
-      },
-      {
-        name: "Dinner with Amy",
-        date: "19-06-2003",
-        time: "5:00 PM",
-        category: "Personal",
-        priority: 1,
-      },
-    ],
+    name: "Lunch",
+    date: "23-07-2023",
+    time: "12:30 PM",
+    category: "Personal",
+    priority: 1,
   },
   {
-    day: "Tuesday",
-    events: [
-      {
-        name: "BT2102 Lab",
-        date: "20-06-2003",
-        time: "1:00 PM",
-        category: "BT2102",
-        priority: 3,
-      },
-      {
-        name: "NTW Lesson",
-        date: "20-06-2003",
-        time: "4:00 PM",
-        category: "NTW2004",
-        priority: 3,
-      },
-      {
-        name: "Dinner",
-        date: "20-06-2003",
-        time: "6:30 PM",
-        category: "Personal",
-        priority: 1,
-      },
-    ],
-  },
-  {
-    day: "Wednesday",
-    events: [
-      {
-        name: "Consult with Prof",
-        date: "21-06-2003",
-        time: "1:00 PM",
-        category: "NTW2004",
-        priority: 3,
-      },
-      {
-        name: "EC1101 tutorial 9",
-        date: "21-06-2003",
-        time: "4:00 PM",
-        category: "EC1101E",
-        priority: 3,
-      },
-    ],
-  },
-  {
-    day: "Thursday",
-    events: [
-      {
-        name: "Lunch with Lauren",
-        date: "22-06-2003",
-        time: "12:30 PM",
-        category: "Personal",
-        priority: 1,
-      },
-      {
-        name: "CS2030 Lab",
-        date: "22-06-2003",
-        time: "2:00 PM",
-        category: "CS2030",
-        priority: 4,
-      },
-      {
-        name: "Team Meeting",
-        date: "22-06-2003",
-        time: "5:00 PM",
-        category: "Personal",
-        priority: 3,
-      },
-      {
-        name: "Suite Dinner",
-        date: "22-06-2003",
-        time: "6:00 PM",
-        category: "Personal",
-        priority: 1,
-      },
-      {
-        name: "Submit NTW essay",
-        date: "22-06-2003",
-        time: "11:00 PM",
-        category: "NTW2004",
-        priority: 4,
-      },
-    ],
-  },
-  {
-    day: "Friday",
-    events: [
-      {
-        name: "Lunch",
-        date: "23-06-2003",
-        time: "12:30 PM",
-        category: "Personal",
-        priority: 1,
-      },
-      {
-        name: "Dinner with Jon",
-        date: "23-06-2003",
-        time: "6:00 PM",
-        category: "Personal",
-        priority: 1,
-      },
-    ],
+    name: "Dinner with Jon",
+    date: "23-07-2023",
+    time: "6:00 PM",
+    category: "Personal",
+    priority: 1,
   },
 ];
 
@@ -600,3 +659,12 @@ export const getShortDay = (day) => {
   };
   return shortDays[day];
 };
+
+// for the homepage UI
+export const quotesList = [
+  "Inspiration does exist, but it must find you working. —Pablo Picasso",
+  "Don't settle for average. Bring your best to the moment. Then, whether it fails or succeeds, at least you know you gave all you had.” —Angela Bassett",
+  "Difficulties increase the nearer we get to the goal. —Johann Wolfgang von Goethe",
+  "Whatever you think, be sure it is what you think; whatever you want, be sure that is what you want; whatever you feel, be sure that is what you feel.—T.S. Eliot",
+  "Let us live so that when we come to die even the undertaker will be sorry. - Mark Twain",
+];

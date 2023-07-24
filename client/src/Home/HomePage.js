@@ -1,61 +1,117 @@
 //COMPLETE
 import AppBarComponent from "../AppBar/AppBarComponent";
-import DrawerComponent from "../DrawerComponent";
+import DrawerComponent from "../Drawer/DrawerComponent";
 import HomePageShortcuts from "./HomePageShortcuts";
-import { Typography, TextField, Box } from "@mui/material";
+import { Typography, Box, Button, Avatar } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { sampleProfile } from "../Constants";
+import { sampleProfile, quotesList } from "../Constants";
+import React, { useEffect, useState } from "react";
+import HomePageProgressBar from "./HomePageProgressBar";
+import HomePageRecommendedPosts from "./HomePageRecommendedPosts";
+import { combinedItems } from "./HomePageStyledComponents";
+import axios from "axios";
+import HomePageTimetable from "./HomePageTimetable";
 
-function HomePage() {
+const HomePage = () => {
+  // testing out the quotes for new UI
+  const [currentQuote, setCurrentQuote] = useState(0);
+  const showNextQuote = () => {
+    if (currentQuote === quotesList.length - 1) {
+      setCurrentQuote(0);
+    } else {
+      setCurrentQuote(currentQuote + 1);
+    }
+  };
+
+  const [userFullName, setUserFullName] = useState(
+    localStorage.getItem("name")
+  );
+
   return (
     <div className="homepage">
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <AppBarComponent />
-        <DrawerComponent defaultTab={1} />
+        <AppBarComponent data-testid="app-bar" />
+        <DrawerComponent
+          data-testid="drawer"
+          defaultTab={1}
+          tabsList={combinedItems}
+        />
         <Box
           className="remainingViewport"
           sx={{
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
-            justifyItems: "center",
           }}
         >
-          <Typography
+          <Box
             sx={{
-              marginTop: "100px",
-              fontSize: "50px",
-              fontWeight: "700",
+              margin: "55px",
+              marginTop: "20px",
+              borderRadius: "10px",
+              backgroundColor: "#e7f2ff",
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
           >
-            Welcome Back, {sampleProfile["Name"]}!
-          </Typography>
-          <Typography
+            <Box>
+              <Typography
+                sx={{
+                  margin: "30px",
+                  fontSize: "40px",
+                  fontWeight: "700",
+                  color: "#004d80",
+                }}
+              >
+                Welcome Back, {userFullName}
+              </Typography>
+              <Typography
+                sx={{
+                  margin: "30px",
+                  marginTop: "-10px",
+                  fontSize: "17px",
+                  color: "#004d80",
+                }}
+              >
+                <span data-testid="quote-text">{quotesList[currentQuote]}</span>
+              </Typography>
+              <Button
+                sx={{ margin: "30px", marginTop: "-10px" }}
+                variant="contained"
+                onClick={showNextQuote}
+                data-testid="quote-button"
+              >
+                Next quote
+              </Button>
+            </Box>
+            <Avatar
+              sx={{ width: "25ch", height: "25ch" }}
+              alt="Sample Icon"
+              src={sampleProfile.avatar}
+            />
+          </Box>
+          <Box
             sx={{
+              display: "flex",
+              flexDirection: "row",
+              margin: "55px",
               marginTop: "-10px",
-              fontSize: "50px",
-              fontWeight: "700",
             }}
-            color="primary"
           >
-            How are you today?
-          </Typography>
-          <TextField
-            sx={{ margin: "70px" }}
-            label="Quote of the Day"
-            variant="filled"
-            color="primary"
-            InputProps={{
-              sx: { fontSize: "30px" },
-            }}
-          />
+            <Box sx={{ width: "50%" }}>
+              <HomePageProgressBar data-testid="home-page-progress-bar" />
+            </Box>
+            <Box sx={{ width: "50%" }}>
+              <HomePageRecommendedPosts data-testid="home-page-recommended-posts" />
+            </Box>
+          </Box>
         </Box>
-        <HomePageShortcuts />
       </LocalizationProvider>
     </div>
   );
-}
+};
 
 export default HomePage;
 // use event context to keep quote of the day even when u switch to another tab and switch back

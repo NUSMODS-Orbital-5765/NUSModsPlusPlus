@@ -35,39 +35,35 @@ import { id } from "date-fns/locale";
 
 // styling of new event button + handle addition of new event
 const AddNewEvent = () => {
-  // for toggling display of add event textfield
-  const [openAddEventCategory, setOpenAddEventCategory] = useState(false);
-  const handleToggleAddEventCategory = () => {
-    setOpenAddEventCategory(!openAddEventCategory);
-  };
-
-  // setting the list of event category options. default are current modules + personal
-  // depends on the current semester
-  const currentEventCategoryList = [...currentSemesterModules, "Personal"];
-  const [eventCategoryList, setEventCategoryList] = useState(
-    currentEventCategoryList
-  );
-
-  // to keep the add event category textfield input as a variable
-  const [addEventCategory, setAddEventCategory] = useState("");
-  const handleAddEventCategory = (event) => {
-    setAddEventCategory(event.target.value);
-  };
-
-  // to make the change to the list of category options
-  const confirmAddEventCategory = () => {
-    setEventCategoryList([...eventCategoryList, addEventCategory]);
-    setOpenAddEventCategory(false);
-  };
-
+  const eventCategoryList = [...currentSemesterModules, "Personal"];
   // to store variables of form inputs.
   const [openDialog, setOpenDialog] = useState(false);
   const [events, setEvents] = useState([]);
-  const [eventName, setEventName] = useState("");
-  const [eventDate, setEventDate] = useState(null);
-  const [eventTime, setEventTime] = useState(null);
-  const [eventCategory, setEventCategory] = useState("");
-  const [eventPriority, setEventPriority] = useState(0);
+  const [addEventSuccess, setAddEventSuccess] = useState(false);
+
+  const emptyEventLayout = {
+    name: "",
+    date: null,
+    time: null,
+    category: "",
+    priority: null,
+  };
+
+  const [newEvent, setNewEvent] = useState(emptyEventLayout);
+
+  const handleNewEvent = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    setNewEvent({ ...newEvent, [name]: value });
+  };
+
+  const handleEventDate = (dateInput) => {
+    setNewEvent({ ...newEvent, ["date"]: dateInput.format("DD MMMM YYYY") });
+  };
+
+  const handleEventTime = (timeInput) => {
+    setNewEvent({ ...newEvent, ["time"]: timeInput.format("hh:mm A") });
+  };
 
   const handleOpenDialog = () => {
     setOpenDialog(true);
@@ -75,48 +71,54 @@ const AddNewEvent = () => {
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
+    setNewEvent(emptyEventLayout);
   };
 
   const handleAddEvent = () => {
-    const newEvent = {
-      id: events.length+1,
-      name: eventName,
-      date: eventDate.format("DD MMMM YYYY"),
-      time: eventTime.format("hh:mm A"),
-      category: eventCategory,
-      priority: eventPriority,
+    const newEventObject = {
+      id: events.length + 1,
+      ...newEvent,
     };
+    const newEvents = [...events, newEvent];
+    setEvents(newEvents);
+
     const AddEventAPI = `${process.env.REACT_APP_API_LINK}/event/add`;
 
     axios
       .post(AddEventAPI, newEvent, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("user-token")}` }
-    })
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        },
+      })
       .then((response) => {
         alert("Upload Event Successfully");
-        newEvent.eventId=response.data.res.id;
-        setEvents((prevEvents) => [...prevEvents, newEvent]);
+        newEventObject.eventId = response.data.res.id;
+        setEvents((prevEvents) => [...prevEvents, newEventObject]);
         setOpenDialog(false);
+        window.location.reload(false);
       })
       .catch((error) => {
         console.log(error);
         //undo the insertion
         alert("Event added Failed" + error.message);
-        });
-      }
-    
-  
+      });
+  };
+
   // handle deletion of events
   const handleDeleteEvent = (id, eventId) => {
     const DeleteEventAPI = `${process.env.REACT_APP_API_LINK}/event/delete`;
-    const deleteJsonBody = {eventId: eventId};
+    const deleteJsonBody = { eventId: eventId };
     axios
       .post(DeleteEventAPI, deleteJsonBody, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("user-token")}` }
-    })
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        },
+      })
       .then((response) => {
         alert("Delete Event Successfully");
-        setEvents((prevEvents) => prevEvents.filter((event) => event.id !== id));
+        setEvents((prevEvents) =>
+          prevEvents.filter((event) => event.id !== id)
+        );
       })
       .catch((error) => {
         console.log(error);
@@ -124,253 +126,35 @@ const AddNewEvent = () => {
         alert("Event Delete Failed" + error.message);
       });
   };
-  
 
-  useEffect(()=> {
-  const GetEventAPI = `${process.env.REACT_APP_API_LINK}/event/get`;
-  axios
-  .get(GetEventAPI, {
-    params:{userId:localStorage.getItem("userId")},
-    headers: { Authorization: `Bearer ${localStorage.getItem("user-token")}` }
-})
-  .then((response) => {
-    const postedEvents = response.data.events;
-    let count = 1;
-    postedEvents.map(event=>{
-      event.eventId = event.id;
-      event.id = count;
-      delete event.userId;
-      count++;
-    });
-    console.log(postedEvents)
-    setEvents((prevEvents) => postedEvents);
-  })
-  .catch((error) => {
-    console.log(error);
-    //undo the insertion
-    alert("Event added Failed " + error.message);
-    })}
-    ,[]
-  )
-  useEffect(()=>console.log(events),[events]);
-  // styling for dialog with form fields for event details
-  const AddNewEventDialog = () => {
-    return (
-      <Dialog
-        maxWidth="md"
-        disableEscapeKeyDown
-        open={openDialog}
-        onClose={handleCloseDialog}
-      >
-        <DialogContent>
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Box
-              sx={{
-                margin: "10px",
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <Typography sx={{ fontSize: "40px", fontWeight: 700 }}>
-                Add New <span style={{ color: "#536DFE" }}>Event</span>
-              </Typography>
-              <Button
-                variant="contained"
-                onClick={handleCloseDialog}
-                color="error"
-              >
-                Cancel
-              </Button>
-            </Box>
-            <TextField
-              sx={{ margin: "10px", marginBottom: "20px", width: "100ch" }}
-              label="Event Name"
-              variant="standard"
-              value={eventName}
-              onChange={(event) => setEventName(event.target.value)}
-            />
-            <FormControl sx={{ margin: "10px", marginBottom: "20px" }}>
-              <InputLabel variant="standard">Event Category</InputLabel>
-              <Select
-                variant="standard"
-                label="Event Category"
-                onChange={(event) => setEventCategory(event.target.value)}
-              >
-                {eventCategoryList.map((category, index) => (
-                  <MenuItem key={index} value={category}>
-                    {category}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <Box
-              sx={{
-                margin: "10px",
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyItems: "center",
-              }}
-            >
-              <Button
-                variant="contained"
-                onClick={handleToggleAddEventCategory}
-              >
-                Add New Category
-              </Button>
-              {openAddEventCategory && (
-                <div>
-                  <TextField
-                    sx={{ marginLeft: "20px", width: "50ch" }}
-                    label="Event Category"
-                    variant="standard"
-                    onChange={handleAddEventCategory}
-                  />
-                  <Button
-                    color="success"
-                    sx={{ marginLeft: "20px", color: "white" }}
-                    variant="contained"
-                    onClick={confirmAddEventCategory}
-                    disabled={addEventCategory.length === 0}
-                  >
-                    Add
-                  </Button>
-                </div>
-              )}
-            </Box>
-            <FormControl sx={{ margin: "10px", marginBottom: "20px" }}>
-              <InputLabel variant="standard">Priority</InputLabel>
-              <Select
-                variant="standard"
-                onChange={(event) => setEventPriority(event.target.value)}
-                label="priority"
-              >
-                {priorityList.map((priority, index) => (
-                  <MenuItem key={index} value={priorityValues[priority]}>
-                    {priority}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Event Date"
-                sx={{ margin: "10px", marginBottom: "20px", width: "100ch" }}
-                value={eventDate}
-                onChange={(date) => setEventDate(date)}
-              />
-              <TimePicker
-                label="Event Time"
-                sx={{ margin: "10px", marginBottom: "20px", width: "100ch" }}
-                value={eventTime}
-                onChange={(time) => setEventTime(time)}
-              />
-            </LocalizationProvider>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            sx={{ margin: "20px" }}
-            variant="contained"
-            onClick={handleAddEvent}
-            color="primary"
-          >
-            Create Event
-          </Button>
-        </DialogActions>
-      </Dialog>
-    );
-  };
-
-  // styling for events data grid (i need it here cause i want to delete events)
-  const EventsDataGrid = ({ eventsList }) => {
-    const columns = [
-      {
-        field: "id",
-        headerName: "ID",
-        width: 90,
-        renderCell: (params) => (
-          <div style={{ fontSize: "15px" }}>{params.value}</div>
-        ),
-      },
-      {
-        field: "name",
-        headerName: "Event Name",
-        width: 200,
-        renderCell: (params) => (
-          <div style={{ fontSize: "15px", fontWeight: 700 }}>
-            {params.value}
-          </div>
-        ),
-      },
-      {
-        field: "date",
-        headerName: "Date",
-        width: 150,
-        renderCell: (params) => (
-          <div style={{ fontSize: "15px" }}>{params.value}</div>
-        ),
-      },
-      {
-        field: "time",
-        headerName: "Time",
-        width: 150,
-        renderCell: (params) => (
-          <div style={{ fontSize: "15px" }}>{params.value}</div>
-        ),
-      },
-      {
-        field: "category",
-        headerName: "Category",
-        width: 150,
-        renderCell: (params) => (
-          <div style={{ fontSize: "15px", fontWeight: 700 }}>
-            {params.value}
-          </div>
-        ),
-      },
-      {
-        field: "priority",
-        headerName: "Priority",
-        width: 150,
-        renderCell: (params) => (
-          <div
-            style={{
-              width: "20px",
-              height: "20px",
-              borderRadius: "50%",
-              backgroundColor: priorityColors[params.value], // priority is an integer from 1 to 4
-              marginRight: "8px",
-            }}
-          />
-        ),
-      },
-      {
-        field: "actions",
-        headerName: "Actions",
-        width: 120,
-        sortable: false,
-        renderCell: (params) => (
-          <IconButton onClick={() => handleDeleteEvent(params.row.id,params.row.eventId)}>
-            <ClearRoundedIcon color="error" />
-          </IconButton>
-        ),
-      },
-    ];
-
-    return (
-      <Box sx={{ height: 400, width: "100%" }}>
-        <DataGrid
-          sx={{ fontSize: "15px" }}
-          rows={events}
-          columns={columns}
-        />
-      </Box>
-    );
-  };
+  useEffect(() => {
+    const GetEventAPI = `${process.env.REACT_APP_API_LINK}/event/get`;
+    axios
+      .get(GetEventAPI, {
+        params: { userId: localStorage.getItem("userId") },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        },
+      })
+      .then((response) => {
+        const postedEvents = response.data.events;
+        let count = 1;
+        postedEvents.map((event) => {
+          event.eventId = event.id;
+          event.id = count;
+          delete event.userId;
+          count++;
+        });
+        console.log(postedEvents);
+        setEvents((prevEvents) => postedEvents);
+      })
+      .catch((error) => {
+        console.log(error);
+        //undo the insertion
+        alert("Event added Failed " + error.message);
+      });
+  }, []);
+  useEffect(() => console.log(events), [events]);
 
   // main component
   return (
@@ -382,9 +166,124 @@ const AddNewEvent = () => {
       >
         Add New Event
       </Button>
-      {AddNewEventDialog()}
-      <EventsDataGrid />
+      <AddNewEventDialog
+        openDialog={openDialog}
+        handleCloseDialog={handleCloseDialog}
+        handleNewEvent={handleNewEvent}
+        handleEventDate={handleEventDate}
+        handleEventTime={handleEventTime}
+        eventCategoryList={eventCategoryList}
+        handleAddEvent={handleAddEvent}
+      />
     </Box>
+  );
+};
+
+// styling for the add event dialog
+// styling for dialog with form fields for event details
+export const AddNewEventDialog = ({
+  openDialog,
+  handleCloseDialog,
+  handleNewEvent,
+  handleEventDate,
+  handleEventTime,
+  eventCategoryList,
+  handleAddEvent,
+}) => {
+  return (
+    <Dialog
+      maxWidth="md"
+      disableEscapeKeyDown
+      open={openDialog}
+      onClose={handleCloseDialog}
+    >
+      <DialogContent>
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Box
+            sx={{
+              margin: "10px",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Typography sx={{ fontSize: "35px", fontWeight: 700 }}>
+              Add New Event
+            </Typography>
+            <Button
+              variant="contained"
+              onClick={handleCloseDialog}
+              color="error"
+            >
+              Cancel
+            </Button>
+          </Box>
+          <TextField
+            sx={{ margin: "10px", marginBottom: "20px", width: "100ch" }}
+            label="Event Name"
+            variant="standard"
+            name="name"
+            onChange={handleNewEvent}
+          />
+          <FormControl sx={{ margin: "10px", marginBottom: "20px" }}>
+            <InputLabel variant="standard">Event Category</InputLabel>
+            <Select
+              variant="standard"
+              label="Event Category"
+              name="category"
+              onChange={handleNewEvent}
+            >
+              {eventCategoryList.map((category, index) => (
+                <MenuItem key={index} value={category}>
+                  {category}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl sx={{ margin: "10px", marginBottom: "20px" }}>
+            <InputLabel variant="standard">Priority</InputLabel>
+            <Select
+              variant="standard"
+              name="priority"
+              onChange={handleNewEvent}
+              label="priority"
+            >
+              {priorityList.map((priority, index) => (
+                <MenuItem key={index} value={priorityValues[priority]}>
+                  {priority}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label="Event Date"
+              name="date"
+              sx={{ margin: "10px", marginBottom: "20px", width: "100ch" }}
+              onChange={handleEventDate}
+            />
+            <TimePicker
+              label="Event Time"
+              name="time"
+              sx={{ margin: "10px", marginBottom: "20px", width: "100ch" }}
+              onChange={handleEventTime}
+            />
+          </LocalizationProvider>
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          sx={{ margin: "20px" }}
+          variant="contained"
+          onClick={handleAddEvent}
+          color="primary"
+        >
+          Create Event
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 

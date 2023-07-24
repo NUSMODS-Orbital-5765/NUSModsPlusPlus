@@ -1,10 +1,10 @@
 import useScrollTrigger from "@mui/material/useScrollTrigger";
-import HouseRoundedIcon from "@mui/icons-material/HouseRounded";
-import TodayRoundedIcon from "@mui/icons-material/TodayRounded";
-import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
+import LibraryBooksRoundedIcon from "@mui/icons-material/LibraryBooksRounded";
 import CalculateRoundedIcon from "@mui/icons-material/CalculateRounded";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
-import SettingsSuggestRoundedIcon from "@mui/icons-material/SettingsSuggestRounded";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import React from "react";
 import { Typography } from "@mui/material";
@@ -36,24 +36,24 @@ export const SearchBarScroll = (props) => {
 export const dashboardItems = Array(
   {
     text: "Home",
-    icon: <HouseRoundedIcon sx={{ fontSize: "30px" }} />,
+    icon: <HomeRoundedIcon sx={{ fontSize: "30px" }} />,
     link: "/",
   },
   {
     text: "Planner",
-    icon: <TodayRoundedIcon />,
+    icon: <CalendarMonthRoundedIcon sx={{ fontSize: "30px" }} />,
     link: "/planner-events",
   },
   {
     text: "Modules",
-    icon: <MenuBookRoundedIcon sx={{ fontSize: "30px" }} />,
+    icon: <LibraryBooksRoundedIcon sx={{ fontSize: "30px" }} />,
     link: "/modules",
   },
-  {
-    text: "My GPA",
-    icon: <CalculateRoundedIcon sx={{ fontSize: "30px" }} />,
-    link: "/calculator",
-  },
+  // {
+  //   text: "My GPA",
+  //   icon: <CalculateRoundedIcon sx={{ fontSize: "30px" }} />,
+  //   link: "/calculator",
+  // },
   {
     text: "Community",
     icon: <PeopleAltRoundedIcon sx={{ fontSize: "30px" }} />,
@@ -68,7 +68,7 @@ const logOut = () => {
 export const generalItems = Array(
   {
     text: "Profile",
-    icon: <SettingsSuggestRoundedIcon sx={{ fontSize: "30px" }} />,
+    icon: <SettingsRoundedIcon sx={{ fontSize: "30px" }} />,
     link: "/profile",
   },
   {
@@ -111,10 +111,15 @@ export const SectionHeader = (props) => {
 // list of site search recommendations (needs editing)
 export const siteRecommendations = [
   { option: "back to home", link: "/" },
-  { option: "add todos", link: "/planner-todos" },
+  { option: "add todos", link: "/planner-tasks" },
   { option: "add events", link: "/planner-events" },
   { option: "plan modules", link: "/modules" },
   { option: "edit profile", link: "/profile" },
+  { option: "view my posts", link: "/profile/my-posts" },
+  { option: "view liked posts", link: "/profile/liked-posts" },
+  { option: "change username", link: "/profile/account" },
+  { option: "change password", link: "/profile/account" },
+  { option: "change email", link: "/profile/account" },
   { option: "logout", link: "/sign-in" },
   { option: "calculate gpa", link: "/calculator" },
   { option: "new post", link: "/community" },

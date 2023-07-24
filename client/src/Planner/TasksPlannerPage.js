@@ -1,16 +1,17 @@
 import AppBarComponent from "../AppBar/AppBarComponent";
-import DrawerComponent from "../DrawerComponent";
+import DrawerComponent from "../Drawer/DrawerComponent";
 import { Box, Card, CardContent, Tooltip, IconButton } from "@mui/material";
 import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
 import { PageHeader, PageHeaderNoSubtitle } from "../StyledComponents";
 import AddNewTask from "./AddNewTask";
 import { Link } from "react-router-dom";
+import { combinedItems } from "../Home/HomePageStyledComponents";
 
 const TasksPlannerPage = () => {
   return (
     <div className="homepage">
       <AppBarComponent />
-      <DrawerComponent defaultTab={2} />
+      <DrawerComponent defaultTab={2} tabsList={combinedItems} />
       <Box
         className="remainingViewport"
         sx={{

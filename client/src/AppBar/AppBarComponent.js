@@ -1,16 +1,42 @@
 //COMPLETE
 import { AppBar, Toolbar, Box } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SearchBar } from "../StyledComponents";
 import AppBarNotifs from "./AppBarNotifs";
-import AppBarAvatar from "./AppBarAvatar";
+import AppBarAvatar, { avatarItems } from "./AppBarAvatar";
+import { sampleProfile, notifsList } from "../Constants";
 import {
   SearchBarScroll,
   siteRecommendations,
 } from "../Home/HomePageStyledComponents";
-
+import axios from "axios";
 // main app bar
 function AppBarComponent(props) {
+  const [notificationList, setNotificationList] = useState([]);
+
+  const getNotification = async () => {
+    const notifsGetAPI = `${process.env.REACT_APP_API_LINK}/notification/get`;
+    try {
+      const notifsList = await axios.post(notifsGetAPI, {
+        username: localStorage.getItem("username"),
+      });
+      setNotificationList(notifsList.data.result);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  useEffect(() => {
+    getNotification();
+  }, []);
+  useEffect(() => {
+    const intervalCall = setInterval(() => {
+      getNotification();
+    }, 30000);
+    return () => {
+      // clean up
+      clearInterval(intervalCall);
+    };
+  }, []);
   return (
     <SearchBarScroll {...props}>
       <AppBar
@@ -29,17 +55,33 @@ function AppBarComponent(props) {
             sx={{
               display: "flex",
               flexDirection: "row",
+              alignItems: "center",
               justifyContent: "space-between",
             }}
           >
             <SearchBar
-              label="Search this site..."
+              label="Search + Enter"
               width="70ch"
               searchRecommendations={siteRecommendations}
             />
+            <Box
+              sx={{
+                marginLeft: "-50px",
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "row",
+              }}
+            >
+              <AppBarNotifs
+                notifsList={notificationList}
+                appBarType="student"
+              />
+              <AppBarAvatar
+                userProfile={sampleProfile}
+                avatarItems={avatarItems}
+              />
+            </Box>
           </Box>
-          <AppBarNotifs />
-          <AppBarAvatar />
         </Toolbar>
       </AppBar>
     </SearchBarScroll>
@@ -47,5 +89,3 @@ function AppBarComponent(props) {
 }
 
 export default AppBarComponent;
-
-// TODO: transfer notifications from administrator comments to notifs icon.

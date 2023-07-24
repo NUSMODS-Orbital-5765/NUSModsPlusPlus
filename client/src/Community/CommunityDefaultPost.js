@@ -25,7 +25,7 @@ import {
 import { TransitionGroup } from "react-transition-group";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
-import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
+import CommentRoundedIcon from "@mui/icons-material/CommentRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
@@ -36,11 +36,45 @@ import { createPortal } from "react-dom";
 import { formatDate } from "../Constants";
 import CommunityPostComments from "./CommunityPostComments";
 import AWSLinkGenerate from "../libs/AWSLinkGenerate";
+import axios from "axios";
+import generateNotification from "../libs/generateNotification";
 // styling for post preview
 export const CommunityPostDialog = (props) => {
   const post = props.post;
   const openCondition = props.openCondition;
   const closeFunction = props.closeFunction;
+
+  const [commentContent, setCommentContent] = useState(1);
+  const [commentAddStatus, setCommentAddStatus] = useState(0);
+  const commentAddAPI = `${process.env.REACT_APP_API_LINK}/post/add-comment`;
+  const handleAddComment = () => {
+    if (commentContent === "") {
+      alert("Empty Comment");
+    } else {
+      axios
+        .post(
+          commentAddAPI,
+          {
+            content: commentContent,
+            dateCreated: new Date(),
+            author: localStorage.getItem("userId"),
+            postId: post.id,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+            },
+          }
+        )
+        .then((res) => {
+          alert("Successfully add comment");
+          setCommentAddStatus(commentAddStatus + 1);
+          console.log(commentAddStatus);
+          generateNotification("comment", localStorage.getItem("username"), post.author.username,commentContent, {postId: post.id, commentId: res.data.id})
+        })
+        .catch((err) => console.log(err));
+    }
+  };
   return (
     <Dialog
       open={openCondition}
@@ -64,7 +98,7 @@ export const CommunityPostDialog = (props) => {
           >
             <Typography
               sx={{
-                color: "#536DFE",
+                color: "#1a90ff",
                 fontWeight: 600,
                 textTransform: "uppercase",
               }}
@@ -93,7 +127,12 @@ export const CommunityPostDialog = (props) => {
         >
           <Chip
             sx={{ padding: "5px", fontSize: "15px" }}
-            avatar={<Avatar alt="ProfilePic" src={AWSLinkGenerate(post.author.avatar)} />}
+            avatar={
+              <Avatar
+                alt="ProfilePic"
+                src={AWSLinkGenerate(post.author.avatar)}
+              />
+            }
             label={post.author.username}
             variant="filled"
           />
@@ -163,12 +202,18 @@ export const CommunityPostDialog = (props) => {
             sx={{ marginLeft: "20px", marginRight: "20px", width: "80%" }}
             variant="filled"
             label="Add a comment..."
+            onChange={(e) => setCommentContent(e.target.value)}
             multiline
             maxRows={4}
           ></TextField>
-          <Button variant="contained">Post</Button>
+          <Button variant="contained" onClick={handleAddComment}>
+            Post
+          </Button>
         </Box>
-        <CommunityPostComments commentsList={sampleComments} />
+        <CommunityPostComments
+          postId={post.id}
+          commentAddStatus={commentAddStatus}
+        />
       </DialogContent>
     </Dialog>
   );
@@ -177,14 +222,37 @@ export const CommunityPostDialog = (props) => {
 // code for each post
 const CommunityDefaultPost = (props) => {
   const post = props.post;
+  const likedList = post.like;
+  const localUsername = localStorage.getItem("username")
+  const [totalLikes, setTotalLikes] = useState(post.likeAmount)
   const [extensionOpen, setExtensionOpen] = useState(false);
   const [arrowDirection, setArrowDirection] = useState("down");
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(likedList.includes("username"));
   const [viewed, setViewed] = useState(false);
-
+  
   // function for toggling the like button (need to update in database)
   const toggleLiked = (event) => {
-    setLiked(!liked);
+    const LikePostAPI = `${process.env.REACT_APP_API_LINK}/post/like`;
+    axios
+    .post(
+      LikePostAPI,
+      {
+        username: localUsername,
+        postId: post.id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        },
+      }
+    )
+    .then(result => {
+      console.log(result.data)
+      post.likeAmount=result.data.likeAmount
+      setLiked(!liked)
+      generateNotification("like",localStorage.getItem("username"),post.author.username,"","")
+    })
+    
   };
 
   // function for viewing the tags for each post
@@ -206,14 +274,14 @@ const CommunityDefaultPost = (props) => {
 
   // how post looks like on screen
   return (
-    <div className="remainingViewport">
+    <div>
       <Card
         sx={{
-          width: "450px",
+          width: "100%",
           height: "100%",
-          boxShadow: 1,
-          borderRadius: "5px",
-          marginBottom: "30px",
+          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+          borderRadius: "10px",
+          border: "1px solid #f2f2f2",
         }}
       >
         <CardContent
@@ -235,7 +303,7 @@ const CommunityDefaultPost = (props) => {
           >
             <Typography
               sx={{
-                color: "#536DFE",
+                color: "#1a90ff",
                 fontWeight: 600,
                 fontSize: "14px",
                 textTransform: "uppercase",
@@ -255,7 +323,8 @@ const CommunityDefaultPost = (props) => {
                 onClick={handleOpenViewPost}
               >
                 <ArrowForwardRoundedIcon
-                  sx={{ fontSize: "30px", color: "#536DFE" }}
+                  color="primary"
+                  sx={{ fontSize: "30px" }}
                 />
               </IconButton>
             </Tooltip>
@@ -298,11 +367,14 @@ const CommunityDefaultPost = (props) => {
               }}
             >
               <Checkbox
-                onClick={toggleLiked}
+                onClick={e=>toggleLiked(e)}
+                defaultChecked={liked}
                 icon={<FavoriteBorderRoundedIcon />}
                 checkedIcon={<FavoriteRoundedIcon />}
               />
-              <Typography>{liked ? post.likes + 1 : post.likes}</Typography>
+              <Typography sx={{ marginLeft: "-5px" }}>
+                {post.likeAmount}
+              </Typography>
             </Box>
             <Box
               sx={{
@@ -314,9 +386,11 @@ const CommunityDefaultPost = (props) => {
               }}
             >
               <Tooltip title="You have to view the post to comment.">
-                <ForumRoundedIcon />
+                <CommentRoundedIcon color="primary" />
               </Tooltip>
-              <Typography>{post.comments}</Typography>
+              <Typography sx={{ marginLeft: "5px" }}>
+                {post.comments}
+              </Typography>
             </Box>
           </Box>
           <Divider />
@@ -330,7 +404,12 @@ const CommunityDefaultPost = (props) => {
           >
             <Chip
               sx={{ marginTop: "10px" }}
-              avatar={<Avatar alt="ProfilePic" src={AWSLinkGenerate(post.author.avatar)} />}
+              avatar={
+                <Avatar
+                  alt="ProfilePic"
+                  src={AWSLinkGenerate(post.author.avatar)}
+                />
+              }
               label={post.author.username}
               variant="filled"
             />
