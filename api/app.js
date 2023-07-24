@@ -102,7 +102,7 @@ app.post("/register/admin",jsonParser, (request, response) => {
 
       if (request.body.code !== process.env.SECRET_CODE) {
         console.log("Wrong Secret Code")
-        response.status(201).send({
+        response.status(500).send({
         message: "Wrong Secret Code"
       });
       return;}
