@@ -82,7 +82,7 @@ export function FormUsernameField({ defaultText, setfn, disabled }) {
     const value = event.target.value;
     setRequiredField(value);
 
-    const usernameRegex = /^[a-zA-Z0-9_]{8,}$/;
+    const usernameRegex = /^[a-zA-Z0-9_.]{8,}$/;
     const isError = !usernameRegex.test(value);
     setError(isError);
     if (!isError) {
