@@ -151,10 +151,10 @@ const ProfilePage = ({ selectedTab }) => {
                   color: "#004d80",
                 }}
               >
-                {sampleProfile.name}
+                {localStorage.getItem("name")}
               </Typography>
               <Typography sx={{ color: "#004d80" }}>
-                Student • {sampleProfile.primaryDegree}
+                Student • {localStorage.getItem("primaryDegree")}
               </Typography>
               <PublicProfileSwitch />
             </Box>

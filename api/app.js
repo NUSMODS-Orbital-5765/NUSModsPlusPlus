@@ -168,12 +168,14 @@ app.post("/login", jsonParser, (request, response) => {
 
           //   return success response
           response.status(200).send({
-            message: "Login User Successful at "+user.username,
+            message: "Login User Successful at "+ user.username,
             username: user.username,
             userId: user.id,
             role: user.role,
             avatar: user.avatar,
             name: user.name,
+            department: user.department,
+            primaryDegree: user.primaryDegree,
             token,
           });
         })

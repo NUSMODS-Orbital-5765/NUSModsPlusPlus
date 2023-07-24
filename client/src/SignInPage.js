@@ -178,6 +178,7 @@ const SignInPage = () => {
         localStorage.setItem("avatar", data.avatar);
         localStorage.setItem("name", data.name);
         localStorage.setItem("department", data.department);
+        localStorage.setItem("primaryDegree", data.primaryDegree);
 
         setTimeout(() => {
           navigate("/");
