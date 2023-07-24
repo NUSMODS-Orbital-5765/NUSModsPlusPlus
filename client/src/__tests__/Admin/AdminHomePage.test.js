@@ -17,7 +17,9 @@ jest.mock("../../Admin/AdminDrawerComponent", () => () => (
 ));
 
 describe("AdminHomePage", () => {
-  localStorage.setItem("department", "SomeFaculty");
+  beforeEach(() => {
+    localStorage.setItem("name", "John Doe"); // sets name to be John Doe
+  });
 
   test("renders admin homepage", async () => {
     render(
@@ -30,7 +32,7 @@ describe("AdminHomePage", () => {
     expect(
       screen.getByText(/Mocked AdminDrawerComponent/i)
     ).toBeInTheDocument();
-    expect(screen.getByText(/Welcome Back/i)).toBeInTheDocument();
+    expect(screen.getByText(/Welcome Back, John Doe/i)).toBeInTheDocument();
     expect(screen.getByText(/Recently Viewed/i)).toBeInTheDocument();
     expect(screen.getByText(/Pending/i)).toBeInTheDocument();
 

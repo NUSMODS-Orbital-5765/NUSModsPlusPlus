@@ -106,7 +106,10 @@ const AdminProfilePage = ({ selectedTab }) => {
                 </Typography>
               </Box>
             </Box>
-            <PublicProfileButton link={"/admin/profile/public"} />
+            <PublicProfileButton
+              data-testid="to-public-profile-button"
+              link={"/admin/profile/public"}
+            />
           </Box>
           <Box
             sx={{
