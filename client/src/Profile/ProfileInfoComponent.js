@@ -76,7 +76,7 @@ const ProfileInfoFrame = ({ userProfile }) => {
       .then((response) => {
         setEditableDetails(false);
         setSubmitSuccess(true);
-        console.log(response);
+        localStorage.setItem("name", profileInfo.name);
       })
       .catch((error) => {
         setSubmitError(false);

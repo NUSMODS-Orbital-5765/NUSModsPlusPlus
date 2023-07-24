@@ -96,7 +96,7 @@ app.post("/register/admin",jsonParser, (request, response) => {
         username: request.body.username,
         password: hashedPassword,
         email: request.body.email,
-        faculty: request.body.department,
+        department: request.body.department,
         position: request.body.position,
       };
 
@@ -168,12 +168,15 @@ app.post("/login", jsonParser, (request, response) => {
 
           //   return success response
           response.status(200).send({
-            message: "Login User Successful at "+user.username,
+            message: "Login User Successful at "+ user.username,
             username: user.username,
             userId: user.id,
             role: user.role,
             avatar: user.avatar,
             name: user.name,
+            department: user.department,
+            primaryDegree: user.primaryDegree,
+
             token,
           });
         })
@@ -286,7 +289,7 @@ app.post("/post/top",jsonParser, (request, response) => {
       }
     },
     orderBy: {
-      dateCreated: "desc",
+      likeAmount: "desc",
     },
     include: {
       author: true,
@@ -540,7 +543,7 @@ app.post ("/post/like", [jsonParser,auth], (request, response) => {
 app.post("/post/get-comment", jsonParser, (request, response) => {
   console.log("Getting Comment from Post " + request.body.postId);
   prisma.comment.findMany({
-    where: {post: {every: {id: request.body.postId}}},
+    where: {post: {id: request.body.postId}},
     include: {author: {
         select: {
           username: true,
@@ -739,15 +742,21 @@ app.post("/notification/generate", jsonParser, (request, response) => {
 });
 app.post("/notification/get", jsonParser, (request, response) => {
   console.log("Getting Notification List");
+  let where = {}
+  if (request.body.admin === true) {
+    where = {author: {is: {username: request.body.username}}}
+  } else {
+    where = { OR: [
+      {author: {is: {username: request.body.username}}},
+      {target: {is: {username: request.body.username}}}
+    ]}
+  }
   prisma.notification
         .findMany({
-          where: { OR: [
-            {author: {is: {username: request.body.username}}},
-            {target: {is: {username: request.body.username}}}
-          ]},
+          where,
           include: {
-            author: {select: {username: true}},
-            target: {select: {username: true}}
+            author: true,
+            target:  true
           },
           orderBy: {
             timestamp: "desc"
@@ -829,18 +838,30 @@ app.post("/module/get-requirement", jsonParser, (request, response) => {
         });}
 });
 
-app.post("/admin/get-module-plan", jsonParser, (request, response) => {
+
+app.post("/admin/get-profile-with-status", jsonParser, (request, response) => {
+
   console.log("Getting Module Plan Admin-side");
   const statusList = request.body.status;
   const conditionArray = []
   for (let status of statusList) {
     conditionArray.push( {status: status})
   }
+
+  let where = {};
+  if (request.body.status.length !== 0) {
+    where["OR"] = conditionArray
+  }
+
   prisma.modulePlan
         .findMany(
           {
-          where: { OR: conditionArray},
+          where,
           select: {
+            nanoid: true,
+            semesterModulesDict: true,
+            status: true,
+
             owner: true
           },
           orderBy: {
@@ -848,7 +869,7 @@ app.post("/admin/get-module-plan", jsonParser, (request, response) => {
           }
         }
         )
-        // return success if the new post is added to the database successfully
+
         .then((result) => {
           console.log("Getting Module Plan Admin-side Successfully");
           response.status(201).send({
@@ -856,7 +877,7 @@ app.post("/admin/get-module-plan", jsonParser, (request, response) => {
             result,
           });
         })
-        // catch error if the new post wasn't added successfully to the database
+
         .catch((error) => {
           console.log(error);
           response.status(500).send({
@@ -865,6 +886,167 @@ app.post("/admin/get-module-plan", jsonParser, (request, response) => {
           });
         });
 });
+
+app.post("/admin/get-profile-with-filter", jsonParser, (request, response) => {
+  console.log("POST search REQUEST with faculty filter = " + request.body.facultyFilter + " and acad filter = " + request.body.acadFilter + "programme = "+request.body.programmeFilter);
+  
+  
+  //Deal with sortValue
+  const conditionArray = []
+  if (request.body.facultyFilter !== "") {
+    conditionArray.push({owner : {faculty: request.body.facultyFilter}})
+  }
+  if (request.body.acadFilter) {
+    conditionArray.push({owner :  {academicPlan: request.body.acadFilter}})
+  }
+  if (request.body.programmeFilter) {
+    conditionArray.push({owner : {programme: request.body.programmeFilter}})
+  }
+  let where = {};
+  if (conditionArray.length !== 0) {
+    where["AND"] = conditionArray
+  }
+  
+  prisma.modulePlan.findMany({
+  //   skip: 0,
+  //   take: 8,
+    where,
+    select: {
+      nanoid: true,
+      semesterModulesDict: true,
+      status: true,
+      owner: true
+    },
+    orderBy: {
+      id: "asc",
+    }
+  })
+  .then((result) => {
+    console.log("Getting Module Plan Admin-side Successfully");
+    response.status(201).send({
+      message: "Getting Module Plan Admin-side Successfull",
+      result,
+    });
+  })
+  // catch error if the new post wasn't added successfully to the database
+  .catch((error) => {
+    console.log(error);
+    response.status(500).send({
+      message: "Getting Module Plan Admin-side Error",
+      error,
+    });
+  });
+});
+app.post("/admin/add-comment", jsonParser, (request, response) => {
+  const comment = {
+    dateCreated: request.body.dateCreated,
+    content: request.body.content,
+    ModulePlan: {connect: {nanoid: request.body.nanoid}},
+    author: {connect: {username: request.body.username}},
+  };
+  console.log("Post Comment Admin Request");
+  prisma.comment
+        .create({ data: comment })
+        // return success if the new post is added to the database successfully
+        .then((commentsList) => {
+          console.log(`Created Comment Admin to modulePLan ${request.body.nanoid} and admin ${request.body.username}`);
+          response.status(201).send({
+            message: "Comment Created Successfully",
+            commentsList,
+          });
+        })
+        // catch error if the new post wasn't added successfully to the database
+        .catch((error) => {
+          console.log(error);
+          response.status(500).send({
+            message: "Error creating Comment",
+            error,
+          });
+        });
+});
+app.post("/module-plan/get-comment", jsonParser, (request, response) => {
+  console.log("Getting Comment from Module Plan " + request.body.nanoid);
+  prisma.comment.findMany({
+    where: {ModulePlan: {nanoid: request.body.nanoid}},
+    include: {author: {
+        select: {
+          username: true,
+          avatar: true,
+        },
+      },
+    },
+  })
+  .then(commentsList => {
+    console.log("Getting Comment List Admin Successfully");
+  
+    response.status(200).send({
+      message: "Getting Comment Successfully from modulePlan " + request.body.nanoid,
+      commentsList,
+    });
+  })
+  .catch(error => {
+    console.log(error);
+    response.status(500).send({
+      message: "Error Getting Comment",
+      error,
+    });
+  })
+})
+
+app.post("/admin/add-comment", jsonParser, (request, response) => {
+  const comment = {
+    dateCreated: request.body.dateCreated,
+    content: request.body.content,
+    ModulePlan: {connect: {nanoid: request.body.nanoid}},
+    author: {connect: {username: request.body.username}},
+  };
+  console.log("Post Comment Admin Request");
+  prisma.comment
+        .create({ data: comment })
+        // return success if the new post is added to the database successfully
+        .then((commentsList) => {
+          console.log(`Created Comment Admin to modulePLan ${request.body.nanoid} and admin ${request.body.username}`);
+          response.status(201).send({
+            message: "Comment Created Successfully",
+            commentsList,
+          });
+        })
+
+        // catch error if the new post wasn't added successfully to the database
+        .catch((error) => {
+          console.log(error);
+          response.status(500).send({
+            message: "Error creating Comment",
+
+            error,
+          });
+        });
+});
+
+app.post("/admin/approve", jsonParser, (request, response) => {
+  console.log("Send Approval Action for Module Plan " + request.body.nanoid);
+  console.log(request.body.status)
+  prisma.ModulePlan.update({
+    where:  {nanoid: request.body.nanoid},
+    data: {status: request.body.status}
+  })
+  .then(res => {
+    console.log("Update Approval Action Admin Successfully");
+  
+    response.status(200).send({
+      message: "Update Approval Action Admin Successfully for modulePlan " + request.body.nanoid,
+      res,
+    });
+  })
+  .catch(error => {
+    console.log(error);
+    response.status(500).send({
+      message: "Error Update Approval Action Admin",
+      error,
+    });
+  })
+})
+
 app.get("/free-endpoint", (request, response) => {
   response.json({ message: "You are free to access me anytime" });
 });

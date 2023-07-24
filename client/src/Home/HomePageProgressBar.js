@@ -80,7 +80,6 @@ const HomePageProgressBar = () => {
         <Box sx={{ marginBottom: "30px" }}>
           <ProgressBar color="primary" value={progressPercentage} />
         </Box>
-        <HomePageEventProgressBar />
       </CardContent>
     </Card>
   );

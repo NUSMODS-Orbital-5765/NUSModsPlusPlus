@@ -22,7 +22,7 @@ export const sampleStudentsList = [
   {
     name: "Hannah Tan",
     avatar: "/sample_icon.png",
-    studentId: "e2244668",
+    NUSId: "e2244668",
     username: "hannah_tan",
     password: "hannah123",
     email: "hannah@gmail.com",
@@ -36,7 +36,7 @@ export const sampleStudentsList = [
   {
     name: "Ryan Wong",
     avatar: "/profilepic_1.png",
-    studentId: "e5557777",
+    NUSId: "e5557777",
     username: "ryan123",
     password: "ryan123",
     email: "ryan_wong@gmail.com",
@@ -50,7 +50,7 @@ export const sampleStudentsList = [
   {
     name: "Nguyen Xuan Nam",
     avatar: "/profilepic_1.png",
-    studentId: "e1234567",
+    NUSId: "e1234567",
     username: "nam1nam",
     password: "nam123",
     email: "namnam@gmail.com",
@@ -84,15 +84,7 @@ export const sampleStudentsModules = [
 
 // join student with module table to find students' modules
 export function checkStudentModules(studentProfile) {
-  if (studentProfile) {
-    const matchingPlan = sampleStudentsModules.find(
-      (module) => module.studentId === studentProfile.studentId
-    );
-
-    return matchingPlan ? matchingPlan.modules : {};
-  } else {
-    return {};
-  }
+  return recommendedPlanLayout
 }
 
 // match the student profile link with the student module database to check for the module plan status
@@ -131,7 +123,7 @@ export const adminNotifsList = [
   {
     student: sampleStudentsList[2],
     content: "",
-    type: "approve",
+    type: "reject",
     timestamp: twoDaysAgo,
   },
   {

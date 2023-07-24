@@ -77,12 +77,12 @@ const AppBarAvatar = ({ userProfile, avatarItems }) => {
           <Avatar sx={{ width: 70, height: 70 }} src={userProfile.avatar} />
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <Typography sx={{ fontSize: "20px", fontWeight: 600 }}>
-              {userProfile.name}
+              {localStorage.getItem("name")}
             </Typography>
             <Typography color="text.secondary">
               Signed in as{" "}
               <span style={{ textDecoration: "underline" }}>
-                {userProfile.username}
+                {localStorage.getItem("username")}
               </span>
             </Typography>
           </Box>

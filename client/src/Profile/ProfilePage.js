@@ -77,7 +77,7 @@ const ProfilePage = ({ selectedTab }) => {
   // handling public vs private profile
   const [publicProfile, setPublicProfile] = useState(false);
   const togglePublicProfile = () => {
-    setPublicProfile(!publicProfile);
+    setPublicProfile(false);
   };
 
   // styling the switch component to toggle between public and private profile
@@ -108,7 +108,7 @@ const ProfilePage = ({ selectedTab }) => {
   return (
     <div className="homepage">
       <AppBarComponent />
-      <DrawerComponent defaultTab={8} tabsList={combinedItems} />
+      <DrawerComponent defaultTab={7} tabsList={combinedItems} />
       <Box
         className="remainingViewport"
         sx={{ display: "flex", flexDirection: "column", position: "relative" }}
@@ -151,10 +151,10 @@ const ProfilePage = ({ selectedTab }) => {
                   color: "#004d80",
                 }}
               >
-                {sampleProfile.name}
+                {localStorage.getItem("name")}
               </Typography>
               <Typography sx={{ color: "#004d80" }}>
-                Student • {sampleProfile.primaryDegree}
+                Student • {localStorage.getItem("primaryDegree")}
               </Typography>
               <PublicProfileSwitch />
             </Box>
