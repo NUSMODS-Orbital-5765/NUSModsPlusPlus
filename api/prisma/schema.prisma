@@ -22,7 +22,7 @@ model User {
   username         String         @unique
   password         String
   email            String         @unique
-  faculty          String
+  faculty          String?
   department       String?
   academicPlan     String?
   primaryDegree    String?
