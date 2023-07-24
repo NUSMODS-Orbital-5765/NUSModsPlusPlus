@@ -581,7 +581,7 @@ const ModulesDisplay = ({
         adminUser={adminSampleProfile}
         openDialog={openComments}
         handleCloseDialog={handleCloseComments}
-        studentProfile={sampleProfile}
+        studentProfile={{...sampleProfile,nanoid: nanoid}}
       />
       <Snackbar
         open={recommendedSuccess}
