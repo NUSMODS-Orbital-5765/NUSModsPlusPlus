@@ -11,7 +11,8 @@ import {
   CardContent,
 } from "@mui/material";
 import StudentDataGrid from "./StudentDataGrid";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 // styling for recently viewed component
 export const RecentlyViewedProfiles = ({ viewedProfiles }) => {
@@ -58,11 +59,7 @@ export const RecentlyViewedProfiles = ({ viewedProfiles }) => {
               Clear All
             </Button>
           </Box>
-          <StudentDataGrid
-            data-testid="data-grid"
-            color={false}
-            studentList={currentProfiles}
-          />
+          <StudentDataGrid color={false} studentList={viewedProfiles} />
         </CardContent>
       </Card>
     </div>
@@ -111,6 +108,40 @@ export const PendingProfiles = ({ pendingProfiles }) => {
 
 // styling for admin home page
 const AdminHomePage = () => {
+  const [viewedProfiles, setViewedProfiles] = useState([]);
+  const [pendingProfiles, setPendingProfiles] = useState([]);
+  useEffect(() => {
+    const adminModulePlanGetAPI = `${process.env.REACT_APP_API_LINK}/admin/get-profile-with-status`;
+    axios
+      .post(adminModulePlanGetAPI, { status: ["Pending"] })
+      .then((response) => {
+        setPendingProfiles(
+          response.data.result.map((e) => {
+            let profile = e.owner;
+            profile["status"] = e.status;
+            profile["semesterModulesDict"] = e.semesterModulesDict;
+            profile["nanoid"] = e.nanoid;
+            return profile;
+          })
+        );
+      })
+      .catch((error) => console.log(error));
+    axios
+      .post(adminModulePlanGetAPI, { status: ["Approved", "Rejected"] })
+      .then((response) => {
+        setViewedProfiles(
+          response.data.result.map((e) => {
+            let profile = e.owner;
+            profile["status"] = e.status;
+            profile["semesterModulesDict"] = e.semesterModulesDict;
+            profile["nanoid"] = e.nanoid;
+            return profile;
+          })
+        );
+      })
+      .catch((error) => console.log(error));
+  }, []);
+  useEffect(() => console.log(viewedProfiles), [viewedProfiles]);
   return (
     <div className="homepage">
       <AdminAppBar />
@@ -145,7 +176,7 @@ const AdminHomePage = () => {
                 color: "#004d80",
               }}
             >
-              Welcome Back, {adminSampleProfile.name}
+              Welcome Back, {localStorage.getItem("name")}
             </Typography>
             <Typography
               sx={{
@@ -174,8 +205,8 @@ const AdminHomePage = () => {
             src={adminSampleProfile.avatar}
           />
         </Box>
-        <RecentlyViewedProfiles viewedProfiles={sampleStudentsList} />
-        <PendingProfiles pendingProfiles={sampleStudentsList} />
+        <RecentlyViewedProfiles viewedProfiles={viewedProfiles} />
+        <PendingProfiles pendingProfiles={pendingProfiles} />
       </Box>
     </div>
   );

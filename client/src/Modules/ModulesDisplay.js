@@ -437,8 +437,7 @@ const ModulesDisplay = ({
   const [newModulePlanStatus, setNewModulePlanStatus] = useState(planStatus);
   // handle submit request
   const handleRequestApproval = () => {
-    setNewModulePlanStatus("Pending");
-    handleClickClose();
+    handleClickClose("Pending")
   };
 
   const [recommendedSuccess, setRecommendedSuccess] = useState(false);
@@ -471,12 +470,13 @@ const ModulesDisplay = ({
   };
 
   // handle saving of the grad requirements and semester modules together
-  const handleClickClose = () => {
+  const handleClickClose = (status) => {
+    
     const modulePlanData = {
       nanoid: nanoid,
       owner: localStorage.getItem("username"),
       academicPlan: academicPlan,
-      status: newModulePlanStatus,
+      status: status,
       gradRequirementsDict: newGradRequirements,
       semesterModulesDict: newSemesterModules,
     };

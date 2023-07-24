@@ -13,19 +13,22 @@ const StudentDataGrid = ({ studentList, color }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const handleRowClick = (params) => {
+    console.log(params.row);
     setSelectedRow(params.row);
+
     setOpenDialog(true);
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
+    window.location.reload(false);
   };
 
   // styling the columns of the datagrid
   const columns = [
     {
-      field: "studentId",
-      headerName: "Student ID",
+      field: "NUSId",
+      headerName: "NUS ID",
       headerClassName: color ? "custom-datagrid-header" : "",
       flex: 0.8,
       renderCell: (params) => <Typography>{params.value}</Typography>,
@@ -152,13 +155,17 @@ const StudentDataGrid = ({ studentList, color }) => {
       headerName: "Status",
       headerClassName: color ? "custom-datagrid-header" : "",
       flex: 1.2,
-      valueGetter: (params) => checkPlanStatus(params.row),
+      // valueGetter: (params) => params.value,
       renderCell: (params) => <ModulePlanStatusChip status={params.value} />,
     },
+    {
+      field: "semesterModulesDict",
+    },
+    {field: "nanoid"}
   ];
 
   // sets id column of datagrid as student id
-  const getRowId = (row) => row.studentId;
+  const getRowId = (row) => row.NUSId;
 
   // find the maximum height of the rows, just an aesthetic thing
   const getRowHeight = (params) => {
@@ -190,6 +197,11 @@ const StudentDataGrid = ({ studentList, color }) => {
           borderRadius: "5px",
           minHeight: "200px",
           backgroundColor: "white",
+        }}
+        columnVisibilityModel={{
+          // Hide columns status and traderName, the other columns will remain visible
+          semesterModulesDict: false,
+          nanoid: false
         }}
         autoHeight
         rows={studentList}

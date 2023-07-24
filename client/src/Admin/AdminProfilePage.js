@@ -74,10 +74,10 @@ const AdminProfilePage = ({ selectedTab }) => {
                   color: "#004d80",
                 }}
               >
-                {adminSampleProfile.name}
+                {localStorage.getItem("name")}
               </Typography>
               <Typography sx={{ color: "#004d80" }}>
-                Admin • {adminSampleProfile.department}
+                Admin • {localStorage.getItem("department")}
               </Typography>
               <Box
                 sx={{

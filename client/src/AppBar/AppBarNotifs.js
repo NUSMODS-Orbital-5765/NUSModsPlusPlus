@@ -94,6 +94,8 @@ export const DefaultNotif = ({ notif, handleCloseDrawer }) => {
       return "approved your plan";
     } else if (type === "mention") {
       return "mentioned you";
+    } else if (type === "reject") {
+      return "rejected your plan";
     }
   };
 
@@ -101,7 +103,7 @@ export const DefaultNotif = ({ notif, handleCloseDrawer }) => {
   const getNotifURL = (type) => {
     if (type === "comment" || type === "like") {
       return "/profile/my-posts";
-    } else if (type === "approve" || type === "mention") {
+    } else if (type === "approve" || type === "mention" || type === "reject") {
       return "/modules";
     } else {
       return "/";

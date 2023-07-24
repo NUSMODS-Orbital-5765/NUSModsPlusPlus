@@ -6,8 +6,8 @@ import {
 } from "../FormStyledComponents";
 import { Box, Typography, Snackbar, Alert, Button } from "@mui/material";
 import { facultyList, progsList } from "../Constants";
-
-const AdminProfileInfoComponent = ({ userProfile }) => {
+import axios from "axios";
+const AdminProfileInfoComponentFrame = ({ userProfile }) => {
   const [editableDetails, setEditableDetails] = useState(false);
   const handleEditableDetails = () => {
     setEditableDetails(!editableDetails);
@@ -17,7 +17,7 @@ const AdminProfileInfoComponent = ({ userProfile }) => {
   const [submitError, setSubmitError] = useState(false);
 
   // just for testing, please replace with actual implementation
-  const [profileInfoCopy, setProfileInfoCopy] = useState(userProfile);
+  const [profileInfo, setProfileInfo] = useState(userProfile);
 
   const [isFormComplete, setIsFormComplete] = useState(false);
   const handleFormCompletion = (fieldErrors) => {
@@ -26,26 +26,39 @@ const AdminProfileInfoComponent = ({ userProfile }) => {
   };
 
   const fieldErrors = {
-    name: profileInfoCopy.name === "",
-    studentId: profileInfoCopy.staffId === "",
-    faculty: profileInfoCopy.department === "",
-    primaryDegree: profileInfoCopy.position === "",
+    name: profileInfo.name === "",
+    studentId: profileInfo.staffId === "",
+    faculty: profileInfo.department === "",
+    primaryDegree: profileInfo.position === "",
   };
 
   useEffect(() => {
     handleFormCompletion(fieldErrors);
-  }, [profileInfoCopy]);
+  }, [profileInfo]);
 
-  const handleProfileInfoCopy = (event) => {
+  const handleProfileInfo = (event) => {
     const name = event.target.name;
     const value = event.target.value;
-    setProfileInfoCopy({ ...profileInfoCopy, [name]: value });
+    setProfileInfo({ ...profileInfo, [name]: value });
   };
 
-  const submitProfileUpdateCopy = () => {
-    setEditableDetails(false);
-    setSubmitSuccess(true);
-    console.log(profileInfoCopy);
+  const submitProfileUpdate = () => {
+    const profileUpdateAPI = `${process.env.REACT_APP_API_LINK}/profile/update`;
+    axios
+      .post(profileUpdateAPI, profileInfo, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        },
+      })
+      .then((response) => {
+        setEditableDetails(false);
+        setSubmitSuccess(true);
+        localStorage.setItem("name", profileInfo.name);
+      })
+      .catch((error) => {
+        setSubmitError(false);
+        console.log(error);
+      });
   };
 
   return (
@@ -77,17 +90,17 @@ const AdminProfileInfoComponent = ({ userProfile }) => {
             disabled={!editableDetails}
             label="Name"
             name="name"
-            defaultText={profileInfoCopy.name}
-            setfn={handleProfileInfoCopy}
+            defaultText={profileInfo.name}
+            setfn={handleProfileInfo}
           />
         </Box>
         <Box sx={{ marginBottom: "20px" }}>
           <FormTextField
             disabled={!editableDetails}
             label="StaffID"
-            name="staffId"
-            defaultText={profileInfoCopy.staffId}
-            setfn={handleProfileInfoCopy}
+            name="NUSId"
+            defaultText={profileInfo.NUSId}
+            setfn={handleProfileInfo}
           />
         </Box>
         <FormHeader text="Staff Information" />
@@ -96,8 +109,8 @@ const AdminProfileInfoComponent = ({ userProfile }) => {
             optionsList={[...facultyList, ...progsList]}
             name="department"
             label="Department"
-            defaultText={profileInfoCopy.department}
-            setfn={handleProfileInfoCopy}
+            defaultText={profileInfo.department}
+            setfn={handleProfileInfo}
             disabled={!editableDetails}
           />
         </Box>
@@ -105,14 +118,14 @@ const AdminProfileInfoComponent = ({ userProfile }) => {
           <FormTextField
             name="position"
             label="Position"
-            defaultText={profileInfoCopy.position}
-            setfn={handleProfileInfoCopy}
+            defaultText={profileInfo.position}
+            setfn={handleProfileInfo}
             disabled={!editableDetails}
           />
         </Box>
       </Box>
       <Button
-        onClick={submitProfileUpdateCopy}
+        onClick={submitProfileUpdate}
         disabled={!isFormComplete}
         sx={{ marginTop: "10px" }}
         variant="contained"
@@ -150,4 +163,28 @@ const AdminProfileInfoComponent = ({ userProfile }) => {
     </Box>
   );
 };
+const AdminProfileInfoComponent = () => {
+  const [isFetch, setIsFetch] = useState(false);
+  const [userProfile, setUserProfile] = useState();
+  useEffect(() => {
+    const username = localStorage.getItem("username");
+    const GETprofileURL = process.env.REACT_APP_API_LINK + "/profile/get";
+    axios
+      .get(GETprofileURL, {
+        params: {
+          username: username,
+        },
+      })
+      .then((res) => {
+        setUserProfile(res.data.user);
+        setIsFetch(true);
+        console.log(res.data.user);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+  return(
+    isFetch &&
+  <AdminProfileInfoComponentFrame userProfile={userProfile} />
+  );
+}
 export default AdminProfileInfoComponent;

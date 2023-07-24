@@ -109,7 +109,9 @@ export const SemesterModulePlansDataGrid = ({
 
   console.log(rows);
 
-  const columns = [
+
+  const columns1 = [
+
     "Year 1 - Semester 1",
     "Year 1 - Semester 2",
     "Year 2 - Semester 1",
@@ -160,6 +162,7 @@ export const SemesterModulePlansDataGrid = ({
     },
   }));
 
+
   const rowsPerPage = 10;
 
   return (
@@ -193,7 +196,7 @@ export const SemesterModulePlansDataGrid = ({
           <div style={{ marginTop: "20px", height: 1000, width: "100%" }}>
             <DataGrid
               rows={rows}
-              columns={columns}
+              columns={columns1}
               disableRowSelectionOnClick
               rowHeight={150}
             />

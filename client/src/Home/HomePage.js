@@ -107,7 +107,6 @@ const HomePage = () => {
               <HomePageRecommendedPosts data-testid="home-page-recommended-posts" />
             </Box>
           </Box>
-          <HomePageTimetable data-testid="home-page-timetable" />
         </Box>
       </LocalizationProvider>
     </div>
