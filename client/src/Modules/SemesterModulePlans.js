@@ -109,7 +109,9 @@ export const SemesterModulePlansDataGrid = ({
 
   console.log(rows);
 
+
   const columns1 = [
+
     "Year 1 - Semester 1",
     "Year 1 - Semester 2",
     "Year 2 - Semester 1",

@@ -6,8 +6,20 @@ import { StudentProfileView } from "./StudentDataGrid";
 import React, { useEffect, useState } from "react";
 import UserProfileView from "../UserProfileView";
 import StudentModuleProfileView from "../StudentModuleProfileView";
+
 import axios from "axios";
 import {parseISO} from "date-fns";
+
+//max words for truncation
+export const truncateContent = (content) => {
+  const words = content.split(" ");
+  if (words.length <= 10) {
+    return content;
+  }
+  const truncatedWords = words.slice(0, 10);
+  return truncatedWords.join(" ") + "...";
+};
+
 // styling for admin notifications
 export const AdminDefaultNotif = ({ notif }) => {
   const [showProfile, setShowProfile] = useState(false);
@@ -16,16 +28,6 @@ export const AdminDefaultNotif = ({ notif }) => {
   };
   const handleHideProfile = () => {
     setShowProfile(false);
-  };
-
-  // max words for truncation
-  const truncateContent = (content) => {
-    const words = content.split(" ");
-    if (words.length <= 10) {
-      return content;
-    }
-    const truncatedWords = words.slice(0, 10);
-    return truncatedWords.join(" ") + "...";
   };
 
   // different notification style for different notification types

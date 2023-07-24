@@ -34,7 +34,7 @@ const AdminAppBar = (props) => {
             }}
           >
             <SearchBar
-              label="Search this site..."
+              label="Search + Enter"
               width="70ch"
               searchRecommendations={adminRecommendations}
             />
@@ -46,8 +46,9 @@ const AdminAppBar = (props) => {
                 flexDirection: "row",
               }}
             >
-              <AdminAppBarNotifs />
+              <AdminAppBarNotifs data-testid="admin-appbar" />
               <AppBarAvatar
+                data-testid="admin-notifs"
                 userProfile={adminSampleProfile}
                 avatarItems={adminAvatarItems}
               />

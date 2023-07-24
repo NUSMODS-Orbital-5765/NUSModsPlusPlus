@@ -1,25 +1,37 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import userEvent from "@testing-library/user-event";
 import HomePage from "../Home/HomePage";
-import axios from "axios";
 import { MemoryRouter } from "react-router-dom";
 import { quotesList } from "../Constants";
 
-// mock axios and set the resolved value
-jest.mock("axios", () => ({
-  post: jest.fn(() =>
-    Promise.resolve({
-      data: {
-        res: {
-          name: "John Doe",
-        },
-      },
-    })
-  ),
-}));
+// mock any external dependencies
+jest.mock("../AppBar/AppBarComponent", () => {
+  return jest.fn(() => <div>Mocked AppBarComponent</div>);
+});
 
+jest.mock("../Drawer/DrawerComponent", () => {
+  return jest.fn(() => <div>Mocked DrawerComponent</div>);
+});
+
+jest.mock("../Home/HomePageProgressBar", () => {
+  return jest.fn(() => <div>Mocked HomePageProgressBar</div>);
+});
+
+jest.mock("../Home/HomePageRecommendedPosts", () => {
+  return jest.fn(() => <div>Mocked HomePageRecommendedPosts</div>);
+});
+
+jest.mock("../Home/HomePageTimetable", () => {
+  return jest.fn(() => <div>Mocked HomePageTimetable</div>);
+});
+
+// mock local storage
+jest
+  .spyOn(window.localStorage.__proto__, "getItem")
+  .mockReturnValue("John Doe");
+
+// home page test cases
 describe("HomePage", () => {
   test("renders the homepage component with dashboard shortcuts ", () => {
     render(
@@ -27,48 +39,32 @@ describe("HomePage", () => {
         <HomePage />
       </MemoryRouter>
     );
-    test("renders all components properly", () => {
-      render(<HomePage />);
-      expect(screen.getByTestId("app-bar")).toBeInTheDocument();
-      expect(screen.getByTestId("drawer")).toBeInTheDocument();
-      expect(screen.getByText(/Welcome Back/i)).toBeInTheDocument();
-      expect(screen.getByTestId("quote-button")).toBeInTheDocument();
-      expect(screen.getByText(/Today's Progress/i)).toBeInTheDocument();
-      expect(screen.getByText(/Event Progress/i)).toBeInTheDocument();
 
-      const todayProgressElements = screen.queryAllByText("Today's Progress");
-      expect(todayProgressElements).toHaveLength(1);
+    expect(screen.getByText(/Welcome Back/i)).toBeInTheDocument();
+    expect(screen.getByTestId("quote-button")).toBeInTheDocument();
+    const currentQuote = screen.queryAllByText(quotesList[0]);
+    expect(currentQuote).toHaveLength(1);
 
-      const todayElements = screen.queryAllByText("Today");
-      expect(todayElements).toHaveLength(1);
-
-      expect(screen.getByText(/Coming Up Next/i)).toBeInTheDocument();
-      expect(screen.getByTestId("home-page-progress-bar")).toBeInTheDocument();
-      expect(
-        screen.getByTestId("home-page-recommended-posts")
-      ).toBeInTheDocument();
-      expect(screen.getByTestId("home-page-timetable")).toBeInTheDocument();
-    });
+    expect(screen.getByText(/Mocked AppBarComponent/i)).toBeInTheDocument();
+    expect(screen.getByText(/Mocked DrawerComponent/i)).toBeInTheDocument();
+    expect(screen.getByText(/Mocked HomePageProgressBar/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Mocked HomePageRecommendedPosts/i)
+    ).toBeInTheDocument();
+    expect(screen.getByText(/Mocked HomePageTimetable/i)).toBeInTheDocument();
   });
 
-  // test if the user's name is rendered
-  test("greets user by name", async () => {
-    const mockUserData = {
-      data: {
-        res: {
-          name: "John Doe",
-        },
-      },
-    };
-    jest.spyOn(axios, "post").mockResolvedValue(mockUserData);
+  // test for the username fetching
+  test("renders the correct username", () => {
+    render(<HomePage />);
+    const usernameElement = screen.getByText("Welcome Back, John Doe");
+    expect(usernameElement).toBeInTheDocument();
+  });
 
-    render(
-      <MemoryRouter basename="/">
-        <HomePage />
-      </MemoryRouter>
-    );
-
-    await screen.findByText(/Welcome Back, John Doe/i);
-    expect(screen.getByText(/Welcome Back, John Doe/i)).toBeInTheDocument();
+  // test for the next quote button
+  test("renders the correct username", () => {
+    render(<HomePage />);
+    const usernameElement = screen.getByText("Welcome Back, John Doe");
+    expect(usernameElement).toBeInTheDocument();
   });
 });

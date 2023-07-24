@@ -176,6 +176,7 @@ app.post("/login", jsonParser, (request, response) => {
             name: user.name,
             department: user.department,
             primaryDegree: user.primaryDegree,
+
             token,
           });
         })
@@ -837,13 +838,16 @@ app.post("/module/get-requirement", jsonParser, (request, response) => {
         });}
 });
 
+
 app.post("/admin/get-profile-with-status", jsonParser, (request, response) => {
+
   console.log("Getting Module Plan Admin-side");
   const statusList = request.body.status;
   const conditionArray = []
   for (let status of statusList) {
     conditionArray.push( {status: status})
   }
+
   let where = {};
   if (request.body.status.length !== 0) {
     where["OR"] = conditionArray
@@ -857,6 +861,7 @@ app.post("/admin/get-profile-with-status", jsonParser, (request, response) => {
             nanoid: true,
             semesterModulesDict: true,
             status: true,
+
             owner: true
           },
           orderBy: {
@@ -864,6 +869,7 @@ app.post("/admin/get-profile-with-status", jsonParser, (request, response) => {
           }
         }
         )
+
         .then((result) => {
           console.log("Getting Module Plan Admin-side Successfully");
           response.status(201).send({
@@ -871,6 +877,7 @@ app.post("/admin/get-profile-with-status", jsonParser, (request, response) => {
             result,
           });
         })
+
         .catch((error) => {
           console.log(error);
           response.status(500).send({
@@ -1004,15 +1011,18 @@ app.post("/admin/add-comment", jsonParser, (request, response) => {
             commentsList,
           });
         })
+
         // catch error if the new post wasn't added successfully to the database
         .catch((error) => {
           console.log(error);
           response.status(500).send({
             message: "Error creating Comment",
+
             error,
           });
         });
 });
+
 app.post("/admin/approve", jsonParser, (request, response) => {
   console.log("Send Approval Action for Module Plan " + request.body.nanoid);
   console.log(request.body.status)
@@ -1036,6 +1046,7 @@ app.post("/admin/approve", jsonParser, (request, response) => {
     });
   })
 })
+
 app.get("/free-endpoint", (request, response) => {
   response.json({ message: "You are free to access me anytime" });
 });

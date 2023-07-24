@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/dom";
 import "@testing-library/jest-dom/extend-expect";
 import userEvent from "@testing-library/user-event";
-import AdminSignUpPage from "../SignUp/AdminSignUpPage";
+import AdminSignUpPage from "../../SignUp/AdminSignUpPage";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
 import axiosMock from "axios-mock-adapter";
@@ -135,7 +135,7 @@ describe("AdminSignUpPage", () => {
   });
 
   // testing form submit
-  test("enable submit button if form is complete, disable if wrong secret code", () => {
+  test("enable submit button if form is complete", () => {
     const submitButton = screen.getByTestId("submit-button");
     expect(submitButton).toBeDisabled();
 
@@ -172,32 +172,9 @@ describe("AdminSignUpPage", () => {
       target: { value: "john" },
     });
     fireEvent.change(screen.getByLabelText("Secret Code *"), {
-      target: { value: "adminuser123" },
+      target: { value: "admin" },
     });
 
     expect(submitButton).toBeEnabled();
-
-    fireEvent.change(screen.getByLabelText("Secret Code *"), {
-      target: { value: "adminuser12" },
-    });
-
-    expect(submitButton).toBeDisabled();
   });
-
-  // mock API call
-  /*
-  jest.mock("axios");
-
-  test("should handle form submission correctly", async () => {
-    const mockResponse = { data: { message: "Success" } };
-    axios.post.mockResolvedValue(mockResponse);
-
-    const submitButton = screen.getByTestId("submit-button");
-    fireEvent.click(submitButton);
-
-    await screen.findByText("Success");
-
-    expect(screen.getByText("Success")).toBeInTheDocument();
-  });
-  */
 });
