@@ -108,7 +108,7 @@ const ProfilePage = ({ selectedTab }) => {
   return (
     <div className="homepage">
       <AppBarComponent />
-      <DrawerComponent defaultTab={8} tabsList={combinedItems} />
+      <DrawerComponent defaultTab={7} tabsList={combinedItems} />
       <Box
         className="remainingViewport"
         sx={{ display: "flex", flexDirection: "column", position: "relative" }}
