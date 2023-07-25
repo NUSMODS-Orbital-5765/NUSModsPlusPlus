@@ -1,27 +1,21 @@
 //COMPLETE
+import PostsGrid from "./PostsGrid";
+import PostsRow from "./PostsRow";
 import AppBarComponent from "../AppBar/AppBarComponent";
 import DrawerComponent from "../Drawer/DrawerComponent";
 import UploadPost from "../UploadPost/UploadPost";
-import CommunityDefaultPost from "./CommunityDefaultPost";
 import axios from "axios";
-import AWSLinkGenerate from "../libs/AWSLinkGenerate";
 import {
   Box,
   FormControl,
-  NativeSelect,
   InputLabel,
-  Grid,
   Typography,
   Pagination,
   MenuItem,
   Select,
 } from "@mui/material";
-import {
-  postRecommendations,
-  samplePosts,
-  samplePostsTags,
-} from "../Constants";
-import { PageHeader, BackToTop, SearchBar } from "../StyledComponents";
+import { postRecommendations } from "../Constants";
+import { BackToTop, SearchBar } from "../StyledComponents";
 import React, { useEffect, useState } from "react";
 import HeartBrokenRoundedIcon from "@mui/icons-material/HeartBrokenRounded";
 import { combinedItems } from "../Home/HomePageStyledComponents";
@@ -72,7 +66,11 @@ export const CommunityHeader = () => {
           <UploadPost />
         </Box>
       </Box>
-      <img style={{ width: "35%" }} src="/learning_icon.png" />
+      <img
+        style={{ width: "35%" }}
+        alt="Community Header"
+        src="/learning_icon.png"
+      />
     </Box>
   );
 };
@@ -96,67 +94,6 @@ export const NoPostsPlaceholder = () => {
       >
         No Posts Yet
       </Typography>
-    </Box>
-  );
-};
-// mapping posts onto a grid design
-export const PostsGrid = ({ postList }) => {
-  return (
-    <Box sx={{ margin: "55px" }}>
-      <Typography
-        sx={{ marginBottom: "20px", fontSize: "40px", fontWeight: 700 }}
-      >
-        All Posts
-      </Typography>
-      <Grid container spacing={7}>
-        {postList.map((post, index) => (
-          <Grid item xs={6} key={index}>
-            <CommunityDefaultPost post={post} />
-          </Grid>
-        ))}
-      </Grid>
-    </Box>
-  );
-};
-
-// row of posts rather than the usual grid
-// sort the posts before mapping as a postList
-const PostsRow = ({ postList }) => {
-  return (
-    <Box sx={{ marginLeft: "55px", marginTop: "20px" }}>
-      <Typography sx={{ fontSize: "40px", fontWeight: 700 }}>
-        Top Posts
-      </Typography>
-      <Box
-        sx={{
-          overflowX: "scroll",
-          marginRight: "55px",
-          marginTop: "10px",
-          marginBottom: "30px",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyItems: "center",
-          }}
-        >
-          {postList.map((post, index) => (
-            <Box
-              key={index}
-              sx={{
-                minWidth: "50ch",
-                margin: "10px",
-                marginRight: "50px",
-              }}
-            >
-              <CommunityDefaultPost post={post} />
-            </Box>
-          ))}
-        </Box>
-      </Box>
     </Box>
   );
 };
