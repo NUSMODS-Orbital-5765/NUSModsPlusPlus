@@ -1,5 +1,6 @@
 import CommunityDefaultPost from "./CommunityDefaultPost";
 import { Box, Typography } from "@mui/material";
+import React from "react";
 
 // row of posts rather than the usual grid
 // sort the posts before mapping as a postList

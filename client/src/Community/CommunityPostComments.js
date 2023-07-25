@@ -5,9 +5,7 @@ import { Box, Typography, Avatar } from "@mui/material";
 import { useState } from "react";
 import axios from "axios";
 import AWSLinkGenerate from "../libs/AWSLinkGenerate";
-const CommunityPostComments = (props) => {
-  const { postId, commentAddStatus } = props;
-
+const CommunityPostComments = ({ postId, commentAddStatus }) => {
   const [commentsList, setCommentsList] = useState([]);
 
   const commentGetAPI = `${process.env.REACT_APP_API_LINK}/post/get-comment`;

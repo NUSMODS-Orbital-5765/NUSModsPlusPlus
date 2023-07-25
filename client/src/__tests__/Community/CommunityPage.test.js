@@ -118,4 +118,5 @@ describe("CommunityPage", () => {
   });
 
   // not sure why but unable to test if top posts can be rendered
+  // cant test the sort/filter function i think, will cover in integration testing
 });
