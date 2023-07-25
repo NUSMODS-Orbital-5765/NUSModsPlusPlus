@@ -1,6 +1,5 @@
 //COMPLETE
 // add recovery email for password reset field
-// add admin sign-in feature
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import {
@@ -13,15 +12,16 @@ import {
   Select,
   MenuItem,
   FormControl,
-  FormControlLabel,
   InputLabel,
-  Checkbox,
   Dialog,
   DialogTitle,
   DialogContent,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
-import { LogoComponent, WelcomeCarousel } from "./StyledComponents";
+import { LogoComponent } from "./StyledComponents";
+import WelcomeCarousel from "./StyledComponents/WelcomeCarousel";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { da } from "date-fns/locale";
@@ -59,6 +59,7 @@ export const SignUpDialog = () => {
   return (
     <div>
       <Button
+        data-testid="sign-up-button"
         color="success"
         sx={{ marginLeft: "10px", color: "white" }}
         variant="contained"
@@ -81,6 +82,7 @@ export const SignUpDialog = () => {
           <FormControl fullWidth>
             <InputLabel>I'm signing up as a...</InputLabel>
             <Select
+              data-testid="select-status-button"
               fullWidth
               required
               name="status"
@@ -100,6 +102,7 @@ export const SignUpDialog = () => {
             }}
           >
             <Button
+              data-testid="go-to-signup-button"
               onClick={goToSignUp}
               disabled={selectedStatus === ""}
               variant="contained"
@@ -129,12 +132,15 @@ const SignInPage = () => {
     password: "",
   });
 
+  const [loginSuccess, setLoginSuccess] = useState(false);
+  const [loginError, setLoginError] = useState(false);
+  const [loginInvalid, setLoginInvalid] = useState(false);
+
   // handle login function, disable login button if any of the fields are empty
   const handleLoginInfo = (evt) => {
     const name = evt.target.name;
     const value = evt.target.value;
     setloginInfo((prevLoginInfo) => ({
-      // this ensures state is updated immediately rather than asynchronously
       ...prevLoginInfo,
       [name]: value,
     }));
@@ -165,13 +171,13 @@ const SignInPage = () => {
         const data = response.data;
         const token = data.token;
         if (!token) {
-          alert("Unable to login. Please try after some time.");
+          setLoginError(true);
           return;
         }
-        alert("Login Successfully");
+        setLoginSuccess(true);
         console.log(data);
         localStorage.clear();
-        localStorage.setItem("permission", loginInfo.status)
+        localStorage.setItem("permission", loginInfo.status);
         localStorage.setItem("user-token", token);
         localStorage.setItem("username", data.username);
         localStorage.setItem("userId", data.userId);
@@ -185,13 +191,23 @@ const SignInPage = () => {
           setTimeout(() => {
             navigate("/admin");
           }, 500);
-        } else {setTimeout(() => {
-          navigate("/");
-        }, 500);
-      }
+        } else {
+          setTimeout(() => {
+            navigate("/");
+          }, 500);
+        }
       })
       .catch((error) => {
-        alert(error);
+        setTimeout(() => {
+          btnPointer.removeAttribute("disabled");
+          btnPointer.innerHTML = "Login";
+        }, 1000);
+        setLoginInvalid(true);
+        console.log(error);
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       });
   };
 
@@ -249,7 +265,12 @@ const SignInPage = () => {
           </Box>
           <FormControl sx={{ marginTop: "20px" }} fullWidth>
             <InputLabel>I am a...</InputLabel>
-            <Select name="status" label="I am a..." onChange={handleLoginInfo}>
+            <Select
+              data-testid="status-input"
+              name="status"
+              label="I am a..."
+              onChange={handleLoginInfo}
+            >
               <MenuItem value={"student"}>Student</MenuItem>
               <MenuItem value={"admin"}>Administrator</MenuItem>
             </Select>
@@ -273,7 +294,7 @@ const SignInPage = () => {
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton
-                      aria-label="toggle password visibility"
+                      data-testid="password-visibility-button"
                       onClick={handleTogglePassword}
                     >
                       {showPassword ? (
@@ -299,24 +320,61 @@ const SignInPage = () => {
                   Forgot Password?
                 </Link>
               </Typography>
-              <Box sx={{ display: "flex", flexDirection: "row" }}>
-                <FormControlLabel
-                  control={<Checkbox />}
-                  label="Remember Me" // haven't included the "remember me" info
-                />
-                <Button
-                  variant="contained"
-                  id="login-btn"
-                  disabled={!allowLogin}
-                  onClick={submitLoginForm}
-                >
-                  Login
-                </Button>
-              </Box>
+              <Button
+                variant="contained"
+                data-testid="login-button"
+                id="login-btn"
+                disabled={!allowLogin}
+                onClick={submitLoginForm}
+              >
+                Login
+              </Button>
             </Box>
           </Box>
         </Box>
       </Box>
+      <Snackbar
+        open={loginError}
+        autoHideDuration={3000}
+        onClose={() => setLoginError(false)}
+      >
+        <Alert
+          onClose={() => setLoginError(false)}
+          severity="error"
+          variant="filled"
+          sx={{ width: "100%", color: "white" }}
+        >
+          Sign in failed. Please try again after some time.
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={loginSuccess}
+        autoHideDuration={3000}
+        onClose={() => setLoginSuccess(false)}
+      >
+        <Alert
+          onClose={() => setLoginSuccess(false)}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%", color: "white" }}
+        >
+          Signed in successfully!
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={loginInvalid}
+        autoHideDuration={3000}
+        onClose={() => setLoginInvalid(false)}
+      >
+        <Alert
+          onClose={() => setLoginInvalid(false)}
+          severity="error"
+          variant="filled"
+          sx={{ width: "100%", color: "white" }}
+        >
+          Invalid username or password!
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

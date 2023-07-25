@@ -299,6 +299,7 @@ export function FormFacultyMajorField({
       <FormControl>
         <InputLabel>Faculty</InputLabel>
         <Select
+          data-testid="faculty-field"
           fullWidth
           required
           name="faculty"
@@ -324,6 +325,7 @@ export function FormFacultyMajorField({
             fullWidth
             required
             name="primaryDegree"
+            data-testid="degree-field"
             label="Primary Degree/Major"
             disabled={disabled}
             value={selectedMajor}

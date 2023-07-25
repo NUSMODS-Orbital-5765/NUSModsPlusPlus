@@ -84,7 +84,7 @@ const StudentSignUpPage = () => {
   // on first load of the page
   useEffect(() => {
     handleFormCompletion(fieldErrors);
-    console.log(registerInfo)
+    console.log(registerInfo);
   }, [registerInfo]);
 
   // submitting register info
@@ -206,6 +206,7 @@ const StudentSignUpPage = () => {
               </Box>
               <Box sx={{ marginBottom: "20px" }}>
                 <FormFacultyMajorField
+                  data-testid="faculty-major-field"
                   filledMajor=""
                   filledFaculty=""
                   setfn={handleRegisterInfo}
@@ -215,9 +216,13 @@ const StudentSignUpPage = () => {
                 <FormControl fullWidth>
                   <InputLabel id="academic-plan">Academic Plan</InputLabel>
                   <Select
+                    data-testid="academic-plan-field"
                     label="Academic Plan"
                     name="academicPlan"
-                    onChange={e=>{handleAcademicPlanChange(e);handleRegisterInfo(e)}}
+                    onChange={(e) => {
+                      handleAcademicPlanChange(e);
+                      handleRegisterInfo(e);
+                    }}
                   >
                     <MenuItem value={"Single Degree"}>Single Degree</MenuItem>
                     <MenuItem value={"Double Degree"}>Double Degree</MenuItem>
@@ -267,6 +272,7 @@ const StudentSignUpPage = () => {
             }}
           >
             <Button
+              data-testid="submit-button"
               variant="contained"
               disabled={!isFormComplete}
               onClick={handleSubmit}
