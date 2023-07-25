@@ -37,6 +37,7 @@ function AppBarComponent(props) {
       clearInterval(intervalCall);
     };
   }, []);
+
   return (
     <SearchBarScroll {...props}>
       <AppBar
