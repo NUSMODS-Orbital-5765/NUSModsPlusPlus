@@ -251,17 +251,26 @@ const AppBarNotifs = ({ notifsList, appBarType }) => {
   return (
     <Box sx={{ marginLeft: "55ch" }}>
       {todayNotifs.length === 0 ? (
-        <IconButton sx={{ color: "black" }} onClick={handleOpenNotifs}>
+        <IconButton
+          data-testid="notif-button"
+          sx={{ color: "black" }}
+          onClick={handleOpenNotifs}
+        >
           <MarkEmailReadRoundedIcon sx={{ fontSize: "30px" }} />
         </IconButton>
       ) : (
         <Badge
+          data-testid="notif-badge"
           overlap="circular"
           anchorOrigin={{ vertical: "top", horizontal: "right" }}
           variant="dot"
           color="error"
         >
-          <IconButton sx={{ color: "black" }} onClick={handleOpenNotifs}>
+          <IconButton
+            sx={{ color: "black" }}
+            data-testid="notif-button"
+            onClick={handleOpenNotifs}
+          >
             <EmailRoundedIcon sx={{ fontSize: "30px" }} />
           </IconButton>
         </Badge>
@@ -275,6 +284,7 @@ const AppBarNotifs = ({ notifsList, appBarType }) => {
             boxSizing: "border-box",
           },
         }}
+        data-testid="notif-drawer"
         anchor="right"
         open={openDrawer}
         onClose={handleCloseNotifs}

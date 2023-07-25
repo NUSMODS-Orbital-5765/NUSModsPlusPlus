@@ -4,12 +4,12 @@ import React, { useEffect, useState } from "react";
 import { SearchBar } from "../StyledComponents";
 import AppBarNotifs from "./AppBarNotifs";
 import AppBarAvatar, { avatarItems } from "./AppBarAvatar";
-import { sampleProfile, notifsList } from "../Constants";
 import {
   SearchBarScroll,
   siteRecommendations,
 } from "../Home/HomePageStyledComponents";
 import axios from "axios";
+
 // main app bar
 function AppBarComponent(props) {
   const [notificationList, setNotificationList] = useState([]);

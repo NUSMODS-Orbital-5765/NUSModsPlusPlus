@@ -1,4 +1,9 @@
-import { formatDistanceToNow, addDays } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
+import {
+  isToday as isTodayDateFns,
+  isThisWeek as isThisWeekDateFns,
+  parseISO,
+} from "date-fns";
 import { red, orange, yellow } from "@mui/material/colors";
 
 // list of nus faculties
@@ -251,47 +256,22 @@ export const formatDate = (dateTime) => {
   return formatDistanceToNow(dateTime, { addSuffix: true });
 };
 
-// function for checking if notification was today (00:00 to 23:59)
+// Function for checking if notification was today (00:00 to 23:59)
 export function isToday(timestamp) {
+  const notificationTime = parseISO(timestamp);
   const today = new Date();
-
-  // datetime object 12am today
-  const startOfDay = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate(),
-    0,
-    0,
-    0
+  return (
+    notificationTime.getDate() === today.getDate() &&
+    notificationTime.getMonth() === today.getMonth() &&
+    notificationTime.getFullYear() === today.getFullYear()
   );
-
-  // datetime object 11:59pm today
-  const endOfDay = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate(),
-    23,
-    59,
-    59
-  );
-
-  const notificationTime = new Date(timestamp);
-
-  return notificationTime >= startOfDay && notificationTime <= endOfDay;
 }
 
-// function for checking if occurred this week (00:00 Monday to 23:59 Sunday)
-export const isThisWeek = (timestamp) => {
-  const currentDate = new Date();
-  const firstDayOfWeek = new Date(
-    currentDate.setDate(currentDate.getDate() - currentDate.getDay())
-  );
-  const lastDayOfWeek = new Date(
-    currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 6)
-  );
-
-  return timestamp >= firstDayOfWeek && timestamp <= lastDayOfWeek;
-};
+// Function for checking if occurred this week (00:00 Monday to 23:59 Sunday)
+export function isThisWeek(timestamp) {
+  const notificationTime = parseISO(timestamp);
+  return isThisWeekDateFns(notificationTime);
+}
 
 // sample profile list
 export const sampleProfileList = [

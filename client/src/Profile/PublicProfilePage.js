@@ -9,6 +9,7 @@ import AutoStoriesRoundedIcon from "@mui/icons-material/AutoStoriesRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ImportContactsRoundedIcon from "@mui/icons-material/ImportContactsRounded";
 import { combinedItems } from "../Home/HomePageStyledComponents";
+import React from "react";
 
 // list of information to map
 // change this to a mapping function which checks profile fields before mapping
@@ -18,7 +19,7 @@ export function AboutInfoList(sampleProfile) {
     content: <Typography></Typography>,
     icon: <ImportContactsRoundedIcon />,
   };
-  if (sampleProfile.minor.length > 0) {
+  if (sampleProfile.minor && sampleProfile.minor.length > 0) {
     const formattedContent = (
       <Typography>
         <span style={{ fontWeight: 700 }}>Minor</span> in{" "}
@@ -60,7 +61,7 @@ export function AboutInfoList(sampleProfile) {
       icon: <LocationOnRoundedIcon />,
     },
     degreeContent,
-    sampleProfile.minor.length !== 0 && minorContent,
+    sampleProfile.minor && sampleProfile.minor.length !== 0 && minorContent,
     sampleProfile.programme && {
       content: <Typography>{sampleProfile.programme}</Typography>,
       icon: <HomeRoundedIcon />,
