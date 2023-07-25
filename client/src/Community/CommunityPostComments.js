@@ -1,5 +1,5 @@
 // code for post comments
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { formatDate } from "../Constants";
 import { Box, Typography, Avatar } from "@mui/material";
 import { useState } from "react";
