@@ -365,6 +365,7 @@ const CommunityDefaultPost = ({ post }) => {
             </Typography>
             <Tooltip title="See More" placement="top">
               <IconButton
+                data-testid="view-post-button"
                 sx={{
                   "&:hover": {
                     backgroundColor: "transparent",
@@ -419,6 +420,7 @@ const CommunityDefaultPost = ({ post }) => {
               }}
             >
               <Checkbox
+                data-testid="like-button"
                 onClick={(e) => toggleLiked(e)}
                 defaultChecked={liked}
                 icon={<FavoriteBorderRoundedIcon />}
@@ -498,6 +500,7 @@ const CommunityDefaultPost = ({ post }) => {
                       transition: "transform 0.1s",
                     },
                   }}
+                  data-testid="expand-tags-button"
                   onClick={toggleExtensionOpen}
                 >
                   <ExpandMoreRoundedIcon

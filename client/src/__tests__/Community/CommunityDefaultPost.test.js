@@ -29,6 +29,9 @@ const mockPost = {
   tags: ["Sample Tag 1", "Sample Tag 2"],
   content: "This is a sample post content.",
   upload_file: ["samplefile.pdf"],
+  likeAmount: 7,
+  comments: 6,
+  like: [],
 };
 
 const mockPostNoFile = {
@@ -193,10 +196,45 @@ describe("CommunityDefaultPost", () => {
       </MemoryRouter>
     );
 
+    // check that post information is rendered
     expect(
       screen.getByText(formatDate(mockPost.dateCreated))
     ).toBeInTheDocument();
     expect(screen.getByText(mockPost.title)).toBeInTheDocument();
-    expect(screen.getByText(mockPost.title)).toBeInTheDocument();
+    expect(screen.getByText(mockPost.comments)).toBeInTheDocument();
+    expect(screen.getByText(mockPost.likeAmount)).toBeInTheDocument();
+    expect(screen.getByText(`${mockPost.author.username}`)).toBeInTheDocument();
+    expect(screen.getByText(/Module Review/i)).toBeInTheDocument();
+    expect(screen.getByTestId("CommentRoundedIcon")).toBeInTheDocument();
+
+    // check that the buttons are in the post
+    expect(screen.getByTestId("view-post-button")).toBeInTheDocument();
+    expect(screen.getByTestId("expand-tags-button")).toBeInTheDocument();
+    expect(screen.getByTestId("like-button")).toBeInTheDocument();
+  });
+
+  test("see more button working", () => {
+    render(
+      <MemoryRouter>
+        <CommunityDefaultPost post={mockPost} />
+      </MemoryRouter>
+    );
+
+    const viewPostButton = screen.getByTestId("view-post-button");
+    fireEvent.click(viewPostButton);
+    expect(screen.getByLabelText("Add a comment...")).toBeInTheDocument();
+  });
+
+  test("expand tags button working", () => {
+    render(
+      <MemoryRouter>
+        <CommunityDefaultPost post={mockPost} />
+      </MemoryRouter>
+    );
+
+    const expandTagsButton = screen.getByTestId("expand-tags-button");
+    fireEvent.click(expandTagsButton);
+    expect(screen.getByText(mockPost.tags[0])).toBeInTheDocument();
+    expect(screen.getByText(mockPost.tags[1])).toBeInTheDocument();
   });
 });
