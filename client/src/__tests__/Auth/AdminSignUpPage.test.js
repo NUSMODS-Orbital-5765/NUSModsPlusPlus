@@ -1,6 +1,6 @@
 // COMPLETE
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/dom";
 import "@testing-library/jest-dom/extend-expect";
 import userEvent from "@testing-library/user-event";
@@ -177,5 +177,117 @@ describe("AdminSignUpPage", () => {
     });
 
     expect(submitButton).toBeEnabled();
+  });
+
+  test("error message if secret code is wrong", async () => {
+    const axiosMockInstance = new axiosMock(axios);
+    axiosMockInstance
+      .onPost(`${process.env.REACT_APP_API_LINK}/register/admin`)
+      .reply(400, { error: "Incorrect secret code" });
+
+    const submitButton = screen.getByTestId("submit-button");
+    expect(submitButton).toBeDisabled();
+
+    const usernameInput = screen.getByLabelText("Username *");
+    fireEvent.change(usernameInput, { target: { value: "" } });
+
+    expect(submitButton).toBeDisabled();
+
+    fireEvent.change(screen.getByLabelText("Name *"), {
+      target: { value: "John Doe" },
+    });
+    fireEvent.change(screen.getByLabelText("Staff ID *"), {
+      target: { value: "123456" },
+    });
+    fireEvent.change(screen.getByLabelText("Username *"), {
+      target: { value: "aDmin123" },
+    });
+    fireEvent.change(screen.getByLabelText("Password *"), {
+      target: { value: "aA12345!" },
+    });
+    fireEvent.change(screen.getByLabelText("Confirm Password *"), {
+      target: { value: "aA12345!" },
+    });
+    fireEvent.change(screen.getByLabelText("Recovery Email *"), {
+      target: { value: "admin@a.d" },
+    });
+
+    const departmentInput = screen.getByLabelText("Department");
+    userEvent.type(departmentInput, "Faculty of");
+    userEvent.type(departmentInput, "{arrowdown}");
+    userEvent.type(departmentInput, "{enter}");
+
+    fireEvent.change(screen.getByLabelText("Position *"), {
+      target: { value: "john" },
+    });
+    fireEvent.change(screen.getByLabelText("Secret Code *"), {
+      target: { value: "hello" },
+    });
+
+    userEvent.click(submitButton);
+
+    await waitFor(
+      () => {
+        const errorMessage = screen.queryByText("Registration failed.");
+        expect(errorMessage).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
+  });
+
+  test("success message on successful sign up", async () => {
+    const axiosMockInstance = new axiosMock(axios);
+    axiosMockInstance
+      .onPost(`${process.env.REACT_APP_API_LINK}/register/admin`)
+      .reply(200, { success: true });
+
+    const submitButton = screen.getByTestId("submit-button");
+    expect(submitButton).toBeDisabled();
+
+    const usernameInput = screen.getByLabelText("Username *");
+    fireEvent.change(usernameInput, { target: { value: "" } });
+
+    expect(submitButton).toBeDisabled();
+
+    fireEvent.change(screen.getByLabelText("Name *"), {
+      target: { value: "John Doe" },
+    });
+    fireEvent.change(screen.getByLabelText("Staff ID *"), {
+      target: { value: "123456" },
+    });
+    fireEvent.change(screen.getByLabelText("Username *"), {
+      target: { value: "aDmin123" },
+    });
+    fireEvent.change(screen.getByLabelText("Password *"), {
+      target: { value: "aA12345!" },
+    });
+    fireEvent.change(screen.getByLabelText("Confirm Password *"), {
+      target: { value: "aA12345!" },
+    });
+    fireEvent.change(screen.getByLabelText("Recovery Email *"), {
+      target: { value: "admin@a.d" },
+    });
+
+    const departmentInput = screen.getByLabelText("Department");
+    userEvent.type(departmentInput, "Faculty of");
+    userEvent.type(departmentInput, "{arrowdown}");
+    userEvent.type(departmentInput, "{enter}");
+
+    fireEvent.change(screen.getByLabelText("Position *"), {
+      target: { value: "john" },
+    });
+    fireEvent.change(screen.getByLabelText("Secret Code *"), {
+      target: { value: "ADMIN" },
+    });
+
+    userEvent.click(submitButton);
+
+    await waitFor(
+      () => {
+        const successMessage = screen.queryByText("Registered successfully!");
+        expect(successMessage).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
   });
 });
