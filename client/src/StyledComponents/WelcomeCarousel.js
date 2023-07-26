@@ -53,6 +53,7 @@ export const CarouselComponent = ({
 
   return (
     <Carousel
+      data-testid="carousel-component"
       sx={{ width: "100%", height: "100%" }}
       showThumbs={false}
       showStatus={false}

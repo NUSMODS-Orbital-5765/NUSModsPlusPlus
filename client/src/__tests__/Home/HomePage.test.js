@@ -22,11 +22,9 @@ jest.mock("../../Home/HomePageRecommendedPosts", () => {
   return jest.fn(() => <div>Mocked HomePageRecommendedPosts</div>);
 });
 
-/* removing for now until events has been sorted out
-jest.mock("../Home/HomePageTimetable", () => {
+jest.mock("../../Home/HomePageTimetable", () => {
   return jest.fn(() => <div>Mocked HomePageTimetable</div>);
 });
-*/
 
 // mock local storage
 jest
@@ -54,9 +52,7 @@ describe("HomePage", () => {
       screen.getByText(/Mocked HomePageRecommendedPosts/i)
     ).toBeInTheDocument();
 
-    /* put back once home page timetable has been fixed
     expect(screen.getByText(/Mocked HomePageTimetable/i)).toBeInTheDocument();
-    */
   });
 
   // test for the username fetching

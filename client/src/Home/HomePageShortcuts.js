@@ -12,6 +12,7 @@ export const SeeMoreArrowButton = ({ pageName }) => {
   return (
     <Tooltip title={<span>Go to {pageName}</span>} placement="top">
       <IconButton
+        data-testid="see-more-button"
         sx={{
           "&:hover": {
             backgroundColor: "transparent",

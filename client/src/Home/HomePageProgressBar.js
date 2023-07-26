@@ -2,6 +2,7 @@ import { Box, Card, CardContent, Typography } from "@mui/material";
 import HomePageEventProgressBar from "./HomePageEventProgressBar";
 import { ProgressBar } from "../StyledComponents";
 import React, { useState, useEffect } from "react";
+import { getTodayEvents } from "./HomePageTimetable";
 
 const HomePageProgressBar = () => {
   // encouraging messages based on day progress
@@ -21,7 +22,7 @@ const HomePageProgressBar = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTime(new Date());
-    }, 60000);
+    }, 1000);
 
     return () => clearInterval(interval);
   }, []);
@@ -78,8 +79,13 @@ const HomePageProgressBar = () => {
           {showMessage()}
         </Typography>
         <Box sx={{ marginBottom: "30px" }}>
-          <ProgressBar color="primary" value={progressPercentage} />
+          <ProgressBar
+            data-testid="day-progress-bar"
+            color="primary"
+            value={progressPercentage}
+          />
         </Box>
+        <HomePageEventProgressBar todayEvents={getTodayEvents()} />
       </CardContent>
     </Card>
   );

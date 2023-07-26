@@ -4,7 +4,7 @@ import { getTodayEvents, isEventOver } from "./HomePageTimetable";
 import React from "react";
 
 const HomePageEventProgressBar = ({ todayEvents }) => {
-  const todayEventsList = getTodayEvents();
+  const todayEventsList = todayEvents;
   const todayEventsOverCount = todayEventsList
     ? todayEventsList.filter((event) => isEventOver(event)).length
     : 0;
@@ -27,7 +27,7 @@ const HomePageEventProgressBar = ({ todayEvents }) => {
         >
           Event Progress
         </Typography>
-        {todayEventsList ? (
+        {todayEventsList && todayEventsList.length !== 0 ? (
           <Typography variant="h1" sx={{ fontSize: "30px" }}>
             <span style={{ color: "#44b700" }}>{todayEventsOverCount}</span>/
             {todayEventsList.length}

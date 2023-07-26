@@ -489,14 +489,14 @@ export function currentTime() {
 export const sampleWeekEvents = [
   {
     name: "MA2001 Tutorial",
-    date: "18-07-2023",
+    date: "25-07-2023",
     time: "2:00 PM",
     category: "MA2001",
     priority: 4,
   },
   {
     name: "Dinner with Amy",
-    date: "19-07-2023",
+    date: "26-07-2023",
     time: "5:00 PM",
     category: "Personal",
     priority: 1,
@@ -504,21 +504,21 @@ export const sampleWeekEvents = [
 
   {
     name: "BT2102 Lab",
-    date: "20-07-2023",
+    date: "27-07-2023",
     time: "1:00 PM",
     category: "BT2102",
     priority: 3,
   },
   {
     name: "NTW Lesson",
-    date: "21-07-2023",
+    date: "28-07-2023",
     time: "4:00 PM",
     category: "NTW2004",
     priority: 3,
   },
   {
     name: "Dinner",
-    date: "21-07-2023",
+    date: "28-07-2023",
     time: "6:30 PM",
     category: "Personal",
     priority: 1,
@@ -526,14 +526,14 @@ export const sampleWeekEvents = [
 
   {
     name: "Consult with Prof",
-    date: "21-07-2023",
+    date: "28-07-2023",
     time: "9:00 AM",
     category: "NTW2004",
     priority: 3,
   },
   {
     name: "EC1101 tutorial 9",
-    date: "21-07-2023",
+    date: "28-07-2023",
     time: "4:00 PM",
     category: "EC1101E",
     priority: 3,
@@ -541,35 +541,35 @@ export const sampleWeekEvents = [
 
   {
     name: "Lunch with Lauren",
-    date: "22-07-2023",
+    date: "29-07-2023",
     time: "12:30 PM",
     category: "Personal",
     priority: 1,
   },
   {
     name: "CS2030 Lab",
-    date: "22-07-2023",
+    date: "29-07-2023",
     time: "2:00 PM",
     category: "CS2030",
     priority: 4,
   },
   {
     name: "Team Meeting",
-    date: "22-07-2023",
+    date: "29-07-2023",
     time: "5:00 PM",
     category: "Personal",
     priority: 3,
   },
   {
     name: "Suite Dinner",
-    date: "22-07-2023",
+    date: "29-07-2023",
     time: "6:00 PM",
     category: "Personal",
     priority: 1,
   },
   {
     name: "Submit NTW essay",
-    date: "22-07-2023",
+    date: "29-07-2023",
     time: "11:00 PM",
     category: "NTW2004",
     priority: 4,
@@ -577,14 +577,14 @@ export const sampleWeekEvents = [
 
   {
     name: "Lunch",
-    date: "23-07-2023",
+    date: "30-07-2023",
     time: "12:30 PM",
     category: "Personal",
     priority: 1,
   },
   {
     name: "Dinner with Jon",
-    date: "23-07-2023",
+    date: "30-07-2023",
     time: "6:00 PM",
     category: "Personal",
     priority: 1,

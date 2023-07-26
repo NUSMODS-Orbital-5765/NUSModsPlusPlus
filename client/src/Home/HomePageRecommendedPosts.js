@@ -97,6 +97,7 @@ export const MiniPost = ({ post }) => {
             variant="outlined"
           />
           <Checkbox
+            data-testid="like-button"
             onClick={toggleLiked}
             icon={<FavoriteBorderRoundedIcon />}
             checkedIcon={<FavoriteRoundedIcon />}
@@ -135,7 +136,7 @@ const HomePageRecommendedPosts = () => {
     const postGetTopAPI = `${process.env.REACT_APP_API_LINK}/post/top`;
     axios
       .post(postGetTopAPI, {
-        timePeriod: 7 * 24 * 60 * 60 * 1000 * 1000,
+        timePeriod: 7 * 24 * 60 * 60 * 1000 * 1000, // top post wihin the week
       })
       .then((res) => {
         console.log(res.data.topPostList);
