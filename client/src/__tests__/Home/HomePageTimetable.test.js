@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import HomePageTimetable, {
+import {
   getThisWeekEvents,
   getTodayDayOfWeek,
   parseTime,
@@ -152,6 +152,11 @@ describe("TodayTimeline", () => {
       </MemoryRouter>
     );
 
+    expect(screen.getByText(/Today/i)).toBeInTheDocument();
+    const seeMoreButton = screen.getByTestId("see-more-button");
+    expect(seeMoreButton).toBeInTheDocument();
+
+    expect(seeMoreButton).toHaveAttribute("href", "/planner-events");
     const timelineItems = screen.getAllByTestId("timeline-item");
     expect(timelineItems).toHaveLength(mockEventsList.length);
   });
@@ -171,28 +176,28 @@ describe("TodayTimeline", () => {
 
 const mockTimetableEvents = [
   {
-    name: "Test Event",
+    name: "Test Event 1",
     category: "test category",
     date: "26-07-2023",
     time: "08:00 AM",
     priority: 4,
   },
   {
-    name: "Test Event",
+    name: "Test Event 2",
     category: "test category",
     date: "27-07-2023",
     time: "08:00 AM",
     priority: 4,
   },
   {
-    name: "Test Event",
+    name: "Test Event 3",
     category: "test category",
     date: "27-07-2023",
     time: "08:00 AM",
     priority: 4,
   },
   {
-    name: "Test Event",
+    name: "Test Event 4",
     category: "test category",
     date: "28-07-2023",
     time: "08:00 AM",
@@ -201,5 +206,29 @@ const mockTimetableEvents = [
 ];
 
 describe("ThisWeekTimetable", () => {
-  test("timetable items rendered correctly", () => {});
+  test("timetable items rendered correctly", () => {
+    render(
+      <MemoryRouter>
+        <ThisWeekTimetable
+          eventsDict={getThisWeekEvents(mockTimetableEvents)}
+        />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText(/Coming Up Next/i)).toBeInTheDocument();
+    const seeMoreButton = screen.getByTestId("see-more-button");
+    expect(seeMoreButton).toBeInTheDocument();
+
+    expect(seeMoreButton).toHaveAttribute("href", "/planner-events");
+    expect(screen.getByText(/Mon/i)).toBeInTheDocument();
+    expect(screen.getByText(/Tue/i)).toBeInTheDocument();
+
+    // check can see events
+    mockTimetableEvents.forEach(
+      (event) =>
+        expect(screen.getByText(event.name)).toBeInTheDocument() &&
+        expect(screen.getByText(event.category)).toBeInTheDocument() &&
+        expect(screen.getByText(event.time)).toBeInTheDocument()
+    );
+  });
 });
