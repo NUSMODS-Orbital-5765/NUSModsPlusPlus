@@ -36,6 +36,7 @@ const UploadPostFile = ({ allowedTypes, handleFormFile }) => {
       }}
     >
       <Input
+        data-testid="upload-file"
         id="upload-file"
         name="upload-file"
         type="file"

@@ -25,6 +25,7 @@ describe("SignInPage", () => {
     expect(screen.getByText(/Plan well, score well/i)).toBeInTheDocument();
     expect(screen.getByText(/Welcome Back!/i)).toBeInTheDocument();
     expect(screen.getByText(/Are you new here?/i)).toBeInTheDocument();
+    expect(screen.getByText(/Get Started/i)).toBeInTheDocument();
     expect(screen.getByTestId("sign-up-button")).toBeInTheDocument();
 
     // tests that the input fields are present
@@ -49,6 +50,48 @@ describe("SignInPage", () => {
     expect(screen.getByText("Join the community today.")).toBeInTheDocument();
   });
 
+  test("status field updates with user input", () => {
+    render(
+      <MemoryRouter>
+        <SignInPage />
+      </MemoryRouter>
+    );
+
+    const statusSelect = screen.getByTestId("status-input");
+    userEvent.click(statusSelect);
+    userEvent.type(statusSelect, "{enter}");
+    const studentOption = screen.getByText("Student");
+    userEvent.click(studentOption);
+    userEvent.click(statusSelect);
+
+    expect(screen.queryAllByText(/Administrator/i)).length === 0;
+    expect(screen.queryAllByText("Student")).length !== 0;
+  });
+
+  const inputFields = [
+    { label: "Username", input: "john_doe" },
+    { label: "Password", input: "123456" },
+  ];
+
+  test.each(inputFields)(
+    "correctly updates input field, error if empty",
+    ({ label, input }) => {
+      render(
+        <MemoryRouter>
+          <SignInPage />
+        </MemoryRouter>
+      );
+      const inputField = screen.getByLabelText(label);
+      fireEvent.change(inputField, { target: { value: input } });
+      expect(inputField).toHaveValue(input);
+      fireEvent.blur(inputField);
+
+      fireEvent.change(inputField, { target: { value: "" } });
+      expect(inputField).toHaveValue("");
+      fireEvent.blur(inputField);
+    }
+  );
+
   test("password visibility successfully toggled", () => {
     render(
       <MemoryRouter>
@@ -64,6 +107,29 @@ describe("SignInPage", () => {
     expect(passwordInput).toHaveAttribute("type", "text");
     fireEvent.click(togglePasswordButton);
     expect(passwordInput).toHaveAttribute("type", "password");
+  });
+
+  test("login button only enabled if all fields complete", () => {
+    render(
+      <MemoryRouter>
+        <SignInPage />
+      </MemoryRouter>
+    );
+    const loginButton = screen.getByTestId("login-button");
+    expect(loginButton).toBeDisabled();
+
+    const statusSelect = screen.getByTestId("status-input");
+    userEvent.click(statusSelect);
+    userEvent.type(statusSelect, "{enter}");
+    const studentOption = screen.getByText("Student");
+    userEvent.click(studentOption);
+    userEvent.click(document.body);
+
+    userEvent.type(screen.getByLabelText("Username"), "john_doe");
+    expect(loginButton).toBeDisabled();
+
+    userEvent.type(screen.getByLabelText("Password"), "password");
+    expect(loginButton).toBeEnabled();
   });
 
   test("success message on successful login", async () => {

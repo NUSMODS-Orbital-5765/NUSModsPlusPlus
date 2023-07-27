@@ -14,6 +14,8 @@ import {
   Autocomplete,
   Fab,
   Tooltip,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { majorList, facultyList, progsList } from "../Constants";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
@@ -28,7 +30,7 @@ import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../libs/s3Client";
 import { nanoid } from "nanoid";
 // styling for post upload form component
-export const UploadPostForm = (props) => {
+export const UploadPostForm = ({ handleCloseUpload }) => {
   const navigate = useNavigate();
   // form validation
   const [isFormValid, setIsFormValid] = useState(false);
@@ -83,8 +85,7 @@ export const UploadPostForm = (props) => {
 
   const userId = localStorage.getItem("userId");
   let filePath = "";
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     if (formFile !== "") {
       const folderId = nanoid();
       filePath = `post/${folderId}/` + formFile.name;
@@ -101,7 +102,7 @@ export const UploadPostForm = (props) => {
         })
         .catch((err) => {
           console.log("Error", err);
-          alert("Fail to upload File");
+          alert("Failed to upload file.");
         });
     }
 
@@ -121,13 +122,14 @@ export const UploadPostForm = (props) => {
     axios
       .post(uploadAPI, post)
       .then((response) => {
-        alert("Upload Post Successfully");
+        alert("Post uploaded successfully!");
 
         //useNavigate need to be initalise at top
-        props.handleCloseUpload();
+        handleCloseUpload();
         window.location.reload();
       })
       .catch((error) => {
+        alert("Post upload failed.");
         console.log(error.message);
         //undo the insertion
         if (formFile !== "") {
@@ -141,10 +143,11 @@ export const UploadPostForm = (props) => {
       });
   };
   return (
-    <form onSubmit={(e) => handleSubmit(e)}>
+    <div>
       <FormControl sx={{ width: "100%" }}>
         <TextField
           label="Post Title"
+          data-testid="post-title-field"
           variant="standard"
           onChange={handlePostTitleChange}
           error={formErrors.titleError}
@@ -159,6 +162,7 @@ export const UploadPostForm = (props) => {
           error={formErrors.categoryError}
           helperText={formErrors.categoryError ? "Category is required" : ""}
           label="Post Category"
+          data-testid="post-category-field"
           variant="standard"
         >
           <MenuItem value={"Study Guide"}>Study Guide</MenuItem>
@@ -170,6 +174,7 @@ export const UploadPostForm = (props) => {
         <Autocomplete
           sx={{ marginTop: "20px" }}
           disablePortal
+          data-testid="major-select-field"
           name="Related Major/Faculty/Special Programme (if applicable)"
           onChange={handleSelectedMajor}
           options={[...majorList, ...facultyList, ...progsList]}
@@ -196,15 +201,16 @@ export const UploadPostForm = (props) => {
         />
       </FormControl>
       <Button
+        data-testid="create-post-button"
         disabled={!isFormValid}
         sx={{ marginTop: "30px" }}
-        type="submit"
+        onClick={handleSubmit}
         variant="contained"
         color="primary"
       >
         Create Post
       </Button>
-    </form>
+    </div>
   );
 };
 
@@ -222,6 +228,7 @@ const UploadPost = () => {
     <div>
       <Tooltip title="Create new Post" placement="top">
         <Fab
+          data-testid="open-dialog-button"
           color="primary"
           onClick={handleOpenUpload}
           sx={{
@@ -247,6 +254,7 @@ const UploadPost = () => {
               New Post
             </Typography>
             <Button
+              data-testid="close-button"
               sx={{ marginLeft: "120ch" }}
               color="error"
               variant="contained"

@@ -148,7 +148,6 @@ describe("FormFacultyMajorField", () => {
     userEvent.click(document.body);
 
     const majorSelect = screen.getByTestId("degree-field");
-
     expect(majorSelect).toHaveTextContent("Primary Degree/Major *");
   });
 });

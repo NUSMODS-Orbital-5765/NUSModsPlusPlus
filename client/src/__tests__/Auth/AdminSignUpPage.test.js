@@ -216,6 +216,10 @@ describe("AdminSignUpPage", () => {
     userEvent.type(departmentInput, "Faculty of");
     userEvent.type(departmentInput, "{arrowdown}");
     userEvent.type(departmentInput, "{enter}");
+    userEvent.click(departmentInput);
+    expect(
+      screen.getByText("Faculty of Arts and Social Sciences")
+    ).toBeInTheDocument();
 
     fireEvent.change(screen.getByLabelText("Position *"), {
       target: { value: "john" },
