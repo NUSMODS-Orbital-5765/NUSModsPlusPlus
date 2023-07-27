@@ -81,7 +81,11 @@ export const PostTagsField = ({ selectedMajor, handleFormTag }) => {
           alignItems: "center",
         }}
       >
-        <Button variant="outlined" onClick={handleOpenNewTagDialog}>
+        <Button
+          data-testid="new-tag-button"
+          variant="contained"
+          onClick={handleOpenNewTagDialog}
+        >
           New Tag:
         </Button>
         {openNewTagDialog && (
@@ -101,9 +105,10 @@ export const PostTagsField = ({ selectedMajor, handleFormTag }) => {
               onChange={handleNewTagChange}
             />
             <Button
-              sx={{ marginLeft: "30px" }}
+              sx={{ marginLeft: "30px", color: "white" }}
               color="success"
-              variant="outlined"
+              variant="contained"
+              data-testid="save-tag-button"
               onClick={handleNewTag}
             >
               Save
