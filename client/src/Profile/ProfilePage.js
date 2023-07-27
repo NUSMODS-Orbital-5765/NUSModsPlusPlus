@@ -31,6 +31,7 @@ export const PublicProfileButton = ({ disabledCondition, link }) => {
   return (
     <Tooltip title={<span>View Public Profile</span>} placement="top">
       <IconButton
+        data-testid="public-profile-button"
         sx={{
           "&:hover": {
             backgroundColor: "transparent",
@@ -77,7 +78,7 @@ const ProfilePage = ({ selectedTab }) => {
   // handling public vs private profile
   const [publicProfile, setPublicProfile] = useState(false);
   const togglePublicProfile = () => {
-    setPublicProfile(false);
+    setPublicProfile(!publicProfile);
   };
 
   // styling the switch component to toggle between public and private profile
@@ -94,6 +95,7 @@ const ProfilePage = ({ selectedTab }) => {
         }}
       >
         <Switch
+          data-testid="public-profile-switch"
           color="success"
           checked={publicProfile}
           onChange={togglePublicProfile}
