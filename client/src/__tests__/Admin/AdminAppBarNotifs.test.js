@@ -28,7 +28,7 @@ describe("AdminDefaultNotif", () => {
   test("renders the notification correctly", () => {
     render(<AdminDefaultNotif notif={sampleNotif} />);
 
-    // check the view profile is clickable (tooltip rendered)
+    // check the view profile is rendered
     const viewProfileElement = screen.getByTestId("PersonIcon");
     expect(viewProfileElement).toBeInTheDocument();
 
@@ -47,10 +47,6 @@ describe("AdminDefaultNotif", () => {
     // check the content
     const notificationContent = screen.getByText(sampleNotif.content);
     expect(notificationContent).toBeInTheDocument();
-
-    // check the avatar
-    const avatarElement = screen.getByTestId("PersonIcon");
-    expect(avatarElement).toBeInTheDocument();
   });
 
   // testing notification truncation function

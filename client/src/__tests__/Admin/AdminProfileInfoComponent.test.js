@@ -13,7 +13,6 @@ const mockAdminProfile = {
   avatar: "sample_avatar_1.png",
   department: "Faculty of Science",
 };
-
 // render the component
 beforeEach(() => {
   render(<AdminProfileInfoComponentFrame userProfile={mockAdminProfile} />);

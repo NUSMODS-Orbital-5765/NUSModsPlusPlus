@@ -40,7 +40,7 @@ describe("AdminHomePage", () => {
     expect(navigateButton).toBeInTheDocument();
   });
 
-  test("navigate button is functioning", async () => {
+  test("navigate button is functioning", () => {
     render(
       <MemoryRouter>
         <AdminHomePage />
