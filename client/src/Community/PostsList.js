@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import CommunityDefaultPost from "./CommunityDefaultPost";
 import { Box } from "@mui/material";
+import React from "react";
 
 const PostsList = ({ postList }) => {
   return (
