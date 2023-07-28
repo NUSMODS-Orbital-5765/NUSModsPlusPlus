@@ -12,6 +12,8 @@ import {
   IconButton,
   Typography,
   Button,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
 import { PageHeader, PageHeaderNoSubtitle } from "../StyledComponents";
@@ -19,9 +21,9 @@ import AddNewEvent from "./AddNewEvent";
 import { Link } from "react-router-dom";
 import { combinedItems } from "../Home/HomePageStyledComponents";
 import { priorityColors } from "../Constants";
-import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
-import { DataGrid } from '@mui/x-data-grid';
-import { useState, useEffect } from "react";
+import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
+import { DataGrid } from "@mui/x-data-grid";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 export const EventsPageHeader = () => {
@@ -72,9 +74,7 @@ export const EventsPageHeader = () => {
   );
 };
 
-
-
-export const EventsDataGrid = ({ eventsList , handleDeleteEvent}) => {
+export const EventsDataGrid = ({ eventsList, handleDeleteEvent }) => {
   const columns = [
     {
       field: "id",
@@ -139,6 +139,7 @@ export const EventsDataGrid = ({ eventsList , handleDeleteEvent}) => {
       sortable: false,
       renderCell: (params) => (
         <IconButton
+          data-testid="delete-button"
           onClick={() => handleDeleteEvent(params.row.id, params.row.eventId)}
         >
           <ClearRoundedIcon color="error" />
@@ -154,55 +155,61 @@ export const EventsDataGrid = ({ eventsList , handleDeleteEvent}) => {
   );
 };
 
-
 // main component
 const EventsPlannerPage = () => {
-  const [events,setEvents] = useState([]);
-  
+  const [events, setEvents] = useState([]);
+  const [deleteEventSuccess, setDeleteEventSuccess] = useState(false);
+  const [deleteEventError, setDeleteEventError] = useState(false);
+
   const handleDeleteEvent = (id, eventId) => {
     const DeleteEventAPI = `${process.env.REACT_APP_API_LINK}/event/delete`;
-    const deleteJsonBody = {eventId: eventId};
+    const deleteJsonBody = { eventId: eventId };
     axios
       .post(DeleteEventAPI, deleteJsonBody, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("user-token")}` }
-    })
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        },
+      })
       .then((response) => {
-        alert("Delete Event Successfully");
-        setEvents((prevEvents) => prevEvents.filter((event) => event.id !== id));
+        setDeleteEventSuccess(true);
+        setEvents((prevEvents) =>
+          prevEvents.filter((event) => event.id !== id)
+        );
       })
       .catch((error) => {
         console.log(error);
         //undo the insertion
-        alert("Event Delete Failed" + error.message);
+        setDeleteEventError(true);
       });
   };
-  
-  useEffect(()=> {
+
+  useEffect(() => {
     const GetEventAPI = `${process.env.REACT_APP_API_LINK}/event/get`;
     axios
-    .get(GetEventAPI, {
-      params:{userId:localStorage.getItem("userId")},
-      headers: { Authorization: `Bearer ${localStorage.getItem("user-token")}` }
-  })
-    .then((response) => {
-      const postedEvents = response.data.events;
-      let count = 1;
-      postedEvents.map(event=>{
-        event.eventId = event.id;
-        event.id = count;
-        delete event.userId;
-        count++;
+      .get(GetEventAPI, {
+        params: { userId: localStorage.getItem("userId") },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        },
+      })
+      .then((response) => {
+        const postedEvents = response.data.events;
+        let count = 1;
+        postedEvents.map((event) => {
+          event.eventId = event.id;
+          event.id = count;
+          delete event.userId;
+          count++;
+        });
+        console.log(postedEvents);
+        setEvents((prevEvents) => postedEvents);
+      })
+      .catch((error) => {
+        console.log(error);
+        //undo the insertion
+        alert("Event added Failed " + error.message);
       });
-      console.log(postedEvents)
-      setEvents((prevEvents) => postedEvents);
-    })
-    .catch((error) => {
-      console.log(error);
-      //undo the insertion
-      alert("Event added Failed " + error.message);
-      })}
-      ,[]
-    )
+  }, []);
   return (
     <div className="homepage">
       <AppBarComponent />
@@ -234,15 +241,44 @@ const EventsPlannerPage = () => {
               }}
             >
               <PageHeaderNoSubtitle header="Events" />
-              
             </Box>
           </CardContent>
           <CardContent>
-            <EventsDataGrid eventsList={events} handleDeleteEvent={handleDeleteEvent}/>
+            <EventsDataGrid
+              eventsList={events}
+              handleDeleteEvent={handleDeleteEvent}
+            />
           </CardContent>
         </Card>
-        
       </Box>
+      <Snackbar
+        open={deleteEventError}
+        autoHideDuration={3000}
+        onClose={() => setDeleteEventError(false)}
+      >
+        <Alert
+          onClose={() => setDeleteEventError(false)}
+          sx={{ color: "white" }}
+          variant="filled"
+          severity="error"
+        >
+          Failed to delete event.
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={deleteEventSuccess}
+        autoHideDuration={3000}
+        onClose={() => setDeleteEventSuccess(false)}
+      >
+        <Alert
+          onClose={() => setDeleteEventSuccess(false)}
+          sx={{ color: "white" }}
+          variant="filled"
+          severity="success"
+        >
+          Event deleted successfully!
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
