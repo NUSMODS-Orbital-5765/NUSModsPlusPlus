@@ -12,14 +12,20 @@ describe("ProfilePictureComponent", () => {
       <ProfilePictureComponent sampleIcon={sampleIcon} />
     );
 
+    const initialImgElement = container.querySelector("img");
+    expect(initialImgElement.getAttribute("src")).toBe(sampleIcon);
+
+    const uploadedFile = new File([""], "newImage.jpg", { type: "image/jpeg" });
+
     const inputElement = container.querySelector('input[type="file"]');
     fireEvent.change(inputElement, {
       target: {
-        files: [new File([""], "sampleImage.jpg", { type: "image/jpeg" })],
+        files: [uploadedFile],
       },
     });
 
-    const imgElement = container.querySelector("img");
-    expect(imgElement.getAttribute("src")).toContain("path/to/sampleIcon.jpg");
+    const updatedImgElement = container.querySelector("img");
+    const expectedSrc = "data:image/jpeg;base64," + uploadedFile.preview;
+    expect(updatedImgElement.getAttribute("src")).toBe(expectedSrc);
   });
 });
