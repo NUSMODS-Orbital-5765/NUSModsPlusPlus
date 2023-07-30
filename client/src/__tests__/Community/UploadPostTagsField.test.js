@@ -43,6 +43,7 @@ describe("PostTagsField", () => {
     userEvent.click(saveButton);
 
     const autocomplete = screen.getByRole("combobox", { name: /My Tags/i });
+    expect(screen.queryByText("Tag Name")).length === 0;
     expect(screen.getByText("Sample Tag")).toBeInTheDocument();
   });
 });
