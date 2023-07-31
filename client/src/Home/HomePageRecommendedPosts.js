@@ -17,7 +17,7 @@ import "./RecommendedPostStyles.css";
 import { SeeMoreArrowButton } from "./HomePageShortcuts";
 import { CommunityPostDialog } from "../Community/CommunityDefaultPost";
 import { createPortal } from "react-dom";
-import { CarouselComponent } from "../StyledComponents";
+import { CarouselComponent } from "../StyledComponents/WelcomeCarousel";
 import axios from "axios";
 import { parseISO } from "date-fns";
 // custom post rendering (not the same as community default post)
@@ -97,6 +97,7 @@ export const MiniPost = ({ post }) => {
             variant="outlined"
           />
           <Checkbox
+            data-testid="like-button"
             onClick={toggleLiked}
             icon={<FavoriteBorderRoundedIcon />}
             checkedIcon={<FavoriteRoundedIcon />}
@@ -129,20 +130,20 @@ const HomePageRecommendedPosts = () => {
     const sortedPosts = topPostList.sort((a, b) => b.likes - a.likes);
     const top5Posts = Array.from(new Set(sortedPosts.slice(0, 5)));
     const slides = top5Posts.map((post, index) => <MiniPost post={post} />);
-    return slides
-  }
-  useEffect(()=>{
+    return slides;
+  };
+  useEffect(() => {
     const postGetTopAPI = `${process.env.REACT_APP_API_LINK}/post/top`;
     axios
       .post(postGetTopAPI, {
-        timePeriod: 7 * 24 * 60 * 60 * 1000 * 1000,
+        timePeriod: 7 * 24 * 60 * 60 * 1000 * 1000, // top post wihin the week
       })
       .then((res) => {
         console.log(res.data.topPostList);
         setTopPostList(res.data.topPostList);
       })
       .catch((err) => console.log(err));
-  },[])
+  }, []);
   return (
     <Card
       sx={{
@@ -159,7 +160,11 @@ const HomePageRecommendedPosts = () => {
           </Typography>
           <SeeMoreArrowButton pageName="Community" />
         </Box>
-        <CarouselComponent fontSize="30px" slides={handleSlides(topPostList)} position="30%" />
+        <CarouselComponent
+          fontSize="30px"
+          slides={handleSlides(topPostList)}
+          position="30%"
+        />
       </CardContent>
     </Card>
   );

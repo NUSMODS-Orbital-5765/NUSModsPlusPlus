@@ -29,7 +29,7 @@ export const avatarItems = [
   { label: "Logout", icon: <LogoutRoundedIcon />, link: "/sign-in" },
 ];
 
-const AppBarAvatar = ({ userProfile, avatarItems }) => {
+const AppBarAvatar = ({ avatarItems }) => {
   // opening the menu
   const [anchorEl, setAnchorEl] = useState(null);
   const handleOpenMenu = (event) => {
@@ -42,10 +42,12 @@ const AppBarAvatar = ({ userProfile, avatarItems }) => {
   return (
     <div>
       <IconButton
+        data-testid="avatar-button"
         onClick={handleOpenMenu}
         sx={{ margin: "20px", marginLeft: "10px" }}
       >
         <Badge
+          data-testid="badge"
           overlap="circular"
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }} // this one is just to show whether the person is logged in or not, maybe not important lol can delete if necessary
           variant="dot"
@@ -54,7 +56,7 @@ const AppBarAvatar = ({ userProfile, avatarItems }) => {
           <Avatar
             sx={{ width: 50, height: 50 }}
             alt="Sample Icon"
-            src={userProfile.avatar}
+            src="/sample_icon.png"
           />
         </Badge>
       </IconButton>
@@ -74,7 +76,7 @@ const AppBarAvatar = ({ userProfile, avatarItems }) => {
             justifyItems: "center",
           }}
         >
-          <Avatar sx={{ width: 70, height: 70 }} src={userProfile.avatar} />
+          <Avatar sx={{ width: 70, height: 70 }} src="/sample_icon.png" />
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <Typography sx={{ fontSize: "20px", fontWeight: 600 }}>
               {localStorage.getItem("name")}

@@ -82,7 +82,7 @@ export function FormUsernameField({ defaultText, setfn, disabled }) {
     const value = event.target.value;
     setRequiredField(value);
 
-    const usernameRegex = /^[a-zA-Z0-9_]{8,}$/;
+    const usernameRegex = /^[a-zA-Z0-9_.]{8,}$/;
     const isError = !usernameRegex.test(value);
     setError(isError);
     if (!isError) {
@@ -299,6 +299,7 @@ export function FormFacultyMajorField({
       <FormControl>
         <InputLabel>Faculty</InputLabel>
         <Select
+          data-testid="faculty-field"
           fullWidth
           required
           name="faculty"
@@ -324,6 +325,7 @@ export function FormFacultyMajorField({
             fullWidth
             required
             name="primaryDegree"
+            data-testid="degree-field"
             label="Primary Degree/Major"
             disabled={disabled}
             value={selectedMajor}

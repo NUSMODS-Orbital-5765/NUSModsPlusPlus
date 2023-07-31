@@ -3,25 +3,20 @@ import React, { useState, useEffect } from "react";
 import {
   Box,
   FormControl,
-  InputLabel,
-  Select,
-  Chip,
-  MenuItem,
   Button,
   TextField,
+  Autocomplete,
 } from "@mui/material";
 import { postTagsList } from "../Constants";
 
-export const PostTagsField = (props) => {
-  const selectedMajor = props.selectedMajor;
-  const handleFormTag = props.handleFormTag;
+export const PostTagsField = ({ selectedMajor, handleFormTag }) => {
   const [myTags, setMyTags] = useState([]);
   const [newTag, setNewTag] = useState("");
   const [tagsList, setTagsList] = useState(postTagsList);
   const [openNewTagDialog, setOpenNewTagDialog] = useState(false);
 
-  const handleTags = (event) => {
-    setMyTags(event.target.value);
+  const handleTags = (event, value) => {
+    setMyTags(value);
   };
 
   const handleNewTag = () => {
@@ -47,7 +42,8 @@ export const PostTagsField = (props) => {
       });
     }
   }, [selectedMajor]);
-  useEffect(() => handleFormTag(myTags), [myTags]);
+
+  useEffect(() => handleFormTag(myTags), [myTags, handleFormTag]);
 
   const handleOpenNewTagDialog = () => {
     setOpenNewTagDialog(true);
@@ -63,49 +59,18 @@ export const PostTagsField = (props) => {
       }}
     >
       <FormControl sx={{ width: "50%" }}>
-        <InputLabel variant="standard">
-          Add some tags to help others find your post!
-        </InputLabel>
-        <Select
+        <Autocomplete
           multiple
           name="tags"
           value={myTags}
           variant="standard"
           onChange={handleTags}
           label="My Tags"
-          renderValue={(selected) => (
-            <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-              {selected &&
-                selected.length > 0 &&
-                selected.map((tag, index) => (
-                  <Chip
-                    variant="filled"
-                    color="primary"
-                    sx={{ margin: "5px" }}
-                    key={index}
-                    label={tag}
-                  />
-                ))}
-            </Box>
+          options={tagsList}
+          renderInput={(params) => (
+            <TextField {...params} variant="standard" label="My Tags" />
           )}
-          MenuProps={{
-            anchorOrigin: {
-              vertical: "bottom",
-              horizontal: "left",
-            },
-            transformOrigin: {
-              vertical: "top",
-              horizontal: "left",
-            },
-            getContentAnchorEl: null,
-          }}
-        >
-          {tagsList.map((tag, index) => (
-            <MenuItem key={index} value={tag}>
-              {tag}
-            </MenuItem>
-          ))}
-        </Select>
+        />
       </FormControl>
       <Box
         sx={{
@@ -116,7 +81,11 @@ export const PostTagsField = (props) => {
           alignItems: "center",
         }}
       >
-        <Button variant="outlined" onClick={handleOpenNewTagDialog}>
+        <Button
+          data-testid="new-tag-button"
+          variant="contained"
+          onClick={handleOpenNewTagDialog}
+        >
           New Tag:
         </Button>
         {openNewTagDialog && (
@@ -136,9 +105,10 @@ export const PostTagsField = (props) => {
               onChange={handleNewTagChange}
             />
             <Button
-              sx={{ marginLeft: "30px" }}
+              sx={{ marginLeft: "30px", color: "white" }}
               color="success"
-              variant="outlined"
+              variant="contained"
+              data-testid="save-tag-button"
               onClick={handleNewTag}
             >
               Save

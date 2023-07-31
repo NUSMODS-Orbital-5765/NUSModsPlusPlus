@@ -21,7 +21,7 @@ import {
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const ProfileInfoFrame = ({ userProfile }) => {
+export const ProfileInfoFrame = ({ userProfile }) => {
   const [editableDetails, setEditableDetails] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState(false);
@@ -30,23 +30,23 @@ const ProfileInfoFrame = ({ userProfile }) => {
   const [profileInfo, setProfileInfo] = useState(userProfile);
   const [academicPlan, setAcademicPlan] = useState(userProfile.academicPlan);
 
-  const handleEditableDetails = () => setEditableDetails(!editableDetails)
+  const handleEditableDetails = () => setEditableDetails(!editableDetails);
   const handleAcademicPlanChange = (event) => {
     setAcademicPlan(event.target.value);
   };
 
   const [isFormComplete, setIsFormComplete] = useState(false);
   const handleFormCompletion = (fieldErrors) => {
-    const isComplete = Object.values(fieldErrors).every((error) => !error);
+    const isComplete = fieldErrors.every((error) => !error);
     setIsFormComplete(isComplete);
   };
 
-  const fieldErrors = {
-    name: profileInfo.name === "",
-    studentId: profileInfo.studentId === "",
-    faculty: profileInfo.faculty === "",
-    primaryDegree: profileInfo.primaryDegree === "",
-  };
+  const fieldErrors = [
+    profileInfo.name === "",
+    profileInfo.studentId === "",
+    profileInfo.faculty === "",
+    profileInfo.primaryDegree === "",
+  ];
 
   useEffect(() => {
     handleFormCompletion(fieldErrors);
@@ -66,28 +66,27 @@ const ProfileInfoFrame = ({ userProfile }) => {
   };
 
   const submitProfileUpdate = () => {
-    const profileUpdateAPI = `${process.env.REACT_APP_API_LINK}/profile/update`;
-    axios
-      .post(profileUpdateAPI, profileInfo, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-        },
-      })
-      .then((response) => {
-        setEditableDetails(false);
-        setSubmitSuccess(true);
-        localStorage.setItem("name", profileInfo.name);
-      })
-      .catch((error) => {
-        setSubmitError(false);
-        console.log(error);
-      });
+    if (!isFormComplete) {
+      setSubmitError(true);
+    } else {
+      const profileUpdateAPI = `${process.env.REACT_APP_API_LINK}/profile/update`;
+      axios
+        .post(profileUpdateAPI, profileInfo, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+          },
+        })
+        .then((response) => {
+          setEditableDetails(false);
+          setSubmitSuccess(true);
+          localStorage.setItem("name", profileInfo.name);
+        })
+        .catch((error) => {
+          setSubmitError(true);
+          console.log(error);
+        });
+    }
   };
-  // end of test implementation //
-
-
-
-
 
   return (
     <Box sx={{ margin: "55px", marginTop: "-20px" }}>
@@ -103,6 +102,7 @@ const ProfileInfoFrame = ({ userProfile }) => {
           Personal Details
         </Typography>
         <Button
+          data-testid="edit-button"
           sx={{ marginLeft: "30px" }}
           onClick={handleEditableDetails}
           color="error"
@@ -118,7 +118,7 @@ const ProfileInfoFrame = ({ userProfile }) => {
             disabled={!editableDetails}
             label="Name"
             name="name"
-            defaultText={profileInfo.name}
+            defaultText={userProfile.name}
             setfn={handleProfileInfo}
           />
         </Box>
@@ -127,7 +127,7 @@ const ProfileInfoFrame = ({ userProfile }) => {
             disabled={!editableDetails}
             label="StudentID"
             name="NUSId"
-            defaultText={profileInfo.NUSId}
+            defaultText={userProfile.NUSId}
             setfn={handleProfileInfo}
           />
         </Box>
@@ -135,8 +135,8 @@ const ProfileInfoFrame = ({ userProfile }) => {
         <Box sx={{ marginBottom: "20px" }}>
           <FormFacultyMajorField
             disabled={!editableDetails}
-            filledFaculty={profileInfo.faculty}
-            filledMajor={profileInfo.primaryDegree}
+            filledFaculty={userProfile.faculty}
+            filledMajor={userProfile.primaryDegree}
             setfn={handleProfileInfo}
           />
         </Box>
@@ -148,7 +148,10 @@ const ProfileInfoFrame = ({ userProfile }) => {
               label="Academic Plan"
               value={academicPlan}
               name="academicPlan"
-              onChange={e=>{handleAcademicPlanChange(e);handleProfileInfo(e)}}
+              onChange={(e) => {
+                handleAcademicPlanChange(e);
+                handleProfileInfo(e);
+              }}
             >
               <MenuItem value={"Single Degree"}>Single Degree</MenuItem>
               <MenuItem value={"Double Degree"}>Double Degree</MenuItem>
@@ -162,7 +165,7 @@ const ProfileInfoFrame = ({ userProfile }) => {
               disabled={!editableDetails}
               optionsList={majorList}
               defaultText={
-                profileInfo.secondDegree ? profileInfo.secondDegree : ""
+                userProfile.secondDegree ? userProfile.secondDegree : ""
               }
               label="Second Degree"
               name="secondDegree"
@@ -176,7 +179,7 @@ const ProfileInfoFrame = ({ userProfile }) => {
               disabled={!editableDetails}
               optionsList={majorList}
               defaultText={
-                profileInfo.secondMajor ? profileInfo.secondMajor : ""
+                userProfile.secondMajor ? userProfile.secondMajor : ""
               }
               label="Second Major"
               name="secondMajor"
@@ -186,7 +189,7 @@ const ProfileInfoFrame = ({ userProfile }) => {
         )}
         <Box sx={{ marginBottom: "20px" }}>
           <FormMinorField
-            filledMinor={profileInfo.minor}
+            filledMinor={userProfile.minor}
             setfn={handleMinorInfo}
             disabled={!editableDetails}
           />
@@ -197,12 +200,13 @@ const ProfileInfoFrame = ({ userProfile }) => {
             name="programme"
             label="Special Programme (if any)"
             optionsList={progsList}
-            defaultText={profileInfo.programme}
+            defaultText={userProfile.programme}
             setfn={handleProfileInfo}
           />
         </Box>
       </Box>
       <Button
+        data-testid="save-button"
         onClick={submitProfileUpdate}
         disabled={!isFormComplete}
         sx={{ marginTop: "10px" }}
@@ -261,9 +265,6 @@ const ProfileInfoComponent = () => {
       })
       .catch((err) => console.log(err));
   }, []);
-  return(
-    isFetch &&
-  <ProfileInfoFrame userProfile={userProfile} />
-  );
-}
+  return isFetch && <ProfileInfoFrame userProfile={userProfile} />;
+};
 export default ProfileInfoComponent;

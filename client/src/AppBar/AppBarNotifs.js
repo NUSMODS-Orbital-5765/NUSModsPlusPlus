@@ -20,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { isToday, isThisWeek } from "../Constants";
 import { AdminDefaultNotif } from "../Admin/AdminAppBarNotifs";
 import UserProfileView from "../UserProfileView";
-import {parseISO} from "date-fns";
+import { parseISO } from "date-fns";
 // notif count
 export const NotifCount = ({ label, notifListCount, labelColor }) => {
   return (
@@ -52,8 +52,34 @@ export const NotifCount = ({ label, notifListCount, labelColor }) => {
   );
 };
 
+// to set the content for the notification
+export const getNotifContent = (type) => {
+  if (type === "comment") {
+    return "commented on your post";
+  } else if (type === "like") {
+    return "liked your post";
+  } else if (type === "approve") {
+    return "approved your plan";
+  } else if (type === "mention") {
+    return "mentioned you";
+  } else if (type === "reject") {
+    return "rejected your plan";
+  }
+};
+
+// to set the content for the notification
+export const getNotifURL = (type) => {
+  if (type === "comment" || type === "like") {
+    return "/profile/my-posts";
+  } else if (type === "approve" || type === "mention" || type === "reject") {
+    return "/modules";
+  } else {
+    return "/";
+  }
+};
+
 // styling for a single notif
-export const DefaultNotif = ({ notif, handleCloseDrawer }) => {
+export const DefaultNotif = ({ notif }) => {
   const navigate = useNavigate();
 
   const [showProfile, setShowProfile] = useState(false);
@@ -84,35 +110,10 @@ export const DefaultNotif = ({ notif, handleCloseDrawer }) => {
 
   const truncatedContent = truncateContent(notif.content, 10);
 
-  // to set the content for the notification
-  const getNotifContent = (type) => {
-    if (type === "comment") {
-      return "commented on your post";
-    } else if (type === "like") {
-      return "liked your post";
-    } else if (type === "approve") {
-      return "approved your plan";
-    } else if (type === "mention") {
-      return "mentioned you";
-    } else if (type === "reject") {
-      return "rejected your plan";
-    }
-  };
-
-  // to set the content for the notification
-  const getNotifURL = (type) => {
-    if (type === "comment" || type === "like") {
-      return "/profile/my-posts";
-    } else if (type === "approve" || type === "mention" || type === "reject") {
-      return "/modules";
-    } else {
-      return "/";
-    }
-  };
-
   return (
     <div>
       <Box
+        data-testid="notif-click"
         sx={{
           margin: "20px",
           display: "flex",
@@ -147,11 +148,12 @@ export const DefaultNotif = ({ notif, handleCloseDrawer }) => {
                 },
               }}
               alt="User Icon"
+              data-testid="avatar-click"
               src={notif.author.avatar}
               onClick={handleAvatarClick}
             />
           </Tooltip>
-          {notif.author.hasOwnProperty("staffId") && (
+          {notif.author.role === "ADMIN" && (
             <UserProfileView
               userProfile={notif.author}
               openDialog={showProfile}
@@ -159,7 +161,7 @@ export const DefaultNotif = ({ notif, handleCloseDrawer }) => {
               userType="admin"
             />
           )}
-          {notif.author.hasOwnProperty("studentId") && (
+          {notif.author.role === "STUDENT" && (
             <UserProfileView
               userProfile={notif.author}
               openDialog={showProfile}
@@ -249,17 +251,26 @@ const AppBarNotifs = ({ notifsList, appBarType }) => {
   return (
     <Box sx={{ marginLeft: "55ch" }}>
       {todayNotifs.length === 0 ? (
-        <IconButton sx={{ color: "black" }} onClick={handleOpenNotifs}>
+        <IconButton
+          data-testid="notif-button"
+          sx={{ color: "black" }}
+          onClick={handleOpenNotifs}
+        >
           <MarkEmailReadRoundedIcon sx={{ fontSize: "30px" }} />
         </IconButton>
       ) : (
         <Badge
+          data-testid="notif-badge"
           overlap="circular"
           anchorOrigin={{ vertical: "top", horizontal: "right" }}
           variant="dot"
           color="error"
         >
-          <IconButton sx={{ color: "black" }} onClick={handleOpenNotifs}>
+          <IconButton
+            sx={{ color: "black" }}
+            data-testid="notif-button"
+            onClick={handleOpenNotifs}
+          >
             <EmailRoundedIcon sx={{ fontSize: "30px" }} />
           </IconButton>
         </Badge>
@@ -273,6 +284,7 @@ const AppBarNotifs = ({ notifsList, appBarType }) => {
             boxSizing: "border-box",
           },
         }}
+        data-testid="notif-drawer"
         anchor="right"
         open={openDrawer}
         onClose={handleCloseNotifs}

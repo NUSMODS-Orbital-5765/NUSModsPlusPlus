@@ -4,12 +4,12 @@ import React, { useEffect, useState } from "react";
 import { SearchBar } from "../StyledComponents";
 import AppBarNotifs from "./AppBarNotifs";
 import AppBarAvatar, { avatarItems } from "./AppBarAvatar";
-import { sampleProfile, notifsList } from "../Constants";
 import {
   SearchBarScroll,
   siteRecommendations,
 } from "../Home/HomePageStyledComponents";
 import axios from "axios";
+
 // main app bar
 function AppBarComponent(props) {
   const [notificationList, setNotificationList] = useState([]);
@@ -37,6 +37,7 @@ function AppBarComponent(props) {
       clearInterval(intervalCall);
     };
   }, []);
+
   return (
     <SearchBarScroll {...props}>
       <AppBar
@@ -76,10 +77,7 @@ function AppBarComponent(props) {
                 notifsList={notificationList}
                 appBarType="student"
               />
-              <AppBarAvatar
-                userProfile={sampleProfile}
-                avatarItems={avatarItems}
-              />
+              <AppBarAvatar avatarItems={avatarItems} />
             </Box>
           </Box>
         </Toolbar>

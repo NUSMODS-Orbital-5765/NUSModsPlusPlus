@@ -2,7 +2,11 @@
 // using student profile as placeholder for the time being, until module page is complete
 import { DataGrid } from "@mui/x-data-grid";
 import { Avatar, Box, Chip, Typography } from "@mui/material";
-import { checkPlanStatus, checkStudentModules } from "./AdminConstants";
+import {
+  checkPlanStatus,
+  checkStudentModules,
+  sampleStudentsList,
+} from "./AdminConstants";
 import React, { useState } from "react";
 import StudentModuleProfileView from "../StudentModuleProfileView";
 import { ModulePlanStatusChip } from "../Modules/SemesterModulePlans";
@@ -161,7 +165,7 @@ const StudentDataGrid = ({ studentList, color }) => {
     {
       field: "semesterModulesDict",
     },
-    {field: "nanoid"}
+    { field: "nanoid" },
   ];
 
   // sets id column of datagrid as student id
@@ -201,7 +205,7 @@ const StudentDataGrid = ({ studentList, color }) => {
         columnVisibilityModel={{
           // Hide columns status and traderName, the other columns will remain visible
           semesterModulesDict: false,
-          nanoid: false
+          nanoid: false,
         }}
         autoHeight
         rows={studentList}

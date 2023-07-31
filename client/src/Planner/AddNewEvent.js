@@ -16,6 +16,8 @@ import {
   Select,
   MenuItem,
   IconButton,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import {
   currentSemesterModules,
@@ -40,6 +42,7 @@ const AddNewEvent = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [events, setEvents] = useState([]);
   const [addEventSuccess, setAddEventSuccess] = useState(false);
+  const [addEventError, setAddEventError] = useState(false);
 
   const emptyEventLayout = {
     name: "",
@@ -91,91 +94,71 @@ const AddNewEvent = () => {
         },
       })
       .then((response) => {
-        alert("Upload Event Successfully");
+        setAddEventSuccess(true);
         newEventObject.eventId = response.data.res.id;
         setEvents((prevEvents) => [...prevEvents, newEventObject]);
         setOpenDialog(false);
-        window.location.reload(false);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
       })
       .catch((error) => {
         console.log(error);
         //undo the insertion
-        alert("Event added Failed" + error.message);
+        setAddEventError(true);
       });
   };
-
-  // handle deletion of events
-  const handleDeleteEvent = (id, eventId) => {
-    const DeleteEventAPI = `${process.env.REACT_APP_API_LINK}/event/delete`;
-    const deleteJsonBody = { eventId: eventId };
-    axios
-      .post(DeleteEventAPI, deleteJsonBody, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-        },
-      })
-      .then((response) => {
-        alert("Delete Event Successfully");
-        setEvents((prevEvents) =>
-          prevEvents.filter((event) => event.id !== id)
-        );
-      })
-      .catch((error) => {
-        console.log(error);
-        //undo the insertion
-        alert("Event Delete Failed" + error.message);
-      });
-  };
-
-  useEffect(() => {
-    const GetEventAPI = `${process.env.REACT_APP_API_LINK}/event/get`;
-    axios
-      .get(GetEventAPI, {
-        params: { userId: localStorage.getItem("userId") },
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-        },
-      })
-      .then((response) => {
-        const postedEvents = response.data.events;
-        let count = 1;
-        postedEvents.map((event) => {
-          event.eventId = event.id;
-          event.id = count;
-          delete event.userId;
-          count++;
-        });
-        console.log(postedEvents);
-        setEvents((prevEvents) => postedEvents);
-      })
-      .catch((error) => {
-        console.log(error);
-        //undo the insertion
-        alert("Event added Failed " + error.message);
-      });
-  }, []);
-  useEffect(() => console.log(events), [events]);
 
   // main component
   return (
-    <Box sx={{ margin: "20px", marginTop: "20px" }}>
-      <Button
-        sx={{ marginBottom: "30px" }}
-        onClick={handleOpenDialog}
-        variant="contained"
+    <div>
+      <Box sx={{ margin: "20px", marginTop: "20px" }}>
+        <Button
+          sx={{ marginBottom: "30px" }}
+          onClick={handleOpenDialog}
+          variant="contained"
+        >
+          Add New Event
+        </Button>
+        <AddNewEventDialog
+          openDialog={openDialog}
+          handleCloseDialog={handleCloseDialog}
+          handleNewEvent={handleNewEvent}
+          handleEventDate={handleEventDate}
+          handleEventTime={handleEventTime}
+          eventCategoryList={eventCategoryList}
+          handleAddEvent={handleAddEvent}
+        />
+      </Box>
+      <Snackbar
+        open={addEventError}
+        autoHideDuration={3000}
+        onClose={() => setAddEventError(false)}
       >
-        Add New Event
-      </Button>
-      <AddNewEventDialog
-        openDialog={openDialog}
-        handleCloseDialog={handleCloseDialog}
-        handleNewEvent={handleNewEvent}
-        handleEventDate={handleEventDate}
-        handleEventTime={handleEventTime}
-        eventCategoryList={eventCategoryList}
-        handleAddEvent={handleAddEvent}
-      />
-    </Box>
+        <Alert
+          onClose={() => setAddEventError(false)}
+          sx={{ color: "white" }}
+          variant="filled"
+          severity="error"
+        >
+          Failed to add event. Please ensure all fields are filled in.
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={addEventSuccess}
+        autoHideDuration={3000}
+        onClose={() => setAddEventSuccess(false)}
+      >
+        <Alert
+          onClose={() => setAddEventSuccess(false)}
+          sx={{ color: "white" }}
+          variant="filled"
+          severity="success"
+        >
+          Event added successfully!
+        </Alert>
+      </Snackbar>
+    </div>
   );
 };
 
@@ -221,6 +204,7 @@ export const AddNewEventDialog = ({
             </Button>
           </Box>
           <TextField
+            data-testid="name-field"
             sx={{ margin: "10px", marginBottom: "20px", width: "100ch" }}
             label="Event Name"
             variant="standard"
@@ -230,6 +214,7 @@ export const AddNewEventDialog = ({
           <FormControl sx={{ margin: "10px", marginBottom: "20px" }}>
             <InputLabel variant="standard">Event Category</InputLabel>
             <Select
+              data-testid="category-field"
               variant="standard"
               label="Event Category"
               name="category"
@@ -245,6 +230,7 @@ export const AddNewEventDialog = ({
           <FormControl sx={{ margin: "10px", marginBottom: "20px" }}>
             <InputLabel variant="standard">Priority</InputLabel>
             <Select
+              data-testid="priority-field"
               variant="standard"
               name="priority"
               onChange={handleNewEvent}
@@ -259,12 +245,14 @@ export const AddNewEventDialog = ({
           </FormControl>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
+              data-testid="date-field"
               label="Event Date"
               name="date"
               sx={{ margin: "10px", marginBottom: "20px", width: "100ch" }}
               onChange={handleEventDate}
             />
             <TimePicker
+              data-testid="time-field"
               label="Event Time"
               name="time"
               sx={{ margin: "10px", marginBottom: "20px", width: "100ch" }}

@@ -7,6 +7,7 @@ import React, { useState, useEffect } from "react";
 import { FormAutocomplete } from "../FormStyledComponents";
 import StudentDataGrid from "./StudentDataGrid";
 import axios from "axios";
+
 // styling for admin students page
 const AdminStudentsPage = () => {
   // change the search query from database i think?
@@ -15,7 +16,7 @@ const AdminStudentsPage = () => {
     acadFilter: "",
     programmeFilter: "",
   });
-  const [filterCount, setFilterCount] = useState(0)
+  const [filterCount, setFilterCount] = useState(0);
   const [filteredProfiles, setFilteredProfiles] = useState([]);
   const department = localStorage.getItem("department");
   // check if admin signed up under faculty or special programme
@@ -44,22 +45,23 @@ const AdminStudentsPage = () => {
     }
   }, []);
 
-  useEffect(()=>{
-    const adminModulePlanGetAPI = `${process.env.REACT_APP_API_LINK}/admin/get-profile-with-filter`
+  useEffect(() => {
+    const adminModulePlanGetAPI = `${process.env.REACT_APP_API_LINK}/admin/get-profile-with-filter`;
     axios
-    .post(adminModulePlanGetAPI, filters)
-    .then(response => {
-      setFilteredProfiles(response.data.result.map(e=>{
-        let profile = e.owner;
-        profile["status"]=e.status;
-        profile["semesterModulesDict"]=e.semesterModulesDict;
-        profile["nanoid"]=e.nanoid;
-        return profile;}))
-    })
-    .catch(error=>console.log(error))
-  },[filterCount])
-
- 
+      .post(adminModulePlanGetAPI, filters)
+      .then((response) => {
+        setFilteredProfiles(
+          response.data.result.map((e) => {
+            let profile = e.owner;
+            profile["status"] = e.status;
+            profile["semesterModulesDict"] = e.semesterModulesDict;
+            profile["nanoid"] = e.nanoid;
+            return profile;
+          })
+        );
+      })
+      .catch((error) => console.log(error));
+  }, [filterCount]);
 
   const handleSetFilter = (event) => {
     const name = event.target.name;
@@ -68,7 +70,7 @@ const AdminStudentsPage = () => {
   };
 
   const handleSubmitFilter = () => {
-    setFilterCount(filterCount+1)
+    setFilterCount(filterCount + 1);
   };
 
   // main page component
@@ -130,9 +132,7 @@ const AdminStudentsPage = () => {
               name="facultyFilter"
               label="Filter by Faculty"
               defaultText={
-                checkAdminDepartment(department) === "faculty"
-                  ? department
-                  : ""
+                checkAdminDepartment(department) === "faculty" ? department : ""
               }
             />
             <Box sx={{ width: "100%", marginLeft: "20px" }}>

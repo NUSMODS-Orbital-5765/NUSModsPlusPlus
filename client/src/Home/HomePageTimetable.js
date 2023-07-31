@@ -16,12 +16,12 @@ import HeartBrokenRoundedIcon from "@mui/icons-material/HeartBrokenRounded";
 
 // placeholder function for getting today's events from the database
 export const getTodayEvents = () => {
-  return getThisWeekEvents()[getTodayDayOfWeek()];
+  return getThisWeekEvents(sampleWeekEvents)[getTodayDayOfWeek()];
 };
 
 // placeholder function for getting current week's events from the database
-export const getThisWeekEvents = () => {
-  const thisWeekEvents = sampleWeekEvents; // supposed to extract from database.
+export const getThisWeekEvents = (thisWeekEvents) => {
+  // supposed to extract from database.
   // sample week events is just an array of events whose dates fall within the current week.
   const eventsDict = {};
 
@@ -54,7 +54,7 @@ export const daysOfWeek = [
   "Sunday",
 ];
 
-const getTodayDayOfWeek = () => {
+export const getTodayDayOfWeek = () => {
   const today = new Date().getDay();
   if (today === 0) {
     return daysOfWeek[daysOfWeek.length - 1]; // specifically for sunday because getDay is 0
@@ -163,6 +163,7 @@ export const EventCard = ({ event }) => {
 
   return (
     <Box
+      data-testid="event-card"
       sx={{
         margin: "10px",
         minWidth: "200px",
@@ -230,7 +231,7 @@ export const TodayTimeline = ({ eventsList }) => {
         >
           {sortedEventsList.length !== 0 ? (
             sortedEventsList.map((dayEvent, index) => (
-              <TimelineItem key={index}>
+              <TimelineItem data-testid="timeline-item" key={index}>
                 <TimelineSeparator>
                   <TimelineDot
                     sx={{
@@ -258,6 +259,7 @@ export const TodayTimeline = ({ eventsList }) => {
 export const NoEventsPlaceholder = () => {
   return (
     <Box
+      data-testid="no-events-placeholder"
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -384,7 +386,7 @@ const HomePageTimetable = () => {
           marginRight: "55px",
         }}
       >
-        <ThisWeekTimetable eventsDict={getThisWeekEvents()} />
+        <ThisWeekTimetable eventsDict={getThisWeekEvents(sampleWeekEvents)} />
       </Box>
     </Box>
   );

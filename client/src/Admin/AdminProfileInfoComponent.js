@@ -7,7 +7,9 @@ import {
 import { Box, Typography, Snackbar, Alert, Button } from "@mui/material";
 import { facultyList, progsList } from "../Constants";
 import axios from "axios";
-const AdminProfileInfoComponentFrame = ({ userProfile }) => {
+import { adminSampleProfile } from "./AdminConstants";
+
+export const AdminProfileInfoComponentFrame = ({ userProfile }) => {
   const [editableDetails, setEditableDetails] = useState(false);
   const handleEditableDetails = () => {
     setEditableDetails(!editableDetails);
@@ -16,21 +18,20 @@ const AdminProfileInfoComponentFrame = ({ userProfile }) => {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState(false);
 
-  // just for testing, please replace with actual implementation
   const [profileInfo, setProfileInfo] = useState(userProfile);
 
-  const [isFormComplete, setIsFormComplete] = useState(false);
+  const [isFormComplete, setIsFormComplete] = useState(editableDetails);
   const handleFormCompletion = (fieldErrors) => {
-    const isComplete = Object.values(fieldErrors).every((error) => !error);
-    setIsFormComplete(isComplete);
+    const isComplete = fieldErrors.every((error) => !error);
+    setIsFormComplete(isComplete && editableDetails);
   };
 
-  const fieldErrors = {
-    name: profileInfo.name === "",
-    studentId: profileInfo.staffId === "",
-    faculty: profileInfo.department === "",
-    primaryDegree: profileInfo.position === "",
-  };
+  const fieldErrors = [
+    profileInfo.name === "",
+    profileInfo.NUSId === "",
+    profileInfo.department === null,
+    profileInfo.position === "",
+  ];
 
   useEffect(() => {
     handleFormCompletion(fieldErrors);
@@ -40,9 +41,11 @@ const AdminProfileInfoComponentFrame = ({ userProfile }) => {
     const name = event.target.name;
     const value = event.target.value;
     setProfileInfo({ ...profileInfo, [name]: value });
+    console.log(profileInfo);
   };
 
   const submitProfileUpdate = () => {
+    console.log(profileInfo);
     const profileUpdateAPI = `${process.env.REACT_APP_API_LINK}/profile/update`;
     axios
       .post(profileUpdateAPI, profileInfo, {
@@ -75,6 +78,7 @@ const AdminProfileInfoComponentFrame = ({ userProfile }) => {
           Personal Details
         </Typography>
         <Button
+          data-testid="edit-button"
           sx={{ marginLeft: "30px" }}
           onClick={handleEditableDetails}
           color="error"
@@ -90,7 +94,7 @@ const AdminProfileInfoComponentFrame = ({ userProfile }) => {
             disabled={!editableDetails}
             label="Name"
             name="name"
-            defaultText={profileInfo.name}
+            defaultText={userProfile.name}
             setfn={handleProfileInfo}
           />
         </Box>
@@ -99,7 +103,7 @@ const AdminProfileInfoComponentFrame = ({ userProfile }) => {
             disabled={!editableDetails}
             label="StaffID"
             name="NUSId"
-            defaultText={profileInfo.NUSId}
+            defaultText={userProfile.NUSId}
             setfn={handleProfileInfo}
           />
         </Box>
@@ -109,7 +113,7 @@ const AdminProfileInfoComponentFrame = ({ userProfile }) => {
             optionsList={[...facultyList, ...progsList]}
             name="department"
             label="Department"
-            defaultText={profileInfo.department}
+            defaultText={userProfile.department}
             setfn={handleProfileInfo}
             disabled={!editableDetails}
           />
@@ -118,13 +122,14 @@ const AdminProfileInfoComponentFrame = ({ userProfile }) => {
           <FormTextField
             name="position"
             label="Position"
-            defaultText={profileInfo.position}
+            defaultText={userProfile.position}
             setfn={handleProfileInfo}
             disabled={!editableDetails}
           />
         </Box>
       </Box>
       <Button
+        data-testid="submit-button"
         onClick={submitProfileUpdate}
         disabled={!isFormComplete}
         sx={{ marginTop: "10px" }}
@@ -163,6 +168,7 @@ const AdminProfileInfoComponentFrame = ({ userProfile }) => {
     </Box>
   );
 };
+
 const AdminProfileInfoComponent = () => {
   const [isFetch, setIsFetch] = useState(false);
   const [userProfile, setUserProfile] = useState();
@@ -182,9 +188,8 @@ const AdminProfileInfoComponent = () => {
       })
       .catch((err) => console.log(err));
   }, []);
-  return(
-    isFetch &&
-  <AdminProfileInfoComponentFrame userProfile={userProfile} />
+  return (
+    isFetch && <AdminProfileInfoComponentFrame userProfile={userProfile} />
   );
-}
+};
 export default AdminProfileInfoComponent;

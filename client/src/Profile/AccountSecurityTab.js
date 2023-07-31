@@ -7,7 +7,7 @@ import {
 } from "../FormStyledComponents";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-const AccountSecurityTabFrame = ({ userProfile }) => {
+export const AccountSecurityTabFrame = ({ userProfile }) => {
   const [editableDetails, setEditableDetails] = useState(false);
   const handleEditableDetails = () => {
     setEditableDetails(!editableDetails);
@@ -28,12 +28,16 @@ const AccountSecurityTabFrame = ({ userProfile }) => {
 
   const [isFormComplete, setIsFormComplete] = useState(false);
   const handleFormCompletion = (fieldErrors) => {
-    const isComplete = Object.values(fieldErrors).reduce((a, err) => a || !err, false);
+    const isComplete = Object.values(fieldErrors).reduce(
+      (a, err) => a || !err,
+      false
+    );
     setIsFormComplete(isComplete);
   };
 
   const fieldErrors = {
-    passwordAndconfirmPassword: (accountInfo.password === "" || accountInfo.confirmPassword === ""),
+    passwordAndconfirmPassword:
+      accountInfo.password === "" || accountInfo.confirmPassword === "",
     email: accountInfo.email === "",
   };
 
@@ -65,6 +69,7 @@ const AccountSecurityTabFrame = ({ userProfile }) => {
           My Account
         </Typography>
         <Button
+          data-testid="edit-button"
           onClick={handleEditableDetails}
           color="error"
           variant="contained"
@@ -96,6 +101,7 @@ const AccountSecurityTabFrame = ({ userProfile }) => {
         />
       </Box>
       <Button
+        data-testid="save-button"
         sx={{ marginTop: "10px" }}
         disabled={!isFormComplete}
         onClick={submitAccountInfo}
@@ -154,9 +160,6 @@ const AccountSecurityTab = () => {
       })
       .catch((err) => console.log(err));
   }, []);
-  return(
-    isFetch &&
-  <AccountSecurityTabFrame userProfile={userProfile} />
-  );
-}
+  return isFetch && <AccountSecurityTabFrame userProfile={userProfile} />;
+};
 export default AccountSecurityTab;

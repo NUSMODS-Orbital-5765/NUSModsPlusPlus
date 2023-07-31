@@ -6,9 +6,8 @@ import { StudentProfileView } from "./StudentDataGrid";
 import React, { useEffect, useState } from "react";
 import UserProfileView from "../UserProfileView";
 import StudentModuleProfileView from "../StudentModuleProfileView";
-
 import axios from "axios";
-import {parseISO} from "date-fns";
+import { parseISO } from "date-fns";
 
 //max words for truncation
 export const truncateContent = (content) => {
@@ -75,7 +74,7 @@ export const AdminDefaultNotif = ({ notif }) => {
           }}
         >
           <Typography component="span" fontWeight={400}>
-            You reject{" "}
+            You rejected{" "}
           </Typography>
           {notif.target.username}
           <Typography component="span" fontWeight={400}>
@@ -83,7 +82,7 @@ export const AdminDefaultNotif = ({ notif }) => {
           </Typography>
         </Typography>
       );
-    } 
+    }
   };
 
   return (
@@ -103,22 +102,20 @@ export const AdminDefaultNotif = ({ notif }) => {
             justifyItems: "center",
           }}
         >
-          
-            <Avatar
-              sx={{
-                width: 70,
-                height: 70,
-                transition: "filter 0.3s",
-                "&:hover": {
-                  filter: "brightness(0.8)",
-                  cursor: "pointer",
-                },
-              }}
-              onClick={handleShowProfile}
-              alt="Admin Icon"
-              src={""}
-            />
-          
+          <Avatar
+            sx={{
+              width: 70,
+              height: 70,
+              transition: "filter 0.3s",
+              "&:hover": {
+                filter: "brightness(0.8)",
+                cursor: "pointer",
+              },
+            }}
+            /*onClick={handleShowProfile}*/ // commenting out until nam solve picture  & profile problem
+            alt="Student Icon"
+            src={""}
+          />
           <Box
             sx={{
               marginLeft: "10px",
@@ -170,7 +167,7 @@ const AdminAppBarNotifs = () => {
     try {
       const notifsList = await axios.post(notifsGetAPI, {
         username: localStorage.getItem("username"),
-        admin: true
+        admin: true,
       });
       setNotificationList(notifsList.data.result);
     } catch (e) {

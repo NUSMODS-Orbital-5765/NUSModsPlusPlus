@@ -3,7 +3,7 @@ import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/dom";
 import "@testing-library/jest-dom/extend-expect";
-import DrawerComponent from "../Drawer/DrawerComponent";
+import DrawerComponent from "../../Drawer/DrawerComponent";
 
 // custom mock link that leads to a component (cannot use <a><href>)
 const MockLink = ({ to, onClick, children }) => (

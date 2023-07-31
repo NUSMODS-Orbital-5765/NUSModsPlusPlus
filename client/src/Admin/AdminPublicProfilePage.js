@@ -2,6 +2,7 @@ import { adminSampleProfile } from "./AdminConstants";
 import { Box, Typography, Avatar } from "@mui/material";
 import AdminAppBar from "./AdminAppBar";
 import AdminDrawerComponent from "./AdminDrawerComponent";
+import React from "react";
 
 export const AdminPublicProfileView = ({ adminProfile }) => {
   return (
@@ -30,7 +31,7 @@ export const AdminPublicProfileView = ({ adminProfile }) => {
             width: "20ch",
             height: "20ch",
           }}
-          alt="Sample Icon"
+          alt="Admin Icon"
           src={adminProfile.avatar}
         />
         <Box

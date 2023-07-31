@@ -1,9 +1,11 @@
+// COMPLETE
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/dom";
 import "@testing-library/jest-dom/extend-expect";
 import { AdminDefaultNotif } from "../../Admin/AdminAppBarNotifs";
 import { formatDate, yesterday } from "../../Constants";
+import { isYesterday, parseISO } from "date-fns";
 
 // mock the student module profile view
 jest.mock("../../StudentModuleProfileView", () => () => (
@@ -13,12 +15,12 @@ jest.mock("../../StudentModuleProfileView", () => () => (
 // check rendering of a sample notification
 const sampleNotif = {
   type: "mention",
-  student: {
+  target: {
     username: "John Doe",
     avatar: "sample_avatar.jpg",
   },
   content: "This is a sample notification content.",
-  timestamp: yesterday,
+  timestamp: new Date().toISOString(),
 };
 
 // check rendering of default notif
@@ -26,9 +28,9 @@ describe("AdminDefaultNotif", () => {
   test("renders the notification correctly", () => {
     render(<AdminDefaultNotif notif={sampleNotif} />);
 
-    // check the view profile is clickable (tooltip rendered)
-    const tooltipElement = screen.getByLabelText("View Profile");
-    expect(tooltipElement).toBeInTheDocument();
+    // check the view profile is rendered
+    const viewProfileElement = screen.getByTestId("PersonIcon");
+    expect(viewProfileElement).toBeInTheDocument();
 
     // check the notification type
     const notificationTypeElement = screen.getByText(/You mentioned/i);
@@ -38,20 +40,13 @@ describe("AdminDefaultNotif", () => {
 
     // check the timestamp
     const timestampElement = screen.getByText(
-      formatDate(sampleNotif.timestamp)
+      formatDate(parseISO(sampleNotif.timestamp))
     );
     expect(timestampElement).toBeInTheDocument();
 
     // check the content
     const notificationContent = screen.getByText(sampleNotif.content);
     expect(notificationContent).toBeInTheDocument();
-
-    // check the avatar
-    const avatarElement = screen.getByAltText("Student Icon");
-    expect(avatarElement).toBeInTheDocument();
-    expect(avatarElement.getAttribute("src")).toEqual(
-      sampleNotif.student.avatar
-    );
   });
 
   // testing notification truncation function
