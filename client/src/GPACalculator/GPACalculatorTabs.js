@@ -1,98 +1,91 @@
-import { Tooltip, IconButton, Box } from "@mui/material";
-import NavigateBeforeRoundedIcon from "@mui/icons-material/NavigateBeforeRounded";
-import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
+import { Box, Tabs, Tab, Typography, Card, CardContent } from "@mui/material";
 import { sampleSemesterModules, HonoursGPAGuide } from "../Constants";
 import { DefaultNativeSelect } from "../FormStyledComponents";
 import React, { useState } from "react";
-import ByYearView from "./ByYearView";
-import { PageHeaderNoSubtitle } from "../StyledComponents";
+import { emptyModuleGrades } from "./GPACalculatorConstants";
 
 // component for switching between different views
-const GPACalculatorTabs = (props) => {
-  const { viewList } = props;
-  const maxViewIndex = viewList.length - 1;
-  const [currentView, setCurrentView] = useState(0);
-
-  const handlePrevView = () => {
-    currentView === 0
-      ? setCurrentView(maxViewIndex)
-      : setCurrentView(currentView - 1);
-  };
-
-  const handleNextView = () => {
-    currentView === maxViewIndex
-      ? setCurrentView(0)
-      : setCurrentView(currentView + 1);
+const GPACalculatorTabs = ({ gradesList }) => {
+  const [activeTab, setActiveTab] = useState(0); // always start with the "Year 1" view
+  const handleChangeTab = (event, newTab) => {
+    setActiveTab(newTab);
   };
 
   return (
-    <div>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyItems: "center",
-        }}
-      >
-        <Tooltip title="Switch to previous view">
-          <IconButton
-            sx={{
-              "&:hover": {
-                backgroundColor: "transparent",
-                transform: "translateX(-5px)",
-                transition: "transform 0.1s",
-              },
-            }}
-            onClick={handlePrevView}
-          >
-            <NavigateBeforeRoundedIcon
-              sx={{
-                color: "#536DFE",
-                fontSize: "40px",
-              }}
-            />
-          </IconButton>
-        </Tooltip>
-        <PageHeaderNoSubtitle header={viewList[currentView]} />
-        <Tooltip title="Switch to next view">
-          <IconButton
-            sx={{
-              "&:hover": {
-                backgroundColor: "transparent",
-                transform: "translateX(5px)",
-                transition: "transform 0.1s",
-              },
-            }}
-            onClick={handleNextView}
-          >
-            <NavigateNextRoundedIcon
-              sx={{
-                color: "#536DFE",
-                fontSize: "40px",
-              }}
-            />
-          </IconButton>
-        </Tooltip>
+    <Card
+      sx={{
+        minHeight: "80ch",
+        borderRadius: "10px",
+        marginTop: "-10px",
+        marginBottom: "50px",
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+      }}
+    >
+      <CardContent sx={{ margin: "15px" }}>
         <Box
           sx={{
-            marginLeft: "20px",
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
             justifyItems: "center",
           }}
         >
-          <Box sx={{ marginLeft: "10px" }}>
-            <DefaultNativeSelect
-              optionsDict={HonoursGPAGuide}
-              label="Grade Target"
-            />
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyItems: "center",
+            }}
+          >
+            <Typography sx={{ fontSize: "35px", fontWeight: 700 }}>
+              My Grades
+            </Typography>
+            <Box sx={{ marginLeft: "30px" }}>
+              <DefaultNativeSelect // make sure you change this to a normal select field later on
+                optionsDict={HonoursGPAGuide}
+                label="Grade Target"
+              />
+            </Box>
           </Box>
         </Box>
-      </Box>
-      {currentView === 0 && <ByYearView yearList={sampleSemesterModules} />}
-    </div>
+        <Box
+          sx={{
+            marginTop: "10px",
+            marginBottom: "20px",
+            borderBottom: 1,
+            borderColor: "divider",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyItems: "center",
+          }}
+        >
+          <Tabs value={activeTab} onChange={handleChangeTab}>
+            {gradesList.map((yearObject, index) => (
+              <Tab
+                value={index}
+                sx={{ fontWeight: activeTab === index ? 600 : 500 }}
+                label={yearObject.year}
+              />
+            ))}
+          </Tabs>
+        </Box>
+        {gradesList[activeTab]?.semesters &&
+          Object.entries(gradesList[activeTab].semesters).map(
+            ([semester, modules], index) => (
+              <div key={index}>
+                <Typography>{semester}</Typography>
+                <Box>
+                  {modules.map((module, index) => (
+                    <Typography>{module.grade}</Typography>
+                  ))}
+                </Box>
+              </div>
+            )
+          )}
+      </CardContent>
+    </Card>
   );
 };
 

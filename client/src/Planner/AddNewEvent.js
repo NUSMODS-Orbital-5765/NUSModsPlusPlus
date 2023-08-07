@@ -17,12 +17,8 @@ import {
   MenuItem,
   IconButton,
 } from "@mui/material";
-import {
-  currentSemesterModules,
-  priorityList,
-  priorityColors,
-  priorityValues,
-} from "../Constants";
+import { priorityList, priorityColors, priorityValues } from "../Constants";
+import { sampleModuleGrades } from "../GPACalculator/GPACalculatorConstants";
 import React, { useEffect, useState } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -43,7 +39,7 @@ const AddNewEvent = () => {
 
   // setting the list of event category options. default are current modules + personal
   // depends on the current semester
-  const currentEventCategoryList = [...currentSemesterModules, "Personal"];
+  const currentEventCategoryList = ["Personal"];
   const [eventCategoryList, setEventCategoryList] = useState(
     currentEventCategoryList
   );
@@ -79,7 +75,7 @@ const AddNewEvent = () => {
 
   const handleAddEvent = () => {
     const newEvent = {
-      id: events.length+1,
+      id: events.length + 1,
       name: eventName,
       date: eventDate.format("DD MMMM YYYY"),
       time: eventTime.format("hh:mm A"),
@@ -90,11 +86,13 @@ const AddNewEvent = () => {
 
     axios
       .post(AddEventAPI, newEvent, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("user-token")}` }
-    })
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        },
+      })
       .then((response) => {
         alert("Upload Event Successfully");
-        newEvent.eventId=response.data.res.id;
+        newEvent.eventId = response.data.res.id;
         setEvents((prevEvents) => [...prevEvents, newEvent]);
         setOpenDialog(false);
       })
@@ -102,21 +100,24 @@ const AddNewEvent = () => {
         console.log(error);
         //undo the insertion
         alert("Event added Failed" + error.message);
-        });
-      }
-    
-  
+      });
+  };
+
   // handle deletion of events
   const handleDeleteEvent = (id, eventId) => {
     const DeleteEventAPI = `${process.env.REACT_APP_API_LINK}/event/delete`;
-    const deleteJsonBody = {eventId: eventId};
+    const deleteJsonBody = { eventId: eventId };
     axios
       .post(DeleteEventAPI, deleteJsonBody, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("user-token")}` }
-    })
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        },
+      })
       .then((response) => {
         alert("Delete Event Successfully");
-        setEvents((prevEvents) => prevEvents.filter((event) => event.id !== id));
+        setEvents((prevEvents) =>
+          prevEvents.filter((event) => event.id !== id)
+        );
       })
       .catch((error) => {
         console.log(error);
@@ -124,35 +125,35 @@ const AddNewEvent = () => {
         alert("Event Delete Failed" + error.message);
       });
   };
-  
 
-  useEffect(()=> {
-  const GetEventAPI = `${process.env.REACT_APP_API_LINK}/event/get`;
-  axios
-  .get(GetEventAPI, {
-    params:{userId:localStorage.getItem("userId")},
-    headers: { Authorization: `Bearer ${localStorage.getItem("user-token")}` }
-})
-  .then((response) => {
-    const postedEvents = response.data.events;
-    let count = 1;
-    postedEvents.map(event=>{
-      event.eventId = event.id;
-      event.id = count;
-      delete event.userId;
-      count++;
-    });
-    console.log(postedEvents)
-    setEvents((prevEvents) => postedEvents);
-  })
-  .catch((error) => {
-    console.log(error);
-    //undo the insertion
-    alert("Event added Failed " + error.message);
-    })}
-    ,[]
-  )
-  useEffect(()=>console.log(events),[events]);
+  useEffect(() => {
+    const GetEventAPI = `${process.env.REACT_APP_API_LINK}/event/get`;
+    axios
+      .get(GetEventAPI, {
+        params: { userId: localStorage.getItem("userId") },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        },
+      })
+      .then((response) => {
+        const postedEvents = response.data.events;
+        let count = 1;
+        postedEvents.map((event) => {
+          event.eventId = event.id;
+          event.id = count;
+          delete event.userId;
+          count++;
+        });
+        console.log(postedEvents);
+        setEvents((prevEvents) => postedEvents);
+      })
+      .catch((error) => {
+        console.log(error);
+        //undo the insertion
+        alert("Event added Failed " + error.message);
+      });
+  }, []);
+  useEffect(() => console.log(events), [events]);
   // styling for dialog with form fields for event details
   const AddNewEventDialog = () => {
     return (
@@ -354,7 +355,9 @@ const AddNewEvent = () => {
         width: 120,
         sortable: false,
         renderCell: (params) => (
-          <IconButton onClick={() => handleDeleteEvent(params.row.id,params.row.eventId)}>
+          <IconButton
+            onClick={() => handleDeleteEvent(params.row.id, params.row.eventId)}
+          >
             <ClearRoundedIcon color="error" />
           </IconButton>
         ),
@@ -363,11 +366,7 @@ const AddNewEvent = () => {
 
     return (
       <Box sx={{ height: 400, width: "100%" }}>
-        <DataGrid
-          sx={{ fontSize: "15px" }}
-          rows={events}
-          columns={columns}
-        />
+        <DataGrid sx={{ fontSize: "15px" }} rows={events} columns={columns} />
       </Box>
     );
   };

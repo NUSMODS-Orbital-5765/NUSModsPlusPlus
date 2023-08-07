@@ -1,14 +1,10 @@
-// PROBLEMS: dunno how to display yearly gpa
-// PROBLEMS: haven't displayed an overall gpa
-// PROBLEMS: have a "show recommendation" button that points out which modules are doing poorly/ potential s/u recommendation
-// PROBLEMS: use react context to keep track of yearly and overall cumulative GPA.
 import AppBarComponent from "../AppBar/AppBarComponent";
 import DrawerComponent from "../DrawerComponent";
 import { Card, CardContent, Box, Typography } from "@mui/material";
-import { PageHeader } from "../StyledComponents";
 import GPACalculatorTabs from "./GPACalculatorTabs";
 import { GPACalculatorViewList } from "../Constants";
 import { combinedItems } from "../Home/HomePageStyledComponents";
+import { sampleModuleGrades } from "./GPACalculatorConstants";
 
 // calculation of yearly cumulative GPA
 export const YearCumulativeGPA = () => {
@@ -21,14 +17,60 @@ export const YearCumulativeGPA = () => {
   );
 };
 
+// might have it as a side component rather than have the user keep switching to the "Overall" tab just to see what it looks like
 // content for overall GPA
 export const OverallGPAView = () => {
   return <div></div>;
 };
 // use linear progress with label, distance from goal
 
+export const CalculatorPageHeader = () => {
+  return (
+    <Box
+      sx={{
+        margin: "55px",
+        marginTop: "20px",
+        borderRadius: "10px",
+        backgroundColor: "#e7f2ff",
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+    >
+      <Box>
+        <Typography
+          sx={{
+            margin: "30px",
+            fontSize: "40px",
+            fontWeight: "700",
+            color: "#004d80",
+          }}
+        >
+          A handy academic progress tracker.
+        </Typography>
+        <Typography
+          sx={{
+            margin: "30px",
+            marginTop: "-10px",
+            fontSize: "17px",
+            color: "#004d80",
+          }}
+        >
+          We log your module grades, visualise your progress over the semesters,
+          and provide S/U recommendations.
+        </Typography>
+      </Box>
+      <img style={{ width: "30%" }} src="/calculator-intro.png" />
+    </Box>
+  );
+};
+
 // main page content
 const GPACalculatorPage = () => {
+  // fetch the user data from the database here
+  // check that the status of the module plan is APPROVED before fetching the data as required
+  // SOLVE ISSUES WITH THE MODULES PAGE, VERY IMPORTANT
   return (
     <div className="homepage">
       <AppBarComponent />
@@ -38,34 +80,39 @@ const GPACalculatorPage = () => {
         sx={{
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
-          justifyItems: "center",
         }}
       >
-        <PageHeader
-          header="GPA Calculator"
-          subtitle={
-            <div>
-              A <span style={{ color: "#536DFE" }}>powerful</span>,{" "}
-              <span style={{ color: "#536DFE" }}>interactive</span> calculator
-              at your fingertips.
-            </div>
-          }
-        />
-        <Card
+        <CalculatorPageHeader />
+        <Box
           sx={{
-            minHeight: "80ch",
-            borderRadius: "5px",
-            width: "90%",
-            marginTop: "40px",
-            marginBottom: "50px",
-            boxShadow: 1,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyItems: "center",
+            justifyContent: "space-between",
+            marginLeft: "55px",
+            marginRight: "55px",
           }}
         >
-          <CardContent sx={{ marginTop: "10px" }}>
-            <GPACalculatorTabs viewList={GPACalculatorViewList} />
-          </CardContent>
-        </Card>
+          <Box sx={{ width: "70%" }}>
+            <GPACalculatorTabs gradesList={sampleModuleGrades} />
+          </Box>
+          <Box sx={{ width: "30%" }}>
+            <Card
+              sx={{
+                marginLeft: "40px",
+                backgroundColor: "#f2f2f2",
+                marginRight: "30px",
+                borderRadius: "10px",
+                boxShadow: 0,
+              }}
+            >
+              <CardContent>
+                <Typography>Hello</Typography>
+              </CardContent>
+            </Card>
+          </Box>
+        </Box>
       </Box>
     </div>
   );
