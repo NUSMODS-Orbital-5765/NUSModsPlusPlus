@@ -5,6 +5,7 @@ import GPACalculatorTabs from "./GPACalculatorTabs";
 import { GPACalculatorViewList } from "../Constants";
 import { combinedItems } from "../Home/HomePageStyledComponents";
 import { sampleModuleGrades } from "./GPACalculatorConstants";
+import GPACalculatorOverall from "./GPACalculatorOverall";
 
 // calculation of yearly cumulative GPA
 export const YearCumulativeGPA = () => {
@@ -97,20 +98,8 @@ const GPACalculatorPage = () => {
           <Box sx={{ width: "70%" }}>
             <GPACalculatorTabs gradesList={sampleModuleGrades} />
           </Box>
-          <Box sx={{ width: "30%" }}>
-            <Card
-              sx={{
-                marginLeft: "40px",
-                backgroundColor: "#f2f2f2",
-                marginRight: "30px",
-                borderRadius: "10px",
-                boxShadow: 0,
-              }}
-            >
-              <CardContent>
-                <Typography>Hello</Typography>
-              </CardContent>
-            </Card>
+          <Box sx={{ width: "30%", marginLeft: "40px" }}>
+            <GPACalculatorOverall gradesList={sampleModuleGrades} />
           </Box>
         </Box>
       </Box>

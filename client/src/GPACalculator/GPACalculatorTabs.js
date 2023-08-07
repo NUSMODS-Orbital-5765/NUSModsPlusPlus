@@ -3,6 +3,7 @@ import { sampleSemesterModules, HonoursGPAGuide } from "../Constants";
 import { DefaultNativeSelect } from "../FormStyledComponents";
 import React, { useState } from "react";
 import { emptyModuleGrades } from "./GPACalculatorConstants";
+import ModuleDataGrid from "./ModuleDataGrid";
 
 // component for switching between different views
 const GPACalculatorTabs = ({ gradesList }) => {
@@ -75,12 +76,7 @@ const GPACalculatorTabs = ({ gradesList }) => {
           Object.entries(gradesList[activeTab].semesters).map(
             ([semester, modules], index) => (
               <div key={index}>
-                <Typography>{semester}</Typography>
-                <Box>
-                  {modules.map((module, index) => (
-                    <Typography>{module.grade}</Typography>
-                  ))}
-                </Box>
+                <ModuleDataGrid semesterName={semester} moduleList={modules} />
               </div>
             )
           )}

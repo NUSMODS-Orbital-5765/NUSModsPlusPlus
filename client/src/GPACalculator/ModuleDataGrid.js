@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import React, { useState, useEffect } from "react";
-import { PossibleGradesList, GPAGradeGuide } from "../Constants";
+import { possibleGradesList, GPAGradeGuide } from "./GPACalculatorConstants";
 import { DataGrid } from "@mui/x-data-grid";
 
 // data grid for modules
@@ -98,12 +98,22 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
     setRows((prevRows) => prevRows.filter((row) => row.moduleCode !== id));
   };
 
+  // important, otherwise my datagrid doesn't work i think lol
+  const flattenedModuleList = moduleList.flatMap((module) => {
+    return {
+      code: module.module.code,
+      name: module.module.name,
+      grade: module.grade,
+      "S/U": module["S/U"],
+    };
+  });
+
   // data grid fields
   const moduleColumns = [
     {
-      field: "moduleCode",
-      headerName: "Module Code",
-      width: 150,
+      field: "code",
+      headerName: "Code",
+      flex: 0.8,
       editable: false,
       id: true,
       renderCell: (params) => (
@@ -111,9 +121,26 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
       ),
     },
     {
+      field: "name",
+      headerName: "Name",
+      flex: 1,
+      editable: false,
+      renderCell: (params) => (
+        <div
+          style={{
+            fontSize: "15px",
+            whiteSpace: "normal",
+            wordWrap: "break-word",
+          }}
+        >
+          {params.value}
+        </div>
+      ),
+    },
+    {
       field: "grade",
-      headerName: "Module Grade",
-      width: 150,
+      headerName: "Grade",
+      flex: 0.5,
       editable: false,
       renderCell: (params) => (
         <div style={{ fontSize: "15px" }}>{params.value}</div>
@@ -122,7 +149,7 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
     {
       field: "GPA",
       headerName: "GPA",
-      width: 110,
+      flex: 0.5,
       editable: false,
       renderCell: (params) => (
         <div style={{ fontSize: "15px" }}>{params.value}</div>
@@ -148,7 +175,7 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
       width: 120,
       sortable: false,
       renderCell: (params) => (
-        <IconButton onClick={() => handleDeleteRow(params.row.moduleCode)}>
+        <IconButton onClick={() => handleDeleteRow(params.row.code)}>
           <ClearRoundedIcon color="error" />
         </IconButton>
       ),
@@ -156,7 +183,7 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
   ];
 
   // use moduleCode as unique identifier instead of list index
-  const getRowId = (row) => row.moduleCode;
+  const getRowId = (row) => row.code;
 
   return (
     <Box sx={{ margin: "20px", marginBottom: "20px" }}>
@@ -209,7 +236,7 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
                 sx={{ width: "30ch" }}
                 onChange={handleSelectedGrade}
               >
-                {PossibleGradesList.map((grade, index) => (
+                {possibleGradesList.map((grade, index) => (
                   <MenuItem key={index} value={grade}>
                     {grade}
                   </MenuItem>
@@ -235,23 +262,24 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
           >
             <Typography sx={{ fontSize: "20px", fontWeight: 700 }}>
               GPA:{" "}
-              <span style={{ color: "#536DFE" }}>{calculateOverallGPA()}</span>
+              <span style={{ color: "#1a90ff" }}>{calculateOverallGPA()}</span>
             </Typography>
             <Typography
               sx={{ marginLeft: "20px", fontSize: "20px", fontWeight: 700 }}
             >
               Workload:{" "}
-              <span style={{ color: "#536DFE" }}>{totalWorkload} MCs</span>
+              <span style={{ color: "#1a90ff" }}>{totalWorkload} MCs</span>
             </Typography>
           </Box>
         )}
       </Box>
-      <Box sx={{ height: 400, width: "100%" }}>
+      <Box sx={{ height: 600, width: "100%" }}>
         <DataGrid
           sx={{ fontSize: "15px" }}
-          rows={rows}
+          rows={flattenedModuleList}
           columns={moduleColumns}
           getRowId={getRowId}
+          getRowHeight={() => 100}
         />
       </Box>
     </Box>
