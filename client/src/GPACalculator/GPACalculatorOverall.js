@@ -5,7 +5,7 @@ const GPACalculatorOverall = ({ gradesList }) => {
     <Card
       sx={{
         backgroundColor: "#f2f2f2",
-        marginRight: "30px",
+        marginTop: "-10px",
         borderRadius: "10px",
         boxShadow: 0,
       }}

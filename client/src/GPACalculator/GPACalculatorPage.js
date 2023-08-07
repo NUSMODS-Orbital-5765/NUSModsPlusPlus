@@ -88,8 +88,6 @@ const GPACalculatorPage = () => {
           sx={{
             display: "flex",
             flexDirection: "row",
-            alignItems: "center",
-            justifyItems: "center",
             justifyContent: "space-between",
             marginLeft: "55px",
             marginRight: "55px",

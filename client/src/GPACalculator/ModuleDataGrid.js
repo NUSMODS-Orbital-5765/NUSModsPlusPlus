@@ -273,7 +273,14 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
           </Box>
         )}
       </Box>
-      <Box sx={{ height: 600, width: "100%" }}>
+      <Box
+        sx={{
+          marginTop: "10px",
+          marginBottom: "40px",
+          height: 600,
+          width: "100%",
+        }}
+      >
         <DataGrid
           sx={{ fontSize: "15px" }}
           rows={flattenedModuleList}
