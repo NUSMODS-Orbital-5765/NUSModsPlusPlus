@@ -23,35 +23,49 @@ export const sampleModuleGrades = [
     semesters: {
       "Semester 1": [
         {
-          module: { code: "MA1521", name: "Calculus for Computing" },
+          module: {
+            code: "MA1521",
+            name: "Calculus for Computing",
+            "S/U": "Yes",
+            mc: 4,
+          },
           grade: "A+",
-          "S/U": "Yes",
         },
         {
           module: {
             code: "BT1101",
             name: "Introduction to Business Analytics",
+            "S/U": "Yes",
+            mc: 4,
           },
           grade: "A",
-          "S/U": "Yes",
         },
         {
-          module: { code: "CS1010S", name: "Programming Methodology" },
+          module: {
+            code: "CS1010S",
+            name: "Programming Methodology",
+            "S/U": "Yes",
+            mc: 4,
+          },
           grade: "A-",
-          "S/U": "Yes",
         },
         {
           module: {
             code: "NSW2001",
             name: "Understanding the Social World: Singapore & Beyond",
+            "S/U": "Yes",
+            mc: 4,
           },
           grade: "B",
-          "S/U": "Yes",
         },
         {
-          module: { code: "NGN2001", name: "Global Narratives" },
+          module: {
+            code: "NGN2001",
+            name: "Global Narratives",
+            "S/U": "Yes",
+            mc: 4,
+          },
           grade: "B-",
-          "S/U": "Yes",
         },
       ],
       "Semester 2": [
@@ -59,32 +73,47 @@ export const sampleModuleGrades = [
           module: {
             code: "EC1101E",
             name: "Introduction to Economic Analysis",
+            "S/U": "Yes",
+            mc: 4,
           },
           grade: "F",
           "S/U": "Yes",
         },
         {
-          module: { code: "MA2001", name: "Linear Algebra I" },
+          module: {
+            code: "MA2001",
+            name: "Linear Algebra I",
+            "S/U": "Yes",
+            mc: 4,
+          },
           grade: "A+",
-          "S/U": "Yes",
         },
         {
-          module: { code: "BT2102", name: "Data Management and Visualisation" },
+          module: {
+            code: "BT2102",
+            name: "Data Management and Visualisation",
+            "S/U": "No",
+            mc: 4,
+          },
           grade: "A+",
-          "S/U": "No",
         },
         {
-          module: { code: "CS2030", name: "Programming Methodology II" },
+          module: {
+            code: "CS2030",
+            name: "Programming Methodology II",
+            "S/U": "No",
+            mc: 4,
+          },
           grade: "C+",
-          "S/U": "No",
         },
         {
           module: {
             code: "NTW2006",
             name: "Human Trafficking and Labour Migration",
+            "S/U": "No",
+            mc: 4,
           },
           grade: "A+",
-          "S/U": "No",
         },
       ],
     },
@@ -94,38 +123,49 @@ export const sampleModuleGrades = [
     semesters: {
       "Semester 1": [
         {
-          module: { code: "CS2040", name: "Data Structures and Algorithms" },
+          module: {
+            code: "CS2040",
+            name: "Data Structures and Algorithms",
+            "S/U": "No",
+            mc: 4,
+          },
           grade: "A",
-          "S/U": "No",
         },
         {
-          module: { code: "EC3303", name: "Econometrics I" },
+          module: {
+            code: "EC3303",
+            name: "Econometrics I",
+            "S/U": "No",
+            mc: 4,
+          },
           grade: "A",
-          "S/U": "No",
         },
         {
           module: {
             code: "BT2101",
             name: "Econometrics Modeling for Business Analytics",
+            "S/U": "No",
+            mc: 4,
           },
           grade: "A+",
-          "S/U": "No",
         },
         {
           module: {
             code: "NHS2056",
             name: " Law and the City: Divisions, Aesthetics, Transgressions",
+            "S/U": "Yes",
+            mc: 4,
           },
           grade: "B+",
-          "S/U": "Yes",
         },
         {
           module: {
             code: "QF1100",
             name: " Introduction to Quantitative Finance",
+            "S/U": "Yes",
+            mc: 4,
           },
           grade: "A",
-          "S/U": "Yes",
         },
       ],
       "Semester 2": [],
@@ -186,13 +226,19 @@ export const addModuleOptions = [
   {
     code: "PC1101",
     name: "Frontiers of Physics",
+    "S/U": "Yes",
+    mc: 4,
   },
   {
     code: "SW1101E",
     name: "Social Work: A Heart-Head-Hand Connection",
+    "S/U": "Yes",
+    mc: 4,
   },
   {
     code: "PS1101E",
     name: "Introduction to Politics",
+    "S/U": "Yes",
+    mc: 4,
   },
 ];

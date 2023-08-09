@@ -1,5 +1,4 @@
 //COMPLETE
-// make the grade field editable so that user can "import modules" and update with grades accordingly.
 import {
   Box,
   Typography,
@@ -36,6 +35,7 @@ export const EditModuleDialog = ({
   const handleClickEditModule = () => {
     handleEditRow(moduleCode, newModuleGrade);
     handleCloseDialog();
+    setNewModuleGrade("");
   };
 
   return (
@@ -122,11 +122,12 @@ export const AddModuleDialog = ({
     const moduleObject = {
       module: selectedModule,
       grade: selectedGrade,
-      "S/U": "Yes",
     };
     handleCloseDialog();
     // pass in a callback function
     handleSubmitModule(moduleObject);
+    setSelectedGrade("");
+    setSelectedModuleCode("");
   };
 
   return (
@@ -175,6 +176,7 @@ export const AddModuleDialog = ({
                 sx={{ color: "white" }}
                 variant="contained"
                 onClick={handleClickAddModule}
+                disabled={!selectedModuleCode}
               >
                 Add Module
               </Button>
@@ -193,15 +195,18 @@ export function totalWorkload(rows) {
 
 export function calculateOverallGPA(rows) {
   let totalSum = 0;
+  let totalMC = 0;
   rows.forEach((row) => {
     const gpaData = GPAGradeGuide.find((item) => item.grade === row.grade);
+    const mcData = row.mc;
 
     if (gpaData) {
-      const gpa = parseFloat(gpaData.GPA);
+      const gpa = parseFloat(gpaData.GPA * mcData);
       totalSum += gpa;
+      totalMC += mcData;
     }
   });
-  return (totalSum / rows.length).toFixed(2).toString() + " GPA"; // correct to 2 dp
+  return (totalSum / totalMC).toFixed(2).toString() + " GPA"; // correct to 2 dp
 }
 
 // data grid for modules
@@ -212,9 +217,15 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
       code: module.module.code,
       name: module.module.name,
       grade: module.grade,
-      "S/U": module["S/U"],
+      "S/U": module.module["S/U"],
+      mc: module.module.mc,
     };
   });
+
+  // moduleList loaded will change when the tab changes.
+  useEffect(() => {
+    setNewModuleList(moduleList);
+  }, [moduleList]);
 
   function handleDeleteRow(moduleCode) {
     setNewModuleList(
@@ -272,7 +283,7 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
     {
       field: "code",
       headerName: "Code",
-      flex: 0.8,
+      flex: 0.7,
       editable: false,
       id: true,
       renderCell: (params) => (
@@ -299,7 +310,7 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
     {
       field: "grade",
       headerName: "Grade",
-      flex: 0.5,
+      flex: 0.3,
       editable: false,
       renderCell: (params) => (
         <div style={{ fontSize: "15px" }}>{params.value}</div>
@@ -308,7 +319,7 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
     {
       field: "GPA",
       headerName: "GPA",
-      flex: 0.5,
+      flex: 0.3,
       editable: false,
       renderCell: (params) => (
         <div style={{ fontSize: "15px" }}>{params.value}</div>
@@ -321,8 +332,17 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
     },
     {
       field: "S/U",
-      headerName: "S/U allowed?",
-      width: 110,
+      headerName: "Can S/U",
+      flex: 0.5,
+      editable: false,
+      renderCell: (params) => (
+        <div style={{ fontSize: "15px" }}>{params.value}</div>
+      ),
+    },
+    {
+      field: "mc",
+      headerName: "MCs",
+      flex: 0.3,
       editable: false,
       renderCell: (params) => (
         <div style={{ fontSize: "15px" }}>{params.value}</div>
@@ -331,20 +351,21 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
     {
       field: "actions",
       headerName: "Actions",
-      width: 120,
+      flex: 0.7,
       sortable: false,
       renderCell: (params) => (
         <div>
           <IconButton onClick={() => handleDeleteRow(params.row.code)}>
-            <ClearRoundedIcon color="error" />
+            <ClearRoundedIcon color="error" sx={{ fontSize: "25px" }} />
           </IconButton>
           <IconButton onClick={() => handleOpenEditDialog(params.row.code)}>
-            <EditRoundedIcon color="primary" />
+            <EditRoundedIcon color="primary" sx={{ fontSize: "20px" }} />
           </IconButton>
         </div>
       ),
     },
   ];
+  // S/U recommendations shall be given separately.
   // NOTE TO SELF: always use () => ... calling the function directly will immediately execute it
 
   // use moduleCode as unique identifier instead of list index
