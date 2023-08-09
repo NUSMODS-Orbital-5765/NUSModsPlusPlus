@@ -178,3 +178,21 @@ export const emptyModuleGrades = [
     },
   },
 ];
+
+// list of modules to be added as options for adding
+// (this will be replaced by the module search autocomplete field in modules page)
+// note: will need a way to check and find out whether the module can be s/ued
+export const addModuleOptions = [
+  {
+    code: "PC1101",
+    name: "Frontiers of Physics",
+  },
+  {
+    code: "SW1101E",
+    name: "Social Work: A Heart-Head-Hand Connection",
+  },
+  {
+    code: "PS1101E",
+    name: "Introduction to Politics",
+  },
+];

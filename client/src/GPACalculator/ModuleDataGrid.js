@@ -1,105 +1,213 @@
 //COMPLETE
 // make the grade field editable so that user can "import modules" and update with grades accordingly.
 import {
-  Autocomplete,
-  TextField,
   Box,
   Typography,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
   IconButton,
-  MenuItem,
+  Chip,
+  Dialog,
+  DialogContent,
+  Autocomplete,
+  TextField,
 } from "@mui/material";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import React, { useState, useEffect } from "react";
-import { possibleGradesList, GPAGradeGuide } from "./GPACalculatorConstants";
+import {
+  possibleGradesList,
+  GPAGradeGuide,
+  addModuleOptions,
+} from "./GPACalculatorConstants";
 import { DataGrid } from "@mui/x-data-grid";
+
+// dialog for user to add modules
+export const EditModuleDialog = ({
+  moduleCode,
+  openDialog,
+  handleCloseDialog,
+  handleEditRow,
+}) => {
+  const [newModuleGrade, setNewModuleGrade] = useState("");
+  const handleNewModuleGrade = (event, value) => {
+    setNewModuleGrade(value);
+  };
+
+  const handleClickEditModule = () => {
+    handleEditRow(moduleCode, newModuleGrade);
+    handleCloseDialog();
+  };
+
+  return (
+    <div>
+      <Dialog
+        minWidth="md"
+        fullWidth
+        open={openDialog}
+        onClose={handleCloseDialog}
+      >
+        <DialogContent sx={{ margin: "10px" }}>
+          <Box
+            sx={{ height: "auto", display: "flex", flexDirection: "column" }}
+          >
+            <Typography sx={{ fontSize: "35px", fontWeight: "700" }}>
+              Edit Module
+            </Typography>
+            <TextField
+              sx={{ marginTop: "20px" }}
+              label="Module Code"
+              defaultValue={moduleCode}
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+            <Autocomplete
+              onChange={handleNewModuleGrade}
+              fullWidth
+              options={possibleGradesList}
+              ListboxProps={{ style: { maxHeight: 200 } }}
+              sx={{ marginTop: "30px" }}
+              renderInput={(params) => (
+                <TextField {...params} label="Select Grade" />
+              )}
+            />
+            <Box
+              sx={{
+                marginTop: "30px",
+                display: "flex",
+                justifyContent: "flex-end",
+              }}
+            >
+              <Button
+                sx={{ color: "white" }}
+                variant="contained"
+                onClick={handleClickEditModule}
+              >
+                Edit Grade
+              </Button>
+            </Box>
+          </Box>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
+
+// IMPORTANT! use back the module dialog that is under "Add Module" in modules page
+// dialog for adding new modules
+export const AddModuleDialog = ({
+  openDialog,
+  handleCloseDialog,
+  handleSubmitModule,
+}) => {
+  const flattenedAddModuleOptions = addModuleOptions.flatMap(
+    (module) => module.code
+  );
+
+  const [selectedModuleCode, setSelectedModuleCode] = useState("");
+  const [selectedGrade, setSelectedGrade] = useState("");
+  const handleSelectedModuleCode = (event, value) => {
+    setSelectedModuleCode(value);
+  };
+
+  const handleSelectedGrade = (event, value) => {
+    setSelectedGrade(value);
+  };
+
+  const handleClickAddModule = () => {
+    // create a module object
+    const selectedModule = addModuleOptions.find(
+      (option) => option.code === selectedModuleCode
+    );
+    const moduleObject = {
+      module: selectedModule,
+      grade: selectedGrade,
+      "S/U": "Yes",
+    };
+    handleCloseDialog();
+    // pass in a callback function
+    handleSubmitModule(moduleObject);
+  };
+
+  return (
+    <div>
+      <Dialog
+        minWidth="md"
+        fullWidth
+        open={openDialog}
+        onClose={handleCloseDialog}
+      >
+        <DialogContent sx={{ margin: "10px" }}>
+          <Box
+            sx={{ height: "auto", display: "flex", flexDirection: "column" }}
+          >
+            <Typography sx={{ fontSize: "35px", fontWeight: "700" }}>
+              Add Module
+            </Typography>
+            <Autocomplete
+              onChange={handleSelectedModuleCode}
+              options={flattenedAddModuleOptions}
+              ListboxProps={{ style: { maxHeight: 200 } }}
+              fullWidth
+              sx={{ marginTop: "20px" }}
+              renderInput={(params) => (
+                <TextField {...params} label="Select Module" />
+              )}
+            />
+            <Autocomplete
+              onChange={handleSelectedGrade}
+              fullWidth
+              options={possibleGradesList}
+              ListboxProps={{ style: { maxHeight: 200 } }}
+              sx={{ marginTop: "30px" }}
+              renderInput={(params) => (
+                <TextField {...params} label="Select Grade" />
+              )}
+            />
+            <Box
+              sx={{
+                marginTop: "30px",
+                display: "flex",
+                justifyContent: "flex-end",
+              }}
+            >
+              <Button
+                sx={{ color: "white" }}
+                variant="contained"
+                onClick={handleClickAddModule}
+              >
+                Add Module
+              </Button>
+            </Box>
+          </Box>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
+
+// calculating total workload and overall GPA
+export function totalWorkload(rows) {
+  return (rows.length * 4).toString() + " MCs";
+}
+
+export function calculateOverallGPA(rows) {
+  let totalSum = 0;
+  rows.forEach((row) => {
+    const gpaData = GPAGradeGuide.find((item) => item.grade === row.grade);
+
+    if (gpaData) {
+      const gpa = parseFloat(gpaData.GPA);
+      totalSum += gpa;
+    }
+  });
+  return (totalSum / rows.length).toFixed(2).toString() + " GPA"; // correct to 2 dp
+}
 
 // data grid for modules
 const ModuleDataGrid = ({ moduleList, semesterName }) => {
-  const [rows, setRows] = useState([]);
-
-  // calculating total workload and overall GPA
-  const totalWorkload = rows.length * 4;
-  const calculateOverallGPA = () => {
-    let totalSum = 0;
-    rows.forEach((row) => {
-      const gpaData = GPAGradeGuide.find((item) => item.grade === row.grade);
-
-      if (gpaData) {
-        const gpa = parseFloat(gpaData.GPA);
-        totalSum += gpa;
-      }
-    });
-    return (totalSum / rows.length).toFixed(2); // correct to 2 dp
-  };
-
-  // moduleList loaded will change when the tab changes.
-  useEffect(() => {
-    setRows(moduleList);
-  }, [moduleList]);
-
-  // handle uploading of grades for additional modules
-  // use web API to fetch module data
-  const moduleOptions = [
-    { moduleCode: "CS2040", "S/U": "No" },
-    { moduleCode: "EC2104", "S/U": "Yes" },
-    { moduleCode: "DSA1101", "S/U": "Yes" },
-  ];
-
-  const moduleCodeOptions = moduleOptions.map((module) => module.moduleCode);
-
-  // toggling open state of the input fields
-  const [openAddRow, setOpenAddRow] = useState(false);
-  const handleOpenAddRow = () => {
-    if (!openAddRow) {
-      setSelectedModule("");
-      setSelectedGrade("");
-    }
-    setOpenAddRow(!openAddRow);
-  };
-
-  // recording the value of the input fields
-  const [selectedModule, setSelectedModule] = useState("");
-  const handleSelectedModule = (event, value) => {
-    setSelectedModule(value);
-  };
-
-  const [selectedGrade, setSelectedGrade] = useState("");
-  const handleSelectedGrade = (event) => {
-    setSelectedGrade(event.target.value);
-  };
-
-  // uploading values of input fields and adding a new row in data grid.
-  const handleAddRow = () => {
-    console.log("selectedModule:", selectedModule);
-    console.log("moduleOptions:", moduleOptions);
-
-    const criteriaForSU = moduleOptions.find(
-      (module) => module.moduleCode === selectedModule
-    )?.["S/U"];
-    console.log("criteriaForSU:", criteriaForSU);
-
-    const newRow = {
-      moduleCode: selectedModule,
-      grade: selectedGrade,
-      "S/U": criteriaForSU,
-    };
-    console.log("newRow:", newRow);
-
-    setRows((prevRows) => [...prevRows, newRow]);
-    setOpenAddRow(false);
-  };
-
-  // handle deletion of modules (using red cross button)
-  const handleDeleteRow = (id) => {
-    setRows((prevRows) => prevRows.filter((row) => row.moduleCode !== id));
-  };
-
-  // important, otherwise my datagrid doesn't work i think lol
-  const flattenedModuleList = moduleList.flatMap((module) => {
+  const [newModuleList, setNewModuleList] = useState(moduleList);
+  const flattenedModuleList = newModuleList.flatMap((module) => {
     return {
       code: module.module.code,
       name: module.module.name,
@@ -107,6 +215,57 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
       "S/U": module["S/U"],
     };
   });
+
+  function handleDeleteRow(moduleCode) {
+    setNewModuleList(
+      newModuleList.filter(
+        (moduleObject) => moduleObject.module.code !== moduleCode
+      )
+    );
+  }
+
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [currentModuleCode, setCurrentModuleCode] = useState("");
+  const handleOpenEditDialog = (moduleCode) => {
+    setOpenEditDialog(true);
+    setCurrentModuleCode(moduleCode);
+  };
+
+  const handleCloseEditDialog = () => {
+    setOpenEditDialog(false);
+    setCurrentModuleCode("");
+  };
+
+  // function for editing the relevant row with the new module grade
+  function handleEditRow(moduleCode, newModuleGrade) {
+    setNewModuleList((prevModuleList) =>
+      prevModuleList.map((moduleItem) => {
+        if (moduleItem.module.code === moduleCode) {
+          return {
+            ...moduleItem,
+            grade: newModuleGrade,
+          };
+        }
+        return moduleItem;
+      })
+    );
+  }
+
+  const [openAddRow, setOpenAddRow] = useState(false);
+  const handleOpenAddRow = () => {
+    setOpenAddRow(true);
+  };
+
+  const handleCloseAddRow = () => {
+    setOpenAddRow(false);
+  };
+
+  const handleSubmitModule = (moduleObject) => {
+    console.log(moduleObject);
+    const updatedModuleList = [...newModuleList, moduleObject];
+    setNewModuleList(updatedModuleList);
+    console.log(updatedModuleList);
+  };
 
   // data grid fields
   const moduleColumns = [
@@ -175,12 +334,18 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
       width: 120,
       sortable: false,
       renderCell: (params) => (
-        <IconButton onClick={() => handleDeleteRow(params.row.code)}>
-          <ClearRoundedIcon color="error" />
-        </IconButton>
+        <div>
+          <IconButton onClick={() => handleDeleteRow(params.row.code)}>
+            <ClearRoundedIcon color="error" />
+          </IconButton>
+          <IconButton onClick={() => handleOpenEditDialog(params.row.code)}>
+            <EditRoundedIcon color="primary" />
+          </IconButton>
+        </div>
       ),
     },
   ];
+  // NOTE TO SELF: always use () => ... calling the function directly will immediately execute it
 
   // use moduleCode as unique identifier instead of list index
   const getRowId = (row) => row.code;
@@ -190,89 +355,66 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
       <Box
         sx={{
           display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyItems: "center",
+          flexDirection: "column",
           marginTop: "10px",
           marginBottom: "20px",
         }}
       >
-        <Typography sx={{ fontWeight: 700, fontSize: "30px" }}>
-          {semesterName}
-        </Typography>
-        <Button
-          sx={{ marginLeft: "20px" }}
-          variant="contained"
-          onClick={handleOpenAddRow}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
         >
-          Add Module
-        </Button>
-        {openAddRow && (
           <Box
             sx={{
               display: "flex",
               flexDirection: "row",
-              marginLeft: "20px",
-              alignItems: "center",
               justifyItems: "center",
+              alignItems: "center",
             }}
           >
-            <Autocomplete
-              sx={{ width: "30ch" }}
-              options={moduleCodeOptions}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="standard"
-                  label="Select Module"
-                />
-              )}
-              onChange={handleSelectedModule}
-            />
-            <FormControl sx={{ marginLeft: "20px" }}>
-              <InputLabel variant="standard">Select Grade</InputLabel>
-              <Select
-                variant="standard"
-                sx={{ width: "30ch" }}
-                onChange={handleSelectedGrade}
-              >
-                {possibleGradesList.map((grade, index) => (
-                  <MenuItem key={index} value={grade}>
-                    {grade}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <Button
-              sx={{ marginLeft: "10px", color: "white" }}
+            <Typography sx={{ fontWeight: 700, fontSize: "30px" }}>
+              {semesterName}
+            </Typography>
+            <Chip
+              size="large"
+              sx={{
+                marginLeft: "20px",
+                fontSize: "15px",
+                color: "white",
+                fontWeight: 600,
+              }}
+              label={calculateOverallGPA(flattenedModuleList)}
+              variant="filled"
               color="success"
-              variant="contained"
-              disabled={
-                selectedModule.length === 0 || selectedGrade.length === 0
-              }
-              onClick={handleAddRow}
-            >
-              Add
-            </Button>
+            />
+            <Chip
+              size="large"
+              sx={{ fontSize: "15px", marginLeft: "20px", fontWeight: 600 }}
+              label={totalWorkload(flattenedModuleList)}
+              variant="outlined"
+              color="success"
+            />
           </Box>
-        )}
-        {!openAddRow && (
-          <Box
-            sx={{ marginLeft: "20px", display: "flex", flexDirection: "row" }}
-          >
-            <Typography sx={{ fontSize: "20px", fontWeight: 700 }}>
-              GPA:{" "}
-              <span style={{ color: "#1a90ff" }}>{calculateOverallGPA()}</span>
-            </Typography>
-            <Typography
-              sx={{ marginLeft: "20px", fontSize: "20px", fontWeight: 700 }}
-            >
-              Workload:{" "}
-              <span style={{ color: "#1a90ff" }}>{totalWorkload} MCs</span>
-            </Typography>
-          </Box>
-        )}
+          <Button variant="contained" onClick={handleOpenAddRow}>
+            Add Module
+          </Button>
+        </Box>
       </Box>
+      <AddModuleDialog
+        openDialog={openAddRow}
+        handleCloseDialog={handleCloseAddRow}
+        handleSubmitModule={handleSubmitModule}
+      />
+      <EditModuleDialog
+        moduleCode={currentModuleCode}
+        openDialog={openEditDialog}
+        handleCloseDialog={handleCloseEditDialog}
+        handleEditRow={handleEditRow}
+      />
       <Box
         sx={{
           marginTop: "10px",
