@@ -9,9 +9,14 @@ import {
   DialogContent,
   Autocomplete,
   TextField,
+  Snackbar,
+  Alert,
+  Tooltip,
 } from "@mui/material";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import LibraryAddRoundedIcon from "@mui/icons-material/LibraryAddRounded";
+import AutoFixHighRoundedIcon from "@mui/icons-material/AutoFixHighRounded";
 import React, { useState, useEffect } from "react";
 import {
   possibleGradesList,
@@ -19,6 +24,7 @@ import {
   addModuleOptions,
 } from "./GPACalculatorConstants";
 import { DataGrid } from "@mui/x-data-grid";
+import { orange } from "@mui/material/colors";
 
 // dialog for user to add modules
 export const EditModuleDialog = ({
@@ -197,20 +203,28 @@ export function calculateOverallGPA(rows) {
   let totalSum = 0;
   let totalMC = 0;
   rows.forEach((row) => {
-    const gpaData = GPAGradeGuide.find((item) => item.grade === row.grade);
-    const mcData = row.mc;
-
-    if (gpaData) {
+    if (row.grade) {
+      const gpaData = GPAGradeGuide.find((item) => item.grade === row.grade);
+      const mcData = row.mc;
       const gpa = parseFloat(gpaData.GPA * mcData);
       totalSum += gpa;
       totalMC += mcData;
     }
   });
-  return (totalSum / totalMC).toFixed(2).toString() + " GPA"; // correct to 2 dp
+  const result =
+    totalMC === 0
+      ? 0 + " GPA"
+      : (totalSum / totalMC).toFixed(2).toString() + " GPA";
+  return result;
 }
 
 // data grid for modules
 const ModuleDataGrid = ({ moduleList, semesterName }) => {
+  // for snackbars/alerts
+  const [editSuccess, setEditSuccess] = useState(false);
+  const [addSuccess, setAddSuccess] = useState(false);
+
+  // original module array with each module as a dictionary/object & the relevant grade
   const [newModuleList, setNewModuleList] = useState(moduleList);
   const flattenedModuleList = newModuleList.flatMap((module) => {
     return {
@@ -260,6 +274,7 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
         return moduleItem;
       })
     );
+    setEditSuccess(true);
   }
 
   const [openAddRow, setOpenAddRow] = useState(false);
@@ -276,6 +291,7 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
     const updatedModuleList = [...newModuleList, moduleObject];
     setNewModuleList(updatedModuleList);
     console.log(updatedModuleList);
+    setAddSuccess(true);
   };
 
   // data grid fields
@@ -355,12 +371,16 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
       sortable: false,
       renderCell: (params) => (
         <div>
-          <IconButton onClick={() => handleDeleteRow(params.row.code)}>
-            <ClearRoundedIcon color="error" sx={{ fontSize: "25px" }} />
-          </IconButton>
-          <IconButton onClick={() => handleOpenEditDialog(params.row.code)}>
-            <EditRoundedIcon color="primary" sx={{ fontSize: "20px" }} />
-          </IconButton>
+          <Tooltip title="Delete" placement="top">
+            <IconButton onClick={() => handleDeleteRow(params.row.code)}>
+              <ClearRoundedIcon color="error" sx={{ fontSize: "25px" }} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Edit" placement="top">
+            <IconButton onClick={() => handleOpenEditDialog(params.row.code)}>
+              <EditRoundedIcon sx={{ color: orange[600], fontSize: "20px" }} />
+            </IconButton>
+          </Tooltip>
         </div>
       ),
     },
@@ -420,9 +440,24 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
               color="success"
             />
           </Box>
-          <Button variant="contained" onClick={handleOpenAddRow}>
-            Add Module
-          </Button>
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <Tooltip title="Get S/U Recommendation" placement="top">
+              <IconButton>
+                <AutoFixHighRoundedIcon
+                  color="success"
+                  sx={{ fontSize: "30px" }}
+                />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Add a Module" placement="top">
+              <IconButton onClick={handleOpenAddRow}>
+                <LibraryAddRoundedIcon
+                  color="primary"
+                  sx={{ fontSize: "30px" }}
+                />
+              </IconButton>
+            </Tooltip>
+          </Box>
         </Box>
       </Box>
       <AddModuleDialog
@@ -452,6 +487,34 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
           getRowHeight={() => 100}
         />
       </Box>
+      <Snackbar
+        open={addSuccess}
+        autoHideDuration={3000}
+        onClose={() => setAddSuccess(false)}
+      >
+        <Alert
+          variant="filled"
+          onClose={() => setAddSuccess(false)}
+          severity="success"
+          sx={{ color: "white", width: "100%" }}
+        >
+          Module added successfully!
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={editSuccess}
+        autoHideDuration={3000}
+        onClose={() => setEditSuccess(false)}
+      >
+        <Alert
+          variant="filled"
+          onClose={() => setEditSuccess(false)}
+          severity="success"
+          sx={{ color: "white", width: "100%" }}
+        >
+          Module edited successfully!
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
