@@ -23,6 +23,7 @@ import {
 } from "./GPACalculatorConstants";
 import { DataGrid } from "@mui/x-data-grid";
 import { orange } from "@mui/material/colors";
+import { HonoursGPAGuide } from "../Constants";
 
 // dialog for user to add modules
 export const EditModuleDialog = ({
@@ -196,30 +197,6 @@ export const AddModuleDialog = ({
   );
 };
 
-// calculating total workload and overall GPA
-export function totalWorkload(rows) {
-  return (rows.length * 4).toString() + " MCs";
-}
-
-export function calculateOverallGPA(rows) {
-  let totalSum = 0;
-  let totalMC = 0;
-  rows.forEach((row) => {
-    if (row.grade) {
-      const gpaData = GPAGradeGuide.find((item) => item.grade === row.grade);
-      const mcData = row.mc;
-      const gpa = parseFloat(gpaData.GPA * mcData);
-      totalSum += gpa;
-      totalMC += mcData;
-    }
-  });
-  const result =
-    totalMC === 0
-      ? 0 + " GPA"
-      : (totalSum / totalMC).toFixed(2).toString() + " GPA";
-  return result;
-}
-
 // data grid for modules
 const ModuleDataGrid = ({
   handleEditRow,
@@ -228,7 +205,12 @@ const ModuleDataGrid = ({
   moduleList,
   semesterName,
   yearName,
+  semesterGPA,
+  semesterWorkload,
+  gradeTarget,
 }) => {
+  const gradeTargetGPA = gradeTarget ? HonoursGPAGuide[gradeTarget] : 0;
+
   // original module array with each module as a dictionary/object & the relevant grade
   const flattenedModuleList = moduleList.flatMap((module) => {
     return {
@@ -399,14 +381,16 @@ const ModuleDataGrid = ({
                 color: "white",
                 fontWeight: 600,
               }}
-              label={calculateOverallGPA(flattenedModuleList)}
+              label={semesterGPA}
               variant="filled"
-              color="success"
+              color={
+                parseFloat(semesterGPA) >= gradeTargetGPA ? "success" : "error"
+              }
             />
             <Chip
               size="large"
               sx={{ fontSize: "15px", marginLeft: "20px", fontWeight: 600 }}
-              label={totalWorkload(flattenedModuleList)}
+              label={semesterWorkload}
               variant="outlined"
               color="success"
             />
