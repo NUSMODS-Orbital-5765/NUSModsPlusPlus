@@ -10,7 +10,11 @@ import {
   Autocomplete,
   TextField,
   Tooltip,
+  Snackbar,
+  Alert,
+  AlertTitle,
 } from "@mui/material";
+import DoneRoundedIcon from "@mui/icons-material/DoneRounded";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import LibraryAddRoundedIcon from "@mui/icons-material/LibraryAddRounded";
@@ -25,6 +29,30 @@ import { DataGrid } from "@mui/x-data-grid";
 import { orange } from "@mui/material/colors";
 import { HonoursGPAGuide } from "../Constants";
 
+// gpa calculation function for after su
+// gpa calculation function for after su
+export function calculateGPAAfterSU(moduleList) {
+  let totalSum = 0;
+  let totalMC = 0;
+
+  moduleList.forEach((moduleObject) => {
+    const moduleMC = moduleObject.module.mc;
+    const moduleGPA = moduleObject.GPA;
+
+    if (moduleGPA !== "NA" && !isNaN(moduleGPA)) {
+      const gpa = parseFloat(moduleGPA) * moduleMC;
+      totalSum += gpa;
+      totalMC += moduleMC;
+    }
+  });
+
+  if (totalMC === 0) {
+    return "0 GPA";
+  }
+
+  return (totalSum / totalMC).toFixed(2).toString() + " GPA";
+}
+
 // dialog for user to add modules
 export const EditModuleDialog = ({
   moduleCode,
@@ -33,11 +61,21 @@ export const EditModuleDialog = ({
   handleEditRow,
   semesterName,
   yearName,
+  moduleListRef,
 }) => {
+  const selectedModule = moduleListRef.find(
+    (module) => module.code === moduleCode
+  );
+  const SUcriteria = selectedModule ? selectedModule["S/U"] : "";
   const [newModuleGrade, setNewModuleGrade] = useState("");
   const handleNewModuleGrade = (event, value) => {
     setNewModuleGrade(value);
   };
+
+  const gradeOptionsList =
+    SUcriteria === "Yes"
+      ? possibleGradesList
+      : possibleGradesList.filter((grade) => grade !== "S" && grade !== "U");
 
   const handleClickEditModule = () => {
     handleEditRow(moduleCode, newModuleGrade, semesterName, yearName);
@@ -71,7 +109,7 @@ export const EditModuleDialog = ({
             <Autocomplete
               onChange={handleNewModuleGrade}
               fullWidth
-              options={possibleGradesList}
+              options={gradeOptionsList}
               ListboxProps={{ style: { maxHeight: 200 } }}
               sx={{ marginTop: "30px" }}
               renderInput={(params) => (
@@ -197,6 +235,98 @@ export const AddModuleDialog = ({
   );
 };
 
+export const SURecommendationList = ({
+  moduleList,
+  gradeTargetGPA,
+  semesterName,
+  yearName,
+  handleEditRow,
+}) => {
+  const moduleListWithGPA = moduleList.map((module) => {
+    const gpaData = GPAGradeGuide.find((item) => item.grade === module.grade);
+    if (gpaData) {
+      if (gpaData.GPA === "NA") {
+        module.GPA = "NA";
+      } else {
+        module.GPA = parseFloat(gpaData.GPA).toFixed(2);
+      }
+    } else {
+      module.GPA = "";
+    }
+    return module;
+  });
+  console.log(moduleListWithGPA);
+
+  const recommendedList = moduleListWithGPA.filter(
+    (moduleObject) =>
+      moduleObject.GPA < gradeTargetGPA && moduleObject.module["S/U"] === "Yes"
+  );
+  console.log(recommendedList);
+
+  const handleSUModule = (recommendedModule) => {
+    const gradesToMapToS = [
+      "A+",
+      "A",
+      "A-",
+      "B+",
+      "B",
+      "B-",
+      "C+",
+      "C",
+      "D+",
+      "D",
+    ];
+    const newModuleGrade = gradesToMapToS.includes(recommendedModule.grade)
+      ? "S"
+      : "U";
+
+    handleEditRow(
+      recommendedModule.module.code,
+      newModuleGrade,
+      semesterName,
+      yearName
+    );
+  };
+
+  return (
+    <div>
+      {recommendedList.length !== 0 &&
+        recommendedList.map((recommendedModule, index) => {
+          const remainingList = moduleListWithGPA.filter(
+            (moduleObject) =>
+              moduleObject.module.code !== recommendedModule.module.code
+          );
+
+          const gpaAfterSU = calculateGPAAfterSU(remainingList);
+          return (
+            <Alert
+              key={index}
+              sx={{ marginTop: "10px", marginBottom: "10px", fontSize: "15px" }}
+              severity="error"
+              action={
+                <Tooltip title="S/U this module" placement="top">
+                  <IconButton
+                    onClick={() => handleSUModule(recommendedModule)}
+                    color="inherit"
+                    size="large"
+                  >
+                    <DoneRoundedIcon sx={{ fontSize: "25px" }} />
+                  </IconButton>
+                </Tooltip>
+              }
+            >
+              <AlertTitle>
+                <strong>{recommendedModule.module.code}</strong>{" "}
+                {recommendedModule.module.name}
+              </AlertTitle>
+              GPA After S/U: <strong>{gpaAfterSU}</strong>
+            </Alert>
+          );
+        })}
+    </div>
+  );
+};
+
 // data grid for modules
 const ModuleDataGrid = ({
   handleEditRow,
@@ -221,6 +351,8 @@ const ModuleDataGrid = ({
       mc: module.module.mc,
     };
   });
+
+  console.log(flattenedModuleList);
 
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [currentModuleCode, setCurrentModuleCode] = useState("");
@@ -338,115 +470,126 @@ const ModuleDataGrid = ({
       ),
     },
   ];
-  // S/U recommendations shall be given separately.
   // NOTE TO SELF: always use () => ... calling the function directly will immediately execute it
 
   // use moduleCode as unique identifier instead of list index
   const getRowId = (row) => row.code;
 
   return (
-    <Box sx={{ margin: "20px", marginBottom: "20px" }}>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          marginTop: "10px",
-          marginBottom: "20px",
-        }}
-      >
+    <div>
+      <Box sx={{ margin: "20px", marginBottom: "20px" }}>
         <Box
           sx={{
             display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
+            flexDirection: "column",
+            marginTop: "10px",
+            marginBottom: "20px",
           }}
         >
           <Box
             sx={{
               display: "flex",
               flexDirection: "row",
-              justifyItems: "center",
+              justifyContent: "space-between",
               alignItems: "center",
             }}
           >
-            <Typography sx={{ fontWeight: 700, fontSize: "30px" }}>
-              {semesterName}
-            </Typography>
-            <Chip
-              size="large"
+            <Box
               sx={{
-                marginLeft: "20px",
-                fontSize: "15px",
-                color: "white",
-                fontWeight: 600,
+                display: "flex",
+                flexDirection: "row",
+                justifyItems: "center",
+                alignItems: "center",
               }}
-              label={semesterGPA}
-              variant="filled"
-              color={
-                parseFloat(semesterGPA) >= gradeTargetGPA ? "success" : "error"
-              }
-            />
-            <Chip
-              size="large"
-              sx={{ fontSize: "15px", marginLeft: "20px", fontWeight: 600 }}
-              label={semesterWorkload}
-              variant="outlined"
-              color="success"
-            />
-          </Box>
-          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <Tooltip title="Get S/U Recommendation" placement="top">
-              <IconButton>
-                <AutoFixHighRoundedIcon
-                  color="success"
-                  sx={{ fontSize: "30px" }}
-                />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Add a Module" placement="top">
-              <IconButton onClick={handleOpenAddRow}>
-                <LibraryAddRoundedIcon
-                  color="primary"
-                  sx={{ fontSize: "30px" }}
-                />
-              </IconButton>
-            </Tooltip>
+            >
+              <Typography sx={{ fontWeight: 700, fontSize: "30px" }}>
+                {semesterName}
+              </Typography>
+              <Chip
+                size="large"
+                sx={{
+                  marginLeft: "20px",
+                  fontSize: "15px",
+                  color: "white",
+                  fontWeight: 600,
+                }}
+                label={semesterGPA}
+                variant="filled"
+                color={
+                  parseFloat(semesterGPA) >= gradeTargetGPA
+                    ? "success"
+                    : "error"
+                }
+              />
+              <Chip
+                size="large"
+                sx={{ fontSize: "15px", marginLeft: "20px", fontWeight: 600 }}
+                label={semesterWorkload}
+                variant="outlined"
+                color="success"
+              />
+            </Box>
+            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+              <Button
+                variant="contained"
+                onClick={handleOpenAddRow}
+                color="primary"
+              >
+                Add Module
+              </Button>
+            </Box>
           </Box>
         </Box>
-      </Box>
-      <AddModuleDialog
-        openDialog={openAddRow}
-        handleCloseDialog={handleCloseAddRow}
-        handleSubmitModule={handleSubmitModule}
-        semesterName={semesterName}
-        yearName={yearName}
-      />
-      <EditModuleDialog
-        moduleCode={currentModuleCode}
-        openDialog={openEditDialog}
-        handleCloseDialog={handleCloseEditDialog}
-        handleEditRow={handleEditRow}
-        semesterName={semesterName}
-        yearName={yearName}
-      />
-      <Box
-        sx={{
-          marginTop: "10px",
-          marginBottom: "40px",
-          height: 600,
-          width: "100%",
-        }}
-      >
-        <DataGrid
-          sx={{ fontSize: "15px" }}
-          rows={flattenedModuleList}
-          columns={moduleColumns}
-          getRowId={getRowId}
-          getRowHeight={() => 100}
+        {gradeTarget ? (
+          <SURecommendationList
+            moduleList={moduleList}
+            gradeTargetGPA={gradeTargetGPA}
+            semesterName={semesterName}
+            yearName={yearName}
+            handleEditRow={handleEditRow}
+          />
+        ) : (
+          <Alert
+            sx={{ marginTop: "-10px", marginBottom: "20px" }}
+            severity="error"
+          >
+            Please select a grade target to view S/U recommendations.
+          </Alert>
+        )}
+        <AddModuleDialog
+          openDialog={openAddRow}
+          handleCloseDialog={handleCloseAddRow}
+          handleSubmitModule={handleSubmitModule}
+          semesterName={semesterName}
+          yearName={yearName}
         />
+        <EditModuleDialog
+          moduleCode={currentModuleCode}
+          openDialog={openEditDialog}
+          handleCloseDialog={handleCloseEditDialog}
+          handleEditRow={handleEditRow}
+          semesterName={semesterName}
+          yearName={yearName}
+          moduleListRef={flattenedModuleList}
+        />
+        <Box
+          sx={{
+            marginTop: "10px",
+            marginBottom: "40px",
+            height: 600,
+            width: "100%",
+          }}
+        >
+          <DataGrid
+            sx={{ fontSize: "15px" }}
+            rows={flattenedModuleList}
+            columns={moduleColumns}
+            getRowId={getRowId}
+            getRowHeight={() => 100}
+          />
+        </Box>
       </Box>
-    </Box>
+    </div>
   );
 };
 export default ModuleDataGrid;

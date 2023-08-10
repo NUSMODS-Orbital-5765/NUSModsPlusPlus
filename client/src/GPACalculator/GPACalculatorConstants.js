@@ -11,6 +11,8 @@ export const GPAGradeGuide = [
   { grade: "D+", GPA: "1.5" },
   { grade: "D", GPA: "1.0" },
   { grade: "F", GPA: "0" },
+  { grade: "S", GPA: "NA" },
+  { grade: "U", GPA: "NA" },
 ];
 
 // list of all possible grades
@@ -77,7 +79,6 @@ export const sampleModuleGrades = [
             mc: 4,
           },
           grade: "F",
-          "S/U": "Yes",
         },
         {
           module: {

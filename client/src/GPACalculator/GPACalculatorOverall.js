@@ -12,12 +12,16 @@ export function calculateOverallGPA(gradesList) {
   gradesList.forEach((year) => {
     Object.values(year.semesters).forEach((semester) => {
       semester.forEach((moduleItem) => {
-        if (moduleItem.grade) {
+        if (
+          moduleItem.grade &&
+          moduleItem.grade !== "S" &&
+          moduleItem.grade !== "U"
+        ) {
           const gpaData = GPAGradeGuide.find(
             (item) => item.grade === moduleItem.grade
           );
           const mcData = moduleItem.module.mc;
-          const gpa = parseFloat(gpaData.GPA * mcData);
+          const gpa = parseFloat(gpaData.GPA) * mcData;
           totalSum += gpa;
           totalMC += mcData;
         }

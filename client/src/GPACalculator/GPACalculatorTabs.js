@@ -14,15 +14,12 @@ import { HonoursGPAGuide } from "../Constants";
 import React, { useState } from "react";
 import ModuleDataGrid from "./ModuleDataGrid";
 import { GPAGradeGuide } from "./GPACalculatorConstants";
-import { ProgressBar } from "../StyledComponents";
-import FlagRoundedIcon from "@mui/icons-material/FlagRounded";
-import { red } from "@mui/material/colors";
 import { GPAProgressBar } from "./GPACalculatorOverall";
 
 export const yearList = ["Year 1", "Year 2", "Year 3", "Year 4"];
 
 // something at the bottom to show whether the student is close to the goal
-export const OverallGrade = ({ yearGPA, yearName, gradeTarget }) => {
+export const OverallGrade = ({ yearGPA, gradeTarget }) => {
   const gradeTargetGPA = gradeTarget ? HonoursGPAGuide[gradeTarget] : 0;
   const numericYearGPA = parseFloat(yearGPA);
 
@@ -111,12 +108,16 @@ export function calculateYearGPA(gradesList, yearName) {
 
   Object.values(matchingYear.semesters).forEach((semester) => {
     semester.forEach((moduleItem) => {
-      if (moduleItem.grade) {
+      if (
+        moduleItem.grade &&
+        moduleItem.grade !== "S" &&
+        moduleItem.grade !== "U"
+      ) {
         const gpaData = GPAGradeGuide.find(
           (item) => item.grade === moduleItem.grade
         );
         const mcData = moduleItem.module.mc;
-        const gpa = parseFloat(gpaData.GPA * mcData);
+        const gpa = parseFloat(gpaData.GPA) * mcData;
         totalSum += gpa;
         totalMC += mcData;
       }
@@ -124,9 +125,7 @@ export function calculateYearGPA(gradesList, yearName) {
   });
 
   const result =
-    totalMC === 0
-      ? 0 + " GPA"
-      : (totalSum / totalMC).toFixed(2).toString() + " GPA";
+    totalMC === 0 ? "0 GPA" : (totalSum / totalMC).toFixed(2) + " GPA";
 
   return result;
 }
@@ -151,21 +150,23 @@ export function calculateSemesterGPA(gradesList, semesterName, yearName) {
   let totalMC = 0;
 
   matchingSemester.forEach((moduleItem) => {
-    if (moduleItem.grade) {
+    if (
+      moduleItem.grade &&
+      moduleItem.grade !== "S" &&
+      moduleItem.grade !== "U"
+    ) {
       const gpaData = GPAGradeGuide.find(
         (item) => item.grade === moduleItem.grade
       );
       const mcData = moduleItem.module.mc;
-      const gpa = parseFloat(gpaData.GPA * mcData);
+      const gpa = parseFloat(gpaData.GPA) * mcData;
       totalSum += gpa;
       totalMC += mcData;
     }
   });
 
   const result =
-    totalMC === 0
-      ? 0 + " GPA"
-      : (totalSum / totalMC).toFixed(2).toString() + " GPA";
+    totalMC === 0 ? "0 GPA" : (totalSum / totalMC).toFixed(2) + " GPA";
 
   return result;
 }
