@@ -9,15 +9,13 @@ import {
   DialogContent,
   Autocomplete,
   TextField,
-  Snackbar,
-  Alert,
   Tooltip,
 } from "@mui/material";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import LibraryAddRoundedIcon from "@mui/icons-material/LibraryAddRounded";
 import AutoFixHighRoundedIcon from "@mui/icons-material/AutoFixHighRounded";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   possibleGradesList,
   GPAGradeGuide,
@@ -32,6 +30,8 @@ export const EditModuleDialog = ({
   openDialog,
   handleCloseDialog,
   handleEditRow,
+  semesterName,
+  yearName,
 }) => {
   const [newModuleGrade, setNewModuleGrade] = useState("");
   const handleNewModuleGrade = (event, value) => {
@@ -39,7 +39,7 @@ export const EditModuleDialog = ({
   };
 
   const handleClickEditModule = () => {
-    handleEditRow(moduleCode, newModuleGrade);
+    handleEditRow(moduleCode, newModuleGrade, semesterName, yearName);
     handleCloseDialog();
     setNewModuleGrade("");
   };
@@ -105,6 +105,8 @@ export const AddModuleDialog = ({
   openDialog,
   handleCloseDialog,
   handleSubmitModule,
+  semesterName,
+  yearName,
 }) => {
   const flattenedAddModuleOptions = addModuleOptions.flatMap(
     (module) => module.code
@@ -131,7 +133,7 @@ export const AddModuleDialog = ({
     };
     handleCloseDialog();
     // pass in a callback function
-    handleSubmitModule(moduleObject);
+    handleSubmitModule(moduleObject, semesterName, yearName);
     setSelectedGrade("");
     setSelectedModuleCode("");
   };
@@ -219,14 +221,16 @@ export function calculateOverallGPA(rows) {
 }
 
 // data grid for modules
-const ModuleDataGrid = ({ moduleList, semesterName }) => {
-  // for snackbars/alerts
-  const [editSuccess, setEditSuccess] = useState(false);
-  const [addSuccess, setAddSuccess] = useState(false);
-
+const ModuleDataGrid = ({
+  handleEditRow,
+  handleDeleteRow,
+  handleSubmitModule,
+  moduleList,
+  semesterName,
+  yearName,
+}) => {
   // original module array with each module as a dictionary/object & the relevant grade
-  const [newModuleList, setNewModuleList] = useState(moduleList);
-  const flattenedModuleList = newModuleList.flatMap((module) => {
+  const flattenedModuleList = moduleList.flatMap((module) => {
     return {
       code: module.module.code,
       name: module.module.name,
@@ -235,19 +239,6 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
       mc: module.module.mc,
     };
   });
-
-  // moduleList loaded will change when the tab changes.
-  useEffect(() => {
-    setNewModuleList(moduleList);
-  }, [moduleList]);
-
-  function handleDeleteRow(moduleCode) {
-    setNewModuleList(
-      newModuleList.filter(
-        (moduleObject) => moduleObject.module.code !== moduleCode
-      )
-    );
-  }
 
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [currentModuleCode, setCurrentModuleCode] = useState("");
@@ -261,22 +252,6 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
     setCurrentModuleCode("");
   };
 
-  // function for editing the relevant row with the new module grade
-  function handleEditRow(moduleCode, newModuleGrade) {
-    setNewModuleList((prevModuleList) =>
-      prevModuleList.map((moduleItem) => {
-        if (moduleItem.module.code === moduleCode) {
-          return {
-            ...moduleItem,
-            grade: newModuleGrade,
-          };
-        }
-        return moduleItem;
-      })
-    );
-    setEditSuccess(true);
-  }
-
   const [openAddRow, setOpenAddRow] = useState(false);
   const handleOpenAddRow = () => {
     setOpenAddRow(true);
@@ -284,14 +259,6 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
 
   const handleCloseAddRow = () => {
     setOpenAddRow(false);
-  };
-
-  const handleSubmitModule = (moduleObject) => {
-    console.log(moduleObject);
-    const updatedModuleList = [...newModuleList, moduleObject];
-    setNewModuleList(updatedModuleList);
-    console.log(updatedModuleList);
-    setAddSuccess(true);
   };
 
   // data grid fields
@@ -372,7 +339,11 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
       renderCell: (params) => (
         <div>
           <Tooltip title="Delete" placement="top">
-            <IconButton onClick={() => handleDeleteRow(params.row.code)}>
+            <IconButton
+              onClick={() =>
+                handleDeleteRow(params.row.code, semesterName, yearName)
+              }
+            >
               <ClearRoundedIcon color="error" sx={{ fontSize: "25px" }} />
             </IconButton>
           </Tooltip>
@@ -464,12 +435,16 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
         openDialog={openAddRow}
         handleCloseDialog={handleCloseAddRow}
         handleSubmitModule={handleSubmitModule}
+        semesterName={semesterName}
+        yearName={yearName}
       />
       <EditModuleDialog
         moduleCode={currentModuleCode}
         openDialog={openEditDialog}
         handleCloseDialog={handleCloseEditDialog}
         handleEditRow={handleEditRow}
+        semesterName={semesterName}
+        yearName={yearName}
       />
       <Box
         sx={{
@@ -487,34 +462,6 @@ const ModuleDataGrid = ({ moduleList, semesterName }) => {
           getRowHeight={() => 100}
         />
       </Box>
-      <Snackbar
-        open={addSuccess}
-        autoHideDuration={3000}
-        onClose={() => setAddSuccess(false)}
-      >
-        <Alert
-          variant="filled"
-          onClose={() => setAddSuccess(false)}
-          severity="success"
-          sx={{ color: "white", width: "100%" }}
-        >
-          Module added successfully!
-        </Alert>
-      </Snackbar>
-      <Snackbar
-        open={editSuccess}
-        autoHideDuration={3000}
-        onClose={() => setEditSuccess(false)}
-      >
-        <Alert
-          variant="filled"
-          onClose={() => setEditSuccess(false)}
-          severity="success"
-          sx={{ color: "white", width: "100%" }}
-        >
-          Module edited successfully!
-        </Alert>
-      </Snackbar>
     </Box>
   );
 };

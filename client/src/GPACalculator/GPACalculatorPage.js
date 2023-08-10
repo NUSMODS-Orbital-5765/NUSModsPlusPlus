@@ -1,11 +1,11 @@
 import AppBarComponent from "../AppBar/AppBarComponent";
 import DrawerComponent from "../DrawerComponent";
-import { Card, CardContent, Box, Typography } from "@mui/material";
+import { Box, Typography, Snackbar, Alert } from "@mui/material";
 import GPACalculatorTabs from "./GPACalculatorTabs";
-import { GPACalculatorViewList } from "../Constants";
 import { combinedItems } from "../Home/HomePageStyledComponents";
 import { sampleModuleGrades } from "./GPACalculatorConstants";
 import GPACalculatorOverall from "./GPACalculatorOverall";
+import React, { useState } from "react";
 
 // calculation of yearly cumulative GPA
 export const YearCumulativeGPA = () => {
@@ -17,13 +17,6 @@ export const YearCumulativeGPA = () => {
     </div>
   );
 };
-
-// might have it as a side component rather than have the user keep switching to the "Overall" tab just to see what it looks like
-// content for overall GPA
-export const OverallGPAView = () => {
-  return <div></div>;
-};
-// use linear progress with label, distance from goal
 
 export const CalculatorPageHeader = () => {
   return (
@@ -70,8 +63,101 @@ export const CalculatorPageHeader = () => {
 // main page content
 const GPACalculatorPage = () => {
   // fetch the user data from the database here
-  // check that the status of the module plan is APPROVED before fetching the data as required
-  // SOLVE ISSUES WITH THE MODULES PAGE, VERY IMPORTANT
+  // maybe can load the default semesterModulePlans?? can??
+  // but need to fetch data about whether the module can be s/ued, and the module credits as well.
+
+  // state management of the moduleList
+  const [newModuleList, setNewModuleList] = useState(sampleModuleGrades);
+
+  // snackbars and alerts
+  const [editSuccess, setEditSuccess] = useState(false);
+  const [addSuccess, setAddSuccess] = useState(false);
+  const [deleteSuccess, setDeleteSuccess] = useState(false);
+
+  function handleDeleteRow(moduleCode, semesterName, yearName) {
+    const updatedModuleList = newModuleList.map((yearObject) => {
+      if (yearObject.year === yearName) {
+        const updatedSemesters = { ...yearObject.semesters };
+        if (updatedSemesters[semesterName]) {
+          const filteredModules = updatedSemesters[semesterName].filter(
+            (moduleObject) => moduleObject.module.code !== moduleCode
+          );
+          updatedSemesters[semesterName] = filteredModules;
+        }
+
+        return {
+          ...yearObject,
+          semesters: updatedSemesters,
+        };
+      }
+      return yearObject;
+    });
+    setNewModuleList(updatedModuleList);
+    console.log(updatedModuleList);
+    setDeleteSuccess(true);
+  }
+
+  // function for editing the relevant row with the new module grade
+  function handleEditRow(moduleCode, newModuleGrade, semesterName, yearName) {
+    setNewModuleList((prevModuleList) =>
+      prevModuleList.map((yearObject) => {
+        if (yearObject.year === yearName) {
+          const updatedSemesters = { ...yearObject.semesters };
+          if (updatedSemesters[semesterName]) {
+            updatedSemesters[semesterName] = updatedSemesters[semesterName].map(
+              (moduleItem) => {
+                if (moduleItem.module.code === moduleCode) {
+                  return {
+                    ...moduleItem,
+                    grade: newModuleGrade,
+                  };
+                }
+                return moduleItem;
+              }
+            );
+          }
+
+          return {
+            ...yearObject,
+            semesters: updatedSemesters,
+          };
+        }
+
+        return yearObject;
+      })
+    );
+    console.log(newModuleList);
+    setEditSuccess(true);
+  }
+
+  // function for adding a module
+  const handleSubmitModule = (moduleObject, semesterName, yearName) => {
+    console.log(moduleObject);
+    console.log(semesterName);
+    console.log(yearName);
+
+    const updatedModuleList = newModuleList.map((yearObject) => {
+      if (yearObject.year === yearName) {
+        const updatedSemesters = { ...yearObject.semesters };
+        if (updatedSemesters[semesterName]) {
+          updatedSemesters[semesterName].push(moduleObject);
+        } else {
+          updatedSemesters[semesterName] = [moduleObject];
+        }
+
+        return {
+          ...yearObject,
+          semesters: updatedSemesters,
+        };
+      }
+
+      return yearObject;
+    });
+    setNewModuleList(updatedModuleList);
+    console.log(updatedModuleList);
+    setAddSuccess(true);
+  };
+
   return (
     <div className="homepage">
       <AppBarComponent />
@@ -94,13 +180,60 @@ const GPACalculatorPage = () => {
           }}
         >
           <Box sx={{ width: "70%" }}>
-            <GPACalculatorTabs gradesList={sampleModuleGrades} />
+            <GPACalculatorTabs
+              handleSubmitModule={handleSubmitModule}
+              handleEditRow={handleEditRow}
+              handleDeleteRow={handleDeleteRow}
+              gradesList={newModuleList}
+            />
           </Box>
           <Box sx={{ width: "30%", marginLeft: "40px" }}>
-            <GPACalculatorOverall gradesList={sampleModuleGrades} />
+            <GPACalculatorOverall gradesList={newModuleList} />
           </Box>
         </Box>
       </Box>
+      <Snackbar
+        open={addSuccess}
+        autoHideDuration={3000}
+        onClose={() => setAddSuccess(false)}
+      >
+        <Alert
+          variant="filled"
+          onClose={() => setAddSuccess(false)}
+          severity="success"
+          sx={{ color: "white", width: "100%" }}
+        >
+          Module added successfully!
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={editSuccess}
+        autoHideDuration={3000}
+        onClose={() => setEditSuccess(false)}
+      >
+        <Alert
+          variant="filled"
+          onClose={() => setEditSuccess(false)}
+          severity="success"
+          sx={{ color: "white", width: "100%" }}
+        >
+          Module edited successfully!
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={deleteSuccess}
+        autoHideDuration={3000}
+        onClose={() => setDeleteSuccess(false)}
+      >
+        <Alert
+          variant="filled"
+          onClose={() => setDeleteSuccess(false)}
+          severity="success"
+          sx={{ color: "white", width: "100%" }}
+        >
+          Module deleted successfully!
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

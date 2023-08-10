@@ -1,12 +1,18 @@
 import { Box, Tabs, Tab, Typography, Card, CardContent } from "@mui/material";
-import { sampleSemesterModules, HonoursGPAGuide } from "../Constants";
+import { HonoursGPAGuide } from "../Constants";
 import { DefaultNativeSelect } from "../FormStyledComponents";
 import React, { useState } from "react";
-import { emptyModuleGrades } from "./GPACalculatorConstants";
 import ModuleDataGrid from "./ModuleDataGrid";
 
+export const yearList = ["Year 1", "Year 2", "Year 3", "Year 4"];
+
 // component for switching between different views
-const GPACalculatorTabs = ({ gradesList }) => {
+const GPACalculatorTabs = ({
+  handleEditRow,
+  handleDeleteRow,
+  handleSubmitModule,
+  gradesList,
+}) => {
   const [activeTab, setActiveTab] = useState(0); // always start with the "Year 1" view
   const handleChangeTab = (event, newTab) => {
     setActiveTab(newTab);
@@ -76,7 +82,14 @@ const GPACalculatorTabs = ({ gradesList }) => {
           Object.entries(gradesList[activeTab].semesters).map(
             ([semester, modules], index) => (
               <div key={index}>
-                <ModuleDataGrid semesterName={semester} moduleList={modules} />
+                <ModuleDataGrid
+                  handleEditRow={handleEditRow}
+                  handleDeleteRow={handleDeleteRow}
+                  handleSubmitModule={handleSubmitModule}
+                  yearName={yearList[activeTab]}
+                  semesterName={semester}
+                  moduleList={modules}
+                />
               </div>
             )
           )}
