@@ -17,12 +17,8 @@ import {
   FormGroup,
 } from "@mui/material";
 import React, { useState } from "react";
-import {
-  currentSemesterModules,
-  priorityColors,
-  priorityList,
-  priorityValues,
-} from "../Constants";
+import { priorityColors, priorityList, priorityValues } from "../Constants";
+import { sampleModuleGrades } from "../GPACalculator/GPACalculatorConstants";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import CheckBoxOutlineBlankOutlinedIcon from "@mui/icons-material/CheckBoxOutlineBlankOutlined";
@@ -31,11 +27,13 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { format } from "date-fns";
 
+const sampleArray = ["a", "b"];
+
 // main component
 const AddNewTask = () => {
   // adding of task categories as a dictionary containing tasks
   const [categoryTasks, setCategoryTasks] = useState({
-    ...currentSemesterModules.reduce((acc, category) => {
+    ...sampleArray.reduce((acc, category) => {
       acc[category] = [];
       return acc;
     }, {}),

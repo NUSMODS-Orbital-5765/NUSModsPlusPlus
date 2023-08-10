@@ -357,76 +357,10 @@ export const notifsList = [
     content:
       "Amazing post! Really insightful and covered all the necessary details. On that note, I would like to add that the curriculum board has discussed and intended for the new curriculum to be released much earlier.",
     type: "comment",
+    url: "/community",
+    readStatus: false,
   },
 ];
-
-// list of possible views
-export const GPACalculatorViewList = ["By Year", "Overall GPA"];
-
-// list of letter grades and their respective GPAs
-export const GPAGradeGuide = [
-  { grade: "A+", GPA: "5.0" },
-  { grade: "A", GPA: "5.0" },
-  { grade: "A-", GPA: "4.5" },
-  { grade: "B+", GPA: "4.0" },
-  { grade: "B", GPA: "3.5" },
-  { grade: "B-", GPA: "3.0" },
-  { grade: "C+", GPA: "2.5" },
-  { grade: "C", GPA: "2.0" },
-  { grade: "D+", GPA: "1.5" },
-  { grade: "D", GPA: "1.0" },
-  { grade: "F", GPA: "0" },
-];
-
-// list of all possible grades
-export const PossibleGradesList = GPAGradeGuide.map((item) => item.grade);
-
-// list of semesters and their modules
-export const sampleSemesterModules = [
-  {
-    year: "22/23",
-    semesters: {
-      "Semester 1": [
-        { moduleCode: "MA1521", grade: "A+", "S/U": "Yes" },
-        { moduleCode: "BT1101", grade: "A", "S/U": "Yes" },
-        { moduleCode: "CS1010S", grade: "A-", "S/U": "Yes" },
-        { moduleCode: "NSW2001", grade: "B", "S/U": "Yes" },
-        { moduleCode: "NGN2001", grade: "B-", "S/U": "Yes" },
-      ],
-      "Semester 2": [
-        { moduleCode: "EC1101E", grade: "F", "S/U": "Yes" },
-        { moduleCode: "MA2001", grade: "A+", "S/U": "Yes" },
-        { moduleCode: "BT2102", grade: "A+", "S/U": "No" },
-        { moduleCode: "CS2030", grade: "C+", "S/U": "No" },
-        { moduleCode: "NTW2004", grade: "A+", "S/U": "No" },
-      ],
-    },
-  },
-  {
-    year: "23/24",
-    semesters: {
-      "Semester 1": [
-        { moduleCode: "CS2040", grade: "A", "S/U": "No" },
-        { moduleCode: "EC3303", grade: "A", "S/U": "No" },
-        { moduleCode: "BT2101", grade: "A+", "S/U": "No" },
-        { moduleCode: "NHS2006", grade: "B+", "S/U": "Yes" },
-        { moduleCode: "QF1100", grade: "A", "S/U": "Yes" },
-      ],
-    },
-  },
-];
-
-// set the current semester
-export const currentSemesterModules = sampleSemesterModules
-  .filter((object) => object.year === "22/23")
-  .flatMap((year) => year.semesters["Semester 2"])
-  .map((module) => module.moduleCode);
-
-// set the next semester
-export const nextSemesterModules = sampleSemesterModules
-  .filter((object) => object.year === "23/24")
-  .flatMap((year) => year.semesters["Semester 1"])
-  .map((module) => module.moduleCode);
 
 // honours classification and corresponding gpa
 export const HonoursGPAGuide = {
@@ -436,14 +370,6 @@ export const HonoursGPAGuide = {
   Honours: 3.0,
   Pass: 2.0,
 };
-
-// list of all possible semesters
-export const PossibleSemestersList = [
-  "Semester 1",
-  "Semester 2",
-  "Special Term 1",
-  "Special Term 2",
-];
 
 // compress these three later on
 // list of priorities (only use for events and tasks)
