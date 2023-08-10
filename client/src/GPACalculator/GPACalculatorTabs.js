@@ -17,6 +17,7 @@ import { GPAGradeGuide } from "./GPACalculatorConstants";
 import { ProgressBar } from "../StyledComponents";
 import FlagRoundedIcon from "@mui/icons-material/FlagRounded";
 import { red } from "@mui/material/colors";
+import { GPAProgressBar } from "./GPACalculatorOverall";
 
 export const yearList = ["Year 1", "Year 2", "Year 3", "Year 4"];
 
@@ -32,9 +33,6 @@ export const OverallGrade = ({ yearGPA, yearName, gradeTarget }) => {
     progressPercentage = 100;
   }
   console.log(progressPercentage);
-
-  const barColor = progressPercentage === 100 ? "success" : "error";
-  const wordColor = progressPercentage === 100 ? "#44b700" : red[500];
 
   return (
     <Box sx={{ margin: "20px" }}>
@@ -65,35 +63,11 @@ export const OverallGrade = ({ yearGPA, yearName, gradeTarget }) => {
         </Alert>
       )}
       {gradeTargetGPA !== 0 && (
-        <div>
-          <Box
-            sx={{
-              marginTop: "-10px",
-              display: "flex",
-              justifyContent: "flex-end",
-            }}
-          >
-            <Typography
-              sx={{
-                color: progressPercentage >= 70 ? "#44b700" : red[500],
-                fontSize: "20px",
-                fontWeight: 600,
-                marginBottom: "5px",
-              }}
-            >
-              {progressPercentage === 100
-                ? gradeTargetGPA.toFixed(2) + " GPA target reached!"
-                : progressPercentage.toFixed(0) +
-                  "% to " +
-                  gradeTargetGPA.toFixed(2) +
-                  " GPA goal"}
-            </Typography>{" "}
-          </Box>
-          <ProgressBar
-            color={progressPercentage >= 70 ? "success" : "error"}
-            value={progressPercentage}
-          />
-        </div>
+        <GPAProgressBar
+          progressPercentage={progressPercentage}
+          gradeTargetGPA={gradeTargetGPA}
+          fontSize="20px"
+        />
       )}
     </Box>
   );
@@ -202,15 +176,12 @@ const GPACalculatorTabs = ({
   handleDeleteRow,
   handleSubmitModule,
   gradesList,
+  gradeTargetName,
+  handleChangeGradeTargetName,
 }) => {
   const [activeTab, setActiveTab] = useState(0); // always start with the "Year 1" view
   const handleChangeTab = (event, newTab) => {
     setActiveTab(newTab);
-  };
-
-  const [gradeTargetName, setGradeTargetName] = useState("");
-  const handleChangeGradeTargetName = (event, value) => {
-    setGradeTargetName(value);
   };
 
   return (

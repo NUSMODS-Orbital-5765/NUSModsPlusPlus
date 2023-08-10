@@ -7,17 +7,6 @@ import { sampleModuleGrades } from "./GPACalculatorConstants";
 import GPACalculatorOverall from "./GPACalculatorOverall";
 import React, { useState } from "react";
 
-// calculation of yearly cumulative GPA
-export const YearCumulativeGPA = () => {
-  return (
-    <div>
-      <Typography sx={{ fontWeight: 700, fontSize: "30px", marginTop: "20px" }}>
-        Overall
-      </Typography>
-    </div>
-  );
-};
-
 export const CalculatorPageHeader = () => {
   return (
     <Box
@@ -65,6 +54,12 @@ const GPACalculatorPage = () => {
   // fetch the user data from the database here
   // maybe can load the default semesterModulePlans?? can??
   // but need to fetch data about whether the module can be s/ued, and the module credits as well.
+
+  // state management for grade target
+  const [gradeTargetName, setGradeTargetName] = useState("");
+  const handleChangeGradeTargetName = (event, value) => {
+    setGradeTargetName(value);
+  };
 
   // state management of the moduleList
   const [newModuleList, setNewModuleList] = useState(sampleModuleGrades);
@@ -185,10 +180,15 @@ const GPACalculatorPage = () => {
               handleEditRow={handleEditRow}
               handleDeleteRow={handleDeleteRow}
               gradesList={newModuleList}
+              gradeTargetName={gradeTargetName}
+              handleChangeGradeTargetName={handleChangeGradeTargetName}
             />
           </Box>
           <Box sx={{ width: "30%", marginLeft: "40px" }}>
-            <GPACalculatorOverall gradesList={newModuleList} />
+            <GPACalculatorOverall
+              gradesList={newModuleList}
+              gradeTargetName={gradeTargetName}
+            />
           </Box>
         </Box>
       </Box>
