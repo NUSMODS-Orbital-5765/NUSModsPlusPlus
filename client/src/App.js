@@ -39,30 +39,9 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/planner-events"
-          element={
-            <ProtectedRoute>
-              <EventsPlannerPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/modules"
-          element={
-            <ProtectedRoute>
-              <ModulesPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/calculator"
-          element={
-            <ProtectedRoute>
-              <GPACalculatorPage />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/planner-events" element={<EventsPlannerPage />} />
+        <Route path="/modules" element={<ModulesPage />} />
+        <Route path="/calculator" element={<GPACalculatorPage />} />
         <Route
           path="/profile"
           element={
