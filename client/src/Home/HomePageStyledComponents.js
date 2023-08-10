@@ -49,11 +49,11 @@ export const dashboardItems = Array(
     icon: <LibraryBooksRoundedIcon sx={{ fontSize: "30px" }} />,
     link: "/modules",
   },
-  // {
-  //   text: "My GPA",
-  //   icon: <CalculateRoundedIcon sx={{ fontSize: "30px" }} />,
-  //   link: "/calculator",
-  // },
+  {
+    text: "My GPA",
+    icon: <CalculateRoundedIcon sx={{ fontSize: "30px" }} />,
+    link: "/calculator",
+  },
   {
     text: "Community",
     icon: <PeopleAltRoundedIcon sx={{ fontSize: "30px" }} />,

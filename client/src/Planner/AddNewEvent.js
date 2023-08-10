@@ -19,12 +19,7 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import {
-  currentSemesterModules,
-  priorityList,
-  priorityColors,
-  priorityValues,
-} from "../Constants";
+import { priorityList, priorityColors, priorityValues } from "../Constants";
 import React, { useEffect, useState } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -34,6 +29,8 @@ import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import axios from "axios";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
+
+const currentSemesterModules = ["CS1010S", "CS2040"];
 
 // styling of new event button + handle addition of new event
 const AddNewEvent = () => {

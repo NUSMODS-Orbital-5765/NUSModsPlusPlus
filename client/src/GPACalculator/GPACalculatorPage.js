@@ -1,5 +1,5 @@
 import AppBarComponent from "../AppBar/AppBarComponent";
-import DrawerComponent from "../DrawerComponent";
+import DrawerComponent from "../Drawer/DrawerComponent";
 import { Box, Typography, Snackbar, Alert } from "@mui/material";
 import GPACalculatorTabs from "./GPACalculatorTabs";
 import { combinedItems } from "../Home/HomePageStyledComponents";
@@ -44,7 +44,7 @@ export const CalculatorPageHeader = () => {
           and provide S/U recommendations.
         </Typography>
       </Box>
-      <img style={{ width: "30%" }} src="/calculator-intro.png" />
+      <img src="/calculator-intro.png" style={{ width: "30%" }} />
     </Box>
   );
 };
