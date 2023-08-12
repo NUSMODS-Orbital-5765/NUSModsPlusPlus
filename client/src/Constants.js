@@ -4,6 +4,7 @@ import {
   isThisWeek as isThisWeekDateFns,
   parseISO,
 } from "date-fns";
+import dayjs from "dayjs";
 import { red, orange, yellow } from "@mui/material/colors";
 
 // list of nus faculties
@@ -357,76 +358,10 @@ export const notifsList = [
     content:
       "Amazing post! Really insightful and covered all the necessary details. On that note, I would like to add that the curriculum board has discussed and intended for the new curriculum to be released much earlier.",
     type: "comment",
+    url: "/community",
+    readStatus: false,
   },
 ];
-
-// list of possible views
-export const GPACalculatorViewList = ["By Year", "Overall GPA"];
-
-// list of letter grades and their respective GPAs
-export const GPAGradeGuide = [
-  { grade: "A+", GPA: "5.0" },
-  { grade: "A", GPA: "5.0" },
-  { grade: "A-", GPA: "4.5" },
-  { grade: "B+", GPA: "4.0" },
-  { grade: "B", GPA: "3.5" },
-  { grade: "B-", GPA: "3.0" },
-  { grade: "C+", GPA: "2.5" },
-  { grade: "C", GPA: "2.0" },
-  { grade: "D+", GPA: "1.5" },
-  { grade: "D", GPA: "1.0" },
-  { grade: "F", GPA: "0" },
-];
-
-// list of all possible grades
-export const PossibleGradesList = GPAGradeGuide.map((item) => item.grade);
-
-// list of semesters and their modules
-export const sampleSemesterModules = [
-  {
-    year: "22/23",
-    semesters: {
-      "Semester 1": [
-        { moduleCode: "MA1521", grade: "A+", "S/U": "Yes" },
-        { moduleCode: "BT1101", grade: "A", "S/U": "Yes" },
-        { moduleCode: "CS1010S", grade: "A-", "S/U": "Yes" },
-        { moduleCode: "NSW2001", grade: "B", "S/U": "Yes" },
-        { moduleCode: "NGN2001", grade: "B-", "S/U": "Yes" },
-      ],
-      "Semester 2": [
-        { moduleCode: "EC1101E", grade: "F", "S/U": "Yes" },
-        { moduleCode: "MA2001", grade: "A+", "S/U": "Yes" },
-        { moduleCode: "BT2102", grade: "A+", "S/U": "No" },
-        { moduleCode: "CS2030", grade: "C+", "S/U": "No" },
-        { moduleCode: "NTW2004", grade: "A+", "S/U": "No" },
-      ],
-    },
-  },
-  {
-    year: "23/24",
-    semesters: {
-      "Semester 1": [
-        { moduleCode: "CS2040", grade: "A", "S/U": "No" },
-        { moduleCode: "EC3303", grade: "A", "S/U": "No" },
-        { moduleCode: "BT2101", grade: "A+", "S/U": "No" },
-        { moduleCode: "NHS2006", grade: "B+", "S/U": "Yes" },
-        { moduleCode: "QF1100", grade: "A", "S/U": "Yes" },
-      ],
-    },
-  },
-];
-
-// set the current semester
-export const currentSemesterModules = sampleSemesterModules
-  .filter((object) => object.year === "22/23")
-  .flatMap((year) => year.semesters["Semester 2"])
-  .map((module) => module.moduleCode);
-
-// set the next semester
-export const nextSemesterModules = sampleSemesterModules
-  .filter((object) => object.year === "23/24")
-  .flatMap((year) => year.semesters["Semester 1"])
-  .map((module) => module.moduleCode);
 
 // honours classification and corresponding gpa
 export const HonoursGPAGuide = {
@@ -437,32 +372,16 @@ export const HonoursGPAGuide = {
   Pass: 2.0,
 };
 
-// list of all possible semesters
-export const PossibleSemestersList = [
-  "Semester 1",
-  "Semester 2",
-  "Special Term 1",
-  "Special Term 2",
-];
-
 // compress these three later on
 // list of priorities (only use for events and tasks)
 export const priorityList = ["Very High", "High", "Average", "Low"];
 
 // list of priorities and respective colors
 export const priorityColors = {
-  4: red[500],
-  3: orange[500],
-  2: yellow[500],
-  1: "#44b700",
-};
-
-// list of priorities and respective values
-export const priorityValues = {
-  "Very High": 4,
-  High: 3,
-  Average: 2,
-  Low: 1,
+  "Very High": red[500],
+  High: orange[700],
+  Average: yellow[700],
+  Low: "#44b700",
 };
 
 // get today's date
@@ -484,110 +403,141 @@ export function currentTime() {
   });
 }
 
+// today formatted date (like 12 August 2023)
+export function todayFormattedDate() {
+  const today = new Date();
+  const day = String(today.getDate()).padStart(2, "0");
+  const month = new Intl.DateTimeFormat("en", { month: "long" }).format(today);
+  const year = today.getFullYear();
+  const todayFormattedDate = `${day} ${month} ${year}`;
+  return todayFormattedDate;
+}
+
+// check if event is over
+export function isEventOver(event, todayDate) {
+  const eventDateTime = dayjs(
+    `${event.date} ${event.time}`,
+    "DD MMMM YYYY hh:mm A"
+  );
+  const todayDateTime = dayjs(todayDate, "DD MMMM YYYY");
+
+  return eventDateTime.isBefore(todayDateTime);
+}
+
 // list of sample week events for homepage timetable
 // need to extract from database, filter by current week
 export const sampleWeekEvents = [
   {
     name: "MA2001 Tutorial",
-    date: "25-07-2023",
-    time: "2:00 PM",
+    date: "13 August 2023",
+    time: "02:00 PM",
     category: "MA2001",
-    priority: 4,
+    priority: "Very High",
+    id: 0,
   },
   {
     name: "Dinner with Amy",
-    date: "26-07-2023",
-    time: "5:00 PM",
+    date: "26 July 2023",
+    time: "05:00 PM",
     category: "Personal",
-    priority: 1,
+    priority: "Low",
+    id: 1,
   },
-
   {
     name: "BT2102 Lab",
-    date: "27-07-2023",
-    time: "1:00 PM",
+    date: "27 July 2023",
+    time: "01:00 PM",
     category: "BT2102",
-    priority: 3,
+    priority: "Average",
+    id: 2,
   },
   {
     name: "NTW Lesson",
-    date: "28-07-2023",
-    time: "4:00 PM",
+    date: "28 July 2023",
+    time: "04:00 PM",
     category: "NTW2004",
-    priority: 3,
+    priority: "High",
+    id: 3,
   },
   {
     name: "Dinner",
-    date: "28-07-2023",
-    time: "6:30 PM",
+    date: "28 July 2023",
+    time: "06:30 PM",
     category: "Personal",
-    priority: 1,
+    priority: "Low",
+    id: 4,
   },
-
   {
     name: "Consult with Prof",
-    date: "28-07-2023",
-    time: "9:00 AM",
+    date: "28 July 2023",
+    time: "09:00 AM",
     category: "NTW2004",
-    priority: 3,
+    priority: "High",
+    id: 5,
   },
   {
     name: "EC1101 tutorial 9",
-    date: "28-07-2023",
-    time: "4:00 PM",
+    date: "28 July 2023",
+    time: "04:00 PM",
     category: "EC1101E",
-    priority: 3,
+    priority: "High",
+    id: 6,
   },
-
   {
     name: "Lunch with Lauren",
-    date: "29-07-2023",
+    date: "29 July 2023",
     time: "12:30 PM",
     category: "Personal",
-    priority: 1,
+    priority: "Low",
+    id: 7,
   },
   {
     name: "CS2030 Lab",
-    date: "29-07-2023",
-    time: "2:00 PM",
+    date: "29 July 2023",
+    time: "02:00 PM",
     category: "CS2030",
-    priority: 4,
+    priority: "Very High",
+    id: 8,
   },
   {
     name: "Team Meeting",
-    date: "29-07-2023",
-    time: "5:00 PM",
+    date: "29 July 2023",
+    time: "05:00 PM",
     category: "Personal",
-    priority: 3,
+    priority: "High",
+    id: 9,
   },
   {
     name: "Suite Dinner",
-    date: "29-07-2023",
-    time: "6:00 PM",
+    date: "29 July 2023",
+    time: "06:00 PM",
     category: "Personal",
-    priority: 1,
+    priority: "Low",
+    id: 10,
   },
   {
     name: "Submit NTW essay",
-    date: "29-07-2023",
+    date: "29 July 2023",
     time: "11:00 PM",
     category: "NTW2004",
-    priority: 4,
+    priority: "Very High",
+    id: 11,
   },
-
   {
     name: "Lunch",
-    date: "30-07-2023",
+    date: "30 July 2023",
     time: "12:30 PM",
     category: "Personal",
-    priority: 1,
+    priority: "Low",
+    id: 12,
   },
   {
     name: "Dinner with Jon",
-    date: "30-07-2023",
-    time: "6:00 PM",
+    date: "30 July 2023",
+    time: "06:00 PM",
     category: "Personal",
-    priority: 1,
+    priority: "Low",
+    id: 13,
   },
 ];
 
