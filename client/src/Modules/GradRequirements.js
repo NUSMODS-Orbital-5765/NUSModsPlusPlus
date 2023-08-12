@@ -9,7 +9,7 @@ import {
   Tooltip,
   Alert,
 } from "@mui/material";
-import DriveFileMoveRoundedIcon from "@mui/icons-material/DriveFileMoveRounded";
+import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 import { FormatAcademicPlanDetails } from "./ModuleConstants";
 import { grey } from "@mui/material/colors";
@@ -26,8 +26,12 @@ export const SelectedModulesAlert = ({
     <Alert
       action={
         <Tooltip title="Add to Semester Plan" placement="top">
-          <IconButton color="primary" onClick={handleMoveModules}>
-            <DriveFileMoveRoundedIcon sx={{ fontSize: "30px" }} />
+          <IconButton
+            sx={{ marginRight: "100ch" }}
+            color="primary"
+            onClick={handleMoveModules}
+          >
+            <ArrowForwardRoundedIcon sx={{ fontSize: "30px" }} />
           </IconButton>
         </Tooltip>
       }
