@@ -1,15 +1,10 @@
 // COMPLETE
-// check if the indexes will be wonky when there are posts being removed (since there is no sorting)
-// modularize code as much as possible when have time.
-// delete past events
-// add colors for category (? tbc)
 import {
   Box,
   Typography,
   Button,
   Dialog,
   DialogContent,
-  DialogActions,
   TextField,
   Autocomplete,
 } from "@mui/material";
@@ -19,10 +14,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import { DataGrid } from "@mui/x-data-grid";
-import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import axios from "axios";
 import { format } from "date-fns";
-import { id } from "date-fns/locale";
 
 /*
   const handleAddEvent = () => {
@@ -98,10 +91,12 @@ const AddNewEventDialog = ({
   };
 
   const handleEventDate = (dateInput) => {
+    console.log(dateInput);
     setEventDate(dateInput.format("DD MMMM YYYY"));
   };
 
   const handleEventTime = (timeInput) => {
+    console.log(timeInput);
     setEventTime(timeInput.format("hh:mm A"));
   };
 
@@ -152,7 +147,7 @@ const AddNewEventDialog = ({
             inputValue={eventCategory}
             onInputChange={handleEventCategory}
             options={eventCategoryList}
-            sx={{ width: "100%", margin: "10px", marginBottom: "20px" }}
+            sx={{ width: "100ch", margin: "10px", marginBottom: "20px" }}
             renderInput={(params) => (
               <TextField
                 variant="standard"
@@ -166,7 +161,7 @@ const AddNewEventDialog = ({
             disablePortal
             onChange={handleEventPriority}
             options={priorityList}
-            sx={{ width: "100%", margin: "10px", marginBottom: "20px" }}
+            sx={{ width: "100ch", margin: "10px", marginBottom: "20px" }}
             renderInput={(params) => (
               <TextField
                 variant="standard"
@@ -193,24 +188,23 @@ const AddNewEventDialog = ({
             />
           </LocalizationProvider>
         </Box>
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            variant="contained"
+            onClick={handleSubmitNewEvent}
+            disabled={
+              !eventName ||
+              !eventCategory ||
+              !eventPriority ||
+              !eventDate ||
+              !eventTime
+            }
+            color="primary"
+          >
+            Create Event
+          </Button>
+        </Box>
       </DialogContent>
-      <DialogActions>
-        <Button
-          sx={{ margin: "20px" }}
-          variant="contained"
-          onClick={handleSubmitNewEvent}
-          disabled={
-            !eventName ||
-            !eventCategory ||
-            !eventPriority ||
-            !eventDate ||
-            !eventTime
-          }
-          color="primary"
-        >
-          Create Event
-        </Button>
-      </DialogActions>
     </Dialog>
   );
 };

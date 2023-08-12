@@ -25,7 +25,7 @@ export const EventsPageHeader = ({ handleOpenDialog }) => {
         alignItems: "center",
       }}
     >
-      <Box sx={{ marginLeft: "30px" }}>
+      <Box sx={{ marginLeft: "30px", marginTop: "30px" }}>
         <Typography
           sx={{
             marginBottom: "30px",
@@ -46,7 +46,11 @@ export const EventsPageHeader = ({ handleOpenDialog }) => {
         >
           Easily keep track of academic and non-academic events.
         </Typography>
-        <Button onClick={handleOpenDialog} variant="contained">
+        <Button
+          sx={{ marginBottom: "30px" }}
+          onClick={handleOpenDialog}
+          variant="contained"
+        >
           Add New Event
         </Button>
       </Box>
@@ -65,10 +69,12 @@ const EventsPlannerPage = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [addEventSuccess, setAddEventSuccess] = useState(false);
   const [addEventError, setAddEventError] = useState(false);
+  const [editEventSuccess, setEditEventSuccess] = useState(false);
+  const [editEventError, setEditEventError] = useState(false);
   const [deleteEventSuccess, setDeleteEventSuccess] = useState(false);
   const [deleteEventError, setDeleteEventError] = useState(false);
 
-  // should be refreshed when the array of events changes (e.g. with deleted events or new ones added)
+  // will be refreshed when the array of events changes (e.g. with deleted events or new ones added)
   const eventCategoryList = Array.from(
     new Set(events.map((event) => event.category))
   );
@@ -84,14 +90,34 @@ const EventsPlannerPage = () => {
 
   // handle the addition/editing/deletion of an event
   const handleAddEvent = (eventInfo) => {
-    const updatedEvents = [...events, eventInfo];
+    const newEventObject = { ...eventInfo, id: events.length };
+    const updatedEvents = [...events, newEventObject];
     console.log(updatedEvents);
     setEvents(updatedEvents);
     setAddEventSuccess(true);
   };
 
-  const handleEditEvent = (eventInfo) => {};
+  const handleEditEvent = (eventInfo) => {
+    const updatedEvents = [...sampleWeekEvents];
 
+    const eventIndex = updatedEvents.findIndex(
+      (eventObject) => eventObject.id === eventInfo.id
+    );
+
+    if (eventIndex !== -1) {
+      updatedEvents[eventIndex] = eventInfo;
+      console.log(updatedEvents);
+      setEvents(updatedEvents);
+      setEditEventSuccess(true);
+    }
+  };
+
+  const handleDeleteEvent = (eventId) => {
+    setEvents(events.filter((eventObject) => eventObject.id !== eventId));
+    setDeleteEventSuccess(true);
+  };
+
+  /*
   const handleDeleteEvent = (id, eventId) => {
     const DeleteEventAPI = `${process.env.REACT_APP_API_LINK}/event/delete`;
     const deleteJsonBody = { eventId: eventId };
@@ -113,6 +139,7 @@ const EventsPlannerPage = () => {
         setDeleteEventError(true);
       });
   };
+  */
 
   /*
   useEffect(() => {
@@ -166,10 +193,12 @@ const EventsPlannerPage = () => {
           }}
         >
           <Box sx={{ width: "70%" }}>
-            {/*<EventsDataGrid
+            <EventsDataGrid
               eventsList={events}
+              eventCategoryList={eventCategoryList}
+              handleEditEvent={handleEditEvent}
               handleDeleteEvent={handleDeleteEvent}
-            />*/}
+            />
           </Box>
           <Box sx={{ width: "30%", marginLeft: "40px" }}>
             <UpcomingEvents />
@@ -236,6 +265,35 @@ const EventsPlannerPage = () => {
           severity="success"
         >
           Event added successfully!
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={editEventError}
+        autoHideDuration={3000}
+        onClose={() => setEditEventError(false)}
+      >
+        <Alert
+          onClose={() => setEditEventError(false)}
+          sx={{ color: "white" }}
+          variant="filled"
+          severity="error"
+        >
+          Failed to updated event. Please ensure all fields are filled in
+          correctly.
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={editEventSuccess}
+        autoHideDuration={3000}
+        onClose={() => setEditEventSuccess(false)}
+      >
+        <Alert
+          onClose={() => setEditEventSuccess(false)}
+          sx={{ color: "white" }}
+          variant="filled"
+          severity="success"
+        >
+          Event updated successfully!
         </Alert>
       </Snackbar>
     </div>

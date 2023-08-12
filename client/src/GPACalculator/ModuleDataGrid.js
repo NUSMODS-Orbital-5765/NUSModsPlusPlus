@@ -83,13 +83,18 @@ export const EditModuleDialog = ({
     setNewModuleGrade("");
   };
 
+  const handleClickCloseDialog = () => {
+    handleCloseDialog();
+    setNewModuleGrade("");
+  };
+
   return (
     <div>
       <Dialog
         minWidth="md"
         fullWidth
         open={openDialog}
-        onClose={handleCloseDialog}
+        onClose={handleClickCloseDialog}
       >
         <DialogContent sx={{ margin: "10px" }}>
           <Box
@@ -177,13 +182,19 @@ export const AddModuleDialog = ({
     setSelectedModuleCode("");
   };
 
+  const handleClickCloseDialog = () => {
+    handleCloseDialog();
+    setSelectedGrade("");
+    setSelectedModuleCode("");
+  };
+
   return (
     <div>
       <Dialog
         minWidth="md"
         fullWidth
         open={openDialog}
-        onClose={handleCloseDialog}
+        onClose={handleClickCloseDialog}
       >
         <DialogContent sx={{ margin: "10px" }}>
           <Box
