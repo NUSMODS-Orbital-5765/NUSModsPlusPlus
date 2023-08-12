@@ -34,7 +34,6 @@ export const EditEventDialog = ({
   handleCloseDialog,
 }) => {
   // retrieve the initial event object
-
   const eventObject = eventsList.find((event) => event.id === eventId);
   console.log(eventObject);
 
@@ -244,6 +243,14 @@ const EventsDataGrid = ({
   handleDeleteEvent,
 }) => {
   // id of the event to be changed
+  const [updatedEventsList, setUpdatedEventsList] = useState(eventsList);
+
+  // sort function
+  const [sortValue, setSortValue] = useState("");
+  const handleSortValue = (event, value) => {
+    setSortValue(value);
+  };
+
   const [eventId, setEventId] = useState("");
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const handleOpenEditDialog = (eventId) => {
@@ -355,9 +362,37 @@ const EventsDataGrid = ({
         }}
       >
         <CardContent sx={{ margin: "15px" }}>
-          <Typography sx={{ fontSize: "35px", fontWeight: 700 }}>
-            Events
-          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyItems: "center",
+            }}
+          >
+            <Typography sx={{ fontSize: "35px", fontWeight: 700 }}>
+              Events
+            </Typography>
+            <Autocomplete
+              disablePortal
+              onChange={handleSortValue}
+              options={["Priority", "Category", "Date"]}
+              sx={{
+                width: "30ch",
+                margin: "10px",
+                marginLeft: "30px",
+                marginBottom: "20px",
+              }}
+              renderInput={(params) => (
+                <TextField
+                  variant="standard"
+                  {...params}
+                  label="Sort By"
+                  placeholder="Select a sort to be applied"
+                />
+              )}
+            />
+          </Box>
           <DataGrid
             initialState={{
               columns: {
@@ -367,8 +402,8 @@ const EventsDataGrid = ({
               },
             }}
             getRowHeight={() => 130}
-            sx={{ marginTop: "20px", fontSize: "15px", height: 400 }}
-            rows={eventsList}
+            sx={{ marginTop: "20px", fontSize: "15px", height: 800 }}
+            rows={updatedEventsList}
             columns={columns}
           />
         </CardContent>
