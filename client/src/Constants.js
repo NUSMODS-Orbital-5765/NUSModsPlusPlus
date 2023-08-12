@@ -4,6 +4,7 @@ import {
   isThisWeek as isThisWeekDateFns,
   parseISO,
 } from "date-fns";
+import dayjs from "dayjs";
 import { red, orange, yellow } from "@mui/material/colors";
 
 // list of nus faculties
@@ -402,12 +403,33 @@ export function currentTime() {
   });
 }
 
+// today formatted date (like 12 August 2023)
+export function todayFormattedDate() {
+  const today = new Date();
+  const day = String(today.getDate()).padStart(2, "0");
+  const month = new Intl.DateTimeFormat("en", { month: "long" }).format(today);
+  const year = today.getFullYear();
+  const todayFormattedDate = `${day} ${month} ${year}`;
+  return todayFormattedDate;
+}
+
+// check if event is over
+export function isEventOver(event, todayDate) {
+  const eventDateTime = dayjs(
+    `${event.date} ${event.time}`,
+    "DD MMMM YYYY hh:mm A"
+  );
+  const todayDateTime = dayjs(todayDate, "DD MMMM YYYY");
+
+  return eventDateTime.isBefore(todayDateTime);
+}
+
 // list of sample week events for homepage timetable
 // need to extract from database, filter by current week
 export const sampleWeekEvents = [
   {
     name: "MA2001 Tutorial",
-    date: "25 July 2023",
+    date: "13 August 2023",
     time: "2:00 PM",
     category: "MA2001",
     priority: "Very High",

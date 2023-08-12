@@ -201,7 +201,10 @@ const EventsPlannerPage = () => {
             />
           </Box>
           <Box sx={{ width: "30%", marginLeft: "40px" }}>
-            <UpcomingEvents />
+            <UpcomingEvents
+              eventsList={events}
+              eventCategoryList={eventCategoryList}
+            />
           </Box>
         </Box>
       </Box>

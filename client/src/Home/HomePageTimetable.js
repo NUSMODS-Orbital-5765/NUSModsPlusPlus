@@ -13,6 +13,8 @@ import { getShortDay, priorityColors, sampleWeekEvents } from "../Constants";
 import { SeeMoreArrowButton } from "./HomePageShortcuts";
 import { getDay } from "date-fns";
 import HeartBrokenRoundedIcon from "@mui/icons-material/HeartBrokenRounded";
+import dayjs from "dayjs";
+import { todayFormattedDate, isEventOver } from "../Constants";
 
 // placeholder function for getting today's events from the database
 export const getTodayEvents = () => {
@@ -73,33 +75,6 @@ export function parseTime(timeString) {
   return new Date(0, 0, 0, parsedHours, minutes);
 }
 
-// check if event is over
-export function isEventOver(event) {
-  const [day, month, year] = event.date.split("-");
-  const parsedMonth = parseInt(month) - 1; // months start with 0
-  const parsedYear = parseInt(year);
-
-  const [time, period] = event.time.split(" ");
-  const [hours, minutes] = time.split(":");
-  let parsedHours = parseInt(hours);
-
-  if (period === "PM" && parsedHours !== 12) {
-    parsedHours += 12; // add time since pm
-  } else if (period === "AM" && parsedHours === 12) {
-    parsedHours = 0; // convert 12 AM to 00 hours
-  }
-
-  const datetime = new Date(parsedYear, parsedMonth, day, parsedHours, minutes);
-
-  const currentDateTime = new Date();
-
-  if (datetime < currentDateTime) {
-    return true; // earlier, event over
-  } else {
-    return false; // later, event not over
-  }
-}
-
 // show event details
 export const EventDetailsPopover = (
   openPopover,
@@ -137,7 +112,7 @@ export const TimelineBox = ({ event }) => {
         sx={{
           display: "flex",
           flexDirection: "column",
-          opacity: isEventOver(event) ? 0.5 : 1,
+          opacity: isEventOver(event, todayFormattedDate()) ? 0.5 : 1,
         }}
       >
         <Typography sx={{ fontSize: "17px", fontWeight: 700 }}>

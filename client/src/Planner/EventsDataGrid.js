@@ -12,6 +12,7 @@ import {
   DialogContent,
   TextField,
   Autocomplete,
+  Alert,
 } from "@mui/material";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
@@ -21,8 +22,10 @@ import React, { useEffect, useState } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker, TimePicker } from "@mui/x-date-pickers";
+import Collapse from "@mui/material/Collapse";
 import axios from "axios";
 import { format } from "date-fns";
+import { isEventOver } from "../Home/HomePageTimetable";
 
 // edit event dialog
 export const EditEventDialog = ({
@@ -242,14 +245,16 @@ const EventsDataGrid = ({
   handleEditEvent,
   handleDeleteEvent,
 }) => {
-  // id of the event to be changed
-  const [updatedEventsList, setUpdatedEventsList] = useState(eventsList);
+  // alert
+  const [openAlert, setOpenAlert] = useState(true);
 
-  // sort function
-  const [sortValue, setSortValue] = useState("");
-  const handleSortValue = (event, value) => {
-    setSortValue(value);
-  };
+  // sort the events list
+  const sortedEventsList = [...eventsList]; // Create a new array with the same contents
+  sortedEventsList.sort((a, b) => {
+    const dateA = new Date(a.date + " " + a.time);
+    const dateB = new Date(b.date + " " + b.time);
+    return dateA - dateB;
+  });
 
   const [eventId, setEventId] = useState("");
   const [openEditDialog, setOpenEditDialog] = useState(false);
@@ -362,37 +367,29 @@ const EventsDataGrid = ({
         }}
       >
         <CardContent sx={{ margin: "15px" }}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyItems: "center",
-            }}
-          >
-            <Typography sx={{ fontSize: "35px", fontWeight: 700 }}>
-              Events
-            </Typography>
-            <Autocomplete
-              disablePortal
-              onChange={handleSortValue}
-              options={["Priority", "Category", "Date"]}
-              sx={{
-                width: "30ch",
-                margin: "10px",
-                marginLeft: "30px",
-                marginBottom: "20px",
-              }}
-              renderInput={(params) => (
-                <TextField
-                  variant="standard"
-                  {...params}
-                  label="Sort By"
-                  placeholder="Select a sort to be applied"
-                />
-              )}
-            />
-          </Box>
+          <Typography sx={{ fontSize: "35px", fontWeight: 700 }}>
+            Events
+          </Typography>
+          <Collapse in={openAlert}>
+            <Alert
+              sx={{ marginTop: "10px" }}
+              severity="info"
+              color="primary"
+              action={
+                <IconButton
+                  color="inherit"
+                  size="small"
+                  onClick={() => {
+                    setOpenAlert(false);
+                  }}
+                >
+                  <ClearRoundedIcon fontSize="inherit" />
+                </IconButton>
+              }
+            >
+              Events are arranged in ascending order of time and date.
+            </Alert>
+          </Collapse>
           <DataGrid
             initialState={{
               columns: {
@@ -403,7 +400,7 @@ const EventsDataGrid = ({
             }}
             getRowHeight={() => 130}
             sx={{ marginTop: "20px", fontSize: "15px", height: 800 }}
-            rows={updatedEventsList}
+            rows={sortedEventsList}
             columns={columns}
           />
         </CardContent>
