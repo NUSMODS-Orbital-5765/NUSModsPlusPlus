@@ -68,12 +68,21 @@ const AddNewEventDialog = ({
   handleAddEvent,
 }) => {
   // select from current category list or add a new category
-
   const [eventName, setEventName] = useState("");
   const [eventCategory, setEventCategory] = useState("");
   const [eventPriority, setEventPriority] = useState("");
   const [eventDate, setEventDate] = useState(null);
   const [eventTime, setEventTime] = useState(null);
+
+  // ensure that the values are reset when the dialog is closed
+  const handleClickCloseDialog = () => {
+    setEventName("");
+    setEventCategory("");
+    setEventPriority("");
+    setEventDate(null);
+    setEventTime(null);
+    handleCloseDialog();
+  };
 
   // handle state change
   const handleEventName = (event) => {
@@ -120,7 +129,7 @@ const AddNewEventDialog = ({
       maxWidth="md"
       disableEscapeKeyDown
       open={openDialog}
-      onClose={handleCloseDialog}
+      onClose={handleClickCloseDialog}
     >
       <DialogContent sx={{ margin: "10px" }}>
         <Box
@@ -190,6 +199,13 @@ const AddNewEventDialog = ({
           sx={{ margin: "20px" }}
           variant="contained"
           onClick={handleSubmitNewEvent}
+          disabled={
+            !eventName ||
+            !eventCategory ||
+            !eventPriority ||
+            !eventDate ||
+            !eventTime
+          }
           color="primary"
         >
           Create Event
