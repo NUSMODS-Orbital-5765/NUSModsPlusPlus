@@ -95,75 +95,77 @@ export const SelectModuleBox = ({
         width: "200px",
       }}
     >
-      <Button
-        sx={{
-          borderRadius: "10px",
-          color: getModuleColors(requirement),
-          overflowY: "auto",
-          boxShadow: 0,
-          width: "100%",
-        }}
-        onClick={handleClickModule}
-        component={Card}
-      >
-        <CardContent
+      <Tooltip title="Click to select" placement="top">
+        <Button
           sx={{
+            borderRadius: "10px",
+            color: getModuleColors(requirement),
+            overflowY: "auto",
+            boxShadow: 0,
             width: "100%",
-            margin: "-10px",
-            backgroundColor: getModuleColors(requirement),
-            display: "flex",
-            flexDirection: "column",
           }}
+          onClick={handleClickModule}
+          component={Card}
         >
-          <Box
+          <CardContent
             sx={{
+              width: "100%",
+              margin: "-10px",
+              backgroundColor: getModuleColors(requirement),
               display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
+              flexDirection: "column",
             }}
           >
-            <a
-              href={`https://nusmods.com/courses/${newModule.code}/`}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                fontSize: "20px",
-                fontWeight: 600,
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <a
+                href={`https://nusmods.com/courses/${newModule.code}/`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontSize: "20px",
+                  fontWeight: 600,
+                  color: "white",
+                }}
+              >
+                {newModule.code}
+              </a>
+              {isSelectable && (
+                <Tooltip title="Delete" placement="top">
+                  <IconButton onClick={handleClickDelete}>
+                    <CloseRoundedIcon sx={{ color: "white" }} />
+                  </IconButton>
+                </Tooltip>
+              )}
+              {isRevertable && (
+                <Tooltip title="Revert" placement="top">
+                  <IconButton onClick={handleClickRevert}>
+                    <RestartAltRoundedIcon sx={{ color: "white" }} />
+                  </IconButton>
+                </Tooltip>
+              )}
+            </Box>
+            <Typography
+              sx={{
+                marginTop: "10px",
+                fontSize: "15px",
+                textTransform: "none",
                 color: "white",
               }}
             >
-              {newModule.code}
-            </a>
-            {isSelectable && (
-              <Tooltip title="Delete" placement="top">
-                <IconButton onClick={handleClickDelete}>
-                  <CloseRoundedIcon sx={{ color: "white" }} />
-                </IconButton>
-              </Tooltip>
-            )}
-            {isRevertable && (
-              <Tooltip title="Revert" placement="top">
-                <IconButton onClick={handleClickRevert}>
-                  <RestartAltRoundedIcon sx={{ color: "white" }} />
-                </IconButton>
-              </Tooltip>
-            )}
-          </Box>
-          <Typography
-            sx={{
-              marginTop: "10px",
-              fontSize: "15px",
-              textTransform: "none",
-              color: "white",
-            }}
-          >
-            {newModule.name}
-          </Typography>
-          <Button onClick={handleShowSelectOptions} sx={{ color: "white" }}>
-            Change
-          </Button>
-        </CardContent>
-      </Button>
+              {newModule.name}
+            </Typography>
+            <Button onClick={handleShowSelectOptions} sx={{ color: "white" }}>
+              Change
+            </Button>
+          </CardContent>
+        </Button>
+      </Tooltip>
       {showSelectOptions && (
         <Autocomplete
           sx={{ marginTop: "10px", width: "200px" }}

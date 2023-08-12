@@ -57,68 +57,70 @@ const ModuleBox = ({
 
   return (
     <Box id={module.code} sx={{ marginTop: "10px", marginBottom: "20px" }}>
-      <Button
-        sx={{
-          borderRadius: "10px",
-          color: getModuleColors(requirement),
-          opacity: isSelected ? 0.5 : 1,
-        }}
-        onClick={handleClickModule}
-        component={Card}
-      >
-        <CardContent
+      <Tooltip title="Click to select" placement="top">
+        <Button
           sx={{
-            width: "200px",
-            margin: "-10px",
-            backgroundColor: getModuleColors(requirement),
+            borderRadius: "10px",
+            color: getModuleColors(requirement),
+            opacity: isSelected ? 0.5 : 1,
           }}
+          onClick={handleClickModule}
+          component={Card}
         >
-          <Box
+          <CardContent
             sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              flexDirection: "row",
+              width: "200px",
+              margin: "-10px",
+              backgroundColor: getModuleColors(requirement),
             }}
           >
-            <a
-              href={`https://nusmods.com/courses/${module.code}/`}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                fontSize: "20px",
-                fontWeight: 600,
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                flexDirection: "row",
+              }}
+            >
+              <a
+                href={`https://nusmods.com/courses/${module.code}/`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontSize: "20px",
+                  fontWeight: 600,
+                  color: "white",
+                }}
+              >
+                {module.code}
+              </a>
+              {isSelectable && (
+                <Tooltip title="Delete" placement="top">
+                  <IconButton onClick={handleClickDelete}>
+                    <CloseRoundedIcon sx={{ color: "white" }} />
+                  </IconButton>
+                </Tooltip>
+              )}
+              {isRevertable && (
+                <Tooltip title="Revert" placement="top">
+                  <IconButton onClick={handleClickRevert}>
+                    <RestartAltRoundedIcon sx={{ color: "white" }} />
+                  </IconButton>
+                </Tooltip>
+              )}
+            </Box>
+            <Typography
+              sx={{
+                marginTop: "10px",
+                fontSize: "15px",
+                textTransform: "none",
                 color: "white",
               }}
             >
-              {module.code}
-            </a>
-            {isSelectable && (
-              <Tooltip title="Delete" placement="top">
-                <IconButton onClick={handleClickDelete}>
-                  <CloseRoundedIcon sx={{ color: "white" }} />
-                </IconButton>
-              </Tooltip>
-            )}
-            {isRevertable && (
-              <Tooltip title="Revert" placement="top">
-                <IconButton onClick={handleClickRevert}>
-                  <RestartAltRoundedIcon sx={{ color: "white" }} />
-                </IconButton>
-              </Tooltip>
-            )}
-          </Box>
-          <Typography
-            sx={{
-              marginTop: "10px",
-              fontSize: "15px",
-              textTransform: "none",
-              color: "white",
-            }}
-          >
-            {module.name}
-          </Typography>
-        </CardContent>
-      </Button>
+              {module.name}
+            </Typography>
+          </CardContent>
+        </Button>
+      </Tooltip>
     </Box>
   );
 };
