@@ -185,6 +185,7 @@ const EventsPlannerPage = () => {
       <AddNewEventDialog
         openDialog={openDialog}
         eventCategoryList={eventCategoryList}
+        handleCloseDialog={handleCloseDialog}
       />
       <Snackbar
         open={deleteEventError}

@@ -6,18 +6,12 @@
 import {
   Box,
   Typography,
-  InputLabel,
-  FormControl,
   Button,
   Dialog,
   DialogContent,
   DialogActions,
   TextField,
-  Select,
-  MenuItem,
-  IconButton,
-  Snackbar,
-  Alert,
+  Autocomplete,
 } from "@mui/material";
 import { priorityList, priorityColors, priorityValues } from "../Constants";
 import React, { useEffect, useState } from "react";
@@ -30,36 +24,7 @@ import axios from "axios";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 
-// styling of new event button + handle addition of new event
-/*const AddNewEvent = () => {
-  // to store variables of form inputs.
-  const [openDialog, setOpenDialog] = useState(false);
-  const [addEventSuccess, setAddEventSuccess] = useState(false);
-  const [addEventError, setAddEventError] = useState(false);
-
-  const handleNewEvent = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    setNewEvent({ ...newEvent, [name]: value });
-  };
-
-  const handleEventDate = (dateInput) => {
-    setNewEvent({ ...newEvent, ["date"]: dateInput.format("DD MMMM YYYY") });
-  };
-
-  const handleEventTime = (timeInput) => {
-    setNewEvent({ ...newEvent, ["time"]: timeInput.format("hh:mm A") });
-  };
-
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
-  };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    setNewEvent(emptyEventLayout);
-  };
-
+/*
   const handleAddEvent = () => {
     const newEventObject = {
       id: events.length + 1,
@@ -92,59 +57,7 @@ import { id } from "date-fns/locale";
       });
   };
 
-  // main component
-  return (
-    <div>
-      <Box sx={{ margin: "20px", marginTop: "20px" }}>
-        <Button
-          sx={{ marginBottom: "30px" }}
-          onClick={handleOpenDialog}
-          variant="contained"
-        >
-          Add New Event
-        </Button>
-        <AddNewEventDialog
-          openDialog={openDialog}
-          handleCloseDialog={handleCloseDialog}
-          handleNewEvent={handleNewEvent}
-          handleEventDate={handleEventDate}
-          handleEventTime={handleEventTime}
-          eventCategoryList={eventCategoryList}
-          handleAddEvent={handleAddEvent}
-        />
-      </Box>
-      <Snackbar
-        open={addEventError}
-        autoHideDuration={3000}
-        onClose={() => setAddEventError(false)}
-      >
-        <Alert
-          onClose={() => setAddEventError(false)}
-          sx={{ color: "white" }}
-          variant="filled"
-          severity="error"
-        >
-          Failed to add event. Please ensure all fields are filled in.
-        </Alert>
-      </Snackbar>
-      <Snackbar
-        open={addEventSuccess}
-        autoHideDuration={3000}
-        onClose={() => setAddEventSuccess(false)}
-      >
-        <Alert
-          onClose={() => setAddEventSuccess(false)}
-          sx={{ color: "white" }}
-          variant="filled"
-          severity="success"
-        >
-          Event added successfully!
-        </Alert>
-      </Snackbar>
-    </div>
-  );
-};
-*/
+  */
 
 // styling for the add event dialog
 // styling for dialog with form fields for event details
@@ -157,6 +70,8 @@ const AddNewEventDialog = ({
   eventCategoryList,
   handleAddEvent,
 }) => {
+  // select from current category list or add a new category
+
   return (
     <Dialog
       maxWidth="md"
@@ -164,29 +79,13 @@ const AddNewEventDialog = ({
       open={openDialog}
       onClose={handleCloseDialog}
     >
-      <DialogContent>
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <Box
-            sx={{
-              margin: "10px",
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <Typography sx={{ fontSize: "35px", fontWeight: 700 }}>
-              Add New Event
-            </Typography>
-            <Button
-              variant="contained"
-              onClick={handleCloseDialog}
-              color="error"
-            >
-              Cancel
-            </Button>
-          </Box>
+      <DialogContent sx={{ margin: "10px" }}>
+        <Box
+          sx={{ display: "flex", flexDirection: "column", marginRight: "20px" }}
+        >
+          <Typography sx={{ fontSize: "35px", fontWeight: 700 }}>
+            Add New Event
+          </Typography>
           <TextField
             data-testid="name-field"
             sx={{ margin: "10px", marginBottom: "20px", width: "100ch" }}
@@ -194,39 +93,35 @@ const AddNewEventDialog = ({
             variant="standard"
             name="name"
             onChange={handleNewEvent}
+            placeholder="Enter a name for your event"
           />
-          <FormControl sx={{ margin: "10px", marginBottom: "20px" }}>
-            <InputLabel variant="standard">Event Category</InputLabel>
-            <Select
-              data-testid="category-field"
-              variant="standard"
-              label="Event Category"
-              name="category"
-              onChange={handleNewEvent}
-            >
-              {eventCategoryList.map((category, index) => (
-                <MenuItem key={index} value={category}>
-                  {category}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl sx={{ margin: "10px", marginBottom: "20px" }}>
-            <InputLabel variant="standard">Priority</InputLabel>
-            <Select
-              data-testid="priority-field"
-              variant="standard"
-              name="priority"
-              onChange={handleNewEvent}
-              label="priority"
-            >
-              {priorityList.map((priority, index) => (
-                <MenuItem key={index} value={priorityValues[priority]}>
-                  {priority}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <Autocomplete
+            freeSolo
+            disablePortal
+            options={eventCategoryList}
+            sx={{ width: "100%", margin: "10px", marginBottom: "20px" }}
+            renderInput={(params) => (
+              <TextField
+                variant="standard"
+                {...params}
+                label="Event Category"
+                placeholder="Select from the current category list, or enter a new one"
+              />
+            )}
+          />
+          <Autocomplete
+            disablePortal
+            options={priorityList}
+            sx={{ width: "100%", margin: "10px", marginBottom: "20px" }}
+            renderInput={(params) => (
+              <TextField
+                variant="standard"
+                {...params}
+                label="Event Priority"
+                placeholder="Select an event priority"
+              />
+            )}
+          />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               data-testid="date-field"
