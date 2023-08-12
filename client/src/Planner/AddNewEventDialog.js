@@ -30,26 +30,12 @@ import axios from "axios";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 
-const currentSemesterModules = ["CS1010S", "CS2040"];
-
 // styling of new event button + handle addition of new event
-const AddNewEvent = () => {
-  const eventCategoryList = [...currentSemesterModules, "Personal"];
+/*const AddNewEvent = () => {
   // to store variables of form inputs.
   const [openDialog, setOpenDialog] = useState(false);
-  const [events, setEvents] = useState([]);
   const [addEventSuccess, setAddEventSuccess] = useState(false);
   const [addEventError, setAddEventError] = useState(false);
-
-  const emptyEventLayout = {
-    name: "",
-    date: null,
-    time: null,
-    category: "",
-    priority: null,
-  };
-
-  const [newEvent, setNewEvent] = useState(emptyEventLayout);
 
   const handleNewEvent = (event) => {
     const name = event.target.name;
@@ -158,10 +144,11 @@ const AddNewEvent = () => {
     </div>
   );
 };
+*/
 
 // styling for the add event dialog
 // styling for dialog with form fields for event details
-export const AddNewEventDialog = ({
+const AddNewEventDialog = ({
   openDialog,
   handleCloseDialog,
   handleNewEvent,
@@ -272,4 +259,4 @@ export const AddNewEventDialog = ({
   );
 };
 
-export default AddNewEvent;
+export default AddNewEventDialog;

@@ -5,7 +5,6 @@ import HomePage from "./Home/HomePage";
 import StudentSignUpPage from "./SignUp/StudentSignUpPage";
 import ProfilePage from "./Profile/ProfilePage";
 import EventsPlannerPage from "./Planner/EventsPlannerPage";
-import TasksPlannerPage from "./Planner/TasksPlannerPage";
 import GPACalculatorPage from "./GPACalculator/GPACalculatorPage";
 import CommunityPage from "./Community/CommunityPage";
 import AdminHomePage from "./Admin/AdminHomePage";
@@ -31,14 +30,7 @@ const App = () => {
         <Route path="/admin/sign-up" element={<AdminSignUpPage />} />
 
         {/* student pages */}
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <HomePage />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/" element={<HomePage />} />
         <Route path="/planner-events" element={<EventsPlannerPage />} />
         <Route path="/modules" element={<ModulesPage />} />
         <Route path="/calculator" element={<GPACalculatorPage />} />
@@ -79,14 +71,7 @@ const App = () => {
           element={<PublicProfilePage sampleProfile={sampleProfile} />}
         />
         <Route path="/calculator" element={<GPACalculatorPage />} />
-        <Route
-          path="/community"
-          element={
-            <ProtectedRoute>
-              <CommunityPage />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/community" element={<CommunityPage />} />
 
         {/*admin pages */}
         <Route

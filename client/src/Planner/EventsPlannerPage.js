@@ -1,32 +1,17 @@
 // COMPLETE
-// add transitions when ur done with everything
-// date picker might want to add date range as well
-// MUST BE ABLE TO IMPORT TIMETABLE.
 import AppBarComponent from "../AppBar/AppBarComponent";
 import DrawerComponent from "../Drawer/DrawerComponent";
-import {
-  Box,
-  Card,
-  CardContent,
-  Tooltip,
-  IconButton,
-  Typography,
-  Button,
-  Snackbar,
-  Alert,
-} from "@mui/material";
-import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
-import { PageHeader, PageHeaderNoSubtitle } from "../StyledComponents";
-import AddNewEvent from "./AddNewEvent";
-import { Link } from "react-router-dom";
+import UpcomingEvents from "./UpcomingEvents";
+import { Box, Typography, Snackbar, Alert, Button } from "@mui/material";
 import { combinedItems } from "../Home/HomePageStyledComponents";
-import { priorityColors } from "../Constants";
-import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
-import { DataGrid } from "@mui/x-data-grid";
+import { priorityColors, sampleWeekEvents } from "../Constants";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import EventsDataGrid from "./EventsDataGrid";
+import AddNewEventDialog from "./AddNewEventDialog";
 
-export const EventsPageHeader = () => {
+// page header (contains the add event button)
+export const EventsPageHeader = ({ handleOpenDialog }) => {
   return (
     <Box
       sx={{
@@ -40,10 +25,10 @@ export const EventsPageHeader = () => {
         alignItems: "center",
       }}
     >
-      <Box>
+      <Box sx={{ marginLeft: "30px" }}>
         <Typography
           sx={{
-            margin: "30px",
+            marginBottom: "30px",
             fontSize: "40px",
             fontWeight: "700",
             color: "#004d80",
@@ -53,7 +38,7 @@ export const EventsPageHeader = () => {
         </Typography>
         <Typography
           sx={{
-            margin: "30px",
+            marginBottom: "20px",
             marginTop: "-10px",
             fontSize: "17px",
             color: "#004d80",
@@ -61,9 +46,9 @@ export const EventsPageHeader = () => {
         >
           Easily keep track of academic and non-academic events.
         </Typography>
-        <Box sx={{ marginLeft: "10px" }}>
-          <AddNewEvent />
-        </Box>
+        <Button onClick={handleOpenDialog} variant="contained">
+          Add New Event
+        </Button>
       </Box>
       <img
         style={{ width: "35%" }}
@@ -74,92 +59,44 @@ export const EventsPageHeader = () => {
   );
 };
 
-export const EventsDataGrid = ({ eventsList, handleDeleteEvent }) => {
-  const columns = [
-    {
-      field: "id",
-      headerName: "ID",
-      width: 90,
-      renderCell: (params) => (
-        <div style={{ fontSize: "15px" }}>{params.value}</div>
-      ),
-    },
-    {
-      field: "name",
-      headerName: "Event Name",
-      width: 200,
-      renderCell: (params) => (
-        <div style={{ fontSize: "15px", fontWeight: 700 }}>{params.value}</div>
-      ),
-    },
-    {
-      field: "date",
-      headerName: "Date",
-      width: 150,
-      renderCell: (params) => (
-        <div style={{ fontSize: "15px" }}>{params.value}</div>
-      ),
-    },
-    {
-      field: "time",
-      headerName: "Time",
-      width: 150,
-      renderCell: (params) => (
-        <div style={{ fontSize: "15px" }}>{params.value}</div>
-      ),
-    },
-    {
-      field: "category",
-      headerName: "Category",
-      width: 150,
-      renderCell: (params) => (
-        <div style={{ fontSize: "15px", fontWeight: 700 }}>{params.value}</div>
-      ),
-    },
-    {
-      field: "priority",
-      headerName: "Priority",
-      width: 150,
-      renderCell: (params) => (
-        <div
-          style={{
-            width: "20px",
-            height: "20px",
-            borderRadius: "50%",
-            backgroundColor: priorityColors[params.value], // priority is an integer from 1 to 4
-            marginRight: "8px",
-          }}
-        />
-      ),
-    },
-    {
-      field: "actions",
-      headerName: "Actions",
-      width: 120,
-      sortable: false,
-      renderCell: (params) => (
-        <IconButton
-          data-testid="delete-button"
-          onClick={() => handleDeleteEvent(params.row.id, params.row.eventId)}
-        >
-          <ClearRoundedIcon color="error" />
-        </IconButton>
-      ),
-    },
-  ];
-
-  return (
-    <Box sx={{ height: 400, width: "100%" }}>
-      <DataGrid sx={{ fontSize: "15px" }} rows={eventsList} columns={columns} />
-    </Box>
-  );
-};
-
 // main component
 const EventsPlannerPage = () => {
   const [events, setEvents] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [addEventSuccess, setAddEventSuccess] = useState(false);
+  const [addEventError, setAddEventError] = useState(false);
   const [deleteEventSuccess, setDeleteEventSuccess] = useState(false);
   const [deleteEventError, setDeleteEventError] = useState(false);
+  const [eventCategoryList, setEventCategoryList] = useState(
+    Array.from(new Set(sampleWeekEvents.map((event) => event.category)))
+  );
+
+  // handle opening/closing the dialog
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  // handle the addition/deletion of an event category
+  const handleAddEventCategory = (newCategory) => {
+    setEventCategoryList([...eventCategoryList, newCategory]);
+  };
+
+  const handleDeleteEventCategory = (newCategory) => {
+    setEventCategoryList(
+      eventCategoryList.filter((category) => category !== newCategory)
+    );
+  };
+
+  // handle the addition/editing/deletion of an event
+  const handleAddEvent = (eventInfo) => {
+    setEvents([...events, eventInfo]);
+  };
+
+  const handleEditEvent = (eventInfo) => {};
 
   const handleDeleteEvent = (id, eventId) => {
     const DeleteEventAPI = `${process.env.REACT_APP_API_LINK}/event/delete`;
@@ -183,6 +120,7 @@ const EventsPlannerPage = () => {
       });
   };
 
+  /*
   useEffect(() => {
     const GetEventAPI = `${process.env.REACT_APP_API_LINK}/event/get`;
     axios
@@ -210,6 +148,8 @@ const EventsPlannerPage = () => {
         alert("Event added Failed " + error.message);
       });
   }, []);
+  */
+
   return (
     <div className="homepage">
       <AppBarComponent />
@@ -221,36 +161,31 @@ const EventsPlannerPage = () => {
           flexDirection: "column",
         }}
       >
-        <EventsPageHeader />
-        <Card
+        <EventsPageHeader handleOpenDialog={handleOpenDialog} />
+        <Box
           sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
             marginLeft: "55px",
-            minHeight: "80ch",
-            borderRadius: "10px",
-            marginBottom: "50px",
-            boxShadow: 0,
+            marginRight: "55px",
           }}
         >
-          <CardContent>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyItems: "center",
-              }}
-            >
-              <PageHeaderNoSubtitle header="Events" />
-            </Box>
-          </CardContent>
-          <CardContent>
+          <Box sx={{ width: "70%" }}>
             <EventsDataGrid
               eventsList={events}
               handleDeleteEvent={handleDeleteEvent}
             />
-          </CardContent>
-        </Card>
+          </Box>
+          <Box sx={{ width: "30%", marginLeft: "40px" }}>
+            <UpcomingEvents />
+          </Box>
+        </Box>
       </Box>
+      <AddNewEventDialog
+        openDialog={openDialog}
+        eventCategoryList={eventCategoryList}
+      />
       <Snackbar
         open={deleteEventError}
         autoHideDuration={3000}

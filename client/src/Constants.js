@@ -427,7 +427,6 @@ export const sampleWeekEvents = [
     category: "Personal",
     priority: 1,
   },
-
   {
     name: "BT2102 Lab",
     date: "27-07-2023",
@@ -449,7 +448,6 @@ export const sampleWeekEvents = [
     category: "Personal",
     priority: 1,
   },
-
   {
     name: "Consult with Prof",
     date: "28-07-2023",
@@ -464,7 +462,6 @@ export const sampleWeekEvents = [
     category: "EC1101E",
     priority: 3,
   },
-
   {
     name: "Lunch with Lauren",
     date: "29-07-2023",
@@ -500,7 +497,6 @@ export const sampleWeekEvents = [
     category: "NTW2004",
     priority: 4,
   },
-
   {
     name: "Lunch",
     date: "30-07-2023",
