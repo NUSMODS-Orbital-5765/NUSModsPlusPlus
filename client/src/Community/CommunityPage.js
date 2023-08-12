@@ -187,7 +187,7 @@ const CommunityPage = () => {
   return (
     <div className="homepage">
       <AppBarComponent />
-      <DrawerComponent defaultTab={4} tabsList={combinedItems} />
+      <DrawerComponent defaultTab={5} tabsList={combinedItems} />
       <Box
         className="remainingViewport"
         sx={{
