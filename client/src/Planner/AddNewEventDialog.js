@@ -64,13 +64,56 @@ import { id } from "date-fns/locale";
 const AddNewEventDialog = ({
   openDialog,
   handleCloseDialog,
-  handleNewEvent,
-  handleEventDate,
-  handleEventTime,
   eventCategoryList,
   handleAddEvent,
 }) => {
   // select from current category list or add a new category
+
+  const [eventName, setEventName] = useState("");
+  const [eventCategory, setEventCategory] = useState("");
+  const [eventPriority, setEventPriority] = useState("");
+  const [eventDate, setEventDate] = useState(null);
+  const [eventTime, setEventTime] = useState(null);
+
+  // handle state change
+  const handleEventName = (event) => {
+    setEventName(event.target.value);
+  };
+
+  const handleEventCategory = (event, value) => {
+    setEventCategory(value);
+  };
+
+  const handleEventPriority = (event, value) => {
+    setEventPriority(value);
+  };
+
+  const handleEventDate = (dateInput) => {
+    setEventDate(dateInput.format("DD MMMM YYYY"));
+  };
+
+  const handleEventTime = (timeInput) => {
+    setEventTime(timeInput.format("hh:mm A"));
+  };
+
+  // handle creation of a new event object
+  const handleSubmitNewEvent = () => {
+    const newEventObject = {
+      name: eventName,
+      category: eventCategory,
+      priority: eventPriority,
+      date: eventDate,
+      time: eventTime,
+    };
+    console.log(newEventObject);
+    handleAddEvent(newEventObject);
+    handleCloseDialog();
+    setEventName("");
+    setEventCategory("");
+    setEventPriority("");
+    setEventDate(null);
+    setEventTime(null);
+  };
 
   return (
     <Dialog
@@ -91,13 +134,14 @@ const AddNewEventDialog = ({
             sx={{ margin: "10px", marginBottom: "20px", width: "100ch" }}
             label="Event Name"
             variant="standard"
-            name="name"
-            onChange={handleNewEvent}
+            onChange={handleEventName}
             placeholder="Enter a name for your event"
           />
           <Autocomplete
             freeSolo
             disablePortal
+            inputValue={eventCategory}
+            onInputChange={handleEventCategory}
             options={eventCategoryList}
             sx={{ width: "100%", margin: "10px", marginBottom: "20px" }}
             renderInput={(params) => (
@@ -111,6 +155,7 @@ const AddNewEventDialog = ({
           />
           <Autocomplete
             disablePortal
+            onChange={handleEventPriority}
             options={priorityList}
             sx={{ width: "100%", margin: "10px", marginBottom: "20px" }}
             renderInput={(params) => (
@@ -144,7 +189,7 @@ const AddNewEventDialog = ({
         <Button
           sx={{ margin: "20px" }}
           variant="contained"
-          onClick={handleAddEvent}
+          onClick={handleSubmitNewEvent}
           color="primary"
         >
           Create Event

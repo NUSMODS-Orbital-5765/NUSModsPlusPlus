@@ -61,14 +61,16 @@ export const EventsPageHeader = ({ handleOpenDialog }) => {
 
 // main component
 const EventsPlannerPage = () => {
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState(sampleWeekEvents); // should be replaced with the events list fetched from database
   const [openDialog, setOpenDialog] = useState(false);
   const [addEventSuccess, setAddEventSuccess] = useState(false);
   const [addEventError, setAddEventError] = useState(false);
   const [deleteEventSuccess, setDeleteEventSuccess] = useState(false);
   const [deleteEventError, setDeleteEventError] = useState(false);
-  const [eventCategoryList, setEventCategoryList] = useState(
-    Array.from(new Set(sampleWeekEvents.map((event) => event.category)))
+
+  // should be refreshed when the array of events changes (e.g. with deleted events or new ones added)
+  const eventCategoryList = Array.from(
+    new Set(events.map((event) => event.category))
   );
 
   // handle opening/closing the dialog
@@ -80,20 +82,12 @@ const EventsPlannerPage = () => {
     setOpenDialog(false);
   };
 
-  // handle the addition/deletion of an event category
-  const handleAddEventCategory = (newCategory) => {
-    setEventCategoryList([...eventCategoryList, newCategory]);
-  };
-
-  const handleDeleteEventCategory = (newCategory) => {
-    setEventCategoryList(
-      eventCategoryList.filter((category) => category !== newCategory)
-    );
-  };
-
   // handle the addition/editing/deletion of an event
   const handleAddEvent = (eventInfo) => {
-    setEvents([...events, eventInfo]);
+    const updatedEvents = [...events, eventInfo];
+    console.log(updatedEvents);
+    setEvents(updatedEvents);
+    setAddEventSuccess(true);
   };
 
   const handleEditEvent = (eventInfo) => {};
@@ -172,10 +166,10 @@ const EventsPlannerPage = () => {
           }}
         >
           <Box sx={{ width: "70%" }}>
-            <EventsDataGrid
+            {/*<EventsDataGrid
               eventsList={events}
               handleDeleteEvent={handleDeleteEvent}
-            />
+            />*/}
           </Box>
           <Box sx={{ width: "30%", marginLeft: "40px" }}>
             <UpcomingEvents />
@@ -184,8 +178,9 @@ const EventsPlannerPage = () => {
       </Box>
       <AddNewEventDialog
         openDialog={openDialog}
-        eventCategoryList={eventCategoryList}
         handleCloseDialog={handleCloseDialog}
+        eventCategoryList={eventCategoryList}
+        handleAddEvent={handleAddEvent}
       />
       <Snackbar
         open={deleteEventError}
@@ -213,6 +208,34 @@ const EventsPlannerPage = () => {
           severity="success"
         >
           Event deleted successfully!
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={addEventError}
+        autoHideDuration={3000}
+        onClose={() => setAddEventError(false)}
+      >
+        <Alert
+          onClose={() => setAddEventError(false)}
+          sx={{ color: "white" }}
+          variant="filled"
+          severity="error"
+        >
+          Failed to add event. Please ensure all fields are filled in correctly.
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={addEventSuccess}
+        autoHideDuration={3000}
+        onClose={() => setAddEventSuccess(false)}
+      >
+        <Alert
+          onClose={() => setAddEventSuccess(false)}
+          sx={{ color: "white" }}
+          variant="filled"
+          severity="success"
+        >
+          Event added successfully!
         </Alert>
       </Snackbar>
     </div>
