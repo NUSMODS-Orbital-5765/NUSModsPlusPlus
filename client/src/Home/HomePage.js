@@ -11,7 +11,6 @@ import HomePageProgressBar from "./HomePageProgressBar";
 import HomePageRecommendedPosts from "./HomePageRecommendedPosts";
 import { combinedItems } from "./HomePageStyledComponents";
 import axios from "axios";
-import HomePageTimetable from "./HomePageTimetable";
 
 const HomePage = () => {
   // testing out the quotes for new UI
@@ -107,7 +106,6 @@ const HomePage = () => {
               <HomePageRecommendedPosts data-testid="home-page-recommended-posts" />
             </Box>
           </Box>
-          <HomePageTimetable />
         </Box>
       </LocalizationProvider>
     </div>

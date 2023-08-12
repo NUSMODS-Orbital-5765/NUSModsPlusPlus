@@ -430,7 +430,7 @@ export const sampleWeekEvents = [
   {
     name: "MA2001 Tutorial",
     date: "13 August 2023",
-    time: "2:00 PM",
+    time: "02:00 PM",
     category: "MA2001",
     priority: "Very High",
     id: 0,
@@ -438,7 +438,7 @@ export const sampleWeekEvents = [
   {
     name: "Dinner with Amy",
     date: "26 July 2023",
-    time: "5:00 PM",
+    time: "05:00 PM",
     category: "Personal",
     priority: "Low",
     id: 1,
@@ -446,7 +446,7 @@ export const sampleWeekEvents = [
   {
     name: "BT2102 Lab",
     date: "27 July 2023",
-    time: "1:00 PM",
+    time: "01:00 PM",
     category: "BT2102",
     priority: "Average",
     id: 2,
@@ -454,7 +454,7 @@ export const sampleWeekEvents = [
   {
     name: "NTW Lesson",
     date: "28 July 2023",
-    time: "4:00 PM",
+    time: "04:00 PM",
     category: "NTW2004",
     priority: "High",
     id: 3,
@@ -462,7 +462,7 @@ export const sampleWeekEvents = [
   {
     name: "Dinner",
     date: "28 July 2023",
-    time: "6:30 PM",
+    time: "06:30 PM",
     category: "Personal",
     priority: "Low",
     id: 4,
@@ -470,7 +470,7 @@ export const sampleWeekEvents = [
   {
     name: "Consult with Prof",
     date: "28 July 2023",
-    time: "9:00 AM",
+    time: "09:00 AM",
     category: "NTW2004",
     priority: "High",
     id: 5,
@@ -478,7 +478,7 @@ export const sampleWeekEvents = [
   {
     name: "EC1101 tutorial 9",
     date: "28 July 2023",
-    time: "4:00 PM",
+    time: "04:00 PM",
     category: "EC1101E",
     priority: "High",
     id: 6,
@@ -494,7 +494,7 @@ export const sampleWeekEvents = [
   {
     name: "CS2030 Lab",
     date: "29 July 2023",
-    time: "2:00 PM",
+    time: "02:00 PM",
     category: "CS2030",
     priority: "Very High",
     id: 8,
@@ -502,7 +502,7 @@ export const sampleWeekEvents = [
   {
     name: "Team Meeting",
     date: "29 July 2023",
-    time: "5:00 PM",
+    time: "05:00 PM",
     category: "Personal",
     priority: "High",
     id: 9,
@@ -510,7 +510,7 @@ export const sampleWeekEvents = [
   {
     name: "Suite Dinner",
     date: "29 July 2023",
-    time: "6:00 PM",
+    time: "06:00 PM",
     category: "Personal",
     priority: "Low",
     id: 10,
@@ -534,7 +534,7 @@ export const sampleWeekEvents = [
   {
     name: "Dinner with Jon",
     date: "30 July 2023",
-    time: "6:00 PM",
+    time: "06:00 PM",
     category: "Personal",
     priority: "Low",
     id: 13,

@@ -17,7 +17,7 @@ import {
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import { DataGrid } from "@mui/x-data-grid";
-import { priorityList, priorityColors } from "../Constants";
+import { priorityList, priorityColors, isEventOver } from "../Constants";
 import React, { useEffect, useState } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -25,7 +25,6 @@ import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import Collapse from "@mui/material/Collapse";
 import axios from "axios";
 import { format } from "date-fns";
-import { isEventOver } from "../Home/HomePageTimetable";
 
 // edit event dialog
 export const EditEventDialog = ({
@@ -249,8 +248,8 @@ const EventsDataGrid = ({
   const [openAlert, setOpenAlert] = useState(true);
 
   // sort the events list
-  const sortedEventsList = [...eventsList]; // Create a new array with the same contents
-  sortedEventsList.sort((a, b) => {
+  const sortedEvents = [...eventsList];
+  sortedEvents.sort((a, b) => {
     const dateA = new Date(a.date + " " + a.time);
     const dateB = new Date(b.date + " " + b.time);
     return dateA - dateB;
@@ -313,7 +312,15 @@ const EventsDataGrid = ({
       headerName: "Category",
       flex: 0.7,
       renderCell: (params) => (
-        <div style={{ fontSize: "15px", fontWeight: 700 }}>{params.value}</div>
+        <div
+          style={{
+            fontSize: "15px",
+            whiteSpace: "normal",
+            wordWrap: "break-word",
+          }}
+        >
+          <strong>{params.value}</strong>
+        </div>
       ),
     },
     {
@@ -400,7 +407,7 @@ const EventsDataGrid = ({
             }}
             getRowHeight={() => 130}
             sx={{ marginTop: "20px", fontSize: "15px", height: 800 }}
-            rows={sortedEventsList}
+            rows={sortedEvents}
             columns={columns}
           />
         </CardContent>

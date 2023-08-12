@@ -97,19 +97,19 @@ const EventsPlannerPage = () => {
     setAddEventSuccess(true);
   };
 
-  const handleEditEvent = (eventInfo) => {
+  // uh, needs to be changed
+  const handleEditEvent = (newEventInfo) => {
+    const newEventObject = { ...newEventInfo };
     const updatedEvents = [...sampleWeekEvents];
 
-    const eventIndex = updatedEvents.findIndex(
-      (eventObject) => eventObject.id === eventInfo.id
+    const prevEvent = updatedEvents.find(
+      (eventObject) => eventObject.id === newEventInfo.id
     );
 
-    if (eventIndex !== -1) {
-      updatedEvents[eventIndex] = eventInfo;
-      console.log(updatedEvents);
-      setEvents(updatedEvents);
-      setEditEventSuccess(true);
-    }
+    updatedEvents[newEventInfo.id] = newEventInfo;
+    console.log(updatedEvents);
+    setEvents(updatedEvents);
+    setEditEventSuccess(true);
   };
 
   const handleDeleteEvent = (eventId) => {
