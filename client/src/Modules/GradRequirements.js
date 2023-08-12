@@ -27,7 +27,7 @@ export const SelectedModulesAlert = ({
       action={
         <Tooltip title="Add to Semester Plan" placement="top">
           <IconButton
-            sx={{ marginRight: "70ch" }}
+            sx={{ marginRight: "50ch" }}
             color="primary"
             onClick={handleMoveModules}
           >
