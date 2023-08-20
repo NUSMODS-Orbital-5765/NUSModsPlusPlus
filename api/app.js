@@ -437,6 +437,7 @@ app.post("/event/add", [jsonParser, auth], (request, response) => {
         time: request.body.time,
         category: request.body.category,
         priority: request.body.priority,
+        nanoid: request.body.nanoid,
         user: { connect: { username: response.locals.user.username } },
       },
     })
@@ -455,12 +456,39 @@ app.post("/event/add", [jsonParser, auth], (request, response) => {
       });
     });
 });
-
+app.post("/event/edit", [jsonParser, auth], (request, response) => {
+  console.log("Post event edit request");
+  prisma.event
+    .update({
+      where: { nanoid: request.body.nanoid },
+      data: {
+        name: request.body.name,
+        date: request.body.date,
+        time: request.body.time,
+        category: request.body.category,
+        priority: request.body.priority
+      },
+    })
+    .then((res) => {
+      console.log("Added Event Successfully");
+      response.status(200).send({
+        message: `Edit Event ${res.id} successfully at username = ${response.locals.user.username}`,
+        res,
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+      response.status(500).send({
+        message: "Error Editting Event",
+        error,
+      });
+    });
+});
 app.post("/event/delete", [jsonParser, auth], (request, response) => {
   console.log("POST event delete request");
   prisma.event
     .delete({
-      where: { id: request.body.eventId },
+      where: { nanoid: request.body.nanoid },
     })
     .then((res) => {
       console.log("Delete Event Successfully");

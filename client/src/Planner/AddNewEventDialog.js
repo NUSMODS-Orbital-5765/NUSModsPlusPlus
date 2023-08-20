@@ -16,41 +16,9 @@ import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import { format } from "date-fns";
+import { nanoid } from "nanoid";
 
-/*
-  const handleAddEvent = () => {
-    const newEventObject = {
-      id: events.length + 1,
-      ...newEvent,
-    };
-    const newEvents = [...events, newEvent];
-    setEvents(newEvents);
 
-    const AddEventAPI = `${process.env.REACT_APP_API_LINK}/event/add`;
-
-    axios
-      .post(AddEventAPI, newEvent, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
-        },
-      })
-      .then((response) => {
-        setAddEventSuccess(true);
-        newEventObject.eventId = response.data.res.id;
-        setEvents((prevEvents) => [...prevEvents, newEventObject]);
-        setOpenDialog(false);
-        setTimeout(() => {
-          window.location.reload();
-        }, 1500);
-      })
-      .catch((error) => {
-        console.log(error);
-        //undo the insertion
-        setAddEventError(true);
-      });
-  };
-
-  */
 
 // styling for the add event dialog
 // styling for dialog with form fields for event details
@@ -108,6 +76,7 @@ const AddNewEventDialog = ({
       priority: eventPriority,
       date: eventDate,
       time: eventTime,
+      nanoid: nanoid()
     };
     console.log(newEventObject);
     handleAddEvent(newEventObject);

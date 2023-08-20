@@ -25,6 +25,7 @@ import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import Collapse from "@mui/material/Collapse";
 import axios from "axios";
 import { format } from "date-fns";
+import { nanoid } from "nanoid";
 
 // edit event dialog
 export const EditEventDialog = ({
@@ -82,6 +83,7 @@ export const EditEventDialog = ({
   const [eventPriority, setEventPriority] = useState(eventObject.priority);
   const [eventDate, setEventDate] = useState(eventObject.date);
   const [eventTime, setEventTime] = useState(eventObject.time);
+  const [eventNanoId, setEventNanoId] = useState(eventObject.nanoid);
 
   // ensure that the values are reset when the dialog is closed
   const handleClickCloseDialog = () => {
@@ -123,6 +125,7 @@ export const EditEventDialog = ({
       date: eventDate,
       time: eventTime,
       id: eventId,
+      nanoid: eventNanoId,
     };
     console.log(newEventObject);
     handleEditEvent(newEventObject);
@@ -130,6 +133,7 @@ export const EditEventDialog = ({
     setEventName("");
     setEventCategory("");
     setEventPriority("");
+    setEventNanoId("")
     setEventDate(null);
     setEventTime(null);
   };
@@ -276,6 +280,14 @@ const EventsDataGrid = ({
       ),
     },
     {
+      field: "nanoid",
+      headerName: "NanoId",
+      flex: 1,
+      renderCell: (params) => (
+        <div style={{ fontSize: "15px" }}>{params.value}</div>
+      ),
+    },
+    {
       field: "name",
       headerName: "Name",
       flex: 1,
@@ -348,7 +360,7 @@ const EventsDataGrid = ({
           <Tooltip title="Delete Event" placement="top">
             <IconButton
               data-testid="delete-button"
-              onClick={() => handleDeleteEvent(params.row.id)}
+              onClick={() => handleDeleteEvent(params.row.nanoid)}
             >
               <ClearRoundedIcon color="error" />
             </IconButton>
@@ -401,10 +413,12 @@ const EventsDataGrid = ({
             initialState={{
               columns: {
                 columnVisibilityModel: {
-                  id: false, // hides the id column cause it looks weird kinda
+                  id: false,
+                  nanoid: false,
                 },
               },
             }}
+            getRowId={(row) => row.nanoid} 
             getRowHeight={() => 130}
             sx={{ marginTop: "20px", fontSize: "15px", height: 800 }}
             rows={sortedEvents}

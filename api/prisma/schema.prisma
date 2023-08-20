@@ -115,11 +115,12 @@ model Module {
 
 model Event {
   id       Int    @id @default(autoincrement())
+  nanoid String @unique
   name     String
   date     String
   time     String
   category String
-  priority Int
+  priority String
   user     User   @relation(fields: [userId], references: [id])
   userId   Int
 }

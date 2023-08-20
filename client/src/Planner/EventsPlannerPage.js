@@ -65,7 +65,7 @@ export const EventsPageHeader = ({ handleOpenDialog }) => {
 
 // main component
 const EventsPlannerPage = () => {
-  const [events, setEvents] = useState(sampleWeekEvents); // should be replaced with the events list fetched from database
+  const [events, setEvents] = useState([]); // should be replaced with the events list fetched from database
   const [openDialog, setOpenDialog] = useState(false);
   const [addEventSuccess, setAddEventSuccess] = useState(false);
   const [addEventError, setAddEventError] = useState(false);
@@ -90,37 +90,59 @@ const EventsPlannerPage = () => {
 
   // handle the addition/editing/deletion of an event
   const handleAddEvent = (eventInfo) => {
-    const newEventObject = { ...eventInfo, id: events.length };
-    const updatedEvents = [...events, newEventObject];
-    console.log(updatedEvents);
-    setEvents(updatedEvents);
-    setAddEventSuccess(true);
+    
+    const AddEventAPI = `${process.env.REACT_APP_API_LINK}/event/add`;
+
+    axios
+      .post(AddEventAPI, eventInfo, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        },
+      })
+      .then((response) => {
+        const updatedEvents = [...events, eventInfo];
+        setEvents(updatedEvents);
+        setAddEventSuccess(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        //undo the insertion
+        setAddEventError(true);
+      });
   };
 
   // uh, needs to be changed
   const handleEditEvent = (newEventInfo) => {
-    const newEventObject = { ...newEventInfo };
-    const updatedEvents = [...sampleWeekEvents];
+    
+    const AddEventAPI = `${process.env.REACT_APP_API_LINK}/event/edit`;
 
-    const prevEvent = updatedEvents.find(
-      (eventObject) => eventObject.id === newEventInfo.id
-    );
-
-    updatedEvents[newEventInfo.id] = newEventInfo;
-    console.log(updatedEvents);
-    setEvents(updatedEvents);
-    setEditEventSuccess(true);
+    axios
+      .post(AddEventAPI, newEventInfo, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("user-token")}`,
+        },
+      })
+      .then((response) => {
+        const updatedEvents = [...events];
+        const prevEventIndex = updatedEvents.findIndex(
+          (eventObject) => eventObject.nanoid === newEventInfo.nanoid
+        );
+        updatedEvents[prevEventIndex] = newEventInfo;
+        console.log(updatedEvents);
+        setEvents(updatedEvents);
+        setEditEventSuccess(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        //undo the insertion
+        //setEditEventSuccess(true);
+      });
   };
 
-  const handleDeleteEvent = (eventId) => {
-    setEvents(events.filter((eventObject) => eventObject.id !== eventId));
-    setDeleteEventSuccess(true);
-  };
-
-  /*
-  const handleDeleteEvent = (id, eventId) => {
+  const handleDeleteEvent = (nanoid) => {
+    
     const DeleteEventAPI = `${process.env.REACT_APP_API_LINK}/event/delete`;
-    const deleteJsonBody = { eventId: eventId };
+    const deleteJsonBody = { nanoid: nanoid };
     axios
       .post(DeleteEventAPI, deleteJsonBody, {
         headers: {
@@ -128,10 +150,8 @@ const EventsPlannerPage = () => {
         },
       })
       .then((response) => {
+        setEvents(events.filter((eventObject) => eventObject.nanoid !== nanoid));
         setDeleteEventSuccess(true);
-        setEvents((prevEvents) =>
-          prevEvents.filter((event) => event.id !== id)
-        );
       })
       .catch((error) => {
         console.log(error);
@@ -139,9 +159,8 @@ const EventsPlannerPage = () => {
         setDeleteEventError(true);
       });
   };
-  */
 
-  /*
+
   useEffect(() => {
     const GetEventAPI = `${process.env.REACT_APP_API_LINK}/event/get`;
     axios
@@ -153,23 +172,16 @@ const EventsPlannerPage = () => {
       })
       .then((response) => {
         const postedEvents = response.data.events;
-        let count = 1;
-        postedEvents.map((event) => {
-          event.eventId = event.id;
-          event.id = count;
-          delete event.userId;
-          count++;
-        });
         console.log(postedEvents);
         setEvents((prevEvents) => postedEvents);
       })
       .catch((error) => {
         console.log(error);
         //undo the insertion
-        alert("Event added Failed " + error.message);
+        alert("Event Get Failed " + error.message);
       });
   }, []);
-  */
+
 
   return (
     <div className="homepage">

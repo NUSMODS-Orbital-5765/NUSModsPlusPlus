@@ -6,6 +6,7 @@ import {
 } from "date-fns";
 import dayjs from "dayjs";
 import { red, orange, yellow } from "@mui/material/colors";
+import { nanoid } from "nanoid";
 
 // list of nus faculties
 export const facultyList = [
@@ -434,6 +435,7 @@ export const sampleWeekEvents = [
     category: "MA2001",
     priority: "Very High",
     id: 0,
+    nanoid: nanoid()
   },
   {
     name: "Dinner with Amy",
@@ -442,6 +444,7 @@ export const sampleWeekEvents = [
     category: "Personal",
     priority: "Low",
     id: 1,
+    nanoid: nanoid()
   },
   {
     name: "BT2102 Lab",
@@ -450,6 +453,7 @@ export const sampleWeekEvents = [
     category: "BT2102",
     priority: "Average",
     id: 2,
+    nanoid: nanoid()
   },
   {
     name: "NTW Lesson",
@@ -458,6 +462,7 @@ export const sampleWeekEvents = [
     category: "NTW2004",
     priority: "High",
     id: 3,
+    nanoid: nanoid()
   },
   {
     name: "Dinner",
@@ -466,6 +471,7 @@ export const sampleWeekEvents = [
     category: "Personal",
     priority: "Low",
     id: 4,
+    nanoid: nanoid()
   },
   {
     name: "Consult with Prof",
@@ -474,6 +480,7 @@ export const sampleWeekEvents = [
     category: "NTW2004",
     priority: "High",
     id: 5,
+    nanoid: nanoid()
   },
   {
     name: "EC1101 tutorial 9",
@@ -482,6 +489,7 @@ export const sampleWeekEvents = [
     category: "EC1101E",
     priority: "High",
     id: 6,
+    nanoid: nanoid()
   },
   {
     name: "Lunch with Lauren",
@@ -490,6 +498,7 @@ export const sampleWeekEvents = [
     category: "Personal",
     priority: "Low",
     id: 7,
+    nanoid: nanoid()
   },
   {
     name: "CS2030 Lab",
@@ -498,6 +507,7 @@ export const sampleWeekEvents = [
     category: "CS2030",
     priority: "Very High",
     id: 8,
+    nanoid: nanoid()
   },
   {
     name: "Team Meeting",
@@ -506,6 +516,7 @@ export const sampleWeekEvents = [
     category: "Personal",
     priority: "High",
     id: 9,
+    nanoid: nanoid()
   },
   {
     name: "Suite Dinner",
@@ -514,6 +525,7 @@ export const sampleWeekEvents = [
     category: "Personal",
     priority: "Low",
     id: 10,
+    nanoid: nanoid()
   },
   {
     name: "Submit NTW essay",
@@ -522,6 +534,7 @@ export const sampleWeekEvents = [
     category: "NTW2004",
     priority: "Very High",
     id: 11,
+    nanoid: nanoid()
   },
   {
     name: "Lunch",
@@ -530,6 +543,7 @@ export const sampleWeekEvents = [
     category: "Personal",
     priority: "Low",
     id: 12,
+    nanoid: nanoid()
   },
   {
     name: "Dinner with Jon",
@@ -538,6 +552,7 @@ export const sampleWeekEvents = [
     category: "Personal",
     priority: "Low",
     id: 13,
+    nanoid: nanoid()
   },
 ];
 
