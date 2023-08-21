@@ -3,9 +3,9 @@ import DrawerComponent from "../Drawer/DrawerComponent";
 import { Box, Typography, Snackbar, Alert } from "@mui/material";
 import GPACalculatorTabs from "./GPACalculatorTabs";
 import { combinedItems } from "../Home/HomePageStyledComponents";
-import { sampleModuleGrades } from "./GPACalculatorConstants";
+import { sampleModuleGrades, emptyModuleGrades } from "./GPACalculatorConstants";
 import GPACalculatorOverall from "./GPACalculatorOverall";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export const CalculatorPageHeader = () => {
   return (
@@ -62,7 +62,7 @@ const GPACalculatorPage = () => {
   };
 
   // state management of the moduleList
-  const [newModuleList, setNewModuleList] = useState(sampleModuleGrades);
+  const [newModuleList, setNewModuleList] = useState(emptyModuleGrades);
 
   // snackbars and alerts
   const [editSuccess, setEditSuccess] = useState(false);
@@ -127,9 +127,9 @@ const GPACalculatorPage = () => {
 
   // function for adding a module
   const handleSubmitModule = (moduleObject, semesterName, yearName) => {
-    console.log(moduleObject);
-    console.log(semesterName);
-    console.log(yearName);
+    // console.log(moduleObject);
+    // console.log(semesterName);
+    // console.log(yearName);
 
     const updatedModuleList = newModuleList.map((yearObject) => {
       if (yearObject.year === yearName) {
@@ -152,6 +152,7 @@ const GPACalculatorPage = () => {
     console.log(updatedModuleList);
     setAddSuccess(true);
   };
+
 
   return (
     <div className="homepage">

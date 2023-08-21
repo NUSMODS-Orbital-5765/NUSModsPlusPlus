@@ -27,6 +27,7 @@ Table User {
   NotificationFrom Notification [not null]
   NotificationTo Notification [not null]
   ModulePlan ModulePlan [not null]
+  GPATable GPATable [not null]
 }
 
 Table Post {
@@ -92,7 +93,13 @@ Table Module {
   faculty String [not null]
   workload String
   attributes Json
+  gradingBasisDescription String
+  additionalInformation String
+  prerequisiteRule String
   prerequisite String
+  preclusionRule String
+  corequisiteRule String
+  prerequisiteAdvisory String
   moduleCredit String [not null]
   moduleCode String [not null]
   prereqTree Json
@@ -125,6 +132,13 @@ Table Notification {
   hiddenValue Json
 }
 
+Table GPATable {
+  id Int [pk, increment]
+  content Json [not null]
+  user User [not null]
+  userId Int [not null]
+}
+
 Table ModulePlan {
   id Int [pk, increment]
   nanoid String [unique, not null]
@@ -153,5 +167,7 @@ Ref: Event.userId > User.id
 Ref: Notification.userIdFrom > User.id
 
 Ref: Notification.userIdTo > User.id
+
+Ref: GPATable.userId > User.id
 
 Ref: ModulePlan.userId > User.id

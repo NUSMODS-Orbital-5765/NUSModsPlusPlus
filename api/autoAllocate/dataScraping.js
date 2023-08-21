@@ -24,7 +24,7 @@ function writeToFile (filePath, data) {
 async function downloadModuleDetail(modules) {
     const details = [];
     for(const module of modules) {
-      await axios.get(`https://api.nusmods.com/v2/2021-2022/modules/${module}.json`)
+      await axios.get(`https://api.nusmods.com/v2/2023-2024/modules/${module}.json`)
       .then(result => {
         console.log(`Downloading module ${module}`)
         const moduleData = (result.data);

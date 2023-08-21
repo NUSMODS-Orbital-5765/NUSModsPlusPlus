@@ -39,6 +39,7 @@ model User {
   NotificationFrom Notification[] @relation("from")
   NotificationTo   Notification[] @relation("to")
   ModulePlan       ModulePlan[]
+  GPATable         GPATable[]
 }
 
 model Post {
@@ -95,27 +96,33 @@ model CommonModuleGroup {
 }
 
 model Module {
-  id                  Int      @id @default(autoincrement())
-  acadYear            String
-  preclusion          String?
-  description         String
-  title               String
-  department          String
-  faculty             String
-  workload            String?
-  attributes          Json?
-  prerequisite        String?
-  moduleCredit        String
-  moduleCode          String
-  prereqTree          Json?
-  aliases             String[]
-  corequisite         String?
-  fulfillRequirements String[]
+  id                      Int      @id @default(autoincrement())
+  acadYear                String
+  preclusion              String?
+  description             String
+  title                   String
+  department              String
+  faculty                 String
+  workload                String?
+  attributes              Json?
+  gradingBasisDescription String?
+  additionalInformation   String?
+  prerequisiteRule        String?
+  prerequisite            String?
+  preclusionRule          String?
+  corequisiteRule         String?
+  prerequisiteAdvisory    String?
+  moduleCredit            String
+  moduleCode              String
+  prereqTree              Json?
+  aliases                 String[]
+  corequisite             String?
+  fulfillRequirements     String[]
 }
 
 model Event {
   id       Int    @id @default(autoincrement())
-  nanoid String @unique
+  nanoid   String @unique
   name     String
   date     String
   time     String
@@ -135,6 +142,13 @@ model Notification {
   target      User     @relation("to", fields: [userIdTo], references: [id])
   userIdTo    Int
   hiddenValue Json?
+}
+
+model GPATable {
+  id      Int  @id @default(autoincrement())
+  content Json
+  user    User @relation(fields: [userId], references: [id])
+  userId  Int
 }
 
 model ModulePlan {

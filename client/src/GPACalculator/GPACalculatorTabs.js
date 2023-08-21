@@ -29,7 +29,7 @@ export const OverallGrade = ({ yearGPA, gradeTarget }) => {
   if (progressPercentage >= 100) {
     progressPercentage = 100;
   }
-  console.log(progressPercentage);
+  // console.log(progressPercentage);
 
   return (
     <Box sx={{ margin: "20px" }}>

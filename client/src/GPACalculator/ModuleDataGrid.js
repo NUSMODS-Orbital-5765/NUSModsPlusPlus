@@ -363,7 +363,7 @@ const ModuleDataGrid = ({
     };
   });
 
-  console.log(flattenedModuleList);
+  // console.log(flattenedModuleList);
 
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [currentModuleCode, setCurrentModuleCode] = useState("");
